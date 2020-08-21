@@ -17,25 +17,25 @@ class Template_view extends CI_Controller {
 		
         $this->_ci->load->library('session');
 		
-        if(!$_SESSION['id_level_user']){
-            $id_level = "0";
+        if(!$_SESSION['id_role']){
+            $id_role = "0";
         }
         else{
-            $id_level = $this->_ci->session->userdata('id_level_user');
+            $id_role = $this->_ci->session->userdata('id_role');
         }
 
 		$queryActive = $this->_ci->db->query("
 		select
-			tbl_menu.id_menu,
-			tbl_menu.tingkat_menu,
-            tbl_menu.nama_menu,
-			tbl_menu.id_parent as id_ataspertama,
-			(select menuataskedua.id_parent from tbl_menu menuataskedua where menuataskedua.id_menu=tbl_menu.id_parent) as id_ataskedua,
-			(select menuatasketiga.id_parent from tbl_menu menuatasketiga where menuatasketiga.id_menu= (select menuataskedua.id_parent from tbl_menu menuataskedua where menuataskedua.id_menu=tbl_menu.id_parent)) as id_atasketiga
+			m_menu.id,
+			m_menu.tingkat,
+            m_menu.nama,
+			m_menu.id_parent as id_ataspertama,
+			(select menuataskedua.id_parent from m_menu as menuataskedua where menuataskedua.id = m_menu.id_parent) as id_ataskedua,
+			(select menuatasketiga.id_parent from m_menu as menuatasketiga where menuatasketiga.id = (select menuataskedua.id_parent from m_menu as menuataskedua where menuataskedua.id = m_menu.id_parent)) as id_atasketiga
 		from
-			tbl_menu,tbl_hak_akses
+			m_menu, t_role_menu
 		WHERE
-			tbl_menu.aktif_menu = 1 and tbl_menu.LINK_MENU = '".$this->_ci->uri->segment(1)."' and tbl_menu.id_menu=tbl_hak_akses.id_menu and tbl_hak_akses.id_level_user= '".$id_level."'
+			m_menu.aktif = 1 and m_menu.LINK = '".$this->_ci->uri->segment(1)."' and m_menu.id = t_role_menu.id_menu and t_role_menu.id_role = '".$id_role."'
 		");
 		$dataActive = $queryActive->row();
 		// echo $this->_ci->db->last_query();
@@ -45,9 +45,9 @@ class Template_view extends CI_Controller {
             select 
                 tbl_menu.* 
             from 
-                tbl_menu,tbl_hak_akses where tbl_menu.id_parent = '0' and 
-                tbl_menu.aktif_menu= 1 and tbl_menu.id_menu=tbl_hak_akses.id_menu and 
-                tbl_hak_akses.id_level_user= '".$id_level."' 
+                tbl_menu,t_role_menu where tbl_menu.id_parent = '0' and 
+                tbl_menu.aktif= 1 and tbl_menu.id_menu=t_role_menu.id_menu and 
+                t_role_menu.id_level_user= '".$id_level."' 
             order by tbl_menu.URUTAN_MENU
         ");
         $dataMenu1 = $menu1->result();
@@ -59,12 +59,12 @@ class Template_view extends CI_Controller {
                 select 
                     count(tbl_menu.id_menu) as jumlah 
                 from 
-                    tbl_menu,tbl_hak_akses 
+                    tbl_menu,t_role_menu 
                 where 
                     tbl_menu.id_parent = '".$dataMenuSatu->id_menu."' and 
-                    tbl_menu.id_menu=tbl_hak_akses.id_menu and 
-                    tbl_menu.aktif_menu = 1 and 
-                    tbl_hak_akses.id_level_user = '".$id_level."'
+                    tbl_menu.id_menu=t_role_menu.id_menu and 
+                    tbl_menu.aktif = 1 and 
+                    t_role_menu.id_level_user = '".$id_level."'
             ");
 
             $jumlahParent1 = $Parent1->row();
@@ -80,7 +80,7 @@ class Template_view extends CI_Controller {
 			}else{
 				$treeview1 = '';
 				$iconTurun1 = "";
-				$link1 = base_url().$dataMenuSatu->link_menu;
+				$link1 = base_url().$dataMenuSatu->LINK;
 			}
 
 			
@@ -88,16 +88,16 @@ class Template_view extends CI_Controller {
 				redirect("login");
 			}
 
-			if($dataActive->tingkat_menu=='4' && $dataActive->id_atasketiga==$dataMenuSatu->id_menu){
+			if($dataActive->tingkat=='4' && $dataActive->id_atasketiga==$dataMenuSatu->id_menu){
 				$active1="active";
 			}else{
-				if($dataActive->tingkat_menu=='3' && $dataActive->id_ataskedua==$dataMenuSatu->id_menu){
+				if($dataActive->tingkat=='3' && $dataActive->id_ataskedua==$dataMenuSatu->id_menu){
 					$active1="active";
 				}else{
-					if($dataActive->tingkat_menu=='2' && $dataActive->id_ataspertama==$dataMenuSatu->id_menu){
+					if($dataActive->tingkat=='2' && $dataActive->id_ataspertama==$dataMenuSatu->id_menu){
 						$active1="active";
 					}else{
-						if($dataActive->tingkat_menu=='1' && $dataActive->id_menu==$dataMenuSatu->id_menu){
+						if($dataActive->tingkat=='1' && $dataActive->id_menu==$dataMenuSatu->id_menu){
 							$active1="active";
 						}else{
 							$active1="";
@@ -110,7 +110,7 @@ class Template_view extends CI_Controller {
 			<li class=' $active1 ".$treeview1."'>
 				<a href='".$link1."'>
 					<i class='".$dataMenuSatu->icon_menu."'></i>
-						<span class='title'>".$dataMenuSatu->nama_menu."</span>
+						<span class='title'>".$dataMenuSatu->nama."</span>
 						".$iconTurun1."
 				</a>
 			";
@@ -121,9 +121,9 @@ class Template_view extends CI_Controller {
                     select 
                         tbl_menu.* 
                     from 
-                        tbl_menu,tbl_hak_akses 
+                        tbl_menu,t_role_menu 
                     where 
-                        tbl_menu.id_parent = '".$dataMenuSatu->id_menu."' and tbl_menu.id_menu=tbl_hak_akses.id_menu and tbl_menu.aktif_menu = 1 and  tbl_hak_akses.id_level_user= '".$id_level."' 
+                        tbl_menu.id_parent = '".$dataMenuSatu->id_menu."' and tbl_menu.id_menu=t_role_menu.id_menu and tbl_menu.aktif = 1 and  t_role_menu.id_level_user= '".$id_level."' 
                     order by tbl_menu.URUTAN_MENU
                 ");
 
@@ -136,12 +136,12 @@ class Template_view extends CI_Controller {
                         select 
                             count(tbl_menu.id_menu) as jumlah 
                         from 
-                            tbl_menu,tbl_hak_akses 
+                            tbl_menu,t_role_menu 
                         where 
                             tbl_menu.id_parent = '".$dataMenuDua->id_menu."' and 
-                            tbl_menu.aktif_menu = 1 and 
-                            tbl_menu.id_menu=tbl_hak_akses.id_menu and 
-                            tbl_hak_akses.id_level_user= '".$id_level."' 
+                            tbl_menu.aktif = 1 and 
+                            tbl_menu.id_menu=t_role_menu.id_menu and 
+                            t_role_menu.id_level_user= '".$id_level."' 
                     ");
 
 					$jumlahParent2 = $Parent2->row();
@@ -157,17 +157,17 @@ class Template_view extends CI_Controller {
 					}else{
 						$treeview2 = '';
 						$iconTurun2 = "";
-						$link2 = base_url().$dataMenuDua->link_menu;
+						$link2 = base_url().$dataMenuDua->LINK;
 						$iconPanah1 = '';
 					}
 
-					if($dataActive->tingkat_menu=='4' && $dataActive->id_ataskedua==$dataMenuDua->id_menu){
+					if($dataActive->tingkat=='4' && $dataActive->id_ataskedua==$dataMenuDua->id_menu){
 						$active2="active";
 					}else{
-						if($dataActive->tingkat_menu=='3' && $dataActive->id_ataspertama==$dataMenuDua->id_menu){
+						if($dataActive->tingkat=='3' && $dataActive->id_ataspertama==$dataMenuDua->id_menu){
 							$active2="active";
 						}else{
-							if($dataActive->tingkat_menu=='2' && $dataActive->id_menu==$dataMenuDua->id_menu){
+							if($dataActive->tingkat=='2' && $dataActive->id_menu==$dataMenuDua->id_menu){
 								$active2="active";
 							}else{
 								$active2="";
@@ -178,7 +178,7 @@ class Template_view extends CI_Controller {
 					$menuHtml .= "
 					<li class='$active2 ".$treeview2."'>
 						<a href='".$link2."'>
-								<i class='".$dataMenuDua->icon_menu."'></i>".$dataMenuDua->nama_menu."
+								<i class='".$dataMenuDua->icon_menu."'></i>".$dataMenuDua->nama."
 								".$iconTurun2."
 						</a>
 					";
@@ -189,9 +189,9 @@ class Template_view extends CI_Controller {
                             select 
                                 tbl_menu.* 
                             from 
-                                tbl_menu,tbl_hak_akses 
+                                tbl_menu,t_role_menu 
                             where 
-                                tbl_menu.id_parent = '".$dataMenuDua->id_menu."' and tbl_menu.id_menu=tbl_hak_akses.id_menu and tbl_menu.aktif_menu = 1 and tbl_hak_akses.id_level_user= '".$id_level."' 
+                                tbl_menu.id_parent = '".$dataMenuDua->id_menu."' and tbl_menu.id_menu=t_role_menu.id_menu and tbl_menu.aktif = 1 and t_role_menu.id_level_user= '".$id_level."' 
                             order by tbl_menu.URUTAN_MENU
                         ");
 
@@ -204,9 +204,9 @@ class Template_view extends CI_Controller {
                                 select 
                                     count(tbl_menu.id_menu) as jumlah
                                 from 
-                                    tbl_menu,tbl_hak_akses 
+                                    tbl_menu,t_role_menu 
                                 where 
-                                    tbl_menu.id_parent = '".$dataMenuTiga->id_menu."' and tbl_menu.id_menu=tbl_hak_akses.id_menu and  tbl_menu.aktif_menu = 1 and tbl_hak_akses.id_level_user= '".$id_level."' 
+                                    tbl_menu.id_parent = '".$dataMenuTiga->id_menu."' and tbl_menu.id_menu=t_role_menu.id_menu and  tbl_menu.aktif = 1 and t_role_menu.id_level_user= '".$id_level."' 
                             ");
 
 							$jumlahParent3 = $Parent3->row();
@@ -220,17 +220,17 @@ class Template_view extends CI_Controller {
 							}else{
 								$treeview3 = '';
 								$iconTurun3 = "";
-								$link3 = base_url().$dataMenuTiga->link_menu;
+								$link3 = base_url().$dataMenuTiga->LINK;
 								//$iconPanah2 = '<i class="fa fa-angle-right"></i> ';
 								$iconPanah2 = '';
 							}
 
 
 
-							if($dataActive->tingkat_menu=='4' && $dataActive->id_ataspertama==$dataMenuTiga->id_menu){
+							if($dataActive->tingkat=='4' && $dataActive->id_ataspertama==$dataMenuTiga->id_menu){
 								$active3="active";
 							}else{
-								if($dataActive->tingkat_menu=='3' && $dataActive->id_menu==$dataMenuTiga->id_menu){
+								if($dataActive->tingkat=='3' && $dataActive->id_menu==$dataMenuTiga->id_menu){
 									$active3="active";
 								}else{
 									$active3="";
@@ -241,7 +241,7 @@ class Template_view extends CI_Controller {
 							<li class='$active3 ".$treeview3."'>
 								<a href='".$link3."'>
 									$iconPanah2
-										<span>".$dataMenuTiga->nama_menu."</span>
+										<span>".$dataMenuTiga->nama."</span>
 										".$iconTurun3."
 								</a>
 							";
@@ -253,10 +253,10 @@ class Template_view extends CI_Controller {
                                     select 
                                         tbl_menu.* 
                                     from 
-                                        tbl_menu,tbl_hak_akses 
+                                        tbl_menu,t_role_menu 
                                     where 
-                                        tbl_menu.id_parent = '".$dataMenuTiga->id_menu."' and tbl_menu.id_menu=tbl_hak_akses.id_menu and
-                                        tbl_hak_akses.id_level_user= '".$id_level."' 
+                                        tbl_menu.id_parent = '".$dataMenuTiga->id_menu."' and tbl_menu.id_menu=t_role_menu.id_menu and
+                                        t_role_menu.id_level_user= '".$id_level."' 
                                     order by tbl_menu.URUTAN_MENU
                                 ");
 								$dataMenu4 = $menu4->result();
@@ -268,9 +268,9 @@ class Template_view extends CI_Controller {
                                         select 
                                             count(id_menu) as jumlah 
                                         from 
-                                            tbl_menu,tbl_hak_akses 
+                                            tbl_menu,t_role_menu 
                                         where 
-                                            tbl_menu.id_parent = '".$dataMenuTiga->id_menu."' and tbl_menu.id_menu=tbl_hak_akses.id_menu and tbl_hak_akses.id_level_user= '".$id_level."' order by tbl_menu.URUTAN_MENU
+                                            tbl_menu.id_parent = '".$dataMenuTiga->id_menu."' and tbl_menu.id_menu=t_role_menu.id_menu and t_role_menu.id_level_user= '".$id_level."' order by tbl_menu.URUTAN_MENU
                                     ");
 									$jumlahParent4 = $Parent4->row();
 
@@ -283,12 +283,12 @@ class Template_view extends CI_Controller {
 									}else{
 										$treeview4 = '';
 										$iconTurun4 = "";
-										$link4 = base_url().$dataMenuEmpat->LINK_MENU;
+										$link4 = base_url().$dataMenuEmpat->LINK;
 										//$iconPanah3 = '<i class="fa fa-angle-right"></i> ';
 										$iconPanah3 = '';
 									}
 
-									if($dataActive->tingkat_menu=='4' && $dataActive->id_menu==$dataMenuEmpat->id_menu){
+									if($dataActive->tingkat=='4' && $dataActive->id_menu==$dataMenuEmpat->id_menu){
 										$active4="active";
 									}else{
 										$active4="";
@@ -298,7 +298,7 @@ class Template_view extends CI_Controller {
 									<li class=' $active4 ".$treeview4."'>
 										<a href='".$link4."'>
 											$iconPanah3
-												<span>".$dataMenuEmpat->nama_menu."</span>
+												<span>".$dataMenuEmpat->nama."</span>
 												".$iconTurun4."
 										</a>
 									";
@@ -334,26 +334,26 @@ class Template_view extends CI_Controller {
 
         //$data['modal']      = $this->_ci->load->view($content['modal'], $data, TRUE);
         //$data['js']         = $this->_ci->load->view($content['js'], $data, TRUE);
-		$data['navbar']     = $this->_ci->load->view('template/v_navbar_adm', $data, TRUE);
-        $data['header']     = $this->_ci->load->view('template/v_header_adm', $data, TRUE);
+		$data['navbar']     = $this->_ci->load->view('template/v_navbar', $data, TRUE);
+        $data['header']     = $this->_ci->load->view('template/v_header', $data, TRUE);
         $data['content']    = $this->_ci->load->view($content['view'], $data, TRUE);
-        $data['footer']     = $this->_ci->load->view('template/v_footer_adm', $data, TRUE);
+        $data['footer']     = $this->_ci->load->view('template/v_footer', $data, TRUE);
 		
-        $this->_ci->load->view('template/v_index_adm', $data);
+        $this->_ci->load->view('template/v_index', $data);
 
     }
 
-    function nama_menu($string){
+    function nama($string){
         $queryMenu = $this->_ci->db->query("
         select
             tbl_menu.id_menu,
-            tbl_menu.tingkat_menu,
+            tbl_menu.tingkat,
             tbl_menu.judul_menu,
-            tbl_menu.nama_menu
+            tbl_menu.nama
         from
             tbl_menu
         WHERE
-            tbl_menu.link_menu = '".$this->_ci->uri->segment(1)."'
+            tbl_menu.LINK = '".$this->_ci->uri->segment(1)."'
         ");
         $dataMenu = $queryMenu->row();
 
@@ -361,8 +361,8 @@ class Template_view extends CI_Controller {
 			case "judul_menu":
 				return $dataMenu->judul_menu;
 				break;
-			case "nama_menu":
-				return $dataMenu->nama_menu;
+			case "nama":
+				return $dataMenu->nama;
 				break;
 
 			default:
@@ -382,13 +382,13 @@ class Template_view extends CI_Controller {
 		if($id_level){
 			$queryButton = $this->_ci->db->query("
 			select
-				tbl_hak_akses.add_button
+				t_role_menu.add_button
 			from
-				tbl_menu,tbl_hak_akses
+				tbl_menu,t_role_menu
 			WHERE
-				tbl_menu.id_menu=tbl_hak_akses.id_menu
-				and tbl_hak_akses.id_level_user= '".$id_level."'
-				and tbl_menu.link_menu = '".$this->_ci->uri->segment(1)."'
+				tbl_menu.id_menu=t_role_menu.id_menu
+				and t_role_menu.id_level_user= '".$id_level."'
+				and tbl_menu.LINK = '".$this->_ci->uri->segment(1)."'
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->add_button == 1 ){
@@ -411,13 +411,13 @@ class Template_view extends CI_Controller {
 		if($id_level){
 			$queryButton = $this->_ci->db->query("
 			select
-				tbl_hak_akses.edit_button
+				t_role_menu.edit_button
 			from
-				tbl_menu,tbl_hak_akses
+				tbl_menu,t_role_menu
 			WHERE
-				tbl_menu.id_menu=tbl_hak_akses.id_menu
-				and tbl_hak_akses.id_level_user= '".$id_level."'
-				and tbl_menu.link_menu = '".$this->_ci->uri->segment(1)."'
+				tbl_menu.id_menu=t_role_menu.id_menu
+				and t_role_menu.id_level_user= '".$id_level."'
+				and tbl_menu.LINK = '".$this->_ci->uri->segment(1)."'
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->edit_button == 1 ){
@@ -439,13 +439,13 @@ class Template_view extends CI_Controller {
 		if($id_level){
 			$queryButton = $this->_ci->db->query("
 			select
-				tbl_hak_akses.delete_button
+				t_role_menu.delete_button
 			from
-				tbl_menu,tbl_hak_akses
+				tbl_menu,t_role_menu
 			WHERE
-				tbl_menu.id_menu=tbl_hak_akses.id_menu
-				and tbl_hak_akses.id_level_user= '".$id_level."'
-				and tbl_menu.link_menu = '".$this->_ci->uri->segment(1)."'
+				tbl_menu.id_menu=t_role_menu.id_menu
+				and t_role_menu.id_level_user= '".$id_level."'
+				and tbl_menu.LINK = '".$this->_ci->uri->segment(1)."'
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->delete_button == 1 ){

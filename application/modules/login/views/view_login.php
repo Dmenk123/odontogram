@@ -56,7 +56,7 @@
 								<div class="kt-login__head">
 									<h3 class="kt-login__title">Sistem Informasi Odontogram</h3>
 								</div>
-								<form class="kt-form" action="<?=base_url('login/proses')?>" method="post">
+								<form class="kt-form">
 									<div class="input-group">
 										<input class="form-control" type="text" placeholder="Username" name="username" autocomplete="off">
 									</div>
@@ -73,6 +73,7 @@
 									</div>
 								</form>
 							</div>
+
 							<div class="kt-login__signup">
 								<div class="kt-login__head">
 									<h3 class="kt-login__title">Sign Up</h3>
@@ -137,6 +138,7 @@
 
 		<!-- begin::Global Config(global config for global JS sciprts) -->
 		<script>
+			let base_url = '<?=base_url()?>';
 			var KTAppOptions = {
 				"colors": {
 					"state": {

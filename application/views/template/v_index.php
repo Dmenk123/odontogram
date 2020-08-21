@@ -1,5 +1,5 @@
 <?php
-if(!$_SESSION['id_level_user'])
+if(!$_SESSION['id_role'])
 {
 	redirect(base_url());
 }

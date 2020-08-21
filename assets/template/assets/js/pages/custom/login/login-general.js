@@ -1,5 +1,4 @@
 "use strict";
-
 // Class Definition
 var KTLoginGeneral = function() {
 
@@ -75,7 +74,6 @@ var KTLoginGeneral = function() {
             e.preventDefault();
             var btn = $(this);
             var form = $(this).closest('form');
-
             form.validate({
                 rules: {
                     email: {
@@ -95,7 +93,8 @@ var KTLoginGeneral = function() {
             btn.addClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').attr('disabled', true);
 
             form.ajaxSubmit({
-                url: '',
+                method: 'POST',
+                url: base_url+'/login/proses',
                 success: function(response, status, xhr, $form) {
                 	// similate 2s delay
                 	setTimeout(function() {
@@ -186,6 +185,7 @@ var KTLoginGeneral = function() {
             btn.addClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').attr('disabled', true);
 
             form.ajaxSubmit({
+                
                 url: '',
                 success: function(response, status, xhr, $form) {
                 	// similate 2s delay

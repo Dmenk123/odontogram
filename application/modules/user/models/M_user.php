@@ -140,17 +140,17 @@ class M_user extends CI_Model
 
 	//dibutuhkan di contoller login untuk ambil data user
 	function login($data){
-		return $this->db->select('username,password,last_login,id_user,id_level_user,status')
+		return $this->db->select('*')
 			->where('username',$data['data_user'])
 			->where('password',$data['data_password'])
 			->where('status', 1 )
-			->get('tbl_user')->result_array();
+			->get($this->table)->row();
 	}
 
 	//dibutuhkan di contoller login untuk set last login
 	function set_lastlogin($id){
-		$this->db->where('id_user',$id)
-				->update('tbl_user',array('last_login'=>date('Y-m-d H:i:s')));			
+		$this->db->where('id',$id)
+			->update($this->table, ['last_login'=>date('Y-m-d H:i:s')]);			
 	}
 
 	function getKodeUser(){
