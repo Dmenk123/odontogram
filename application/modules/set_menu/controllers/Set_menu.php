@@ -1,30 +1,30 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Set_menu_adm extends CI_Controller {
+class Set_menu extends CI_Controller {
 	
 	public function __construct()
 	{
 		parent::__construct();
 		//profil data
-		$this->load->model('profil/mod_profil','prof');
-		$this->load->model('mod_set_menu_adm','m_menu');
+		$this->load->model('user/m_user');
+		$this->load->model('m_set_menu','m_menu');
 	}
 
 	public function index()
 	{
 		$id_user = $this->session->userdata('id_user'); 
-		$data_user = $this->prof->get_detail_pengguna($id_user);
+		// $data_user = $this->prof->get_detail_pengguna($id_user);
 
 		$data = array(
-			'data_user' => $data_user
+			//'data_user' => $data_user
 		);
 
 		$content = [
-			'css' 	=> 'setMenuAdmCss',
-			'modal' => 'modalSetMenuAdm',
-			'js'	=> 'setMenuAdmJs',
-			'view'	=> 'view_list_set_menu'
+			'css' 	=> 'css/set_menu_css',
+			'modal' => 'modal/set_menu_modal',
+			'js'	=> 'js/set_menu_js',
+			'view'	=> 'view_menu'
 		];
 
 		$this->template_view->load_view($content, $data);

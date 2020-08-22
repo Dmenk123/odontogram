@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Mod_set_menu_adm extends CI_Model
+class M_set_menu extends CI_Model
 {
 	// declare array variable to search datatable
 	var $column_search = array(

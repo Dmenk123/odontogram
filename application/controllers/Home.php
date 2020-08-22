@@ -26,7 +26,7 @@ class Home extends CI_Controller {
 		$data_dashboard = [];
 		
 		$data = array(
-			'title' => 'Sistem Informasi Odontogram',
+			'title' => 'Dashboard',
 			// 'data_user' => $query,
 			// 'data_dashboard' => $data_dashboard,
 			// 'component' => $component

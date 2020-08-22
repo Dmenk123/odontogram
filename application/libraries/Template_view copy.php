@@ -24,25 +24,23 @@ class Template_view extends CI_Controller {
             $id_role = $this->_ci->session->userdata('id_role');
         }
 
-		//cari page yang aktif
 		$queryActive = $this->_ci->db->query("
-			select
-				m_menu.id,
-				m_menu.tingkat,
-				m_menu.nama,
-				m_menu.id_parent as id_ataspertama,
-				(select menuataskedua.id_parent from m_menu as menuataskedua where menuataskedua.id = m_menu.id_parent) as id_ataskedua,
-				(select menuatasketiga.id_parent from m_menu as menuatasketiga where menuatasketiga.id = (select menuataskedua.id_parent from m_menu as menuataskedua where menuataskedua.id = m_menu.id_parent)) as id_atasketiga
-			from
-				m_menu, t_role_menu
-			WHERE
-				m_menu.aktif = 1 and m_menu.link = '".$this->_ci->uri->segment(1)."' and m_menu.id = t_role_menu.id_menu and t_role_menu.id_role = '".$id_role."'
+		select
+			m_menu.id,
+			m_menu.tingkat,
+            m_menu.nama,
+			m_menu.id_parent as id_ataspertama,
+			(select menuataskedua.id_parent from m_menu as menuataskedua where menuataskedua.id = m_menu.id_parent) as id_ataskedua,
+			(select menuatasketiga.id_parent from m_menu as menuatasketiga where menuatasketiga.id = (select menuataskedua.id_parent from m_menu as menuataskedua where menuataskedua.id = m_menu.id_parent)) as id_atasketiga
+		from
+			m_menu, t_role_menu
+		WHERE
+			m_menu.aktif = 1 and m_menu.LINK = '".$this->_ci->uri->segment(1)."' and m_menu.id = t_role_menu.id_menu and t_role_menu.id_role = '".$id_role."'
 		");
 		$dataActive = $queryActive->row();
 		// echo $this->_ci->db->last_query();
 		// exit;
-		
-		// cari menu parent (Menu paling atas/pertama)
+		$menuHtml = "<ul class='sidebar-menu'>";
         $menu1 = $this->_ci->db->query("
             select 
                 m_menu.* 
@@ -53,11 +51,8 @@ class Template_view extends CI_Controller {
             order by m_menu.urutan
         ");
         $dataMenu1 = $menu1->result();
-		// echo $this->_ci->db->last_query();
-		// exit;
 
-		$noMenuSatu = 1;
-		$sidebarComponent = "";
+        $noMenuSatu = 1;
         foreach($dataMenu1 as $dataMenuSatu){
 
             $Parent1 = $this->_ci->db->query("
@@ -66,41 +61,44 @@ class Template_view extends CI_Controller {
                 from 
                     m_menu,t_role_menu 
                 where 
-                    m_menu.id_parent = '".$dataMenuSatu->id."' and 
-                    m_menu.id = t_role_menu.id_menu and 
+                    m_menu.id_parent = '".$dataMenuSatu->id_menu."' and 
+                    m_menu.id=t_role_menu.id_menu and 
                     m_menu.aktif = 1 and 
                     t_role_menu.id_role = '".$id_role."'
             ");
 
             $jumlahParent1 = $Parent1->row();
-            // echo $this->_ci->db->last_query();
-			// exit;
+            
 			if($jumlahParent1->jumlah > 0) {
-				$toggleMenu1 = "data-ktmenu-submenu-toggle='hover'";
-				$iconTurun1 = '<i class="kt-menu__ver-arrow la la-angle-right"></i>';
-				$link1 = "javascript:;";
+				$treeview1 = 'treeview';
+				$iconTurun1 = '<span class="pull-right-container">
+                				<i class="fa fa-angle-left pull-right"></i>
+              				   </span>';
+				//$iconTurun1 = "<i class='fa fa-dashboard'></i> <span></span>";
+				$link1 = "#";
 
 			}else{
-				$toggleMenu1 = '';
+				$treeview1 = '';
 				$iconTurun1 = "";
-				$link1 = base_url().$dataMenuSatu->link;
+				$link1 = base_url().$dataMenuSatu->LINK;
 			}
+
 			
 			if(!$dataActive){
 				redirect("login");
 			}
 
-			if($dataActive->tingkat=='4' && $dataActive->id_atasketiga == $dataMenuSatu->id){
-				$active1="here";
+			if($dataActive->tingkat=='4' && $dataActive->id_atasketiga==$dataMenuSatu->id_menu){
+				$active1="active";
 			}else{
-				if($dataActive->tingkat=='3' && $dataActive->id_ataskedua==$dataMenuSatu->id){
-					$active1="here";
+				if($dataActive->tingkat=='3' && $dataActive->id_ataskedua==$dataMenuSatu->id_menu){
+					$active1="active";
 				}else{
-					if($dataActive->tingkat=='2' && $dataActive->id_ataspertama==$dataMenuSatu->id){
-						$active1="here";
+					if($dataActive->tingkat=='2' && $dataActive->id_ataspertama==$dataMenuSatu->id_menu){
+						$active1="active";
 					}else{
-						if($dataActive->tingkat=='1' && $dataActive->id==$dataMenuSatu->id){
-							$active1="here";
+						if($dataActive->tingkat=='1' && $dataActive->id_menu==$dataMenuSatu->id_menu){
+							$active1="active";
 						}else{
 							$active1="";
 						}
@@ -108,15 +106,15 @@ class Template_view extends CI_Controller {
 				}
 			}
 
-			$sidebarComponent .= "
-				<li class='kt-menu__item kt-menu__item--".$active1."' aria-haspopup='true' ".$toggleMenu1.">
-					<a href='".$link1."' class='kt-menu__link kt-menu__toggle'>
-						<span class='kt-menu__link-icon ".$dataMenuSatu->icon."'></span>
-						<span class='kt-menu__link-text'>$dataMenuSatu->nama</span>
-						$iconTurun1
-					</a>
+			$menuHtml .= "
+			<li class=' $active1 ".$treeview1."'>
+				<a href='".$link1."'>
+					<i class='".$dataMenuSatu->icon_menu."'></i>
+						<span class='title'>".$dataMenuSatu->nama."</span>
+						".$iconTurun1."
+				</a>
 			";
-			
+
 			if($jumlahParent1->jumlah > 0) {
 
                 $menu2 = $this->_ci->db->query("
@@ -125,15 +123,13 @@ class Template_view extends CI_Controller {
                     from 
                         m_menu,t_role_menu 
                     where 
-                        m_menu.id_parent = '".$dataMenuSatu->id."' and m_menu.id=t_role_menu.id_menu and m_menu.aktif = 1 and  t_role_menu.id_role= '".$id_role."' 
+                        m_menu.id_parent = '".$dataMenuSatu->id_menu."' and m_menu.id=t_role_menu.id_menu and m_menu.aktif = 1 and  t_role_menu.id_role= '".$id_role."' 
                     order by m_menu.urutan
                 ");
 
 				$dataMenu2 = $menu2->result();
 				$noMenuDua = 1;
-				$sidebarComponent .= "<div class='kt-menu__submenu'>";
-				$sidebarComponent .= "<ul class='kt-menu__subnav'>";
-				
+				$menuHtml .= '<ul class="treeview-menu">';
 				foreach($dataMenu2 as $dataMenuDua){
 
                     $Parent2 = $this->_ci->db->query("
@@ -142,7 +138,7 @@ class Template_view extends CI_Controller {
                         from 
                             m_menu,t_role_menu 
                         where 
-                            m_menu.id_parent = '".$dataMenuDua->id."' and 
+                            m_menu.id_parent = '".$dataMenuDua->id_menu."' and 
                             m_menu.aktif = 1 and 
                             m_menu.id=t_role_menu.id_menu and 
                             t_role_menu.id_role= '".$id_role."' 
@@ -151,45 +147,40 @@ class Template_view extends CI_Controller {
 					$jumlahParent2 = $Parent2->row();
 
 					if($jumlahParent2->jumlah > 0) {
-						$toggleMenu2 = '';
-						$iconTurun2 = '<i class="kt-menu__ver-arrow la la-angle-right"></i>';
+						$treeview2 = '';
+						$iconTurun2 = '<span class="pull-right-container">
+										<i class="fa fa-angle-left pull-right"></i>
+									   </span>';
 						$link2 = "#";
 						$iconPanah1 = "";
 
 					}else{
-						$toggleMenu2 = '';
+						$treeview2 = '';
 						$iconTurun2 = "";
-						$link2 = base_url().$dataMenuDua->link;
+						$link2 = base_url().$dataMenuDua->LINK;
 						$iconPanah1 = '';
 					}
 
-					if($dataActive->tingkat=='4' && $dataActive->id_ataskedua==$dataMenuDua->id){
+					if($dataActive->tingkat=='4' && $dataActive->id_ataskedua==$dataMenuDua->id_menu){
 						$active2="active";
 					}else{
-						if($dataActive->tingkat=='3' && $dataActive->id_ataspertama==$dataMenuDua->id){
+						if($dataActive->tingkat=='3' && $dataActive->id_ataspertama==$dataMenuDua->id_menu){
 							$active2="active";
 						}else{
-							if($dataActive->tingkat=='2' && $dataActive->id==$dataMenuDua->id){
+							if($dataActive->tingkat=='2' && $dataActive->id_menu==$dataMenuDua->id_menu){
 								$active2="active";
 							}else{
 								$active2="";
 							}
 						}
 					}
-
-					if($dataMenuDua->icon != '') {
-						$iconSubDua = "<span class='kt-menu__link-icon ".$dataMenuDua->icon."'></span>";
-					}else{
-						$iconSubDua = "<i class='kt-menu__link-bullet kt-menu__link-bullet--dot'><span></span></i>";
-					}
-
-					$sidebarComponent .= "
-						<li class='kt-menu__item kt-menu__item--".$active2."' aria-haspopup='true' ".$toggleMenu2.">
-							<a href='".$link2."' class='kt-menu__link kt-menu__toggle'>
-								$iconSubDua
-								<span class='kt-menu__link-text'>$dataMenuDua->nama</span>
-								$iconTurun2
-							</a>
+					
+					$menuHtml .= "
+					<li class='$active2 ".$treeview2."'>
+						<a href='".$link2."'>
+								<i class='".$dataMenuDua->icon_menu."'></i>".$dataMenuDua->nama."
+								".$iconTurun2."
+						</a>
 					";
 
 					if($jumlahParent2->jumlah > 0) {
@@ -200,16 +191,13 @@ class Template_view extends CI_Controller {
                             from 
                                 m_menu,t_role_menu 
                             where 
-                                m_menu.id_parent = '".$dataMenuDua->id."' and m_menu.id=t_role_menu.id_menu and m_menu.aktif = 1 and t_role_menu.id_role= '".$id_role."' 
+                                m_menu.id_parent = '".$dataMenuDua->id_menu."' and m_menu.id=t_role_menu.id_menu and m_menu.aktif = 1 and t_role_menu.id_role= '".$id_role."' 
                             order by m_menu.urutan
                         ");
 
 						$dataMenu3 = $menu3->result();
 						$noMenuTiga = 1;
-						
-						$sidebarComponent .= "<div class='kt-menu__submenu'>";
-						$sidebarComponent .= "<ul class='kt-menu__subnav'>";
-						
+						$menuHtml .= '<ul class="sub-menu">';
 						foreach($dataMenu3 as $dataMenuTiga){
 
                             $Parent3 = $this->_ci->db->query("
@@ -218,41 +206,43 @@ class Template_view extends CI_Controller {
                                 from 
                                     m_menu,t_role_menu 
                                 where 
-                                    m_menu.id_parent = '".$dataMenuTiga->id."' and m_menu.id=t_role_menu.id_menu and  m_menu.aktif = 1 and t_role_menu.id_role= '".$id_role."' 
+                                    m_menu.id_parent = '".$dataMenuTiga->id_menu."' and m_menu.id=t_role_menu.id_menu and  m_menu.aktif = 1 and t_role_menu.id_role= '".$id_role."' 
                             ");
 
 							$jumlahParent3 = $Parent3->row();
 
 							if($jumlahParent3->jumlah > 0) {
-								$toggleMenu3 = '';
-								$iconTurun3 = '<i class="kt-menu__ver-arrow la la-angle-right"></i>';
+								$treeview3 = 'treeview';
+								$iconTurun3 = "<span class='pull-right-container'><i class='fa fa-angle-left 	pull-right'></i></span>";
 								$link3 = "#";
 								$iconPanah2 = '';
 
 							}else{
-								$toggleMenu3 = '';
+								$treeview3 = '';
 								$iconTurun3 = "";
-								$link3 = base_url().$dataMenuTiga->link;
+								$link3 = base_url().$dataMenuTiga->LINK;
+								//$iconPanah2 = '<i class="fa fa-angle-right"></i> ';
 								$iconPanah2 = '';
 							}
 
 
-							if($dataActive->tingkat=='4' && $dataActive->id_ataspertama==$dataMenuTiga->id){
+
+							if($dataActive->tingkat=='4' && $dataActive->id_ataspertama==$dataMenuTiga->id_menu){
 								$active3="active";
 							}else{
-								if($dataActive->tingkat=='3' && $dataActive->id==$dataMenuTiga->id){
+								if($dataActive->tingkat=='3' && $dataActive->id_menu==$dataMenuTiga->id_menu){
 									$active3="active";
 								}else{
 									$active3="";
 								}
 							}
 
-							$sidebarComponent .= "
-								<li class='kt-menu__item kt-menu__item--".$active3."' aria-haspopup='true' ".$toggleMenu3.">
-								<a href='".$link3."' class='kt-menu__link kt-menu__toggle'>
-									<span class='kt-menu__link-icon ".$dataMenuTiga->icon."'></span>
-									<span class='kt-menu__link-text'>$dataMenuTiga->nama</span>
-									$iconTurun3
+							$menuHtml .= "
+							<li class='$active3 ".$treeview3."'>
+								<a href='".$link3."'>
+									$iconPanah2
+										<span>".$dataMenuTiga->nama."</span>
+										".$iconTurun3."
 								</a>
 							";
 
@@ -265,17 +255,13 @@ class Template_view extends CI_Controller {
                                     from 
                                         m_menu,t_role_menu 
                                     where 
-                                        m_menu.id_parent = '".$dataMenuTiga->id."' and m_menu.id=t_role_menu.id_menu and
+                                        m_menu.id_parent = '".$dataMenuTiga->id_menu."' and m_menu.id=t_role_menu.id_menu and
                                         t_role_menu.id_role= '".$id_role."' 
                                     order by m_menu.urutan
-								");
-								
+                                ");
 								$dataMenu4 = $menu4->result();
 								$noMenuEmpat = 1;
-								
-								$sidebarComponent .= "<div class='kt-menu__submenu'>";
-								$sidebarComponent .= "<ul class='kt-menu__subnav'>";
-
+								$menuHtml .= '<ul class="treeview-menu">';
 								foreach($dataMenu4 as $dataMenuEmpat){
 
                                     $Parent4 = $this->_ci->db->query("
@@ -284,67 +270,56 @@ class Template_view extends CI_Controller {
                                         from 
                                             m_menu,t_role_menu 
                                         where 
-                                            m_menu.id_parent = '".$dataMenuEmpat->id."' and m_menu.id=t_role_menu.id_menu and t_role_menu.id_role= '".$id_role."' order by m_menu.urutan
+                                            m_menu.id_parent = '".$dataMenuTiga->id_menu."' and m_menu.id=t_role_menu.id_menu and t_role_menu.id_role= '".$id_role."' order by m_menu.urutan
                                     ");
 									$jumlahParent4 = $Parent4->row();
 
 									if($jumlahParent4->jumlah > 0) {
-										$toggleMenu4 = '';
-										$iconTurun4 = '<i class="kt-menu__ver-arrow la la-angle-right"></i>';
+										$treeview4 = 'treeview';
+										$iconTurun4 = "<span class='pull-right-container'><i class='fa fa-angle-left 	pull-right'></i></span>";
 										$link4 = "#";
 										$iconPanah3 = '';
 
 									}else{
-										$toggleMenu4 = '';
+										$treeview4 = '';
 										$iconTurun4 = "";
-										$link4 = base_url().$dataMenuEmpat->link;
+										$link4 = base_url().$dataMenuEmpat->LINK;
+										//$iconPanah3 = '<i class="fa fa-angle-right"></i> ';
 										$iconPanah3 = '';
 									}
 
-									if($dataActive->tingkat=='4' && $dataActive->id==$dataMenuEmpat->id){
+									if($dataActive->tingkat=='4' && $dataActive->id_menu==$dataMenuEmpat->id_menu){
 										$active4="active";
 									}else{
 										$active4="";
 									}
-								
-									$sidebarComponent .= "
-										<li class='kt-menu__item kt-menu__item--".$active4."' aria-haspopup='true' ".$toggleMenu4.">
-											<a href='".$link4."' class='kt-menu__link kt-menu__toggle'>
-												<span class='kt-menu__link-icon ".$dataMenuEmpat->icon."'></span>
-												<span class='kt-menu__link-text'>$dataMenuEmpat->nama</span>
-												$iconTurun4
-											</a>
-										</li>
+
+									$menuHtml .= "
+									<li class=' $active4 ".$treeview4."'>
+										<a href='".$link4."'>
+											$iconPanah3
+												<span>".$dataMenuEmpat->nama."</span>
+												".$iconTurun4."
+										</a>
 									";
 								}
-
-								$sidebarComponent .= "</ul></div>";
-								$sidebarComponent .= "</li>";
-							}else{
-								$sidebarComponent .= "</li>";
+								$menuHtml .= "</li></ul>";
 							}
 
 						}
-
-						$sidebarComponent .= "</ul></div>";
-						$sidebarComponent .= "</li>";
-					}else{
-						$sidebarComponent .= "</li>";
+						$menuHtml .= "</li></ul>";
 					}
 				}
 
-				$sidebarComponent .= "</ul></div>";
-				$sidebarComponent .= "</li>";
-			}else{
-				$sidebarComponent .= "</li>";
+				$menuHtml .= "</li></ul>";
 			}
 
+			$menuHtml .= "</li>";
 			$noMenuSatu++;
 		}
 
-		// echo $sidebarComponent;exit;
-		// var_dump($sidebarComponent);exit;
-		$data['tampil_menu'] = $sidebarComponent;
+
+		$data['tampil_menu'] = $menuHtml;
 		if($content['css']){
 			$data['css_adm'] = $this->_ci->load->view($content['css'], $data, TRUE);
 		}
@@ -378,7 +353,7 @@ class Template_view extends CI_Controller {
         from
             m_menu
         WHERE
-            m_menu.link = '".$this->_ci->uri->segment(1)."'
+            m_menu.LINK = '".$this->_ci->uri->segment(1)."'
         ");
         $dataMenu = $queryMenu->row();
 
@@ -413,7 +388,7 @@ class Template_view extends CI_Controller {
 			WHERE
 				m_menu.id=t_role_menu.id_menu
 				and t_role_menu.id_role= '".$id_role."'
-				and m_menu.link = '".$this->_ci->uri->segment(1)."'
+				and m_menu.LINK = '".$this->_ci->uri->segment(1)."'
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->add_button == 1 ){
@@ -442,7 +417,7 @@ class Template_view extends CI_Controller {
 			WHERE
 				m_menu.id=t_role_menu.id_menu
 				and t_role_menu.id_role= '".$id_role."'
-				and m_menu.link = '".$this->_ci->uri->segment(1)."'
+				and m_menu.LINK = '".$this->_ci->uri->segment(1)."'
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->edit_button == 1 ){
@@ -470,7 +445,7 @@ class Template_view extends CI_Controller {
 			WHERE
 				m_menu.id=t_role_menu.id_menu
 				and t_role_menu.id_role= '".$id_role."'
-				and m_menu.link = '".$this->_ci->uri->segment(1)."'
+				and m_menu.LINK = '".$this->_ci->uri->segment(1)."'
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->delete_button == 1 ){
