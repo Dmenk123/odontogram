@@ -17,7 +17,7 @@ class Set_menu extends CI_Controller {
 		// $data_user = $this->prof->get_detail_pengguna($id_user);
 
 		$data = array(
-			//'data_user' => $data_user
+			'title' => 'Setting Menu'
 		);
 
 		$content = [

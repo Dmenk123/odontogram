@@ -13,8 +13,6 @@ class Template_view extends CI_Controller {
 
 
     function load_view($content, $data = NULL){
-		//var_dump($content);exit;
-		
         $this->_ci->load->library('session');
 		
         if(!$_SESSION['id_role']){
@@ -91,16 +89,16 @@ class Template_view extends CI_Controller {
 			}
 
 			if($dataActive->tingkat=='4' && $dataActive->id_atasketiga == $dataMenuSatu->id){
-				$active1="here";
+				$active1="here kt-menu__item--open";
 			}else{
 				if($dataActive->tingkat=='3' && $dataActive->id_ataskedua==$dataMenuSatu->id){
-					$active1="here";
+					$active1="here kt-menu__item--open";
 				}else{
 					if($dataActive->tingkat=='2' && $dataActive->id_ataspertama==$dataMenuSatu->id){
-						$active1="here";
+						$active1="here kt-menu__item--open";
 					}else{
 						if($dataActive->tingkat=='1' && $dataActive->id==$dataMenuSatu->id){
-							$active1="here";
+							$active1="here kt-menu__item--open";
 						}else{
 							$active1="";
 						}
@@ -341,7 +339,7 @@ class Template_view extends CI_Controller {
 
 			$noMenuSatu++;
 		}
-
+		
 		// echo $sidebarComponent;exit;
 		// var_dump($sidebarComponent);exit;
 		$data['tampil_menu'] = $sidebarComponent;
@@ -359,8 +357,8 @@ class Template_view extends CI_Controller {
 
         //$data['modal']      = $this->_ci->load->view($content['modal'], $data, TRUE);
         //$data['js']         = $this->_ci->load->view($content['js'], $data, TRUE);
+		$data['header']     = $this->_ci->load->view('template/v_header', $data, TRUE);
 		$data['navbar']     = $this->_ci->load->view('template/v_navbar', $data, TRUE);
-        $data['header']     = $this->_ci->load->view('template/v_header', $data, TRUE);
         $data['content']    = $this->_ci->load->view($content['view'], $data, TRUE);
         $data['footer']     = $this->_ci->load->view('template/v_footer', $data, TRUE);
 		
