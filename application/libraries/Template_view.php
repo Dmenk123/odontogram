@@ -395,11 +395,11 @@ class Template_view extends CI_Controller {
     }
 
     function getAddButton(){
-      if(!$_SESSION['id_level_user']){
+      if(!$_SESSION['id_role']){
         $id_role = "0";
       }
       else{
-        $id_role = $this->_ci->session->userdata('id_level_user');
+        $id_role = $this->_ci->session->userdata('id_role');
       }
 
 		if($id_role){
@@ -415,7 +415,7 @@ class Template_view extends CI_Controller {
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->add_button == 1 ){
-				echo "<a href='".base_url().$this->_ci->uri->segment(1)."/add'><span class='btn btn-success'><i class='fa fa-plus'></i> Tambah Data</span></a>
+				echo "<a href='".base_url().$this->_ci->uri->segment(1)."/add' class='btn btn-label-brand btn-bold'>Tambah Data</a>
 				";
 			}
 		}
