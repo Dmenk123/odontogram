@@ -77,9 +77,12 @@
 
         <!--begin::Page Scripts(used by this page) -->
         <script src="<?= base_url('assets/template/'); ?>assets/js/pages/dashboard.js" type="text/javascript"></script>
-
         <!--end::Page Scripts -->
-
+        <!-- load file css per modul -->
+       
+        <?php if(isset($link_js)){ ?> 
+            <script src="<?= base_url("application/modules/$link_js"); ?>" type="text/javascript"></script>; 
+        <?php } ?> 
     </body>
 
 	<!-- end::Body -->

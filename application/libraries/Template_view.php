@@ -344,17 +344,18 @@ class Template_view extends CI_Controller {
 		// var_dump($sidebarComponent);exit;
 		$data['tampil_menu'] = $sidebarComponent;
 		if($content['css']){
-			$data['css_adm'] = $this->_ci->load->view($content['css'], $data, TRUE);
+			$data['css'] = $this->_ci->load->view($content['css'], $data, TRUE);
 		}
 		
 		if($content['js']){
-			$data['js']      = $this->_ci->load->view($content['js'], $data, TRUE);
+			// $data['js']      = $this->_ci->load->view($content['js'], $data, TRUE);
+			$data['link_js']      = $this->_ci->uri->segment(1).'/'.'views'.'/'.$content['js'];
 		}
 		
 		if($content['modal']){
 			$data['modal']         = $this->_ci->load->view($content['modal'], $data, TRUE);
 		}
-
+		
         //$data['modal']      = $this->_ci->load->view($content['modal'], $data, TRUE);
         //$data['js']         = $this->_ci->load->view($content['js'], $data, TRUE);
 		$data['header']     = $this->_ci->load->view('template/v_header', $data, TRUE);
@@ -415,7 +416,7 @@ class Template_view extends CI_Controller {
 			");
 			$dataButton = $queryButton->row();
 			if($dataButton->add_button == 1 ){
-				echo "<a href='".base_url().$this->_ci->uri->segment(1)."/add' class='btn btn-label-brand btn-bold'>Tambah Data</a>
+				echo "<a href='".base_url().$this->_ci->uri->segment(1)."/add' class='btn btn-brand btn-elevate btn-icon-sm'><i class='la la-plus'></i>Tambah Data</a>
 				";
 			}
 		}

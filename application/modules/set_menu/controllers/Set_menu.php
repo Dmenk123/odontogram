@@ -21,8 +21,10 @@ class Set_menu extends CI_Controller {
 		);
 
 		$content = [
-			'css' 	=> 'css/set_menu_css',
-			'modal' => 'modal/set_menu_modal',
+			// 'css' 	=> 'css/set_menu_css',
+			// 'modal' => 'modal/set_menu_modal',
+			'css' 	=> null,
+			'modal' => null,
 			'js'	=> 'js/set_menu_js',
 			'view'	=> 'view_menu'
 		];

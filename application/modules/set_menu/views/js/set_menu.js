@@ -1,6 +1,5 @@
-<script type="text/javascript">
-	var save_method; //for save method string
-	var table;
+var save_method; //for save method string
+var table;
 
 $(document).ready(function() {
 
@@ -226,4 +225,3 @@ function reload_table()
 {
     table.ajax.reload(null,false); //reload datatable ajax
 }
-</script>	

@@ -41,7 +41,7 @@
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
             <div class="kt-portlet__head-actions">
-              <div class="dropdown dropdown-inline">
+              <!-- <div class="dropdown dropdown-inline">
                 <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="la la-download"></i> Export
                 </button>
@@ -82,12 +82,9 @@
                     </li>
                   </ul>
                 </div>
-              </div>
+              </div> -->
               &nbsp;
-              <a href="#" class="btn btn-brand btn-elevate btn-icon-sm">
-                <i class="la la-plus"></i>
-                New Record
-              </a>
+              <?= $this->template_view->getAddButton(); ?>
             </div>
           </div>
         </div>
@@ -98,14 +95,12 @@
         <table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
           <thead>
             <tr>
-              <th>Order ID</th>
-              <th>Country</th>
-              <th>Ship City</th>
-              <th>Company Name</th>
-              <th>Ship Date</th>
-              <th>Status</th>
-              <th>Type</th>
-              <th>Actions</th>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Link</th>
+              <th>Parent</th>
+              <th>Aktif</th>
+              <th>Aksi</th>
             </tr>
           </thead>
         </table>
