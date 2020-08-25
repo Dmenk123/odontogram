@@ -29,10 +29,12 @@
 		<link href="<?= base_url('assets/template/'); ?>assets/css/skins/aside/dark.css" rel="stylesheet" type="text/css" />
 
 		<!--end::Layout Skins -->
-    <link rel="shortcut icon" href="<?= base_url('assets/template/'); ?>assets/media/logos/favicon.ico" />
+    	<link rel="shortcut icon" href="<?= base_url('assets/template/'); ?>assets/media/logos/favicon.ico" />
     
-    <!-- load file css per modul -->
-    <?php if(isset($css)){ $this->load->view($css); }?>
+		<!-- load file css per modul -->
+		<?php if(isset($link_css)){ ?>
+			<link href="<?= base_url("$link_css"); ?>" rel="stylesheet" type="text/css" />
+		<?php }?>
 	</head>
 
 	<!-- end::Head -->

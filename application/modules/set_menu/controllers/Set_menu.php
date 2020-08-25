@@ -20,12 +20,16 @@ class Set_menu extends CI_Controller {
 			'title' => 'Setting Menu'
 		);
 
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
 		$content = [
-			// 'css' 	=> 'css/set_menu_css',
-			// 'modal' => 'modal/set_menu_modal',
 			'css' 	=> null,
 			'modal' => null,
-			'js'	=> 'js/set_menu_js',
+			'js'	=> 'set_menu.js',
 			'view'	=> 'view_menu'
 		];
 

@@ -1,4 +1,9 @@
-<!-- begin:: Footer -->
+                    <?php
+                        if(isset($modal)) {
+                            echo $modal;
+                        }
+                    ?>
+                    <!-- begin:: Footer -->
                     <div class="kt-footer  kt-grid__item kt-grid kt-grid--desktop kt-grid--ver-desktop" id="kt_footer">
                         <div class="kt-container  kt-container--fluid ">
                             <div class="kt-footer__copyright">
@@ -30,6 +35,7 @@
         
         <!-- begin::Global Config(global config for global JS sciprts) -->
         <script>
+            let base_url = "<?= base_url(); ?>";
             var KTAppOptions = {
                 "colors": {
                     "state": {
@@ -65,7 +71,7 @@
         <!--begin::Global Theme Bundle(used by all pages) -->
         <script src="<?= base_url('assets/template/'); ?>assets/plugins/global/plugins.bundle.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/template/'); ?>assets/js/scripts.bundle.js" type="text/javascript"></script>
-
+		<script src="<?= base_url('assets/template/'); ?>assets/plugins/custom/datatables/datatables.bundle.js" type="text/javascript"></script>
         <!--end::Global Theme Bundle -->
 
         <!--begin::Page Vendors(used by this page) -->
@@ -81,7 +87,7 @@
         <!-- load file css per modul -->
        
         <?php if(isset($link_js)){ ?> 
-            <script src="<?= base_url("application/modules/$link_js"); ?>" type="text/javascript"></script>; 
+            <script src="<?= base_url("$link_js"); ?>" type="text/javascript"></script>; 
         <?php } ?> 
     </body>
 

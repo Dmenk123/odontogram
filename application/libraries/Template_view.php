@@ -344,20 +344,20 @@ class Template_view extends CI_Controller {
 		// var_dump($sidebarComponent);exit;
 		$data['tampil_menu'] = $sidebarComponent;
 		if($content['css']){
-			$data['css'] = $this->_ci->load->view($content['css'], $data, TRUE);
+			// $data['css'] = $this->_ci->load->view($content['css'], $data, TRUE);
+			$data['link_js']      = 'assets/css_module/'.$content['css'];
 		}
 		
 		if($content['js']){
 			// $data['js']      = $this->_ci->load->view($content['js'], $data, TRUE);
-			$data['link_js']      = $this->_ci->uri->segment(1).'/'.'views'.'/'.$content['js'];
+			$data['link_js']      = 'assets/js_module/'.$content['js'];
 		}
 		
 		if($content['modal']){
 			$data['modal']         = $this->_ci->load->view($content['modal'], $data, TRUE);
 		}
 		
-        //$data['modal']      = $this->_ci->load->view($content['modal'], $data, TRUE);
-        //$data['js']         = $this->_ci->load->view($content['js'], $data, TRUE);
+        
 		$data['header']     = $this->_ci->load->view('template/v_header', $data, TRUE);
 		$data['navbar']     = $this->_ci->load->view('template/v_navbar', $data, TRUE);
         $data['content']    = $this->_ci->load->view($content['view'], $data, TRUE);

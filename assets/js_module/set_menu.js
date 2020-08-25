@@ -1,4 +1,4 @@
-var save_method; //for save method string
+var save_method;
 var table;
 
 $(document).ready(function() {
@@ -9,23 +9,21 @@ $(document).ready(function() {
     });
 
 	//datatables
-	table = $('#tabelMenu').DataTable({
-		
-		"processing": true, //feature control the processing indicator
-		"serverSide": true, //feature control DataTables server-side processing mode
-		"order":[], //initial no order
-
-		//load data for table content from ajax source
-		"ajax": {
-			"url": "<?php echo site_url('set_menu_adm/list_menu') ?>",
-			"type": "POST" 
+	table = $('#tabel_menu').DataTable({
+		responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: true,
+		ajax: {
+			url  : base_url + "set_menu/list_menu",
+			type : "POST" 
 		},
 
 		//set column definition initialisation properties
-		"columnDefs": [
+		columnDefs: [
 			{
-				"targets": [-1], //last column
-				"orderable": false, //set not orderable
+				targets: [-1], //last column
+				orderable: false, //set not orderable
 			},
 		],
 	});
