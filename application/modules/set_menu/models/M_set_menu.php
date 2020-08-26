@@ -136,7 +136,7 @@ class M_set_menu extends CI_Model
 
 	public function update_data_menu($where, $input, $table)
 	{
-		$this->db->update($table, $input, $where);
+		return $this->db->update($table, $input, $where);
 	}
 
 	public function delete_data_role($where, $table)

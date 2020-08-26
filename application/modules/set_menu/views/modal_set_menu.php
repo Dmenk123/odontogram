@@ -10,6 +10,7 @@
       <div class="modal-body">
         <form id="form-menu" name="form-menu">
           <div class="form-group">
+            <input type="hidden" class="form-control" id="id_menu" name="id_menu">
             <label for="lbl_nama_menu" class="form-control-label">Nama Menu:</label>
             <input type="text" class="form-control" id="nama_menu" name="nama_menu">
             <span class="help-block"></span>

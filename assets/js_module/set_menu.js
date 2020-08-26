@@ -77,13 +77,13 @@ $(document).ready(function() {
     });
 
     $(".modal").on("hidden.bs.modal", function(){
-        $('#form-add-menu')[0].reset();
-        $('.append-opt').remove(); 
+        reset_modal_form();
     });
 });	
 
 function add_menu()
 {
+    reset_modal_form();
     save_method = 'add';
 	$('#modal_menu_form').modal('show');
 	$('#modal_title').text('Tambah Menu Baru'); 
@@ -109,40 +109,50 @@ function add_menu()
     });
 }
 
-function edit_user(id)
+function edit_menu(id)
 {
+    reset_modal_form();
     save_method = 'update';
     //Ajax Load data from ajax
     $.ajax({
-        url : "<?php echo site_url('master_user_adm/edit_data_user')?>/" + id,
-        type: "GET",
+        url : base_url + 'set_menu/edit_menu',
+        type: "POST",
         dataType: "JSON",
+        data : {id:id},
         success: function(data)
         {
-            //ambil data ke json->modal
-            $('[name="userId"]').val(data.id_user);
-            $('[name="userFname"]').val(data.fname_user);
-            $('[name="userLname"]').val(data.lname_user);
-            $('[name="userEmail"]').val(data.email);
-            $('[name="userPassword"]').val(data.password);
-            $('[name="userAlamat"]').val(data.alamat_user);
-            $('[name="userTelp"]').val(data.no_telp_user);
-            $('[name="userKdpos"]').val(data.kode_pos);
-            
-            $('#user_level').val(data.id_level_user);
-            $('[name="userTgllhr"]').datepicker({dateFormat: 'dd-mm-yyyy'}).datepicker('setDate', data.tgl_lahir_user);
-            var selectedIdProvinsi = $("<option></option>").val(data.id_provinsi).text(data.nama_provinsi);
-            var selectedIdkota = $("<option></option>").val(data.id_kota).text(data.nama_kota);
-            var selectedIdkecamatan = $("<option></option>").val(data.id_kecamatan).text(data.nama_kecamatan);
-            var selectedIdkelurahan = $("<option></option>").val(data.id_kelurahan).text(data.nama_kelurahan);
-            //tanpa trigger event
-            $('[name="userProvinsi"]').append(selectedIdProvinsi);
-            $('[name="userKota"]').append(selectedIdkota);
-            $('[name="userKecamatan"]').append(selectedIdkecamatan);
-            $('[name="userKelurahan"]').append(selectedIdkelurahan);
+            data.data_menu.forEach(function(dataLoop) {
+                $("#parent_menu").append('<option value = '+dataLoop.id+' class="append-opt">'+dataLoop.nama+'</option>');
+            });
 
-            $('#modal_user_form').modal('show'); // show bootstrap modal when complete loaded
-            $('.modal-title').text('Edit User'); // Set title to Bootstrap modal title
+            $('[name="id_menu"]').val(data.old_data.id);
+            $('[name="nama_menu"]').val(data.old_data.nama);
+            $('[name="judul_menu"]').val(data.old_data.judul);
+            $('[name="link_menu"]').val(data.old_data.link);
+            $('[name="icon_menu"]').val(data.old_data.icon);
+            $('[name="tingkat_menu"]').val(data.old_data.tingkat);
+            $('[name="urutan_menu"]').val(data.old_data.urutan);
+            $('[name="aktif_menu"]').val(data.old_data.aktif);
+            $('[name="add_button"]').val(data.old_data.add_button);
+            $('[name="edit_button"]').val(data.old_data.edit_button);
+            $('[name="delete_button"]').val(data.old_data.delete_button);
+            $('[name="parent_menu"]').val(data.old_data.id_parent);
+            
+            // $('#user_level').val(data.id_level_user);
+            // $('[name="userTgllhr"]').datepicker({dateFormat: 'dd-mm-yyyy'}).datepicker('setDate', data.tgl_lahir_user);
+            // var selectedIdProvinsi = $("<option></option>").val(data.id_provinsi).text(data.nama_provinsi);
+            // var selectedIdkota = $("<option></option>").val(data.id_kota).text(data.nama_kota);
+            // var selectedIdkecamatan = $("<option></option>").val(data.id_kecamatan).text(data.nama_kecamatan);
+            // var selectedIdkelurahan = $("<option></option>").val(data.id_kelurahan).text(data.nama_kelurahan);
+
+            // //tanpa trigger event
+            // $('[name="userProvinsi"]').append(selectedIdProvinsi);
+            // $('[name="userKota"]').append(selectedIdkota);
+            // $('[name="userKecamatan"]').append(selectedIdkecamatan);
+            // $('[name="userKelurahan"]').append(selectedIdkelurahan);
+
+            $('#modal_menu_form').modal('show');
+	        $('#modal_title').text('Edit Menu'); 
 
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -160,18 +170,21 @@ function reload_table()
 function save()
 {
     var url;
+    var txtAksi;
 
     if(save_method == 'add') {
         url = base_url + 'set_menu/add_data_menu';
+        txtAksi = 'Tambah Menu';
     }else{
         url = base_url + 'set_menu/update_data_menu';
+        txtAksi = 'Edit Menu';
     }
     
     var form = $('#form-menu')[0];
     var data = new FormData(form);
     
     $("#btnSave").prop("disabled", true);
-    $('#btnSave').text('saving...'); //change button text
+    $('#btnSave').text('Menyimpan Data'); //change button text
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
@@ -184,30 +197,35 @@ function save()
         timeout: 600000,
         success: function (data) {
             if(data.status) {
+                swal.fire("Sukses!!", "Aksi "+txtAksi+" Berhasil", "success");
+                $("#btnSave").prop("disabled", false);
+                $('#btnSave').text('Simpan');
                 reload_table();
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {
                     if (data.inputerror[i] != 'jabatan') {
-                        $('[name="'+data.inputerror[i]+'"]').parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
-                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
+                        $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
                     }else{
                         $($('#jabatan').data('select2').$container).addClass('has-error');
                     }
                 }
+
+                $("#btnSave").prop("disabled", false);
+                $('#btnSave').text('Simpan');
             }
 
-            // if (data.status) {
-            //     alert(data.pesan);
-            //     $("#btnSave").prop("disabled", false);
-            //     $("#btnSave").text('Save'); //change button text
-            //     $('#modal_menu_form').modal('hide');
-            //     reload_table();
-            // }
+            reset_modal_form();
+            $(".modal").modal('hide');
         },
         error: function (e) {
             console.log("ERROR : ", e);
             $("#btnSave").prop("disabled", false);
+            $('#btnSave').text('Simpan');
+
+            reset_modal_form();
+            $(".modal").modal('hide');
         }
     });
 }
@@ -215,4 +233,12 @@ function save()
 function reload_table()
 {
     table.ajax.reload(null,false); //reload datatable ajax
+}
+
+function reset_modal_form()
+{
+    $('#form-menu')[0].reset();
+    $('.append-opt').remove(); 
+    $('div.form-group').children().removeClass("is-invalid invalid-feedback");
+    $('span.help-block').text('');
 }
