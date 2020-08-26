@@ -200,6 +200,10 @@ function save()
                 swal.fire("Sukses!!", "Aksi "+txtAksi+" Berhasil", "success");
                 $("#btnSave").prop("disabled", false);
                 $('#btnSave').text('Simpan');
+                
+                reset_modal_form();
+                $(".modal").modal('hide');
+                
                 reload_table();
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
@@ -215,9 +219,6 @@ function save()
                 $("#btnSave").prop("disabled", false);
                 $('#btnSave').text('Simpan');
             }
-
-            reset_modal_form();
-            $(".modal").modal('hide');
         },
         error: function (e) {
             console.log("ERROR : ", e);
