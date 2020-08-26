@@ -84,7 +84,7 @@
                 </div>
               </div> -->
               &nbsp;
-              <?= $this->template_view->getAddButton(); ?>
+              <?= $this->template_view->getAddButton(true, 'add_menu'); ?>
             </div>
           </div>
         </div>

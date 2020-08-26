@@ -4,20 +4,20 @@ class M_set_menu extends CI_Model
 {
 	// declare array variable to search datatable
 	var $column_search = array(
-		'tbl_menu.nama_menu',
-		'tbl_menu.judul_menu'
+		'm_menu.nama',
+		'm_menu.link'
 	);
 
 	var $column_order = array(
-		'tbl_menu.nama_menu',
-		'tbl_menu.judul_menu',
-		'tbl_menu.id_menu',
-		'tbl_menu.id_parent',
 		null,
+		'm_menu.nama',
+		'm_menu.link',
+		'm_menu.id_parent',
+		'm_menu.aktif',
 		null
 	);
 
-	var $order = array('tbl_menu.nama_menu' => 'asc'); // default order 
+	var $order = array('m_menu.nama' => 'asc'); // default order 
 
 	public function __construct()
 	{
@@ -28,19 +28,18 @@ class M_set_menu extends CI_Model
 	//for all data
 	private function _get_data_menu_query($term='') //term is value of $_REQUEST['search']
 	{
-		$column = array(
-			'tbl_level_user.id_level_user',
-			'tbl_level_user.nama_level_user',
-			'tbl_level_user.keterangan_level_user',
-			null,
-		);
+		// $column = array(
+		// 	'tbl_level_user.id_level_user',
+		// 	'tbl_level_user.nama_level_user',
+		// 	'tbl_level_user.keterangan_level_user',
+		// 	null,
+		// );
 
-		$this->db->select('
-			tbl_menu.*
-		');
-
-		$this->db->from('tbl_menu');
+		$this->db->select('m_menu.*');
+		$this->db->from('m_menu');
+		
 		$i = 0;
+
 		// loop column 
 		foreach ($this->column_search as $item) 
 		{
@@ -97,7 +96,7 @@ class M_set_menu extends CI_Model
 
 	public function count_all()
 	{
-		$this->db->from('tbl_menu');
+		$this->db->from('m_menu');
 		return $this->db->count_all_results();
 	}
 	//end datatable query
@@ -124,9 +123,9 @@ class M_set_menu extends CI_Model
 		return $query->row();
 	}
 
-	public function insert_data_menu($input)
+	public function insert($input)
 	{
-		$this->db->insert('tbl_menu',$input);
+		return $this->db->insert('m_menu',$input);
 	}
 
 	public function get_data($where, $table)
@@ -157,7 +156,7 @@ class M_set_menu extends CI_Model
 		if($order_by){
 			$this->db->order_by($order_by);
 		}			
-		return $this->db->get("tbl_menu",$limit,$fromLimit)->result();
+		return $this->db->get("m_menu",$limit,$fromLimit)->result();
 	}
 
 	function get_data_akses($where){
@@ -168,7 +167,7 @@ class M_set_menu extends CI_Model
 
 	public function get_max_id()
 	{
-		$q = $this->db->query("SELECT MAX(id_menu) as kode_max from tbl_menu");
+		$q = $this->db->query("SELECT MAX(id) as kode_max from m_menu");
             $kd = "";
             if($q->num_rows()>0){
 				$kd = $q->row();
