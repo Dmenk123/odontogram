@@ -1,21 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Mod_set_role_adm extends CI_Model
+class M_set_role extends CI_Model
 {
 	// declare array variable to search datatable
 	var $column_search = array(
-		'tbl_level_user.id_level_user',
-		'tbl_level_user.nama_level_user',
-		'tbl_level_user.keterangan_level_user'
+		'm_role.nama',
+		'm_role.keterangan_level_user'
 	);
 
 	var $column_order = array(
-		'tbl_level_user.id_level_user',
-		'tbl_level_user.nama_level_user',
-		'tbl_level_user.keterangan_level_user'
+		null,
+		'm_role.nama',
+		'm_role.keterangan'
 	);
 
-	var $order = array('tbl_level_user.nama_level_user' => 'asc'); // default order 
+	var $order = array('m_role.nama' => 'asc'); // default order 
 
 	public function __construct()
 	{
@@ -27,18 +26,8 @@ class Mod_set_role_adm extends CI_Model
 	//for all data
 	private function _get_data_role_query($term='') //term is value of $_REQUEST['search']
 	{
-		$column = array(
-			'tbl_level_user.id_level_user',
-			'tbl_level_user.nama_level_user',
-			'tbl_level_user.keterangan_level_user',
-			null,
-		);
-
-		$this->db->select('
-			tbl_level_user.*
-		');
-
-		$this->db->from('tbl_level_user');
+		$this->db->select('m_role.*');
+		$this->db->from('m_role');
 		$i = 0;
 		// loop column 
 		foreach ($this->column_search as $item) 
@@ -96,17 +85,22 @@ class Mod_set_role_adm extends CI_Model
 
 	public function count_all()
 	{
-		$this->db->from('tbl_level_user');
+		$this->db->from('m_role');
 		return $this->db->count_all_results();
 	}
 	//end datatable query
 	
-	public function update_data_role($where, $input, $table)
+	public function insert_data($data, $table)
+	{
+		return $this->db->insert($table, $data);
+	}
+
+	public function update_data($where, $input, $table)
 	{
 		$this->db->update($table, $input, $where);
 	}
 
-	public function delete_data_role($where, $table)
+	public function delete_data($where, $table)
 	{
 		$this->db->delete($table, $where);
 	}
@@ -129,13 +123,25 @@ class Mod_set_role_adm extends CI_Model
 		if($order_by){
 			$this->db->order_by($order_by);
 		}			
-		return $this->db->get("tbl_menu",$limit,$fromLimit)->result();
+		return $this->db->get("m_menu",$limit,$fromLimit)->result();
 	}
 
 	function get_data_akses($where){
 		$this->db->select("*");		
 		$this->db->where($where);	
-		return $this->db->get("tbl_hak_akses")->row();
+		return $this->db->get("t_role_menu")->row();
 	}
 	
+	public function get_max_id_role()
+	{
+		$q = $this->db->query("SELECT MAX(id) as kode_max from m_role");
+            $kd = "";
+            if($q->num_rows()>0){
+				$kd = $q->row();
+				return (int)$kd->kode_max + 1;
+            }else{
+                return '1';
+            }
+            
+	}
 }

@@ -26,7 +26,7 @@ class Set_menu extends CI_Controller {
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Setting Menu'
+			'title' => 'Pengelolaan Menu Aplikasi'
 		);
 
 		/**
@@ -56,9 +56,9 @@ class Set_menu extends CI_Controller {
 			//loop value tabel db
 			$row[] = $no;
 			$row[] = $listMenu->nama;
-			$row[] = $listMenu->link;
-			$row[] = $listMenu->id_parent;
-			$aktif_txt = ($listMenu->aktif == 1) ? 'Aktif' : 'Nonaktif';
+			$row[] = ($listMenu->link != '') ? $listMenu->link : '-';
+			$row[] = ($listMenu->nama_parent != '') ? $listMenu->nama_parent : '-';
+			$aktif_txt = ($listMenu->aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
 			$row[] = $aktif_txt;
 			//add html for action button
 
@@ -207,7 +207,7 @@ class Set_menu extends CI_Controller {
 
 		$where = array('id' => $this->input->post('id_menu'));
 		$query = $this->m_menu->update_data_menu($where, $input, 'm_menu');
-		
+
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$data['status'] = false;
@@ -238,7 +238,7 @@ class Set_menu extends CI_Controller {
 		if ($this->db->affected_rows() == '1') {
 			$data = array(
 				'status' => TRUE,
-				'pesan' => "Status menu dengan kode ".$id." berhasil di ubah.",
+				'pesan' => "Status menu berhasil di ubah.",
 			);
 		}else{
 			$data = array(

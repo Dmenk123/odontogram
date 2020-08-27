@@ -83,8 +83,8 @@ class M_user extends CI_Model
 	public function get_detail_user($id_user)
 	{
 		$this->db->select('*');
-		$this->db->from('tbl_user_detail');
-		$this->db->where('id_user', $id_user);
+		$this->db->from('m_user');
+		$this->db->where('id', $id_user);
 
         $query = $this->db->get();
 

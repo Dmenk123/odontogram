@@ -12,7 +12,7 @@ class M_set_menu extends CI_Model
 		null,
 		'm_menu.nama',
 		'm_menu.link',
-		'm_menu.id_parent',
+		'm_menu.nama_parent',
 		'm_menu.aktif',
 		null
 	);
@@ -28,14 +28,10 @@ class M_set_menu extends CI_Model
 	//for all data
 	private function _get_data_menu_query($term='') //term is value of $_REQUEST['search']
 	{
-		// $column = array(
-		// 	'tbl_level_user.id_level_user',
-		// 	'tbl_level_user.nama_level_user',
-		// 	'tbl_level_user.keterangan_level_user',
-		// 	null,
-		// );
-
-		$this->db->select('m_menu.*');
+		$this->db->select('
+			m_menu.*,
+			(select nama from m_menu as menu_child where menu_child.id = m_menu.id_parent) as nama_parent
+		');
 		$this->db->from('m_menu');
 		
 		$i = 0;

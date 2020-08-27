@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 23/08/2020 23:10:49
+ Date: 28/08/2020 00:09:25
 */
 
 SET NAMES utf8mb4;
@@ -43,18 +43,19 @@ CREATE TABLE `m_menu`  (
 INSERT INTO `m_menu` VALUES (1, 0, 'Dashboard', 'Dashboard', 'home', 'flaticon2-architecture-and-city', 1, 1, 1, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (2, 0, 'Setting (Administrator)', 'Setting', NULL, 'flaticon2-gear', 1, 1, 5, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (3, 2, 'Setting Menu', 'Setting Menu', 'set_menu', NULL, 1, 2, 2, 1, 1, 1);
-INSERT INTO `m_menu` VALUES (4, 2, 'Setting Role', 'Setting Role', 'set_role', NULL, 1, 2, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (4, 2, 'Setting Role', 'Setting Role', 'set_role', '', 1, 2, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (5, 2, 'bu thak ndogmu', 'aosasi', 'asas', '', 1, 2, 3, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for m_role
 -- ----------------------------
 DROP TABLE IF EXISTS `m_role`;
 CREATE TABLE `m_role`  (
-  `id_level_user` int(11) NOT NULL AUTO_INCREMENT,
-  `nama_level_user` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `keterangan_level_user` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT '',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nama` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `keterangan` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT '',
   `aktif` int(1) NULL DEFAULT 1,
-  PRIMARY KEY (`id_level_user`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
@@ -62,6 +63,7 @@ CREATE TABLE `m_role`  (
 -- ----------------------------
 INSERT INTO `m_role` VALUES (1, 'developer', 'Level Developer Role', 1);
 INSERT INTO `m_role` VALUES (2, 'administrator', 'Level Administrator Role', 1);
+INSERT INTO `m_role` VALUES (3, 'Staff Admin', 'Role Untuk Staff Admin', 0);
 
 -- ----------------------------
 -- Table structure for m_user
@@ -92,12 +94,12 @@ DROP TABLE IF EXISTS `t_role_menu`;
 CREATE TABLE `t_role_menu`  (
   `id_menu` int(11) NOT NULL,
   `id_role` int(11) NOT NULL,
-  `add_button` int(1) NULL DEFAULT NULL,
-  `edit_button` int(1) NULL DEFAULT NULL,
-  `delete_button` int(1) NULL DEFAULT NULL,
+  `add_button` int(1) NULL DEFAULT 0,
+  `edit_button` int(1) NULL DEFAULT 0,
+  `delete_button` int(1) NULL DEFAULT 0,
   INDEX `f_level_user`(`id_role`) USING BTREE,
   INDEX `id_menu`(`id_menu`) USING BTREE,
-  CONSTRAINT `f_level_user` FOREIGN KEY (`id_role`) REFERENCES `m_role` (`id_level_user`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `f_level_user` FOREIGN KEY (`id_role`) REFERENCES `m_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `t_role_menu_ibfk_1` FOREIGN KEY (`id_menu`) REFERENCES `m_menu` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = COMPACT;
 
@@ -108,5 +110,8 @@ INSERT INTO `t_role_menu` VALUES (1, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (1, 3, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (2, 3, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (5, 3, 1, 1, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

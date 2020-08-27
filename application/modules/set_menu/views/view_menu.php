@@ -20,13 +20,13 @@
 
   <!-- begin:: Content -->
   <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
-    <div class="alert alert-light alert-elevate" role="alert">
+    <!-- <div class="alert alert-light alert-elevate" role="alert">
       <div class="alert-icon"><i class="flaticon-warning kt-font-brand"></i></div>
       <div class="alert-text">
         With server-side processing enabled, all paging, searching, ordering actions that DataTables performs are handed off to a server where an SQL engine (or similar) can perform these actions on the large data set.
         See official documentation <a class="kt-link kt-font-bold" href="https://datatables.net/examples/data_sources/server_side.html" target="_blank">here</a>.
       </div>
-    </div>
+    </div> -->
 
     <div class="kt-portlet kt-portlet--mobile">
       <div class="kt-portlet__head kt-portlet__head--lg">
@@ -95,12 +95,12 @@
         <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_menu">
           <thead>
             <tr>
-              <th>No</th>
+              <th style="width: 5%;">No</th>
               <th>Nama</th>
               <th>Link</th>
               <th>Parent</th>
               <th>Aktif</th>
-              <th>Aksi</th>
+              <th style="width: 13%;">Aksi</th>
             </tr>
           </thead>
         </table>
