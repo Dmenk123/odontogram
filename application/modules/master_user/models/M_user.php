@@ -3,9 +3,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_user extends CI_Model
 {
 	var $table = 'm_user';
-	var $column_order = array('username','password',null,'status','last_login',null);
-	var $column_search = array('username','status'); 
-	var $order = array('id_user' => 'desc'); 
+	var $column_search = ['username','kode_user','nama_role'];
+	
+	var $column_order = [
+		null, 
+		'username',
+		'nama_role',
+		'status',
+		'last_login',
+		null
+	];
+
+	var $order = ['m_user.username' => 'desc']; 
 
 	public function __construct()
 	{
@@ -14,34 +23,40 @@ class M_user extends CI_Model
 		$this->load->database();
 	}
 
-	private function _get_datatables_query()
+	private function _get_datatables_query($term='')
 	{
-		
-		$this->db->from($this->table);
+		$this->db->select('
+			m_user.*,
+			m_role.nama as nama_role
+		');
 
-		$i = 0;
-	
-		foreach ($this->column_search as $item) // loop column 
+		$this->db->from('m_user');
+		$this->db->join('m_role', 'm_user.id_role = m_role.id', 'left');	$i = 0;
+
+		// loop column 
+		foreach ($this->column_search as $item) 
 		{
-			if($_POST['search']['value']) // if datatable send POST for search
+			// if datatable send POST for search
+			if($_POST['search']['value']) 
 			{
-				
-				if($i===0) // first loop
+				// first loop
+				if($i===0) 
 				{
-					$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					// open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					$this->db->group_start();
 					$this->db->like($item, $_POST['search']['value']);
 				}
 				else
 				{
 					$this->db->or_like($item, $_POST['search']['value']);
 				}
-
-				if(count($this->column_search) - 1 == $i) //last loop
+				//last loop
+				if(count($this->column_search) - 1 == $i) 
 					$this->db->group_end(); //close bracket
 			}
 			$i++;
 		}
-		
+
 		if(isset($_POST['order'])) // here order processing
 		{
 			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
@@ -49,19 +64,16 @@ class M_user extends CI_Model
 		else if(isset($this->order))
 		{
 			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
+            $this->db->order_by(key($order), $order[key($order)]);
 		}
 	}
 
-	function get_datatables()
+	function get_datatable_user()
 	{
-		$this->_get_datatables_query();
-		if($_POST['length'] != -1)
-		$this->db->limit($_POST['length'], $_POST['start']);
-
-		$this->db->select('id_user,username,password,level_user,status,last_login');
-		$this->db->from('tbl_level_user');
-		$this->db->where('tbl_user.id_level_user = tbl_level_user.id_level_user');
+		$term = $_REQUEST['search']['value'];
+		$this->_get_datatables_query($term);
+		if($_REQUEST['length'] != -1)
+		$this->db->limit($_REQUEST['length'], $_REQUEST['start']);
 
 		$query = $this->db->get();
 		return $query->result();
@@ -114,19 +126,14 @@ class M_user extends CI_Model
 		}
 	}
 
-	public function save($data_user, $data_user_detail)
+	public function save($data)
 	{
-		//insert into tbl_user 
-		$this->db->insert('tbl_user',$data_user);
-
-		//insert into tbl_user_detail 
-		$this->db->insert('tbl_user_detail',$data_user_detail);
+		return $this->db->insert($this->table, $data);	
 	}
 
 	public function update($where, $data)
 	{
-		$this->db->update($this->table, $data, $where);
-		return $this->db->affected_rows();
+		return $this->db->update($this->table, $data, $where);
 	}
 
 	public function delete_by_id($id)
@@ -149,12 +156,15 @@ class M_user extends CI_Model
 
 	//dibutuhkan di contoller login untuk set last login
 	function set_lastlogin($id){
-		$this->db->where('id',$id)
-			->update($this->table, ['last_login'=>date('Y-m-d H:i:s')]);			
+		$this->db->where('id',$id);
+		$this->db->update(
+			$this->table, 
+			['last_login'=>date('Y-m-d H:i:s')]
+		);			
 	}
 
-	function getKodeUser(){
-            $q = $this->db->query("select MAX(RIGHT(id_user,5)) as kode_max from tbl_user");
+	function get_kode_user(){
+            $q = $this->db->query("select MAX(RIGHT(kode_user,5)) as kode_max from m_user");
             $kd = "";
             if($q->num_rows()>0){
                 foreach($q->result() as $k){
@@ -164,17 +174,19 @@ class M_user extends CI_Model
             }else{
                 $kd = "00001";
             }
-            return "USR".$kd;
-    }
+            return "USR-".$kd;
+	}
+	
+	public function get_max_id_user()
+	{
+		$q = $this->db->query("SELECT MAX(id) as kode_max from m_user");
+		$kd = "";
+		if($q->num_rows()>0){
+			$kd = $q->row();
+			return (int)$kd->kode_max + 1;
+		}else{
+			return '1';
+		} 
+	}
 
-    public function get_datalogin_pegawai($nip)
-    {
-    	$q = $this->db->query("SELECT * FROM tbl_guru where nip = '".$nip."'");
-    	if($q->num_rows() > 0)
-    	{
-    		return $q->row();
-    	}else{
-    		return FALSE;
-    	}
-    }
 }

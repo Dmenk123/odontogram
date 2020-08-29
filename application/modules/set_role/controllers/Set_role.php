@@ -7,7 +7,7 @@ class Set_role extends CI_Controller {
 	{
 		parent::__construct();
 		//profil data
-		$this->load->model('user/m_user');
+		$this->load->model('master_user/m_user');
 		$this->load->model('m_set_role','m_role');
 
 		if($this->session->userdata('logged_in') === false) {

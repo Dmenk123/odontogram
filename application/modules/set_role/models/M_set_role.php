@@ -5,7 +5,7 @@ class M_set_role extends CI_Model
 	// declare array variable to search datatable
 	var $column_search = array(
 		'm_role.nama',
-		'm_role.keterangan_level_user'
+		'm_role.keterangan'
 	);
 
 	var $column_order = array(
@@ -109,6 +109,12 @@ class M_set_role extends CI_Model
 	{
 		$this->db->where($where);
 		return $this->db->get($table)->row_array();
+	}
+
+	public function get_data_all($where, $table)
+	{
+		$this->db->where($where);
+		return $this->db->get($table)->result();
 	}
 
 	function show_data_menu($where = null,$like = null,$order_by = null,$limit = null, $fromLimit=null){

@@ -7,7 +7,7 @@ class Set_menu extends CI_Controller {
 	{
 		parent::__construct();
 		//profil data
-		$this->load->model('user/m_user');
+		$this->load->model('master_user/m_user');
 		$this->load->model('m_set_menu','m_menu');
 
 		
@@ -20,13 +20,14 @@ class Set_menu extends CI_Controller {
 	public function index()
 	{
 		$id_user = $this->session->userdata('id_user'); 
-		// $data_user = $this->prof->get_detail_pengguna($id_user);
+		$data_user = $this->m_user->get_detail_user($id_user);
 
 		/**
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Pengelolaan Menu Aplikasi'
+			'title' => 'Pengelolaan Menu Aplikasi',
+			'data_user' => $data_user
 		);
 
 		/**
