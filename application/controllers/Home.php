@@ -6,15 +6,12 @@ class Home extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		//cek apablia session kosong
-		if ($this->session->userdata('username') === null) {
-			//direct ke controller login
-			redirect('login');
-		}
+		$this->load->model('dashboard/m_dashboard');
+		$this->load->model('master_user/m_user');
 
-		$this->load->model('Mod_home');
-		//profil data
-		$this->load->model('profil/mod_profil','prof');
+		if($this->session->userdata('logged_in') === false) {
+			return redirect('login');
+		}
 	}
 
 	public function index()
@@ -23,19 +20,27 @@ class Home extends CI_Controller {
 		$bulan = date('m');
 		$hari = date('d');
 		$id_user = $this->session->userdata('id_user');
+		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_dashboard = [];
 		
+		/**
+		 * data passing ke halaman view content
+		 */
 		$data = array(
-			'title' => 'Dashboard',
-			// 'data_user' => $query,
-			// 'data_dashboard' => $data_dashboard,
-			// 'component' => $component
+			'title' => 'Dashboard Aplikasi',
+			'data_user' => $data_user
 		);
 
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
 		$content = [
-			'modal' => false,
-			'js'	=> 'dashboard/jsDashboard',
-			'css'	=> false,
+			'css' 	=> null,
+			'modal' => null,
+			'js'	=> null,
 			'view'	=> 'dashboard/view_dashboard'
 		];
 

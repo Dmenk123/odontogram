@@ -94,14 +94,18 @@ var KTLoginGeneral = function() {
 
             form.ajaxSubmit({
                 method: 'POST',
-                url: base_url+'/login/proses',
+                url: base_url+'login/proses',
+                dataType: 'JSON',
                 success: function(response, status, xhr, $form) {
-                	// similate 2s delay
-                	setTimeout(function() {
-	                    btn.removeClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').attr('disabled', false);
-	                    showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
-                    }, 2000);
-                }
+                    if(response.status) {
+                        window.location.replace(base_url+'home');
+                    }else{
+                        setTimeout(function() {
+                            btn.removeClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').attr('disabled', false);
+                            showErrorMsg(form, 'danger', 'Incorrect username or password. Please try again.');
+                        }, 1000);
+                    }
+                },
             });
         });
     }

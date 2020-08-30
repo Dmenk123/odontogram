@@ -35,9 +35,9 @@ class Login extends CI_Controller {
 		);
 		
 		$result = $this->m_user->login($data_input);
-		
+
 		if ($result) {
-			$this->m_user->set_lastlogin($result->id_user);
+			$this->m_user->set_lastlogin($result->id);
 			// unset($data['id_user']);
 			$this->session->set_userdata(
 				array(
@@ -47,10 +47,16 @@ class Login extends CI_Controller {
 					'id_role' => $result->id_role,
 					'logged_in' => true,
 				));
-				redirect('home');
+
+				echo json_encode([
+					'status' => true
+				]);
 		}else{
-			$this->session->set_flashdata('message', 'Kombinasi Username & Password Salah, Mohon di cek ulang');
-			redirect('login');
+			echo json_encode([
+				'status' => false
+			]);
+			// $this->session->set_flashdata('message', 'Kombinasi Username & Password Salah, Mohon di cek ulang');
+			// redirect('login');
 		}
 	}
 

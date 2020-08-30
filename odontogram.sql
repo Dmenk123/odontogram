@@ -11,11 +11,31 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 28/08/2020 00:09:25
+ Date: 31/08/2020 01:04:43
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for m_jabatan
+-- ----------------------------
+DROP TABLE IF EXISTS `m_jabatan`;
+CREATE TABLE `m_jabatan`  (
+  `id` int(11) NOT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `keterangan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_jabatan
+-- ----------------------------
+INSERT INTO `m_jabatan` VALUES (1, 'Dokter Gigi', 'Dokter Gigi', '2020-08-30 23:25:53', NULL, NULL);
+INSERT INTO `m_jabatan` VALUES (2, 'Resepsionis', 'Resepsionis', '2020-08-30 23:25:53', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_menu
@@ -42,9 +62,35 @@ CREATE TABLE `m_menu`  (
 -- ----------------------------
 INSERT INTO `m_menu` VALUES (1, 0, 'Dashboard', 'Dashboard', 'home', 'flaticon2-architecture-and-city', 1, 1, 1, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (2, 0, 'Setting (Administrator)', 'Setting', NULL, 'flaticon2-gear', 1, 1, 5, 0, 0, 0);
-INSERT INTO `m_menu` VALUES (3, 2, 'Setting Menu', 'Setting Menu', 'set_menu', NULL, 1, 2, 2, 1, 1, 1);
-INSERT INTO `m_menu` VALUES (4, 2, 'Setting Role', 'Setting Role', 'set_role', '', 1, 2, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (3, 2, 'Setting Menu', 'Setting Menu', 'set_menu', 'flaticon-grid-menu', 1, 2, 2, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (4, 2, 'Setting Role', 'Setting Role', 'set_role', 'flaticon-network', 1, 2, 1, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (5, 2, 'bu thak ndogmu', 'aosasi', 'asas', '', 1, 2, 3, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (6, 0, 'Master Data', 'Master Data', '', 'flaticon-folder-1', 1, 1, 2, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (7, 6, 'Data User', 'Data User', 'master_user', 'flaticon-users', 1, 2, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (8, 6, 'Data Pegawai', 'Master Data Pegawai', 'master_pegawai', 'flaticon-user', 1, 2, 2, 1, 1, 1);
+
+-- ----------------------------
+-- Table structure for m_pegawai
+-- ----------------------------
+DROP TABLE IF EXISTS `m_pegawai`;
+CREATE TABLE `m_pegawai`  (
+  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `kode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `telp_1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `telp_2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `telp_3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_pegawai
+-- ----------------------------
+INSERT INTO `m_pegawai` VALUES ('1', 'aaa', 'asu', 'asa', 'a', 'a', NULL, '0000-00-00 00:00:00', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_role
@@ -63,7 +109,7 @@ CREATE TABLE `m_role`  (
 -- ----------------------------
 INSERT INTO `m_role` VALUES (1, 'developer', 'Level Developer Role', 1);
 INSERT INTO `m_role` VALUES (2, 'administrator', 'Level Administrator Role', 1);
-INSERT INTO `m_role` VALUES (3, 'Staff Admin', 'Role Untuk Staff Admin', 0);
+INSERT INTO `m_role` VALUES (3, 'Staff Admin', 'Role Untuk Staff Admin', 1);
 
 -- ----------------------------
 -- Table structure for m_user
@@ -72,6 +118,7 @@ DROP TABLE IF EXISTS `m_user`;
 CREATE TABLE `m_user`  (
   `id` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `id_role` int(11) NULL DEFAULT NULL,
+  `id_pegawai` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `kode_user` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `username` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `password` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
@@ -85,7 +132,32 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, NULL, '2020-08-20 22:17:59', '2020-08-20 22:18:10');
+INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-08-30 21:41:08', '2020-08-20 22:17:59', '2020-08-30 21:41:08');
+INSERT INTO `m_user` VALUES ('2', 2, NULL, 'USR-00002', 'cek', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, NULL, '2020-08-29 23:57:06', '2020-08-30 01:05:23');
+
+-- ----------------------------
+-- Table structure for t_pegawai_jabatan
+-- ----------------------------
+DROP TABLE IF EXISTS `t_pegawai_jabatan`;
+CREATE TABLE `t_pegawai_jabatan`  (
+  `id` int(11) NOT NULL,
+  `id_pegawai` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `id_jabatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tanggal` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_pegawai_jabatan
+-- ----------------------------
+INSERT INTO `t_pegawai_jabatan` VALUES (1, '1', '1', '2020-08-30 23:25:53', NULL, NULL, NULL);
+INSERT INTO `t_pegawai_jabatan` VALUES (2, '1', '2', '2020-08-30 23:29:00', NULL, NULL, NULL);
+INSERT INTO `t_pegawai_jabatan` VALUES (3, '2', '2', '2020-08-30 23:39:00', NULL, NULL, NULL);
+INSERT INTO `t_pegawai_jabatan` VALUES (4, '1', '1', '2020-08-30 23:59:00', NULL, NULL, NULL);
+INSERT INTO `t_pegawai_jabatan` VALUES (5, '1', '3', '2020-08-30 23:59:01', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu
@@ -106,12 +178,15 @@ CREATE TABLE `t_role_menu`  (
 -- ----------------------------
 -- Records of t_role_menu
 -- ----------------------------
-INSERT INTO `t_role_menu` VALUES (1, 1, 0, 0, 0);
-INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
-INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
-INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (1, 3, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (2, 3, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (5, 3, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (1, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (6, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (7, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (8, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

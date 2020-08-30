@@ -372,7 +372,7 @@ class Template_view extends CI_Controller {
         select
             m_menu.id,
             m_menu.tingkat,
-            m_menu.judul_menu,
+            m_menu.judul,
             m_menu.nama
         from
             m_menu
@@ -382,8 +382,8 @@ class Template_view extends CI_Controller {
         $dataMenu = $queryMenu->row();
 
 		switch ($string) {
-			case "judul_menu":
-				return $dataMenu->judul_menu;
+			case "judul":
+				return $dataMenu->judul;
 				break;
 			case "nama":
 				return $dataMenu->nama;

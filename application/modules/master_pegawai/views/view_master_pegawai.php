@@ -6,7 +6,7 @@
     <div class="kt-container  kt-container--fluid ">
       <div class="kt-subheader__main">
         <h3 class="kt-subheader__title">
-          <?= $title ?>
+          <?= $this->template_view->nama('judul').' - '.$title; ?>
         </h3>
       </div>
     </div>
@@ -29,14 +29,30 @@
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
             <div class="kt-portlet__head-actions">
+              &nbsp;
+              <?= $this->template_view->getAddButton(true, 'add_menu'); ?>
             </div>
           </div>
         </div>
       </div>
       <div class="kt-portlet__body">
 
+        <!--begin: Datatable -->
+        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_user">
+          <thead>
+            <tr>
+              <th style="width: 5%;">No</th>
+              <th>Kode</th>
+              <th>Nama User</th>
+              <th>Role</th>
+              <th>Status User</th>
+              <th>Terakhir Login</th>
+              <th style="width: 13%;">Aksi</th>
+            </tr>
+          </thead>
+        </table>
 
-        
+        <!--end: Datatable -->
       </div>
     </div>
   </div>
