@@ -30,7 +30,7 @@
           <div class="kt-portlet__head-wrapper">
             <div class="kt-portlet__head-actions">
               &nbsp;
-              <?= $this->template_view->getAddButton(true, 'add_menu'); ?>
+              <?= $this->template_view->getAddButton(true, 'add_pegawai'); ?>
             </div>
           </div>
         </div>
@@ -38,16 +38,17 @@
       <div class="kt-portlet__body">
 
         <!--begin: Datatable -->
-        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_user">
+        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pegawai">
           <thead>
             <tr>
               <th style="width: 5%;">No</th>
               <th>Kode</th>
-              <th>Nama User</th>
-              <th>Role</th>
-              <th>Status User</th>
-              <th>Terakhir Login</th>
-              <th style="width: 13%;">Aksi</th>
+              <th>Nama</th>
+              <th>Jabatan</th>
+              <th>Telp 1</th>
+              <th>Telp 2</th>
+              <th>Status</th>
+              <th style="width: 10%;">Aksi</th>
             </tr>
           </thead>
         </table>

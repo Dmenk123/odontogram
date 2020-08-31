@@ -1,5 +1,5 @@
 
-<div class="modal fade modal_add_form" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_user_form">
+<div class="modal fade modal_add_form" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_pegawai_form">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -8,46 +8,38 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="form-user" name="form-user">
+        <form id="form-pegawai" name="form-pegawai">
           <div class="form-group">
-            <input type="hidden" class="form-control" id="id_user" name="id_user">
-            <label for="lbl_username" class="form-control-label">Username:</label>
-            <input type="text" class="form-control" id="username" name="username">
-            <span class="help-block"></span>
-          </div>
-          <div class="form-group" id="div_pass_lama" style="display: none;">
-            <label for="lbl_password_lama" class="form-control-label">Password Lama:</label>
-            <input type="password" class="form-control" id="password_lama" name="password_lama" autocomplete="off">
+            <input type="hidden" class="form-control" id="id_pegawai" name="id_pegawai">
+            <label for="lbl_nama_pegawai" class="form-control-label">Nama Pegawai:</label>
+            <input type="text" class="form-control" id="nama" name="nama">
             <span class="help-block"></span>
           </div>
           <div class="form-group">
-            <label for="lbl_password" class="form-control-label">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" autocomplete="off">
+            <label for="lbl_alamat" class="form-control-label">Alamat:</label>
+            <textarea class="form-control" name="alamat" id="alamat" cols="10" rows="4"></textarea>
             <span class="help-block"></span>
           </div>
           <div class="form-group">
-            <label for="lbl_repassword" class="form-control-label">Tulis Ulang Password:</label>
-            <input type="password" class="form-control" id="repassword" name="repassword" autocomplete="off">
+            <label for="lbl_telp1" class="form-control-label">No Telp/Hp (1):</label>
+            <input type="text" class="form-control" id="telp1" name="telp1">
             <span class="help-block"></span>
           </div>
           <div class="form-group">
-            <label for="lbl_role" class="form-control-label">Role User:</label>
-            <select class="form-control required" name="role" id="role">
-              <option value=""> Pilih Role User </option>
+            <label for="lbl_telp2" class="form-control-label">No Telp/Hp (2) :</label>
+            <input type="text" class="form-control" id="telp2" name="telp2">
+            <span class="help-block"></span>
+          </div>
+          <div class="form-group">
+            <label for="lbl_jabatan" class="form-control-label">Jabatan :</label>
+            <select class="form-control required" name="jabatan" id="jabatan">
+              <option value=""> Pilih Jabatan </option>
               <?php
-              foreach ($data_role as $val) { ?>
+              foreach ($data_jabatan as $val) { ?>
                   <option value="<?php echo $val->id; ?>">
                       <?php echo $val->nama; ?>    
                   </option>
               <?php } ?>
-            </select>
-            <span class="help-block"></span>
-          </div>
-          <div class="form-group">
-            <label for="lbl_status" class="form-control-label">Status User:</label>
-            <select class="form-control required" name="status" id="status">
-              <option value="1">Aktif </option>
-              <option value="0">Non Aktif </option>
             </select>
             <span class="help-block"></span>
           </div>
