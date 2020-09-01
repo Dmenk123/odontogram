@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 31/08/2020 01:04:43
+ Date: 01/09/2020 23:46:09
 */
 
 SET NAMES utf8mb4;
@@ -74,23 +74,25 @@ INSERT INTO `m_menu` VALUES (8, 6, 'Data Pegawai', 'Master Data Pegawai', 'maste
 -- ----------------------------
 DROP TABLE IF EXISTS `m_pegawai`;
 CREATE TABLE `m_pegawai`  (
-  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '1',
+  `id_jabatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `kode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `telp_1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `telp_2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `telp_3` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
+  `is_aktif` int(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_pegawai
 -- ----------------------------
-INSERT INTO `m_pegawai` VALUES ('1', 'aaa', 'asu', 'asa', 'a', 'a', NULL, '0000-00-00 00:00:00', NULL, NULL);
+INSERT INTO `m_pegawai` VALUES ('1', '1', 'PEG-00001', 'Mu\'in', 'as', '12121212', '', '2020-09-01 00:09:41', NULL, NULL, 1);
+INSERT INTO `m_pegawai` VALUES ('2', '2', 'PEG-00002', 'Bambang Ganteng', 'Jl. raya milik bambang', '081277171821827817', '121212121212', '2020-09-01 11:32:19', NULL, NULL, 1);
 
 -- ----------------------------
 -- Table structure for m_role
@@ -132,32 +134,8 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-08-30 21:41:08', '2020-08-20 22:17:59', '2020-08-30 21:41:08');
+INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-01 21:30:23', '2020-08-20 22:17:59', '2020-09-01 21:30:23');
 INSERT INTO `m_user` VALUES ('2', 2, NULL, 'USR-00002', 'cek', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, NULL, '2020-08-29 23:57:06', '2020-08-30 01:05:23');
-
--- ----------------------------
--- Table structure for t_pegawai_jabatan
--- ----------------------------
-DROP TABLE IF EXISTS `t_pegawai_jabatan`;
-CREATE TABLE `t_pegawai_jabatan`  (
-  `id` int(11) NOT NULL,
-  `id_pegawai` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `id_jabatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `tanggal` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `created_at` datetime(0) NULL DEFAULT NULL,
-  `updated_at` datetime(0) NULL DEFAULT NULL,
-  `deleted_at` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of t_pegawai_jabatan
--- ----------------------------
-INSERT INTO `t_pegawai_jabatan` VALUES (1, '1', '1', '2020-08-30 23:25:53', NULL, NULL, NULL);
-INSERT INTO `t_pegawai_jabatan` VALUES (2, '1', '2', '2020-08-30 23:29:00', NULL, NULL, NULL);
-INSERT INTO `t_pegawai_jabatan` VALUES (3, '2', '2', '2020-08-30 23:39:00', NULL, NULL, NULL);
-INSERT INTO `t_pegawai_jabatan` VALUES (4, '1', '1', '2020-08-30 23:59:00', NULL, NULL, NULL);
-INSERT INTO `t_pegawai_jabatan` VALUES (5, '1', '3', '2020-08-30 23:59:01', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu
