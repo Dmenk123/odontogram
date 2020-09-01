@@ -33,10 +33,10 @@ $(document).ready(function() {
     $(document).on('click', '.btn_edit_status', function(){
         var id = $(this).attr('id');
         var status = $(this).val();
-        swalConfirm.fire({
-            title: 'Ubah Status Data User ?',
+        swalConfirmDelete.fire({
+            title: 'Ubah Status Data Pegawai ?',
             text: "Apakah Anda Yakin ?",
-            icon: 'warning',
+            type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Ya, Ubah Status!',
             cancelButtonText: 'Tidak, Batalkan!',
@@ -44,10 +44,10 @@ $(document).ready(function() {
           }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url : base_url + 'master_pegawai/edit_status_pegawai/'+ id,
+                    url : base_url + 'master_pegawai/edit_status_pegawai',
                     type: "POST",
                     dataType: "JSON",
-                    data : {status : status},
+                    data : {status : status, id : id},
                     success: function(data)
                     {
                         swalConfirm.fire('Berhasil Ubah Status Pegawai!', data.pesan, 'success');
@@ -84,28 +84,26 @@ function add_pegawai()
 	$('#modal_title').text('Tambah Pegawai Baru'); 
 }
 
-function edit_user(id)
+function edit_pegawai(id)
 {
     reset_modal_form();
     save_method = 'update';
     //Ajax Load data from ajax
     $.ajax({
-        url : base_url + 'master_user/edit_user',
+        url : base_url + 'master_pegawai/edit_pegawai',
         type: "POST",
         dataType: "JSON",
         data : {id:id},
         success: function(data)
         {
-            // data.data_menu.forEach(function(dataLoop) {
-            //     $("#parent_menu").append('<option value = '+dataLoop.id+' class="append-opt">'+dataLoop.nama+'</option>');
-            // });
-            $('#div_pass_lama').css("display","block");
-            $('[name="id_user"]').val(data.old_data.id);
-            $('[name="username"]').val(data.old_data.username).attr('disabled', true);
-            $('[name="role"]').val(data.old_data.id_role);
-            $('[name="status"]').val(data.old_data.status);
-            $('#modal_user_form').modal('show');
-	        $('#modal_title').text('Edit User'); 
+            $('[name="id_pegawai"]').val(data.old_data.id);
+            $('[name="nama"]').val(data.old_data.nama);
+            $('[name="alamat"]').val(data.old_data.alamat);
+            $('[name="telp1"]').val(data.old_data.telp_1);
+            $('[name="telp2"]').val(data.old_data.telp_2);
+            $('[name="jabatan"]').val(data.old_data.id_jabatan);
+            $('#modal_pegawai_form').modal('show');
+	        $('#modal_title').text('Edit Data Pegawai'); 
 
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -180,6 +178,46 @@ function save()
 
             reset_modal_form();
             $(".modal").modal('hide');
+        }
+    });
+}
+
+
+function delete_pegawai(id){
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Pegawai ?',
+        text: "Data Akan dihapus permanen ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'master_pegawai/delete_pegawai',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Ubah Status Pegawai!', data.pesan, 'success');
+                    table.ajax.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
         }
     });
 }

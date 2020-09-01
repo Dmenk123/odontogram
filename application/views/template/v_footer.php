@@ -87,12 +87,19 @@
             };
             const swalConfirm = Swal.mixin({
                 customClass: {
-                    confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-danger'
+                    confirmButton: 'btn btn-md btn-primary',
+                    cancelButton: 'btn btn-md btn-danger'
                 },
                 buttonsStyling: false
             });
 
+            const swalConfirmDelete = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-md btn-danger',
+                    cancelButton: 'btn btn-md btn-primary'
+                },
+                buttonsStyling: false
+            });
         </script>
 
         <!-- load file css per modul -->

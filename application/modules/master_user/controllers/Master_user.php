@@ -96,7 +96,7 @@ class Master_user extends CI_Controller {
 		$oldData = $this->m_user->get_by_id($id);
 		
 		if(!$oldData){
-			redirect($this->uri->segment(1));
+			return redirect($this->uri->segment(1));
 		}
 
 		$data = array(

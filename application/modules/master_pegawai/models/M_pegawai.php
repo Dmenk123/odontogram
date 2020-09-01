@@ -142,13 +142,13 @@ class M_Pegawai extends CI_Model
 		return $this->db->update($this->table, $data, $where);
 	}
 
-	public function delete_by_id($id)
+	public function softdelete_by_id($id)
 	{
-		$this->db->where('id_user', $id);
-		$this->db->delete('tbl_user');
-
-		$this->db->where('id_user', $id);
-		$this->db->delete('tbl_user_detail');
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$where = ['id' => $id];
+		$data = ['deleted_at' => $timestamp];
+		return $this->db->update($this->table, $data, $where);
 	}
 
 	function get_kode_pegawai(){

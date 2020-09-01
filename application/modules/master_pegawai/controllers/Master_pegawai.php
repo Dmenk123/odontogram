@@ -66,28 +66,29 @@ class Master_pegawai extends CI_Controller {
 			$row[] = $aktif_txt;			
 			
 			$str_aksi = '
-				<span class="dropdown">
-					<a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true">
-						<i class="la la-ellipsis-h"></i>
-					</a>
-					<div class="dropdown-menu dropdown-menu-right">
-						<button class="dropdown-item" onclick="edit_pegawai(\''.$peg->id.'\')><i class="la la-edit">
-							</i> Edit Pegawai
+				<div class="btn-group">
+					<button type="button" class="btn btn-md btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-item" onclick="edit_pegawai(\''.$peg->id.'\')">
+							<i class="la la-pencil"></i> Edit Pegawai
 						</button>
-						<button class="dropdown-item" href="#"><i class="la la-leaf"></i> Edit</button>
-						<button class="dropdown-item" href="#"><i class="la la-leaf"></i> Hapus</button>
-					</div>
-				</span>
+						<button class="dropdown-item" onclick="delete_pegawai(\''.$peg->id.'\')">
+							<i class="la la-trash"></i> Hapus
+						</button>
 			';
-			
+
 			if ($peg->is_aktif == 1) {
 				$str_aksi .=
-				'<button class="btn btn-sm btn-success btn_edit_status" title="aktif" id="'.$peg->id.'" value="aktif">Aktif</i></button>';
+				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$peg->id.'" value="aktif"><i class="la la-check">
+				</i> Aktif</button>';
 			}else{
 				$str_aksi .=
-				'<button class="btn btn-sm btn-danger btn_edit_status" title="nonaktif" id="'.$peg->id.'" value="nonaktif">Non Aktif</button>';
-			}
+				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$peg->id.'" value="nonaktif"><i class="la la-close">
+				</i> Non Aktif</button>';
+			}	
 
+			$str_aksi .= '</div></div>';
+		
 
 			$row[] = $str_aksi;
 
@@ -115,17 +116,17 @@ class Master_pegawai extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	public function edit_user()
+	public function edit_pegawai()
 	{
 		$this->load->library('Enkripsi');
 		$id_user = $this->session->userdata('id_user');
 		$data_user = $this->m_user->get_by_id($id_user);
 	
 		$id = $this->input->post('id');
-		$oldData = $this->m_user->get_by_id($id);
+		$oldData = $this->m_pegawai->get_by_id($id);
 		
 		if(!$oldData){
-			redirect($this->uri->segment(1));
+			return redirect($this->uri->segment(1));
 		}
 
 		$data = array(
@@ -184,7 +185,7 @@ class Master_pegawai extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	public function update_data_user()
+	public function update_data_pegawai()
 	{
 		$id_user = $this->session->userdata('id_user'); 
 		$this->load->library('Enkripsi');
@@ -197,87 +198,73 @@ class Master_pegawai extends CI_Controller {
 			return;
 		}
 
-		$password = trim($this->input->post('password'));
-		$repassword = trim($this->input->post('repassword'));
-		$role = $this->input->post('role');
-		$status = $this->input->post('status');
-
-		if ($password != $repassword) {
-			$data['inputerror'][] = 'password';
-			$data['error_string'][] = 'Password Tidak Cocok';
-			$data['status'] = FALSE;
-		
-			$data['inputerror'][] = 'repassword';
-			$data['error_string'][] = 'Password Tidak Cocok';
-			$data['status'] = FALSE;
-
-			echo json_encode($data);
-			return;
-		}
-
-		$hash_password = $this->enkripsi->enc_dec('encrypt', $password);
-		$hash_password_lama = $this->enkripsi->enc_dec('encrypt', trim($this->input->post('password_lama')));
-		$dataOld = $this->m_user->get_by_id($this->input->post('id_user'));
-		
-		if($hash_password_lama != $dataOld->password) {
-			$data['inputerror'][] = 'password_lama';
-			$data['error_string'][] = 'Password lama salah';
-			$data['status'] = FALSE;
-
-			echo json_encode($data);
-			return;
-		}
+		$nama = clean_string(trim($this->input->post('nama')));
+		$alamat = clean_string(trim($this->input->post('alamat')));
+		$telp1 = clean_string(trim($this->input->post('telp1')));
+		$telp2 = clean_string(trim($this->input->post('telp2')));
+		$jabatan = $this->input->post('jabatan');
 
 		$this->db->trans_begin();
 		
 		$data_user = [
-			'id_role' => $role,
-			'password' => $hash_password,
-			'status' => $status,
-			'updated_at' => $timestamp
+			'nama' => $nama,
+			'alamat' => $alamat,
+			'telp_1' => $telp1,
+			'telp_2' => $telp2,
+			'id_jabatan'=> $jabatan
 		];
 
-		$where = ['id' => $this->input->post('id_user')];
-		$update = $this->m_user->update($where, $data_user);
-
+		$where = ['id' => $this->input->post('id_pegawai')];
+		$update = $this->m_pegawai->update($where, $data_user);
+				
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$data['status'] = false;
-			$data['pesan'] = 'Gagal update Master User';
+			$data['pesan'] = 'Gagal update Master Pegawai';
 		}else{
 			$this->db->trans_commit();
 			$data['status'] = true;
-			$data['pesan'] = 'Sukses update Master User';
+			$data['pesan'] = 'Sukses update Master Pegawai';
 		}
 		
 		echo json_encode($data);
 	}
 
-	public function delete_pengguna($id)
+	/**
+	 * Hanya melakukan softdelete saja
+	 * isi kolom updated_at dengan datetime now()
+	 */
+	public function delete_pegawai()
 	{
-		$this->user->delete_by_id($id);
-		echo json_encode(array(
-			"status" => TRUE,
-			"pesan" => 'Data Master Supplier No.'.$id.' Berhasil dihapus',
-			));
+		$id = $this->input->post('id');
+		$del = $this->m_pegawai->softdelete_by_id($id);
+		if($del) {
+			$retval['status'] = TRUE;
+			$retval['pesan'] = 'Data Master Pegawai Berhasil dihapus';
+		}else{
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Data Master Pegawai Gagal dihapus';
+		}
+
+		echo json_encode($retval);
 	}
 
-	public function edit_status_user($id)
+	public function edit_status_pegawai()
 	{
 		$input_status = $this->input->post('status');
 		// jika aktif maka di set ke nonaktif / "0"
 		$status = ($input_status == "aktif") ? $status = 0 : $status = 1;
 			
-		$input = array('status' => $status);
+		$input = ['is_aktif' => $status];
 
-		$where = ['id' => $id];
+		$where = ['id' => $this->input->post('id')];
 
-		$this->m_user->update($where, $input);
+		$this->m_pegawai->update($where, $input);
 
 		if ($this->db->affected_rows() == '1') {
 			$data = array(
 				'status' => TRUE,
-				'pesan' => "Status User berhasil di ubah.",
+				'pesan' => "Status Pegawai berhasil di ubah.",
 			);
 		}else{
 			$data = array(

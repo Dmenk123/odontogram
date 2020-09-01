@@ -84,6 +84,6 @@ class M_global extends CI_Model
         $q =$this->db->select_max($field);
         $q = $this->db->get($table); 
         return $q->row();
-    }
-	
+	}
+		
 }
