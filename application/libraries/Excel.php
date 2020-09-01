@@ -1,17 +1,31 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once APPPATH . "/third_party/PHPExcel.php";
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class Excel extends PHPExcel
+class Excel
 {
-	public function __construct()
+	public function spreadsheet_obj()
 	{
-		parent::__construct();
+		$spreadsheet = new Spreadsheet();
+		return $spreadsheet;
 	}
 
-	public function number_format()
+	public function xlsx_obj($obj)
 	{
-		$number_format = new PHPExcel_Style_NumberFormat();
-		return $number_format;
+		if($obj) {
+			$xlsx = new Xlsx($obj);
+		}else{
+			$xlsx = new Xlsx();
+		}
+		
+		return $xlsx;
+	}
+
+	public function number_format_obj()
+	{
+		$format = new NumberFormat;
+		return $format;
 	}
 }

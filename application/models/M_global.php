@@ -52,9 +52,15 @@ class M_global extends CI_Model
         return $q->row();
     }
 
-    function multi_row($select=NULL,$array_where=NULL,$table=NULL, $join= NULL, $order_by=NULL){
-        $this->db->select($select);
+    function multi_row($select=NULL, $array_where=NULL, $table=NULL, $join= NULL, $order_by=NULL){
+		if($select != null) {
+			$this->db->select($select);
+		}else{
+			$this->db->select('*');
+		}
+       
 		$this->db->from($table);
+
 		if(isset($array_where)){
         	$this->db->where($array_where);
 		}

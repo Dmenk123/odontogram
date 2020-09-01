@@ -30,6 +30,8 @@
           <div class="kt-portlet__head-wrapper">
             <div class="kt-portlet__head-actions">
               &nbsp;
+              <?= $this->template_view->getOpsiButton(); ?>
+              &nbsp;
               <?= $this->template_view->getAddButton(true, 'add_pegawai'); ?>
             </div>
           </div>
@@ -48,7 +50,7 @@
               <th>Telp 1</th>
               <th>Telp 2</th>
               <th>Status</th>
-              <th style="width: 10%;">Aksi</th>
+              <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>
         </table>

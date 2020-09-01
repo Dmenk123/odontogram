@@ -15,6 +15,11 @@ class Master_pegawai extends CI_Controller {
 		$this->load->model('m_global');
 	}
 
+	public function cok()
+	{
+		$this->excel->generate_excel();
+	}
+
 	public function index()
 	{
 		$id_user = $this->session->userdata('id_user'); 
@@ -67,7 +72,7 @@ class Master_pegawai extends CI_Controller {
 			
 			$str_aksi = '
 				<div class="btn-group">
-					<button type="button" class="btn btn-md btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
+					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
 						<button class="dropdown-item" onclick="edit_pegawai(\''.$peg->id.'\')">
 							<i class="la la-pencil"></i> Edit Pegawai
@@ -198,10 +203,10 @@ class Master_pegawai extends CI_Controller {
 			return;
 		}
 
-		$nama = clean_string(trim($this->input->post('nama')));
-		$alamat = clean_string(trim($this->input->post('alamat')));
-		$telp1 = clean_string(trim($this->input->post('telp1')));
-		$telp2 = clean_string(trim($this->input->post('telp2')));
+		$nama = trim($this->input->post('nama'));
+		$alamat = trim($this->input->post('alamat'));
+		$telp1 = trim($this->input->post('telp1'));
+		$telp2 = trim($this->input->post('telp2'));
 		$jabatan = $this->input->post('jabatan');
 
 		$this->db->trans_begin();
@@ -273,6 +278,77 @@ class Master_pegawai extends CI_Controller {
 		}
 
 		echo json_encode($data);
+	}
+
+	public function import_excel()
+	{
+		$select = "m_pegawai.*, m_jabatan.nama as nama_jabatan";
+		$where = ['m_pegawai.deleted_at' => null];
+		$table = 'm_pegawai';
+		$join = [ 
+			[
+				'table' => 'm_jabatan',
+				'on'	=> 'm_pegawai.id_jabatan = m_jabatan.id'
+			]
+		];
+
+		$data = $this->m_global->multi_row($select, $where, $table, $join, 'm_pegawai.kode');
+		
+		$spreadsheet = $this->excel->spreadsheet_obj();
+		$writer = $this->excel->xlsx_obj($spreadsheet);
+		$number_format_obj = $this->excel->number_format_obj();
+		
+		$spreadsheet
+			->getActiveSheet()
+			->getStyle('E2:E1000')
+			->getNumberFormat()
+			->setFormatCode($number_format_obj::FORMAT_NUMBER);
+
+		$spreadsheet
+			->getActiveSheet()
+			->getStyle('F2:F1000')
+			->getNumberFormat()
+			->setFormatCode($number_format_obj::FORMAT_NUMBER);	
+		
+		$sheet = $spreadsheet->getActiveSheet();
+
+		$sheet
+			->setCellValue('A1', 'Kode')
+			->setCellValue('B1', 'Nama')
+			->setCellValue('C1', 'Alamat')
+			->setCellValue('D1', 'Jabatan')
+			->setCellValue('E1', 'Telp. 1')
+			->setCellValue('F1', 'Telp. 2')
+			->setCellValue('G1', 'Status Aktif');
+		
+		$startRow = 2;
+		$row = $startRow;
+		if($data){
+			foreach ($data as $key => $val) {
+				$sts = ($val->is_aktif = '1') ? 'Aktif' : 'Non Aktif';
+				
+				$sheet
+					->setCellValue("A{$row}", $val->kode)
+					->setCellValue("B{$row}", $val->nama)
+					->setCellValue("C{$row}", $val->alamat)
+					->setCellValue("D{$row}", $val->nama_jabatan)
+					->setCellValue("E{$row}", $val->telp_1)
+					->setCellValue("F{$row}", $val->telp_2)
+					->setCellValue("G{$row}", $sts);
+				$row++;
+			}
+			$endRow = $row - 1;
+		}
+		
+		
+		$filename = 'master-pegawai-'.time();
+		
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+		header('Cache-Control: max-age=0');
+
+		$writer->save('php://output');
+		
 	}
 	// ===============================================
 	private function rule_validasi()
