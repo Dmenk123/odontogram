@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 03/09/2020 23:56:50
+ Date: 04/09/2020 00:13:56
 */
 
 SET NAMES utf8mb4;
@@ -93,6 +93,10 @@ CREATE TABLE `m_pegawai`  (
 -- ----------------------------
 -- Records of m_pegawai
 -- ----------------------------
+INSERT INTO `m_pegawai` VALUES ('1', '1', 'PEG-00001', 'MU\'IN', 'AS', '12121212', NULL, '2020-09-04 00:13:32', NULL, NULL, 1);
+INSERT INTO `m_pegawai` VALUES ('2', '2', 'PEG-00002', 'BAMBANG GANTENG', 'JL. RAYA MILIK BAMBANG', '081277171821827817', '121212121212', '2020-09-04 00:13:32', NULL, NULL, 1);
+INSERT INTO `m_pegawai` VALUES ('3', '2', 'PEG-00003', 'ANTON BUBUT', 'JL. RAYA MILIK BAMBANG', '0812131212', '12781821', '2020-09-04 00:13:32', NULL, NULL, 1);
+INSERT INTO `m_pegawai` VALUES ('4', '1', 'PEG-00004', 'RUDI SEDATI', 'JL. RAYA MILIK BAMBANG', '0721213812', '121212121212', '2020-09-04 00:13:32', NULL, NULL, 1);
 
 -- ----------------------------
 -- Table structure for m_role

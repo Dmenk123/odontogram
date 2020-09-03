@@ -259,15 +259,15 @@ function export_data_excel(){
                 swal.fire("Sukses!!", data.pesan, "success");
                 $("#btnSaveExport").prop("disabled", false);
                 $('#btnSaveExport').text('Simpan');
-                reset_modal_form_ekspor();
-                $(".modal").modal('hide');
             }else {
                 swal.fire("Gagal!!", data.pesan, "error");
                 $("#btnSaveExport").prop("disabled", false);
                 $('#btnSaveExport').text('Simpan');
-                reset_modal_form_ekspor();
-                $(".modal").modal('hide');
             }
+
+            reset_modal_form_ekspor();
+            $(".modal").modal('hide');
+            table.ajax.reload();
         },
         error: function (e) {
             console.log("ERROR : ", e);
@@ -276,6 +276,7 @@ function export_data_excel(){
 
             reset_modal_form_ekspor();
             $(".modal").modal('hide');
+            table.ajax.reload();
         }
     });
 }

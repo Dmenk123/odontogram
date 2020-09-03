@@ -362,7 +362,7 @@ class Master_pegawai extends CI_Controller {
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 
 		$file_mimes = ['text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-
+		$retval = [];
 		if(isset($_FILES['file_excel']['name']) && in_array($_FILES['file_excel']['type'], $file_mimes)) {
 			$arr_file = explode('.', $_FILES['file_excel']['name']);
 			$extension = end($arr_file);
@@ -379,7 +379,7 @@ class Master_pegawai extends CI_Controller {
 				
 				if ($sheetData[$i][0] == '' || $sheetData[$i][1] == '' || $sheetData[$i][2] == '' || $sheetData[$i][3] == '') {
 					
-					if($sheetData[$i] == 0) {
+					if($i == 0) {
 						$flag_kosongan = true;
 						$status_ekspor = false;
 						$pesan = "Data Kosong...";
@@ -402,7 +402,7 @@ class Master_pegawai extends CI_Controller {
 				if($id_jabatan){
 					$data['id_jabatan'] = $id_jabatan->id;
 				}else{
-					if($sheetData[$i] == 0) {
+					if($i == 0) {
 						continue;
 					}else{
 						$flag_kosongan = false;
@@ -440,19 +440,13 @@ class Master_pegawai extends CI_Controller {
 				}
 				
 				$this->db->trans_begin();
-
+				
+				#### truncate loh !!!!!!
+				$this->m_pegawai->trun_master_pegawai();
+				
 				foreach ($retval as $keys => $vals) {
-					## skip array pertama, soale cuman header saja ##
-					if($keys == 0) {
-						continue;
-					}
-
-					#### truncate loh !!!!!!
-					$this->m_pegawai->trun_master_pegawai();
-
 					#### simpan
 					$vals['id'] = $this->m_pegawai->get_max_id_pegawai();
-					var_dump($vals);exit;
 					$simpan = $this->m_pegawai->save($vals);
 				}
 
