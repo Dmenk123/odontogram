@@ -177,4 +177,22 @@ class M_Pegawai extends CI_Model
 		} 
 	}
 
+	public function get_id_jabatan_by_name($jabatan)
+	{
+		$this->db->select('id');
+		$this->db->from('m_jabatan');
+		$this->db->where('LCASE(nama)', $jabatan);
+		$q = $this->db->get();
+		if ($q) {
+			return $q->row();
+		}else{
+			return false;
+		}
+	}
+
+	public function trun_master_pegawai()
+	{
+		$this->db->query("truncate table m_pegawai");
+	}
+
 }

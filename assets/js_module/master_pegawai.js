@@ -182,7 +182,6 @@ function save()
     });
 }
 
-
 function delete_pegawai(id){
     swalConfirmDelete.fire({
         title: 'Hapus Data Pegawai ?',
@@ -229,4 +228,54 @@ function reset_modal_form()
     $('div.form-group').children().removeClass("is-invalid invalid-feedback");
     $('span.help-block').text('');
     $('#div_pass_lama').css("display","none");
+}
+
+function reset_modal_form_ekspor()
+{
+    $('#form_export_excel')[0].reset();
+}
+
+function export_excel(){
+    $('#modal_export_excel').modal('show');
+	$('#modal_export_title').text('Export data pegawai'); 
+}
+
+function export_data_excel(){
+    var form = $('#form_export_excel')[0];
+    var data = new FormData(form);
+    
+    $("#btnSaveExport").prop("disabled", true);
+    $('#btnSaveExport').text('Export Data');
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: base_url + 'master_pegawai/export_data_master',
+        data: data,
+        dataType: "JSON",
+        processData: false, // false, it prevent jQuery form transforming the data into a query string
+        contentType: false, 
+        success: function (data) {
+            if(data.status) {
+                swal.fire("Sukses!!", data.pesan, "success");
+                $("#btnSaveExport").prop("disabled", false);
+                $('#btnSaveExport').text('Simpan');
+                reset_modal_form_ekspor();
+                $(".modal").modal('hide');
+            }else {
+                swal.fire("Gagal!!", data.pesan, "error");
+                $("#btnSaveExport").prop("disabled", false);
+                $('#btnSaveExport').text('Simpan');
+                reset_modal_form_ekspor();
+                $(".modal").modal('hide');
+            }
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+            $("#btnSaveExport").prop("disabled", false);
+            $('#btnSaveExport').text('Simpan');
+
+            reset_modal_form_ekspor();
+            $(".modal").modal('hide');
+        }
+    });
 }

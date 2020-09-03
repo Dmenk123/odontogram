@@ -2,7 +2,9 @@
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Reader;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
 
 class Excel
 {
@@ -27,5 +29,18 @@ class Excel
 	{
 		$format = new NumberFormat;
 		return $format;
+	}
+
+	public function reader_obj()
+	{
+		$reader = new Reader();
+		$reader->setReadDataOnly(true);
+		return $reader;
+	}
+
+	public function csv_reader_obj()
+	{
+		$csv = new Csv();
+		return $csv;
 	}
 }

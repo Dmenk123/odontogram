@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 01/09/2020 23:46:09
+ Date: 03/09/2020 23:56:50
 */
 
 SET NAMES utf8mb4;
@@ -65,9 +65,11 @@ INSERT INTO `m_menu` VALUES (2, 0, 'Setting (Administrator)', 'Setting', NULL, '
 INSERT INTO `m_menu` VALUES (3, 2, 'Setting Menu', 'Setting Menu', 'set_menu', 'flaticon-grid-menu', 1, 2, 2, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (4, 2, 'Setting Role', 'Setting Role', 'set_role', 'flaticon-network', 1, 2, 1, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (5, 2, 'bu thak ndogmu', 'aosasi', 'asas', '', 1, 2, 3, 1, 1, 1);
-INSERT INTO `m_menu` VALUES (6, 0, 'Master Data', 'Master Data', '', 'flaticon-folder-1', 1, 1, 2, 0, 0, 0);
-INSERT INTO `m_menu` VALUES (7, 6, 'Data User', 'Data User', 'master_user', 'flaticon-users', 1, 2, 1, 1, 1, 1);
-INSERT INTO `m_menu` VALUES (8, 6, 'Data Pegawai', 'Master Data Pegawai', 'master_pegawai', 'flaticon-user', 1, 2, 2, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (6, 0, 'Master', 'Master', '', 'flaticon-folder-1', 1, 1, 2, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (7, 10, 'Data User', 'Data User', 'master_user', 'flaticon-users', 1, 3, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (8, 10, 'Data Pegawai', 'Master Data Pegawai', 'master_pegawai', 'flaticon-user', 1, 3, 2, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (9, 6, 'Data', 'Data', '', 'flaticon-tabs', 1, 2, 1, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (10, 6, 'User', 'User', '', 'flaticon-users-1', 1, 2, 3, 0, 0, 0);
 
 -- ----------------------------
 -- Table structure for m_pegawai
@@ -91,8 +93,6 @@ CREATE TABLE `m_pegawai`  (
 -- ----------------------------
 -- Records of m_pegawai
 -- ----------------------------
-INSERT INTO `m_pegawai` VALUES ('1', '1', 'PEG-00001', 'Mu\'in', 'as', '12121212', '', '2020-09-01 00:09:41', NULL, NULL, 1);
-INSERT INTO `m_pegawai` VALUES ('2', '2', 'PEG-00002', 'Bambang Ganteng', 'Jl. raya milik bambang', '081277171821827817', '121212121212', '2020-09-01 11:32:19', NULL, NULL, 1);
 
 -- ----------------------------
 -- Table structure for m_role
@@ -134,7 +134,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-01 21:30:23', '2020-08-20 22:17:59', '2020-09-01 21:30:23');
+INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-03 21:39:04', '2020-08-20 22:17:59', '2020-09-03 21:39:04');
 INSERT INTO `m_user` VALUES ('2', 2, NULL, 'USR-00002', 'cek', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, NULL, '2020-08-29 23:57:06', '2020-08-30 01:05:23');
 
 -- ----------------------------
@@ -161,6 +161,8 @@ INSERT INTO `t_role_menu` VALUES (2, 3, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (5, 3, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (1, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (6, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (9, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (10, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (7, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (8, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);

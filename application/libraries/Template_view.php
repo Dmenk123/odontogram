@@ -151,7 +151,7 @@ class Template_view extends CI_Controller {
 					if($jumlahParent2->jumlah > 0) {
 						$toggleMenu2 = '';
 						$iconTurun2 = '<i class="kt-menu__ver-arrow la la-angle-right"></i>';
-						$link2 = "#";
+						$link2 = "javascript:;";
 						$iconPanah1 = "";
 
 					}else{
@@ -162,13 +162,13 @@ class Template_view extends CI_Controller {
 					}
 
 					if($dataActive->tingkat=='4' && $dataActive->id_ataskedua==$dataMenuDua->id){
-						$active2="active";
+						$active2="active kt-menu__item--open";
 					}else{
 						if($dataActive->tingkat=='3' && $dataActive->id_ataspertama==$dataMenuDua->id){
-							$active2="active";
+							$active2="active kt-menu__item--open";
 						}else{
 							if($dataActive->tingkat=='2' && $dataActive->id==$dataMenuDua->id){
-								$active2="active";
+								$active2="active kt-menu__item--open";
 							}else{
 								$active2="";
 							}
@@ -224,7 +224,7 @@ class Template_view extends CI_Controller {
 							if($jumlahParent3->jumlah > 0) {
 								$toggleMenu3 = '';
 								$iconTurun3 = '<i class="kt-menu__ver-arrow la la-angle-right"></i>';
-								$link3 = "#";
+								$link3 = "javascript:;";
 								$iconPanah2 = '';
 
 							}else{
@@ -356,7 +356,9 @@ class Template_view extends CI_Controller {
 		if($content['modal']){
 			$data['modal']         = $this->_ci->load->view($content['modal'], $data, TRUE);
 		}
-		
+
+		//global modal for upload excel to master
+		$data['modal_excel_upload'] = $this->_ci->load->view('template/modal_upload_excel', $data, TRUE);
         
 		$data['header']     = $this->_ci->load->view('template/v_header', $data, TRUE);
 		$data['navbar']     = $this->_ci->load->view('template/v_navbar', $data, TRUE);
@@ -508,9 +510,9 @@ class Template_view extends CI_Controller {
 				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/template_excel">
 					<i class="la la-trello"></i> Template Excel
 				</a>
-				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/export_excel">
+				<button class="dropdown-item" onclick="export_excel()">
 					<i class="la la-arrow-circle-o-up"></i> Export Excel
-				</a>
+				</button>
 				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/import_excel">
 					<i class="la la-arrow-circle-o-down"></i> Import Excel
 				</a>

@@ -15,11 +15,6 @@ class Master_pegawai extends CI_Controller {
 		$this->load->model('m_global');
 	}
 
-	public function cok()
-	{
-		$this->excel->generate_excel();
-	}
-
 	public function index()
 	{
 		$id_user = $this->session->userdata('id_user'); 
@@ -350,6 +345,147 @@ class Master_pegawai extends CI_Controller {
 		$writer->save('php://output');
 		
 	}
+
+	public function template_excel()
+	{
+		$file_url = base_url().'files/template_dokumen/template_master_pegawai.xlsx';
+		header('Content-Type: application/octet-stream');
+		header("Content-Transfer-Encoding: Binary"); 
+		header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\""); 
+		readfile($file_url); 
+	}
+
+
+	public function export_data_master()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+
+		$file_mimes = ['text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+		if(isset($_FILES['file_excel']['name']) && in_array($_FILES['file_excel']['type'], $file_mimes)) {
+			$arr_file = explode('.', $_FILES['file_excel']['name']);
+			$extension = end($arr_file);
+			if('csv' == $extension){
+				$reader = $this->excel->csv_reader_obj();
+			} else {
+				$reader = $this->excel->reader_obj();
+			}
+
+			$spreadsheet = $reader->load($_FILES['file_excel']['tmp_name']);
+			$sheetData = $spreadsheet->getActiveSheet()->toArray();
+			
+			for ($i=0; $i <count($sheetData); $i++) { 
+				
+				if ($sheetData[$i][0] == '' || $sheetData[$i][1] == '' || $sheetData[$i][2] == '' || $sheetData[$i][3] == '') {
+					
+					if($sheetData[$i] == 0) {
+						$flag_kosongan = true;
+						$status_ekspor = false;
+						$pesan = "Data Kosong...";
+					}else{
+						$flag_kosongan = false;
+						$status_ekspor = true;
+						$pesan = "Data Sukses Di Ekspor";
+					}
+
+					break;
+				}
+
+				$data['kode'] = strtoupper(strtolower(trim($sheetData[$i][0])));
+				$data['nama'] = strtoupper(strtolower(trim($sheetData[$i][1])));
+				$data['alamat'] = strtoupper(strtolower(trim($sheetData[$i][2])));
+				
+				#jabatan
+				$id_jabatan = $this->m_pegawai->get_id_jabatan_by_name(strtolower(trim($sheetData[$i][3])));
+				
+				if($id_jabatan){
+					$data['id_jabatan'] = $id_jabatan->id;
+				}else{
+					if($sheetData[$i] == 0) {
+						continue;
+					}else{
+						$flag_kosongan = false;
+						$status_ekspor = false;
+						$pesan = "Terjadi Kesalahan Dalam Penulisan Nama Jabatan, Mohon Cek Kembali";
+						break;
+					}
+				}
+				#end jabatan
+
+				if($sheetData[$i][4] != ''){
+					$data['telp_1'] = trim($sheetData[$i][4]);
+				}
+
+				if($sheetData[$i][5] != ''){
+					$data['telp_2'] = trim($sheetData[$i][5]);
+				}
+
+				$data['created_at'] = $timestamp;
+				$data['is_aktif'] = 1;
+
+				$retval[] = $data;
+			}
+
+			if($status_ekspor) {
+				// var_dump(count($retval));exit;
+				## jika array maks cuma 1, maka batalkan (soalnya hanya header saja disana) ##
+				if(count($retval) <= 1) {
+					echo json_encode([
+						'status' => false,
+						'pesan'	=> 'Ekspor dibatalkan, Data Kosong...'
+					]);
+
+					return;
+				}
+				
+				$this->db->trans_begin();
+
+				foreach ($retval as $keys => $vals) {
+					## skip array pertama, soale cuman header saja ##
+					if($keys == 0) {
+						continue;
+					}
+
+					#### truncate loh !!!!!!
+					$this->m_pegawai->trun_master_pegawai();
+
+					#### simpan
+					$vals['id'] = $this->m_pegawai->get_max_id_pegawai();
+					var_dump($vals);exit;
+					$simpan = $this->m_pegawai->save($vals);
+				}
+
+				if ($this->db->trans_status() === FALSE){
+					$this->db->trans_rollback();
+					$status = false;
+					$pesan = 'Gagal melakukan ekspor, cek ulang dalam melakukan pengisian data excel';
+				}else{
+					$this->db->trans_commit();
+					$status = true;
+					$pesan = 'Sukses ekspor data pegawai';
+				}
+
+				echo json_encode([
+					'status' => $status,
+					'pesan'	=> $pesan
+				]);
+				
+			}else{
+				echo json_encode([
+					'status' => false,
+					'pesan'	=> $pesan
+				]);
+			}
+
+		}else{
+			echo json_encode([
+				'status' => false,
+				'pesan'	=> 'Terjadi Kesalahan dalam upload file. pastikan file adalah file excel .xlsx/.xls'
+			]);
+		}
+	}
+
 	// ===============================================
 	private function rule_validasi()
 	{
