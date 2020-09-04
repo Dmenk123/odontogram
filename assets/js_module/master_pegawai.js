@@ -73,6 +73,7 @@ $(document).ready(function() {
 
     $(".modal").on("hidden.bs.modal", function(){
         reset_modal_form();
+        reset_modal_form_ekspor();
     });
 });	
 
@@ -233,6 +234,7 @@ function reset_modal_form()
 function reset_modal_form_ekspor()
 {
     $('#form_export_excel')[0].reset();
+    $('#label_file_excel').text('Pilih file excel yang akan diupload');
 }
 
 function export_excel(){

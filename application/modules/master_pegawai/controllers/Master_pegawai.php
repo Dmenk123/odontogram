@@ -355,7 +355,6 @@ class Master_pegawai extends CI_Controller {
 		readfile($file_url); 
 	}
 
-
 	public function export_data_master()
 	{
 		$obj_date = new DateTime();
@@ -478,6 +477,29 @@ class Master_pegawai extends CI_Controller {
 				'pesan'	=> 'Terjadi Kesalahan dalam upload file. pastikan file adalah file excel .xlsx/.xls'
 			]);
 		}
+	}
+
+	public function cetak_data()
+	{
+		$select = "m_pegawai.*, m_jabatan.nama as nama_jabatan";
+		$where = ["m_pegawai.deleted_at is null"];
+		$join = [ 
+			[
+				'table' => 'm_jabatan',
+				'on'	=> 'm_pegawai.id_jabatan = m_jabatan.id'
+			]
+		];
+		$orderby = "m_pegawai.kode asc";
+		$data = $this->m_global->multi_row($select, $where, 'm_pegawai', $join, $orderby);
+		$retval = [
+			'data' => $data,
+			'title' => 'Master Data Pegawai'
+		];
+
+		// $this->load->view('pdf', $retval);
+		$html = $this->load->view('pdf', $retval, true);
+	    $filename = 'master_data_pegawai_'.time();
+	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'landscape');
 	}
 
 	// ===============================================

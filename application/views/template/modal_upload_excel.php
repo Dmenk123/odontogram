@@ -20,7 +20,7 @@
               <div></div>
               <div class="custom-file">
                 <input type="file" class="custom-file-input" id="file_excel" name="file_excel" accept=".xls,.xlsx">
-                <label class="custom-file-label" for="customFile">Pilih file excel yang akan diupload</label>
+                <label class="custom-file-label" id="label_file_excel" for="customFile">Pilih file excel yang akan diupload</label>
               </div>
             </div>
           </div>

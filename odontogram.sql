@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 04/09/2020 00:13:56
+ Date: 05/09/2020 00:19:07
 */
 
 SET NAMES utf8mb4;
@@ -68,8 +68,10 @@ INSERT INTO `m_menu` VALUES (5, 2, 'bu thak ndogmu', 'aosasi', 'asas', '', 1, 2,
 INSERT INTO `m_menu` VALUES (6, 0, 'Master', 'Master', '', 'flaticon-folder-1', 1, 1, 2, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (7, 10, 'Data User', 'Data User', 'master_user', 'flaticon-users', 1, 3, 1, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (8, 10, 'Data Pegawai', 'Master Data Pegawai', 'master_pegawai', 'flaticon-user', 1, 3, 2, 1, 1, 1);
-INSERT INTO `m_menu` VALUES (9, 6, 'Data', 'Data', '', 'flaticon-tabs', 1, 2, 1, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (9, 6, 'Data', 'Data', '', 'flaticon-tabs', 1, 2, 2, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (10, 6, 'User', 'User', '', 'flaticon-users-1', 1, 2, 3, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (11, 6, 'Klinik', 'Klinik', '', 'flaticon-medal', 1, 2, 1, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (12, 11, 'Profil Klinik', 'Profil Klinik', 'klinik_profile', 'flaticon-profile', 1, 3, 1, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for m_pegawai
@@ -97,6 +99,36 @@ INSERT INTO `m_pegawai` VALUES ('1', '1', 'PEG-00001', 'MU\'IN', 'AS', '12121212
 INSERT INTO `m_pegawai` VALUES ('2', '2', 'PEG-00002', 'BAMBANG GANTENG', 'JL. RAYA MILIK BAMBANG', '081277171821827817', '121212121212', '2020-09-04 00:13:32', NULL, NULL, 1);
 INSERT INTO `m_pegawai` VALUES ('3', '2', 'PEG-00003', 'ANTON BUBUT', 'JL. RAYA MILIK BAMBANG', '0812131212', '12781821', '2020-09-04 00:13:32', NULL, NULL, 1);
 INSERT INTO `m_pegawai` VALUES ('4', '1', 'PEG-00004', 'RUDI SEDATI', 'JL. RAYA MILIK BAMBANG', '0721213812', '121212121212', '2020-09-04 00:13:32', NULL, NULL, 1);
+
+-- ----------------------------
+-- Table structure for m_profil_klinik
+-- ----------------------------
+DROP TABLE IF EXISTS `m_profil_klinik`;
+CREATE TABLE `m_profil_klinik`  (
+  `id` int(11) NOT NULL,
+  `nama_klinik` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kelurahan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kecamatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kota` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kode_pos` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `provinsi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `telp` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `nama_dokter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `sip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `gambar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_profil_klinik
+-- ----------------------------
+INSERT INTO `m_profil_klinik` VALUES (1, 'Klinik Tong Fang', 'asasjaksjak aska sa', 'ngagel', 'wonokromo', 'surabaya', '60245', 'jawa timur', '1921212', 'asas@asas.com', 'tongfang.com', 'mat drai', '121212', 'logo.png', '2020-09-05 00:04:03', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_role
@@ -138,7 +170,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-03 21:39:04', '2020-08-20 22:17:59', '2020-09-03 21:39:04');
+INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-04 20:33:15', '2020-08-20 22:17:59', '2020-09-04 20:33:15');
 INSERT INTO `m_user` VALUES ('2', 2, NULL, 'USR-00002', 'cek', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, NULL, '2020-08-29 23:57:06', '2020-08-30 01:05:23');
 
 -- ----------------------------
@@ -165,6 +197,8 @@ INSERT INTO `t_role_menu` VALUES (2, 3, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (5, 3, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (1, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (6, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (11, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (12, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (9, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (10, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (7, 1, 1, 1, 1);

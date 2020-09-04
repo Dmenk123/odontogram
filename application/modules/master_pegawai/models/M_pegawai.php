@@ -152,17 +152,17 @@ class M_Pegawai extends CI_Model
 	}
 
 	function get_kode_pegawai(){
-            $q = $this->db->query("select MAX(RIGHT(kode,5)) as kode_max from m_pegawai");
-            $kd = "";
-            if($q->num_rows()>0){
-                foreach($q->result() as $k){
-                    $tmp = ((int)$k->kode_max)+1;
-                    $kd = sprintf("%05s", $tmp);
-                }
-            }else{
-                $kd = "00001";
-            }
-            return "PEG-".$kd;
+		$q = $this->db->query("select MAX(RIGHT(kode,5)) as kode_max from m_pegawai");
+		$kd = "";
+		if($q->num_rows()>0){
+			foreach($q->result() as $k){
+				$tmp = ((int)$k->kode_max)+1;
+				$kd = sprintf("%05s", $tmp);
+			}
+		}else{
+			$kd = "00001";
+		}
+		return "PEG-".$kd;
 	}
 	
 	public function get_max_id_pegawai()
