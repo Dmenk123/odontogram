@@ -1,5 +1,5 @@
 ###################
-What is CodeIgniter tes coba coba
+What is CodeIgniter tes tes
 ###################
 
 CodeIgniter is an Application Development Framework - a toolkit - for people
