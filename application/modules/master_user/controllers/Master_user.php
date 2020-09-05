@@ -269,6 +269,16 @@ class Master_user extends CI_Controller {
 
 		echo json_encode($data);
 	}
+
+	public function template_excel()
+	{
+		$file_url = base_url().'files/template_dokumen/template_master_user.xlsx';
+		header('Content-Type: application/octet-stream');
+		header("Content-Transfer-Encoding: Binary"); 
+		header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\""); 
+		readfile($file_url); 
+	}
+
 	// ===============================================
 	private function rule_validasi($is_update=false)
 	{

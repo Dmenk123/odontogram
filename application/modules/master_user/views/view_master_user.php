@@ -6,7 +6,7 @@
     <div class="kt-container  kt-container--fluid ">
       <div class="kt-subheader__main">
         <h3 class="kt-subheader__title">
-          <?= $title ?>
+          <?= $this->template_view->nama('judul').' - '.$title; ?>
         </h3>
       </div>
     </div>
@@ -29,6 +29,8 @@
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
             <div class="kt-portlet__head-actions">
+              &nbsp;
+              <?= $this->template_view->getOpsiButton(); ?>
               &nbsp;
               <?= $this->template_view->getAddButton(true, 'add_menu'); ?>
             </div>

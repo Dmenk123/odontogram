@@ -1,14 +1,14 @@
 
-<div class="modal fade modal_export_excel" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_export_excel">
+<div class="modal fade modal_import_excel" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_import_excel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal_export_title"></h5>
+        <h5 class="modal-title" id="modal_import_title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         </button>
       </div>
       <div class="modal-body">
-        <form class="kt-form" id="form_export_excel">
+        <form class="kt-form" id="form_import_excel">
           <div class="kt-portlet__body">
           <div class="form-group">
               <label>Download Template File Excel</label>
@@ -28,7 +28,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary" id="btnSaveExport" onclick="export_data_excel()">Export</button>
+        <button type="button" class="btn btn-primary" id="btnSaveimport" onclick="import_data_excel()">import</button>
       </div>
     </div>
   </div>

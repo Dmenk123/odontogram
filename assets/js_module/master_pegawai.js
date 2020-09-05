@@ -73,7 +73,7 @@ $(document).ready(function() {
 
     $(".modal").on("hidden.bs.modal", function(){
         reset_modal_form();
-        reset_modal_form_ekspor();
+        reset_modal_form_import();
     });
 });	
 
@@ -231,27 +231,27 @@ function reset_modal_form()
     $('#div_pass_lama').css("display","none");
 }
 
-function reset_modal_form_ekspor()
+function reset_modal_form_import()
 {
-    $('#form_export_excel')[0].reset();
+    $('#form_import_excel')[0].reset();
     $('#label_file_excel').text('Pilih file excel yang akan diupload');
 }
 
-function export_excel(){
-    $('#modal_export_excel').modal('show');
-	$('#modal_export_title').text('Export data pegawai'); 
+function import_excel(){
+    $('#modal_import_excel').modal('show');
+	$('#modal_import_title').text('Import data pegawai'); 
 }
 
-function export_data_excel(){
-    var form = $('#form_export_excel')[0];
+function import_data_excel(){
+    var form = $('#form_import_excel')[0];
     var data = new FormData(form);
     
-    $("#btnSaveExport").prop("disabled", true);
-    $('#btnSaveExport').text('Export Data');
+    $("#btnSaveImport").prop("disabled", true);
+    $('#btnSaveImport').text('Import Data');
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: base_url + 'master_pegawai/export_data_master',
+        url: base_url + 'master_pegawai/import_data_master',
         data: data,
         dataType: "JSON",
         processData: false, // false, it prevent jQuery form transforming the data into a query string
@@ -259,24 +259,24 @@ function export_data_excel(){
         success: function (data) {
             if(data.status) {
                 swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSaveExport").prop("disabled", false);
-                $('#btnSaveExport').text('Simpan');
+                $("#btnSaveImport").prop("disabled", false);
+                $('#btnSaveImport').text('Simpan');
             }else {
                 swal.fire("Gagal!!", data.pesan, "error");
-                $("#btnSaveExport").prop("disabled", false);
-                $('#btnSaveExport').text('Simpan');
+                $("#btnSaveImport").prop("disabled", false);
+                $('#btnSaveImport').text('Simpan');
             }
 
-            reset_modal_form_ekspor();
+            reset_modal_form_import();
             $(".modal").modal('hide');
             table.ajax.reload();
         },
         error: function (e) {
             console.log("ERROR : ", e);
-            $("#btnSaveExport").prop("disabled", false);
-            $('#btnSaveExport').text('Simpan');
+            $("#btnSaveImport").prop("disabled", false);
+            $('#btnSaveImport').text('Simpan');
 
-            reset_modal_form_ekspor();
+            reset_modal_form_import();
             $(".modal").modal('hide');
             table.ajax.reload();
         }

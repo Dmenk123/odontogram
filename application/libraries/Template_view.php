@@ -510,11 +510,11 @@ class Template_view extends CI_Controller {
 				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/template_excel">
 					<i class="la la-trello"></i> Template Excel
 				</a>
-				<button class="dropdown-item" onclick="export_excel()">
-					<i class="la la-arrow-circle-o-up"></i> Export Excel
+				<button class="dropdown-item" onclick="import_excel()">
+					<i class="la la-arrow-circle-o-up"></i> Import Excel
 				</button>
-				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/import_excel">
-					<i class="la la-arrow-circle-o-down"></i> Import Excel
+				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/export_excel">
+					<i class="la la-arrow-circle-o-down"></i> Export Excel
 				</a>
 				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/cetak_data">
 					<i class="la la-print"></i> Cetak

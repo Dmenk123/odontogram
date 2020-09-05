@@ -275,7 +275,7 @@ class Master_pegawai extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	public function import_excel()
+	public function export_excel()
 	{
 		$select = "m_pegawai.*, m_jabatan.nama as nama_jabatan";
 		$where = ['m_pegawai.deleted_at' => null];
@@ -295,15 +295,9 @@ class Master_pegawai extends CI_Controller {
 		
 		$spreadsheet
 			->getActiveSheet()
-			->getStyle('E2:E1000')
+			->getStyle('A1:G1000')
 			->getNumberFormat()
-			->setFormatCode($number_format_obj::FORMAT_NUMBER);
-
-		$spreadsheet
-			->getActiveSheet()
-			->getStyle('F2:F1000')
-			->getNumberFormat()
-			->setFormatCode($number_format_obj::FORMAT_NUMBER);	
+			->setFormatCode($number_format_obj::FORMAT_TEXT);
 		
 		$sheet = $spreadsheet->getActiveSheet();
 
@@ -327,8 +321,8 @@ class Master_pegawai extends CI_Controller {
 					->setCellValue("B{$row}", $val->nama)
 					->setCellValue("C{$row}", $val->alamat)
 					->setCellValue("D{$row}", $val->nama_jabatan)
-					->setCellValue("E{$row}", $val->telp_1)
-					->setCellValue("F{$row}", $val->telp_2)
+					->setCellValue("E{$row}", strval($val->telp_1))
+					->setCellValue("F{$row}", strval($val->telp_2))
 					->setCellValue("G{$row}", $sts);
 				$row++;
 			}
@@ -355,13 +349,14 @@ class Master_pegawai extends CI_Controller {
 		readfile($file_url); 
 	}
 
-	public function export_data_master()
+	public function import_data_master()
 	{
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 
 		$file_mimes = ['text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
 		$retval = [];
+
 		if(isset($_FILES['file_excel']['name']) && in_array($_FILES['file_excel']['type'], $file_mimes)) {
 			$arr_file = explode('.', $_FILES['file_excel']['name']);
 			$extension = end($arr_file);
@@ -376,16 +371,16 @@ class Master_pegawai extends CI_Controller {
 			
 			for ($i=0; $i <count($sheetData); $i++) { 
 				
-				if ($sheetData[$i][0] == '' || $sheetData[$i][1] == '' || $sheetData[$i][2] == '' || $sheetData[$i][3] == '') {
-					
+				if ($sheetData[$i][0] == null || $sheetData[$i][1] == null || $sheetData[$i][2] == null || $sheetData[$i][3] == null) {
 					if($i == 0) {
+						var_dump('asasas');exit;
 						$flag_kosongan = true;
-						$status_ekspor = false;
+						$status_import = false;
 						$pesan = "Data Kosong...";
 					}else{
 						$flag_kosongan = false;
-						$status_ekspor = true;
-						$pesan = "Data Sukses Di Ekspor";
+						$status_import = true;
+						$pesan = "Data Sukses Di Import";
 					}
 
 					break;
@@ -397,7 +392,7 @@ class Master_pegawai extends CI_Controller {
 				
 				#jabatan
 				$id_jabatan = $this->m_pegawai->get_id_jabatan_by_name(strtolower(trim($sheetData[$i][3])));
-				
+
 				if($id_jabatan){
 					$data['id_jabatan'] = $id_jabatan->id;
 				}else{
@@ -405,7 +400,7 @@ class Master_pegawai extends CI_Controller {
 						continue;
 					}else{
 						$flag_kosongan = false;
-						$status_ekspor = false;
+						$status_import = false;
 						$pesan = "Terjadi Kesalahan Dalam Penulisan Nama Jabatan, Mohon Cek Kembali";
 						break;
 					}
@@ -424,15 +419,22 @@ class Master_pegawai extends CI_Controller {
 				$data['is_aktif'] = 1;
 
 				$retval[] = $data;
+
+				######## jika lancar sampai akhir beri flag sukses
+				if($i == (count($sheetData) - 1)) {
+					$flag_kosongan = false;
+					$status_import = true;
+					$pesan = "Data Sukses Di Import";
+				}
 			}
 
-			if($status_ekspor) {
+			if($status_import) {
 				// var_dump(count($retval));exit;
 				## jika array maks cuma 1, maka batalkan (soalnya hanya header saja disana) ##
 				if(count($retval) <= 1) {
 					echo json_encode([
 						'status' => false,
-						'pesan'	=> 'Ekspor dibatalkan, Data Kosong...'
+						'pesan'	=> 'Import dibatalkan, Data Kosong...'
 					]);
 
 					return;
@@ -452,11 +454,11 @@ class Master_pegawai extends CI_Controller {
 				if ($this->db->trans_status() === FALSE){
 					$this->db->trans_rollback();
 					$status = false;
-					$pesan = 'Gagal melakukan ekspor, cek ulang dalam melakukan pengisian data excel';
+					$pesan = 'Gagal melakukan Import, cek ulang dalam melakukan pengisian data excel';
 				}else{
 					$this->db->trans_commit();
 					$status = true;
-					$pesan = 'Sukses ekspor data pegawai';
+					$pesan = 'Sukses Import data pegawai';
 				}
 
 				echo json_encode([
