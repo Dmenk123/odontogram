@@ -1,5 +1,9 @@
 ###################
+<<<<<<< HEAD
 What is CodeIgniter tes tos tos
+=======
+What is CodeIgniter tes tes
+>>>>>>> 80a738b0aaee60f1a7a51767d2b4b8d1c0fce02e
 ###################
 
 CodeIgniter is an Application Development Framework - a toolkit - for people
