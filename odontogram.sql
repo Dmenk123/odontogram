@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 05/09/2020 00:19:07
+ Date: 05/09/2020 13:47:46
 */
 
 SET NAMES utf8mb4;
@@ -72,6 +72,8 @@ INSERT INTO `m_menu` VALUES (9, 6, 'Data', 'Data', '', 'flaticon-tabs', 1, 2, 2,
 INSERT INTO `m_menu` VALUES (10, 6, 'User', 'User', '', 'flaticon-users-1', 1, 2, 3, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (11, 6, 'Klinik', 'Klinik', '', 'flaticon-medal', 1, 2, 1, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (12, 11, 'Profil Klinik', 'Profil Klinik', 'klinik_profile', 'flaticon-profile', 1, 3, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (13, 9, 'Tindakan', 'Tindakan', 'master_tindakan', 'flaticon2-graph', 1, 3, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (14, 9, 'Diagnosa', 'Diagnosa', 'master_diagnosa', 'flaticon2-contract', 1, 3, 2, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for m_pegawai
@@ -170,7 +172,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-04 20:33:15', '2020-08-20 22:17:59', '2020-09-04 20:33:15');
+INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-05 13:40:11', '2020-08-20 22:17:59', '2020-09-05 13:40:11');
 INSERT INTO `m_user` VALUES ('2', 2, NULL, 'USR-00002', 'cek', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, NULL, '2020-08-29 23:57:06', '2020-08-30 01:05:23');
 
 -- ----------------------------
@@ -200,6 +202,8 @@ INSERT INTO `t_role_menu` VALUES (6, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (11, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (12, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (9, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (13, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (14, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (10, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (7, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (8, 1, 1, 1, 1);
