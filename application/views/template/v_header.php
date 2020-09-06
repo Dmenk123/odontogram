@@ -30,7 +30,23 @@
 
 		<!--end::Layout Skins -->
     	<link rel="shortcut icon" href="<?= base_url('assets/template/'); ?>assets/media/logos/favicon.ico" />
-    
+		<style>
+			form .select2:invalid + .select2 .select2-selection{
+				border-color: #fd397a!important;
+			}
+			form .select2:valid + .select2 .select2-selection{
+				border-color: #e2e5ec!important;
+			}
+			span.invalid-feedback-select {
+				color:#fd397a!important;
+				font-size: 80%;
+				width: 100%;
+				margin-top: 0.25rem;
+			}
+			*:focus{
+			outline:0px;
+			}
+		</style>
 		<!-- load file css per modul -->
 		<?php if(isset($link_css)){ ?>
 			<link href="<?= base_url("$link_css"); ?>" rel="stylesheet" type="text/css" />

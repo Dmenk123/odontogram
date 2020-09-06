@@ -102,6 +102,13 @@
                 },
                 buttonsStyling: false
             });
+
+            $(document).ready(function () {
+                $('.select2').select2({
+                    allowClear: true,
+                    placeholder: "Mohon Pilih Salah Satu"
+                });
+            });
         </script>
 
         <!-- load file css per modul -->

@@ -19,20 +19,13 @@
     <div class="kt-portlet kt-portlet--mobile">
       <div class="kt-portlet__head kt-portlet__head--lg">
         <div class="kt-portlet__head-label">
-          <span class="kt-portlet__head-icon">
-            <i class="kt-font-brand flaticon2-line-chart"></i>
-          </span>
-          <h3 class="kt-portlet__head-title">
-            <?= $title; ?>
-          </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
-            <div class="kt-portlet__head-actions">
-              &nbsp;
-              <?= $this->template_view->getOpsiButton(); ?>
-              &nbsp;
-              <?= $this->template_view->getAddButton(true, 'add_menu'); ?>
+            <div class="kt-portlet__head-actions row">
+              <div><?= $this->template_view->getOpsiButton(); ?></div>
+              <div>&nbsp;</div>
+              <div><?= $this->template_view->getAddButton(true, 'add_menu'); ?></div>
             </div>
           </div>
         </div>
@@ -49,7 +42,7 @@
               <th>Role</th>
               <th>Status User</th>
               <th>Terakhir Login</th>
-              <th style="width: 13%;">Aksi</th>
+              <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>
         </table>

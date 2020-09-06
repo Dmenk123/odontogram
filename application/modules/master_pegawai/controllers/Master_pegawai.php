@@ -92,16 +92,6 @@ class Master_pegawai extends CI_Controller {
 
 			$row[] = $str_aksi;
 
-			// if ($peg->is_aktif == 1) {
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-success btn_edit_status" href="javascript:void(0)" title="aktif" id="'.$peg->id.'" value="aktif">Aktif</i></button>';
-			// }else{
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-danger btn_edit_status" href="javascript:void(0)" title="nonaktif" id="'.$peg->id.'" value="nonaktif">Non Aktif</button>';
-			// }
-
 			$data[] = $row;
 
 		}//end loop
@@ -373,7 +363,6 @@ class Master_pegawai extends CI_Controller {
 				
 				if ($sheetData[$i][0] == null || $sheetData[$i][1] == null || $sheetData[$i][2] == null || $sheetData[$i][3] == null) {
 					if($i == 0) {
-						var_dump('asasas');exit;
 						$flag_kosongan = true;
 						$status_import = false;
 						$pesan = "Data Kosong...";

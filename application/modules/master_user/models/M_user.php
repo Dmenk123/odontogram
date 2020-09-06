@@ -32,7 +32,8 @@ class M_user extends CI_Model
 
 		$this->db->from('m_user');
 		$this->db->join('m_role', 'm_user.id_role = m_role.id', 'left');	$i = 0;
-
+		$this->db->where('m_user.deleted_at is null');
+		
 		// loop column 
 		foreach ($this->column_search as $item) 
 		{
@@ -136,13 +137,13 @@ class M_user extends CI_Model
 		return $this->db->update($this->table, $data, $where);
 	}
 
-	public function delete_by_id($id)
+	public function softdelete_by_id($id)
 	{
-		$this->db->where('id_user', $id);
-		$this->db->delete('tbl_user');
-
-		$this->db->where('id_user', $id);
-		$this->db->delete('tbl_user_detail');
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$where = ['id' => $id];
+		$data = ['deleted_at' => $timestamp];
+		return $this->db->update($this->table, $data, $where);
 	}
 
 	//dibutuhkan di contoller login untuk ambil data user
@@ -189,4 +190,34 @@ class M_user extends CI_Model
 		} 
 	}
 
+	public function get_id_pegawai_by_name($nama)
+	{
+		$this->db->select('id');
+		$this->db->from('m_pegawai');
+		$this->db->where('LCASE(nama)', $nama);
+		$q = $this->db->get();
+		if ($q) {
+			return $q->row();
+		}else{
+			return false;
+		}
+	}
+
+	public function get_id_role_by_name($nama)
+	{
+		$this->db->select('id');
+		$this->db->from('m_role');
+		$this->db->where('LCASE(nama)', $nama);
+		$q = $this->db->get();
+		if ($q) {
+			return $q->row();
+		}else{
+			return false;
+		}
+	}
+
+	public function trun_master_user()
+	{
+		$this->db->query("truncate table m_user");
+	}
 }

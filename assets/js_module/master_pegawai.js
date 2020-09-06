@@ -201,7 +201,7 @@ function delete_pegawai(id){
                 data : {id:id},
                 success: function(data)
                 {
-                    swalConfirm.fire('Berhasil Ubah Status Pegawai!', data.pesan, 'success');
+                    swalConfirm.fire('Berhasil Hapus Pegawai!', data.pesan, 'success');
                     table.ajax.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown)
