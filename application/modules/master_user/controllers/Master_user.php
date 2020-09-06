@@ -114,7 +114,23 @@ class Master_user extends CI_Controller {
 		$data_user = $this->m_user->get_by_id($id_user);
 	
 		$id = $this->input->post('id');
-		$oldData = $this->m_user->get_by_id($id);
+		//$oldData = $this->m_user->get_by_id($id);
+
+		$select = "m_user.*, m_pegawai.nama as nama_pegawai, m_role.nama as nama_role";
+		$where = ['m_user.id' => $id];
+		$table = 'm_user';
+		$join = [ 
+			[
+				'table' => 'm_pegawai',
+				'on'	=> 'm_user.id_pegawai = m_pegawai.id'
+			],
+			[
+				'table' => 'm_role',
+				'on'	=> 'm_user.id_role = m_role.id'
+			]
+		];
+
+		$oldData = $this->m_global->single_row($select, $where, $table, $join, 'm_user.kode_user');
 		
 		if(!$oldData){
 			return redirect($this->uri->segment(1));
@@ -602,7 +618,7 @@ class Master_user extends CI_Controller {
 	public function cetak_data()
 	{
 		$select = "m_user.*, m_pegawai.nama as nama_pegawai, m_role.nama as nama_role";
-		$where = ['m_pegawai.deleted_at' => null];
+		$where = ['m_user.deleted_at' => null];
 		$table = 'm_user';
 		$join = [ 
 			[

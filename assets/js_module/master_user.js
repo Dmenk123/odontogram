@@ -110,6 +110,7 @@ function edit_user(id)
             $('[name="username"]').val(data.old_data.username).attr('disabled', true);
             $('[name="role"]').val(data.old_data.id_role);
             $('[name="status"]').val(data.old_data.status);
+            $("#pegawai").val(data.old_data.id_pegawai).trigger("change");
             $('#preview_img').attr('src', 'data:image/jpeg;base64,'+data.foto_encoded);
             $('#modal_user_form').modal('show');
 	        $('#modal_title').text('Edit User'); 
