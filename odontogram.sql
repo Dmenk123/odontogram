@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 05/09/2020 13:47:46
+ Date: 06/09/2020 20:30:49
 */
 
 SET NAMES utf8mb4;
@@ -97,10 +97,9 @@ CREATE TABLE `m_pegawai`  (
 -- ----------------------------
 -- Records of m_pegawai
 -- ----------------------------
-INSERT INTO `m_pegawai` VALUES ('1', '1', 'PEG-00001', 'MU\'IN', 'AS', '12121212', NULL, '2020-09-04 00:13:32', NULL, NULL, 1);
-INSERT INTO `m_pegawai` VALUES ('2', '2', 'PEG-00002', 'BAMBANG GANTENG', 'JL. RAYA MILIK BAMBANG', '081277171821827817', '121212121212', '2020-09-04 00:13:32', NULL, NULL, 1);
-INSERT INTO `m_pegawai` VALUES ('3', '2', 'PEG-00003', 'ANTON BUBUT', 'JL. RAYA MILIK BAMBANG', '0812131212', '12781821', '2020-09-04 00:13:32', NULL, NULL, 1);
-INSERT INTO `m_pegawai` VALUES ('4', '1', 'PEG-00004', 'RUDI SEDATI', 'JL. RAYA MILIK BAMBANG', '0721213812', '121212121212', '2020-09-04 00:13:32', NULL, NULL, 1);
+INSERT INTO `m_pegawai` VALUES ('1', '1', 'PEG-00001', 'RUDI SEDATI', 'RAYA SEDATI 41', '08141212319', '081821727128', '2020-09-05 21:26:48', NULL, NULL, 1);
+INSERT INTO `m_pegawai` VALUES ('2', '2', 'PEG-00002', 'RIDWAN TAMBAK', 'WIYUNG 29 SURABAYA', '083312941212', '081821727128', '2020-09-05 21:26:48', NULL, NULL, 1);
+INSERT INTO `m_pegawai` VALUES ('3', '2', 'PEG-00003', 'ANTON BUBUT', 'GENTENG KALI 31', '084121234121', '0831212112312', '2020-09-05 21:26:48', NULL, NULL, 1);
 
 -- ----------------------------
 -- Table structure for m_profil_klinik
@@ -164,16 +163,19 @@ CREATE TABLE `m_user`  (
   `password` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
   `status` int(1) NULL DEFAULT NULL,
   `last_login` datetime(0) NULL DEFAULT NULL,
+  `foto` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT 'user_default.png',
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, 'USR-00001', 'admin', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, '2020-09-05 13:40:11', '2020-08-20 22:17:59', '2020-09-05 13:40:11');
-INSERT INTO `m_user` VALUES ('2', 2, NULL, 'USR-00002', 'cek', 'Ym1pUmlmMHc0czN6SnpqcEJjMGdkZz09', 1, NULL, '2020-08-29 23:57:06', '2020-08-30 01:05:23');
+INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'user_default.png', '2020-09-06 20:18:00', NULL, NULL);
+INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'user_default.png', '2020-09-06 20:18:00', NULL, NULL);
+INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'user_default.png', '2020-09-06 20:18:00', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu
