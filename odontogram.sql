@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 06/09/2020 20:30:49
+ Date: 07/09/2020 20:02:34
 */
 
 SET NAMES utf8mb4;
@@ -36,6 +36,36 @@ CREATE TABLE `m_jabatan`  (
 -- ----------------------------
 INSERT INTO `m_jabatan` VALUES (1, 'Dokter Gigi', 'Dokter Gigi', '2020-08-30 23:25:53', NULL, NULL);
 INSERT INTO `m_jabatan` VALUES (2, 'Resepsionis', 'Resepsionis', '2020-08-30 23:25:53', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for m_klinik
+-- ----------------------------
+DROP TABLE IF EXISTS `m_klinik`;
+CREATE TABLE `m_klinik`  (
+  `id` int(11) NOT NULL,
+  `nama_klinik` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kelurahan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kecamatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kota` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `kode_pos` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `provinsi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `telp` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `nama_dokter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `sip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `gambar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_klinik
+-- ----------------------------
+INSERT INTO `m_klinik` VALUES (1, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '078121981291', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpeg', '2020-09-07 15:59:09', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_menu
@@ -71,7 +101,7 @@ INSERT INTO `m_menu` VALUES (8, 10, 'Data Pegawai', 'Master Data Pegawai', 'mast
 INSERT INTO `m_menu` VALUES (9, 6, 'Data', 'Data', '', 'flaticon-tabs', 1, 2, 2, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (10, 6, 'User', 'User', '', 'flaticon-users-1', 1, 2, 3, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (11, 6, 'Klinik', 'Klinik', '', 'flaticon-medal', 1, 2, 1, 0, 0, 0);
-INSERT INTO `m_menu` VALUES (12, 11, 'Profil Klinik', 'Profil Klinik', 'klinik_profile', 'flaticon-profile', 1, 3, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (12, 11, 'Data Klinik', 'Data Klinik', 'master_klinik', 'flaticon-profile', 1, 3, 1, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (13, 9, 'Tindakan', 'Tindakan', 'master_tindakan', 'flaticon2-graph', 1, 3, 1, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (14, 9, 'Diagnosa', 'Diagnosa', 'master_diagnosa', 'flaticon2-contract', 1, 3, 2, 1, 1, 1);
 
@@ -100,36 +130,6 @@ CREATE TABLE `m_pegawai`  (
 INSERT INTO `m_pegawai` VALUES ('1', '1', 'PEG-00001', 'RUDI SEDATI', 'RAYA SEDATI 41', '08141212319', '081821727128', '2020-09-05 21:26:48', NULL, NULL, 1);
 INSERT INTO `m_pegawai` VALUES ('2', '2', 'PEG-00002', 'RIDWAN TAMBAK', 'WIYUNG 29 SURABAYA', '083312941212', '081821727128', '2020-09-05 21:26:48', NULL, NULL, 1);
 INSERT INTO `m_pegawai` VALUES ('3', '2', 'PEG-00003', 'ANTON BUBUT', 'GENTENG KALI 31', '084121234121', '0831212112312', '2020-09-05 21:26:48', NULL, NULL, 1);
-
--- ----------------------------
--- Table structure for m_profil_klinik
--- ----------------------------
-DROP TABLE IF EXISTS `m_profil_klinik`;
-CREATE TABLE `m_profil_klinik`  (
-  `id` int(11) NOT NULL,
-  `nama_klinik` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `alamat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `kelurahan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `kecamatan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `kota` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `kode_pos` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `provinsi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `telp` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `nama_dokter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `sip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `gambar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `created_at` datetime(0) NULL DEFAULT NULL,
-  `updated_at` datetime(0) NULL DEFAULT NULL,
-  `deleted_at` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of m_profil_klinik
--- ----------------------------
-INSERT INTO `m_profil_klinik` VALUES (1, 'Klinik Tong Fang', 'asasjaksjak aska sa', 'ngagel', 'wonokromo', 'surabaya', '60245', 'jawa timur', '1921212', 'asas@asas.com', 'tongfang.com', 'mat drai', '121212', 'logo.png', '2020-09-05 00:04:03', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_role
@@ -173,9 +173,9 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'user_default.png', '2020-09-06 20:18:00', NULL, NULL);
+INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-07 19:33:13', 'user_default.png', '2020-09-06 20:18:00', '2020-09-07 19:33:13', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'user_default.png', '2020-09-06 20:18:00', NULL, NULL);
-INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'user_default.png', '2020-09-06 20:18:00', NULL, NULL);
+INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu

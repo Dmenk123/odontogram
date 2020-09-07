@@ -17,18 +17,8 @@
   <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
     
     <div class="kt-portlet kt-portlet--mobile">
-      <div class="kt-portlet__head kt-portlet__head--lg">
-        <div class="kt-portlet__head-label">
-        </div>
-        <div class="kt-portlet__head-toolbar">
-          <div class="kt-portlet__head-wrapper">
-            <div class="kt-portlet__head-actions row">
-              <div><?= $this->template_view->getOpsiButton(); ?></div>
-              <div>&nbsp;</div>
-              <div><?= $this->template_view->getAddButton(true, 'add_menu'); ?></div>
-            </div>
-          </div>
-        </div>
+      <div style="padding-top:2%;">
+       
       </div>
 
       <div class="kt-portlet__body kt-portlet__body--fit-y">
@@ -37,16 +27,16 @@
         <div class="kt-widget kt-widget--user-profile-1">
           <div class="kt-widget__head">
             <div class="kt-widget__media">
-              <img src="assets/media/users/100_13.jpg" alt="image">
+              <img src="<?= $foto_encoded; ?>" alt="image">
             </div>
             <div class="kt-widget__content">
               <div class="kt-widget__section">
                 <a href="#" class="kt-widget__username">
-                  Jason Muller
+                  <?php if($data_klinik) {echo $data_klinik->nama_klinik; }?>
                   <i class="flaticon2-correct kt-font-success"></i>
                 </a>
                 <span class="kt-widget__subtitle">
-                  Head of Development
+                  <?php if($data_klinik) {echo $data_klinik->alamat.' , '.$data_klinik->kota.' '.$data_klinik->provinsi.' , '.$data_klinik->kode_pos; } ?>
                 </span>
               </div>
             </div>
@@ -54,16 +44,20 @@
           <div class="kt-widget__body">
             <div class="kt-widget__content">
               <div class="kt-widget__info">
-                <span class="kt-widget__label">Email:</span>
-                <a href="#" class="kt-widget__data">matt@fifestudios.com</a>
+                <span class="kt-widget__label">Dokter : </span>
+                <a href="#" class="kt-widget__data"><?php if($data_klinik){echo $data_klinik->nama_dokter;}?></a>
               </div>
               <div class="kt-widget__info">
-                <span class="kt-widget__label">Phone:</span>
-                <a href="#" class="kt-widget__data">44(76)34254578</a>
+                <span class="kt-widget__label">SIP : </span>
+                <a href="#" class="kt-widget__data"><?php if($data_klinik){echo $data_klinik->sip;}?></a>
               </div>
               <div class="kt-widget__info">
-                <span class="kt-widget__label">Location:</span>
-                <span class="kt-widget__data">Melbourne</span>
+                <span class="kt-widget__label">Telp : </span>
+                <a href="#" class="kt-widget__data"><?php if($data_klinik) {echo $data_klinik->telp;} ?></a>
+              </div>
+              <div class="kt-widget__info">
+                <span class="kt-widget__label">Email :</span>
+                <span class="kt-widget__data"><?php if($data_klinik) {echo $data_klinik->email;}?></span>
               </div>
             </div>
           </div>
@@ -111,43 +105,43 @@
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Nama Klinik</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="nama">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->nama_klinik; }?>" name="nama">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Alamat</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="alamat">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->alamat; }?>" name="alamat">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Kelurahan</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="kelurahan">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->kelurahan; }?>" name="kelurahan">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Kecamatan</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="kecamatan">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->kecamatan; }?>" name="kecamatan">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Kota</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="kota">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->kota; }?>" name="kota">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Provinsi</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="provinsi">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->provinsi; }?>" name="provinsi">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Kode Pos</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control numberinput" type="text" value="" name="kodepos">
+                          <input class="form-control numberinput" type="text" value="<?php if($data_klinik) { echo $data_klinik->kode_pos; }?>" name="kodepos">
                         </div>
                       </div>
                       <div class="row">
@@ -159,13 +153,13 @@
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Nama Dokter</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="dokter">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->nama_dokter; }?>" name="dokter">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">SIP</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="sip">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->sip; }?>" name="sip">
                         </div>
                       </div>
                       <div class="form-group row">
@@ -173,7 +167,7 @@
                         <div class="col-lg-9 col-xl-6">
                           <div class="input-group">
                             <div class="input-group-prepend"><span class="input-group-text"><i class="la la-phone"></i></span></div>
-                            <input type="text" class="form-control" value="" placeholder="Nomor Telp" aria-describedby="basic-addon1" name="telp">
+                            <input type="text" class="form-control" value="<?php if($data_klinik) { echo $data_klinik->sip; }?>" placeholder="Nomor Telp" aria-describedby="basic-addon1" name="telp">
                           </div>
                         </div>
                       </div>
@@ -182,14 +176,14 @@
                         <div class="col-lg-9 col-xl-6">
                           <div class="input-group">
                             <div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
-                            <input type="text" class="form-control" value="" placeholder="Email" aria-describedby="basic-addon1" name="email">
+                            <input type="text" class="form-control" value="<?php if($data_klinik) { echo $data_klinik->email; }?>" placeholder="Email" aria-describedby="basic-addon1" name="email">
                           </div>
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Website</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="website">
+                          <input class="form-control" type="text" value="<?php if($data_klinik) { echo $data_klinik->website; }?>" name="website">
                         </div>
                       </div>
                     </div>
