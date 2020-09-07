@@ -81,7 +81,7 @@
                   <h3 class="kt-portlet__head-title">Profil Klinik <small>Update Profil Klinik pada Form dibawah ini</small></h3>
                 </div>
               </div>
-              <form class="kt-form kt-form--label-right">
+              <form class="kt-form" id="form_profile">
                 <div class="kt-portlet__body">
                   <div class="kt-section kt-section--first">
                     <div class="kt-section__body">
@@ -94,11 +94,18 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-xl-3 col-lg-3 col-form-label">Upload gambar (Abaikan jika tidak ingin merubah logo klinik)</label>
+                        <label class="col-xl-3 col-lg-3 col-form-label">Upload gambar </label>
                         <div></div>
                         <div class="custom-file col-lg-9 col-xl-6">
                           <input type="file" class="custom-file-input" id="foto" name="foto" accept=".jpg,.jpeg,.png">
                           <label class="custom-file-label" id="label_foto" for="customFile">Pilih gambar yang akan diupload</label>
+                          <span class="form-text text-muted">Abaikan jika tidak ingin merubah gambar profil klinik</span>
+                        </div>
+                      </div>
+                      <div class="row" style="padding-top:10px;">
+                        <label class="col-xl-3"></label>
+                        <div class="col-lg-9 col-xl-6">
+                          <h3 class="kt-section__title kt-section__title-sm">Data Klinik:</h3>
                         </div>
                       </div>
                       <div class="form-group row">
@@ -140,13 +147,13 @@
                       <div class="form-group row">
                         <label class="col-xl-3 col-lg-3 col-form-label">Kode Pos</label>
                         <div class="col-lg-9 col-xl-6">
-                          <input class="form-control" type="text" value="" name="kodepos">
+                          <input class="form-control numberinput" type="text" value="" name="kodepos">
                         </div>
                       </div>
                       <div class="row">
                         <label class="col-xl-3"></label>
                         <div class="col-lg-9 col-xl-6">
-                          <h3 class="kt-section__title kt-section__title-sm">Info Kontak:</h3>
+                          <h3 class="kt-section__title kt-section__title-sm">Data Kontak Klinik:</h3>
                         </div>
                       </div>
                       <div class="form-group row">
@@ -179,6 +186,12 @@
                           </div>
                         </div>
                       </div>
+                      <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Website</label>
+                        <div class="col-lg-9 col-xl-6">
+                          <input class="form-control" type="text" value="" name="website">
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -188,7 +201,7 @@
                       <div class="col-lg-3 col-xl-3">
                       </div>
                       <div class="col-lg-9 col-xl-9">
-                        <button type="button" class="btn btn-success" onclick="save()">Submit</button>&nbsp;
+                        <button id="btnSave" type="button" class="btn btn-success" onclick="save()">Simpan</button>&nbsp;
                         <button type="reset" class="btn btn-secondary">Cancel</button>
                       </div>
                     </div>
