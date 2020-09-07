@@ -1,4 +1,3 @@
-<?php require_once(APPPATH . 'views/template/temp_img_cetak_header.php'); ?>
 <html>
 
 <head>
@@ -70,7 +69,7 @@
     }
 
     .tbl-header {
-      padding-top: -15px;
+      padding-top: 1px;
       width: 100%;
       color: #070707;
       border-color: #070707;
@@ -134,14 +133,15 @@
       <tr>
         
         <td align="left" class="outer-left">
-          <?php echo $img_laporan; ?>
+          <img src="<?=base_url('files/img/app_img/').$data_klinik->gambar;?>" height="75" width="75">
         </td>
 
-        <td align="right" class="outer-left">
+        <td align="right" class="outer-left" style="padding-top: 30px; padding-left:10px;">
           <p style="text-align: left; font-size: 14px" class="outer-left">
-            <strong>SMP. Darul Ulum Surabaya</strong>
+            <strong><?= $data_klinik->nama_klinik; ?></strong>
           </p>
-          <p style="text-align: left; font-size: 12px" class="outer-left">Jl. Raya Manukan Kulon No.98-100 Kota Surabaya, Jawa Timur 60185</p>
+          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat.' '.$data_klinik->kelurahan.' '.$data_klinik->kecamatan; ?></p>
+          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota.', '.$data_klinik->provinsi.' '.$data_klinik->kode_pos; ?></p>
         </td>
 
       </tr>
@@ -150,7 +150,7 @@
     <table class="tbl-header">
       <tr>
         <td align="center" class="head-center">
-          <p style="text-align: center; font-size: 16px" class="head-left"><strong> Master Data User </strong></p>
+          <p style="text-align: center; font-size: 16px; padding-top:10px;" class="head-left"><strong> Master Data User </strong></p>
         </td>
       </tr>
     </table>

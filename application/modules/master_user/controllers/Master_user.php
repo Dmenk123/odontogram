@@ -631,10 +631,12 @@ class Master_user extends CI_Controller {
 		];
 
 		$data = $this->m_global->multi_row($select, $where, $table, $join, 'm_user.kode_user');
+		$data_klinik = $this->m_global->single_row('*', 'deleted_at is null', 'm_klinik');
 
 		$retval = [
 			'data' => $data,
-			'title' => 'Master Data Pegawai'
+			'title' => 'Master Data Pegawai',
+			'data_klinik' => $data_klinik
 		];
 
 		// $this->load->view('pdf', $retval);

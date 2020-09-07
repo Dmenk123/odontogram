@@ -1,1 +1,0 @@
-<?php $img_laporan = '<img src="'.base_url().'/files/img/klinik_img/logo.png" height="75" width="90">'; ?>

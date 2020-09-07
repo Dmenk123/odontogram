@@ -482,11 +482,14 @@ class Master_pegawai extends CI_Controller {
 		];
 		$orderby = "m_pegawai.kode asc";
 		$data = $this->m_global->multi_row($select, $where, 'm_pegawai', $join, $orderby);
+		$data_klinik = $this->m_global->single_row('*', 'deleted_at is null', 'm_klinik');
+
 		$retval = [
 			'data' => $data,
+			'data_klinik' => $data_klinik,
 			'title' => 'Master Data Pegawai'
 		];
-
+		
 		// $this->load->view('pdf', $retval);
 		$html = $this->load->view('pdf', $retval, true);
 	    $filename = 'master_data_pegawai_'.time();
