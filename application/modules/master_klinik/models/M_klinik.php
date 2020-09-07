@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class M_user extends CI_Model
+class M_klinik extends CI_Model
 {
-	var $table = 'm_user';
+	var $table = 'm_klinik';
 	var $column_search = ['username','kode_user','nama_role'];
 	
 	var $column_order = [

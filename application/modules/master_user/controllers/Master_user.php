@@ -20,7 +20,6 @@ class Master_user extends CI_Controller {
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
-		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_peg = $this->m_global->multi_row("*", "is_aktif = '1' and deleted_at is null", "m_pegawai", NULL, "nama asc");
 			
 		/**
