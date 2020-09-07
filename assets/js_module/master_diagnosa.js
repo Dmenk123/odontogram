@@ -138,12 +138,12 @@ function save()
     $("#btnSave").prop("disabled", true);
     $('#btnSave').text('Menyimpan Data'); //change button text
     swalConfirmDelete.fire({
-        title: 'Hapus Data Pegawai ?',
-        text: "Data Akan dihapus permanen ?",
+        title: 'Perhatian !!',
+        text: "Apakah anda yakin menambah data ini ?",
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Ya, Hapus Data !',
-        cancelButtonText: 'Tidak, Batalkan!',
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
         reverseButtons: true
       }).then((result) => {
         if (result.value) {
