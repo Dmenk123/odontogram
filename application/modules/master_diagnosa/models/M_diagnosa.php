@@ -1,23 +1,18 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class M_Pegawai extends CI_Model
+class M_diagnosa extends CI_Model
 {
-	var $table = 'm_pegawai';
-	var $column_search = ['kode','nama_jabatan','nama', 'alamat', 'telp_1', 'telp_2', 'telp_3'];
+	var $table = 'm_diagnosa';
+	var $column_search = ['kode_diagnosa','nama_diagnosa'];
 	
 	var $column_order = [
 		null, 
 		'kode',
-		'nama',
-		'nama_jabatan',
-		'alamat',
-		'telp_1',
-		'telp_2',
-		'is_aktif',
+		'nama_diagnosa',
 		null
 	];
 
-	var $order = ['m_pegawai.nama' => 'asc']; 
+	var $order = ['m_diagnosa.nama_diagnosa' => 'asc']; 
 
 	public function __construct()
 	{
@@ -29,13 +24,11 @@ class M_Pegawai extends CI_Model
 	private function _get_datatables_query($term='')
 	{
 		$this->db->select('
-			m_pegawai.*,
-			m_jabatan.nama as nama_jabatan
+			m_diagnosa.*
 		');
 
-		$this->db->from('m_pegawai');
-		$this->db->join('m_jabatan', 'm_pegawai.id_jabatan = m_jabatan.id', 'left');
-		$this->db->where('m_pegawai.deleted_at is null');
+		$this->db->from('m_diagnosa');
+		$this->db->where('m_diagnosa.deleted_at is null');
 		
 		$i = 0;
 

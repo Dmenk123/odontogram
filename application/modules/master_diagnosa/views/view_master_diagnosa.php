@@ -32,7 +32,7 @@
               &nbsp;
               <?= $this->template_view->getOpsiButton(); ?>
               &nbsp;
-              <?= $this->template_view->getAddButton(true, 'add_pegawai'); ?>
+              <?= $this->template_view->getAddButton(true, 'add_diagnosa'); ?>
             </div>
           </div>
         </div>
@@ -40,16 +40,12 @@
       <div class="kt-portlet__body">
 
         <!--begin: Datatable -->
-        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pegawai">
+        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_diagnosa">
           <thead>
             <tr>
               <th style="width: 5%;">No</th>
               <th>Kode</th>
-              <th>Nama</th>
-              <th>Jabatan</th>
-              <th>Telp 1</th>
-              <th>Telp 2</th>
-              <th>Status</th>
+              <th>Nama Diagnosa</th>
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>

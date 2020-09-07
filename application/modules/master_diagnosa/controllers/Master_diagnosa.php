@@ -11,7 +11,7 @@ class Master_diagnosa extends CI_Controller {
 		}
 
 		$this->load->model('master_user/m_user');
-		$this->load->model('m_pegawai');
+		$this->load->model('m_diagnosa');
 		$this->load->model('m_global');
 	}
 
@@ -25,7 +25,7 @@ class Master_diagnosa extends CI_Controller {
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Pengelolaan Data Pegawai',
+			'title' => 'Pengelolaan Data Master Diagnosa',
 			'data_user' => $data_user,
 			'data_jabatan'	=> $data_jabatan
 		);
@@ -38,56 +38,53 @@ class Master_diagnosa extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_master_pegawai',
-			'js'	=> 'master_pegawai.js',
-			'view'	=> 'view_master_pegawai'
+			'modal' => 'modal_master_diagnosa',
+			'js'	=> 'master_diagnosa.js',
+			'view'	=> 'view_master_diagnosa'
 		];
 
 		$this->template_view->load_view($content, $data);
 	}
 
-	public function list_pegawai()
+	public function list_diagnosa()
 	{
-		$list = $this->m_pegawai->get_datatable();
+		$list = $this->m_diagnosa->get_datatable();
 		
 		$data = array();
 		$no =$_POST['start'];
-		foreach ($list as $peg) {
+		foreach ($list as $diag) {
 			$no++;
 			$row = array();
 			//loop value tabel db
 			$row[] = $no;
-			$row[] = $peg->kode;
-			$row[] = $peg->nama;
-			$row[] = $peg->nama_jabatan;
-			$row[] = $peg->telp_1;
-			$row[] = $peg->telp_2;
-			$aktif_txt = ($peg->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
-			$row[] = $aktif_txt;			
+			$row[] = $diag->kode_diagnosa;
+			$row[] = $diag->nama_diagnosa;
+			// $aktif_txt = ($diag->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
+			// $row[] = $aktif_txt;			
 			
 			$str_aksi = '
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="edit_pegawai(\''.$peg->id.'\')">
+						<button class="dropdown-item" onclick="edit_pegawai(\''.$diag->id_diagnosa.'\')">
 							<i class="la la-pencil"></i> Edit Pegawai
 						</button>
-						<button class="dropdown-item" onclick="delete_pegawai(\''.$peg->id.'\')">
+						<button class="dropdown-item" onclick="delete_pegawai(\''.$diag->id_diagnosa.'\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
 			';
 
-			if ($peg->is_aktif == 1) {
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$peg->id.'" value="aktif"><i class="la la-check">
-				</i> Aktif</button>';
-			}else{
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$peg->id.'" value="nonaktif"><i class="la la-close">
-				</i> Non Aktif</button>';
-			}	
+			// if ($peg->is_aktif == 1) {
+			// 	$str_aksi .=
+			// 	'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$diag->id_diagnosa.'" value="aktif"><i class="la la-check">
+			// 	</i> Aktif</button>';
+			// }else{
+			// 	$str_aksi .=
+			// 	'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$diag->id_diagnosa.'" value="nonaktif"><i class="la la-close">
+			// 	</i> Non Aktif</button>';
+			// }	
 
-			$str_aksi .= '</div></div>';
+			// $str_aksi .= '</div></div>';
 		
 
 			$row[] = $str_aksi;
@@ -108,8 +105,8 @@ class Master_diagnosa extends CI_Controller {
 
 		$output = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->m_pegawai->count_all(),
-			"recordsFiltered" => $this->m_pegawai->count_filtered(),
+			"recordsTotal" => $this->m_diagnosa->count_all(),
+			"recordsFiltered" => $this->m_diagnosa->count_filtered(),
 			"data" => $data
 		];
 		
@@ -137,18 +134,16 @@ class Master_diagnosa extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	public function add_data_pegawai()
+	public function add_data_diagnosa()
 	{
+	
 		$this->load->library('Enkripsi');
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$arr_valid = $this->rule_validasi();
 		
-		$nama = trim($this->input->post('nama'));
-		$alamat = trim($this->input->post('alamat'));
-		$telp1 = trim($this->input->post('telp1'));
-		$telp2 = trim($this->input->post('telp2'));
-		$jabatan = $this->input->post('jabatan');
+		$nama_diagnosa = trim($this->input->post('nama'));
+		$kode_diagnosa = trim($this->input->post('kode'));
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -159,18 +154,12 @@ class Master_diagnosa extends CI_Controller {
 		$this->db->trans_begin();
 		
 		$data = [
-			'id' => $this->m_pegawai->get_max_id_pegawai(),
-			'id_jabatan' => $jabatan,
-			'kode' => $this->m_pegawai->get_kode_pegawai(),
-			'nama' => $nama,
-			'alamat' => $alamat,
-			'telp_1' => $telp1,
-			'telp_2' => $telp2,
-			'is_aktif' => 1,
+			'kode_diagnosa' => $kode_diagnosa,
+			'nama_diagnosa' => $nama_diagnosa,
 			'created_at' => $timestamp
 		];
 		
-		$insert = $this->m_pegawai->save($data);
+		$insert = $this->m_diagnosa->save($data);
 		
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -510,37 +499,19 @@ class Master_diagnosa extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
+		if ($this->input->post('kode') == '') {
+			$data['inputerror'][] = 'kode';
+            $data['error_string'][] = 'Wajib mengisi Kode Diagnosa';
+            $data['status'] = FALSE;
+		}
+
 		if ($this->input->post('nama') == '') {
 			$data['inputerror'][] = 'nama';
-            $data['error_string'][] = 'Wajib mengisi Nama';
+            $data['error_string'][] = 'Wajib mengisi Nama Diagnosa';
             $data['status'] = FALSE;
 		}
 
-		if ($this->input->post('alamat') == '') {
-			$data['inputerror'][] = 'alamat';
-            $data['error_string'][] = 'Wajib mengisi Alamat';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('telp1') == '') {
-			$data['inputerror'][] = 'telp1';
-            $data['error_string'][] = 'Wajib mengisi No Telp';
-            $data['status'] = FALSE;
-		}
-
-		// if ($this->input->post('telp2') == '') {
-		// 	$data['inputerror'][] = 'telp2';
-        //     $data['error_string'][] = 'Wajib mengisi No Telp';
-        //     $data['status'] = FALSE;
-		// }
-
-		if ($this->input->post('jabatan') == '') {
-			$data['inputerror'][] = 'jabatan';
-            $data['error_string'][] = 'Wajib Memilih Jabatan';
-            $data['status'] = FALSE;
-		}
-
-
+	
         return $data;
 	}
 }
