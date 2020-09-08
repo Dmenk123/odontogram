@@ -493,7 +493,7 @@ class Template_view extends CI_Controller {
 		}
 	}
 	
-	function getOpsiButton(){
+	function getOpsiButton($cetak_only = false){
 		if(!$_SESSION['id_role']){
 		  $id_role = "0";
 		}
@@ -501,26 +501,30 @@ class Template_view extends CI_Controller {
 		  $id_role = $this->_ci->session->userdata('id_role');
 		}
 		
-		// echo "<a href='".base_url().$this->_ci->uri->segment(1)."/add' class='btn btn-brand btn-elevate btn-icon-sm'><i class='la la-plus'></i>Tambah Data</a>
-		// ";
-
-		echo '<div class="btn-group">
-			<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Export / Import</button>
-			<div class="dropdown-menu">
-				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/template_excel">
-					<i class="la la-trello"></i> Template Excel
-				</a>
-				<button class="dropdown-item" onclick="import_excel()">
-					<i class="la la-arrow-circle-o-up"></i> Import Excel
-				</button>
-				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/export_excel">
-					<i class="la la-arrow-circle-o-down"></i> Export Excel
-				</a>
-				<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/cetak_data">
-					<i class="la la-print"></i> Cetak
-				</a>
-			</div>
-		</div>';
+		########### hanya pilihan cetak saja tanpa ekspor/impor excel
+		if($cetak_only) {
+			echo '<a type="button" class="btn btn-primary btn-sm" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/cetak_data">
+			<i class="la la-print"></i> Cetak </a>';
+		}else{
+			echo '<div class="btn-group">
+				<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Export / Import</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/template_excel">
+						<i class="la la-trello"></i> Template Excel
+					</a>
+					<button class="dropdown-item" onclick="import_excel()">
+						<i class="la la-arrow-circle-o-up"></i> Import Excel
+					</button>
+					<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/export_excel">
+						<i class="la la-arrow-circle-o-down"></i> Export Excel
+					</a>
+					<a class="dropdown-item" target="_blank" href="'.base_url().$this->_ci->uri->segment(1).'/cetak_data">
+						<i class="la la-print"></i> Cetak
+					</a>
+				</div>
+			</div>';
+		}
+		
 	}
 
 }
