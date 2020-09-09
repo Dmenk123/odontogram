@@ -85,26 +85,24 @@ function add_diagnosa()
 	$('#modal_title').text('Entry data dagnosa'); 
 }
 
-function edit_pegawai(id)
+function edit_diagnosa(id)
 {
+    // alert('tes'); exit;
     reset_modal_form();
     save_method = 'update';
     //Ajax Load data from ajax
     $.ajax({
-        url : base_url + 'master_pegawai/edit_pegawai',
+        url : base_url + 'master_diagnosa/edit_diagnosa',
         type: "POST",
         dataType: "JSON",
         data : {id:id},
         success: function(data)
         {
-            $('[name="id_pegawai"]').val(data.old_data.id);
-            $('[name="nama"]').val(data.old_data.nama);
-            $('[name="alamat"]').val(data.old_data.alamat);
-            $('[name="telp1"]').val(data.old_data.telp_1);
-            $('[name="telp2"]').val(data.old_data.telp_2);
-            $('[name="jabatan"]').val(data.old_data.id_jabatan);
+            $('[name="id_diagnosa"]').val(data.old_data.id_diagnosa);
+            $('[name="kode"]').val(data.old_data.kode_diagnosa);
+            $('[name="nama"]').val(data.old_data.nama_diagnosa);
             $('#modal_pegawai_form').modal('show');
-	        $('#modal_title').text('Edit Data Pegawai'); 
+	        $('#modal_title').text('Edit Data Diagnosa'); 
 
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -128,8 +126,8 @@ function save()
         url = base_url + 'master_diagnosa/add_data_diagnosa';
         txtAksi = 'Tambah Diagnosa';
     }else{
-        url = base_url + 'master_pegawai/update_data_pegawai';
-        txtAksi = 'Edit Pegawai';
+        url = base_url + 'master_diagnosa/update_data_diagnosa';
+        txtAksi = 'Edit Diagnosa';
     }
     
     var form = $('#form-pegawai')[0];
@@ -205,9 +203,9 @@ function save()
     
 }
 
-function delete_pegawai(id){
+function delete_diagnosa(id){
     swalConfirmDelete.fire({
-        title: 'Hapus Data Pegawai ?',
+        title: 'Hapus Data Diagnosa ?',
         text: "Data Akan dihapus permanen ?",
         type: 'warning',
         showCancelButton: true,
@@ -217,13 +215,13 @@ function delete_pegawai(id){
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'master_pegawai/delete_pegawai',
+                url : base_url + 'master_diagnosa/delete_diagnosa',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
                 success: function(data)
                 {
-                    swalConfirm.fire('Berhasil Hapus Pegawai!', data.pesan, 'success');
+                    swalConfirm.fire('Berhasil Hapus data diagnosa!', data.pesan, 'success');
                     table.ajax.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown)

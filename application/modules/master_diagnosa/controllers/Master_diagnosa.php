@@ -66,10 +66,10 @@ class Master_diagnosa extends CI_Controller {
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="edit_pegawai(\''.$diag->id_diagnosa.'\')">
-							<i class="la la-pencil"></i> Edit Pegawai
+						<button class="dropdown-item" onclick="edit_diagnosa(\''.$diag->id_diagnosa.'\')">
+							<i class="la la-pencil"></i> Edit Diagnosa
 						</button>
-						<button class="dropdown-item" onclick="delete_pegawai(\''.$diag->id_diagnosa.'\')">
+						<button class="dropdown-item" onclick="delete_diagnosa(\''.$diag->id_diagnosa.'\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
 			';
@@ -113,14 +113,14 @@ class Master_diagnosa extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	public function edit_pegawai()
+	public function edit_diagnosa()
 	{
 		$this->load->library('Enkripsi');
 		$id_user = $this->session->userdata('id_user');
 		$data_user = $this->m_user->get_by_id($id_user);
 	
-		$id = $this->input->post('id');
-		$oldData = $this->m_pegawai->get_by_id($id);
+		$id_diagnosa = $this->input->post('id');
+		$oldData = $this->m_diagnosa->get_by_id($id_diagnosa);
 		
 		if(!$oldData){
 			return redirect($this->uri->segment(1));
@@ -174,7 +174,7 @@ class Master_diagnosa extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	public function update_data_pegawai()
+	public function update_data_diagnosa()
 	{
 		$id_user = $this->session->userdata('id_user'); 
 		$this->load->library('Enkripsi');
@@ -188,32 +188,27 @@ class Master_diagnosa extends CI_Controller {
 		}
 
 		$nama = trim($this->input->post('nama'));
-		$alamat = trim($this->input->post('alamat'));
-		$telp1 = trim($this->input->post('telp1'));
-		$telp2 = trim($this->input->post('telp2'));
-		$jabatan = $this->input->post('jabatan');
+		$kode = trim($this->input->post('kode'));
 
 		$this->db->trans_begin();
 		
-		$data_user = [
-			'nama' => $nama,
-			'alamat' => $alamat,
-			'telp_1' => $telp1,
-			'telp_2' => $telp2,
-			'id_jabatan'=> $jabatan
+		$data = [
+			'nama_diagnosa' => $nama,
+			'kode_diagnosa' => $kode,
+			'updated_at' => $timestamp
 		];
 
-		$where = ['id' => $this->input->post('id_pegawai')];
-		$update = $this->m_pegawai->update($where, $data_user);
+		$where = ['id_diagnosa' => $this->input->post('id_diagnosa')];
+		$update = $this->m_diagnosa->update($where, $data);
 				
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$data['status'] = false;
-			$data['pesan'] = 'Gagal update Master Pegawai';
+			$data['pesan'] = 'Gagal update Master Diagnosa';
 		}else{
 			$this->db->trans_commit();
 			$data['status'] = true;
-			$data['pesan'] = 'Sukses update Master Pegawai';
+			$data['pesan'] = 'Sukses update Master Diagnosa';
 		}
 		
 		echo json_encode($data);
@@ -223,16 +218,16 @@ class Master_diagnosa extends CI_Controller {
 	 * Hanya melakukan softdelete saja
 	 * isi kolom updated_at dengan datetime now()
 	 */
-	public function delete_pegawai()
+	public function delete_diagnosa()
 	{
 		$id = $this->input->post('id');
-		$del = $this->m_pegawai->softdelete_by_id($id);
+		$del = $this->m_diagnosa->softdelete_by_id($id);
 		if($del) {
 			$retval['status'] = TRUE;
-			$retval['pesan'] = 'Data Master Pegawai Berhasil dihapus';
+			$retval['pesan'] = 'Data Master Diagnosa Berhasil dihapus';
 		}else{
 			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Data Master Pegawai Gagal dihapus';
+			$retval['pesan'] = 'Data Master Diagnosa Gagal dihapus';
 		}
 
 		echo json_encode($retval);

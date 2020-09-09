@@ -107,7 +107,7 @@ class M_diagnosa extends CI_Model
 	public function get_by_id($id)
 	{
 		$this->db->from($this->table);
-		$this->db->where('id',$id);
+		$this->db->where('id_diagnosa',$id);
 		$query = $this->db->get();
 
 		return $query->row();
@@ -139,7 +139,7 @@ class M_diagnosa extends CI_Model
 	{
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		$where = ['id' => $id];
+		$where = ['id_diagnosa' => $id];
 		$data = ['deleted_at' => $timestamp];
 		return $this->db->update($this->table, $data, $where);
 	}
