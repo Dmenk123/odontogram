@@ -123,7 +123,7 @@
     .clear {
       clear: both;
     }
-
+    
   </style>
 </head>
 
@@ -143,14 +143,14 @@
           <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat.' '.$data_klinik->kelurahan.' '.$data_klinik->kecamatan; ?></p>
           <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota.', '.$data_klinik->provinsi.' '.$data_klinik->kode_pos; ?></p>
         </td>
-        
+
       </tr>
     </table>
 
     <table class="tbl-header">
       <tr>
         <td align="center" class="head-center">
-          <p style="text-align: center; font-size: 16px; padding-top:10px;" class="head-left"><strong> <?=$title;?> </strong></p>
+          <p style="text-align: center; font-size: 16px; padding-top:10px;" class="head-left"><strong> Master Data User </strong></p>
         </td>
       </tr>
     </table>
@@ -159,19 +159,29 @@
       <thead>
         <tr>
           <th style="width: 5%; text-align: center;">No</th>
-          <th style="width: 30%; text-align: center;">Nama</th>
-          <th style="width: 65%; text-align: center;">Keterangan</th>
+          <th style="width: 10%; text-align: center;">Foto</th>
+          <th style="width: 10%; text-align: center;">Kode</th>
+          <th style="width: 25%; text-align: center;">Username</th>
+          <th style="width: 25%; text-align: center;">Nama Pegawai</th>
+          <th style="width: 15%; text-align: center;">Role</th>
+          <th style="width: 10%; text-align: center;">Status</th>
         </tr>
       </thead>
+      
       <tbody>
         <?php
-        $obj_date = new DateTime();
         foreach ($data as $key => $val) : ?>
           <?php $nomor = $key += 1; ?>
           <tr>
             <td class="text-center"><?= $nomor; ?></td>
-            <td class="text-center"><?= $val->nama; ?></td>
-            <td class="text-center"><?= $val->keterangan; ?></td>
+            <td class="text-center">
+              <img src="<?=base_url('files/img/user_img/').$val->foto; ?>" alt="" class="rounded" alt="Preview Foto" height="60" width="75">
+            </td>
+            <td class="text-center"><?= $val->kode_user; ?></td>
+            <td class="text-center"><?= $val->username; ?></td>
+            <td class="text-center"><?= $val->nama_pegawai; ?></td>
+            <td class="text-center"><?= $val->nama_role; ?></td>
+            <td class="text-center"><?= ($val->status == '1') ? 'Aktif' : 'Nonaktif' ; ?></td>
           </tr>
         <?php endforeach ?>
       </tbody>

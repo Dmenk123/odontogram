@@ -159,8 +159,9 @@
       <thead>
         <tr>
           <th style="width: 5%; text-align: center;">No</th>
-          <th style="width: 30%; text-align: center;">Nama</th>
-          <th style="width: 65%; text-align: center;">Keterangan</th>
+          <th style="width: 35%; text-align: center;">Keterangan</th>
+          <th style="width: 30%; text-align: center;">Umur Awal</th>
+          <th style="width: 30%; text-align: center;">Umur akhir</th>
         </tr>
       </thead>
       <tbody>
@@ -170,8 +171,9 @@
           <?php $nomor = $key += 1; ?>
           <tr>
             <td class="text-center"><?= $nomor; ?></td>
-            <td class="text-center"><?= $val->nama; ?></td>
             <td class="text-center"><?= $val->keterangan; ?></td>
+            <td class="text-center"><?= $val->umur_awal.' Tahun'; ?></td>
+            <td class="text-center"><?= $val->umur_akhir.' Tahun'; ?></td>
           </tr>
         <?php endforeach ?>
       </tbody>
