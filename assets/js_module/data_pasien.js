@@ -9,13 +9,13 @@ $(document).ready(function() {
     });
 
 	//datatables
-	table = $('#tabel_user').DataTable({
+	table = $('#tabel_index').DataTable({
 		responsive: true,
         searchDelay: 500,
         processing: true,
         serverSide: true,
 		ajax: {
-			url  : base_url + "master_user/list_user",
+			url  : base_url + "data_pasien/list_pasien",
 			type : "POST" 
 		},
 
@@ -79,14 +79,6 @@ $(document).ready(function() {
         reset_modal_form_import();
     });
 });	
-
-function add_menu()
-{
-    reset_modal_form();
-    save_method = 'add';
-	$('#modal_user_form').modal('show');
-	$('#modal_title').text('Tambah User Baru'); 
-}
 
 function edit_user(id)
 {
@@ -164,7 +156,7 @@ function save()
         txtAksi = 'Edit User';
     }
     
-    var form = $('#form-user')[0];
+    var form = $('#form_modal_input')[0];
     var data = new FormData(form);
     
     $("#btnSave").prop("disabled", true);
@@ -253,19 +245,6 @@ function delete_user(id){
           )
         }
     });
-}
-
-function reset_modal_form()
-{
-    $('#form-user')[0].reset();
-    $('.append-opt').remove(); 
-    $('div.form-group').children().removeClass("is-invalid invalid-feedback");
-    $('span.help-block').text('');
-    $('#div_pass_lama').css("display","none");
-    $('#div_preview_foto').css("display","none");
-    $('#div_skip_password').css("display", "none");
-    $('#label_foto').text('Pilih gambar yang akan diupload');
-    $('#username').attr('disabled', false);
 }
 
 function reset_modal_form_import()

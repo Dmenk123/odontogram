@@ -3,18 +3,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_pasien extends CI_Model
 {
 	var $table = 'm_pasien';
-	var $column_search = ['username','kode_user','nama_role'];
+	var $column_search = ['kode','nama','nik','jenis_kelamin','alamat_rumah','hp'];
 	
 	var $column_order = [
 		null, 
-		'username',
-		'nama_role',
-		'status',
-		'last_login',
+		'kode',
+		'nama',
+		'nik',
+		'jenis_kelamin',
+		'alamat_rumah',
+		'hp',
+		'is_aktif',
 		null
 	];
 
-	var $order = ['m_user.username' => 'desc']; 
+	var $order = ['kode' => 'desc']; 
 
 	public function __construct()
 	{
@@ -25,15 +28,13 @@ class M_pasien extends CI_Model
 
 	private function _get_datatables_query($term='')
 	{
-		$this->db->select('
-			m_user.*,
-			m_role.nama as nama_role
-		');
-
-		$this->db->from('m_user');
-		$this->db->join('m_role', 'm_user.id_role = m_role.id', 'left');	$i = 0;
-		$this->db->where('m_user.deleted_at is null');
+		$this->db->select("
+			*, CASE WHEN is_aktif = 0 THEN 'Aktif' ELSE 'Non Aktif' END as status_pasien, CASE WHEN jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
+		$this->db->from($this->table);
+		$this->db->where('deleted_at is null');
 		
+		$i = 0;
+
 		// loop column 
 		foreach ($this->column_search as $item) 
 		{
@@ -62,14 +63,14 @@ class M_pasien extends CI_Model
 		{
 			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
 		} 
-		else if(isset($this->order))
+		if(isset($_POST['order']) && $_POST['order']['0']['column'] != '0') 
 		{
 			$order = $this->order;
             $this->db->order_by(key($order), $order[key($order)]);
 		}
 	}
 
-	function get_datatable_user()
+	function get_datatables()
 	{
 		$term = $_REQUEST['search']['value'];
 		$this->_get_datatables_query($term);

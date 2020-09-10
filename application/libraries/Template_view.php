@@ -426,7 +426,7 @@ class Template_view extends CI_Controller {
 					}
 					
 				}else{
-					echo "<a href='".base_url().$this->_ci->uri->segment(1)."/add' class='btn btn-brand btn-elevate btn-icon-sm'><i class='la la-plus'></i>Tambah Data</a>
+					echo "<a href='".base_url().$this->_ci->uri->segment(1)."/add' class='btn btn-bold btn-label-brand btn-sm'><i class='la la-plus'></i>Tambah Data</a>
 				";
 				}
 			}

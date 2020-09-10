@@ -36,7 +36,7 @@ class Data_pasien extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_data_pasien',
+			'modal' => null,
 			'js'	=> 'data_pasien.js',
 			'view'	=> 'view_data_pasien'
 		];
@@ -44,45 +44,75 @@ class Data_pasien extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
-	public function list_user()
+	public function add()
 	{
-		$list = $this->m_user->get_datatable_user();
+		$id_user = $this->session->userdata('id_user'); 
+		$data_user = $this->m_user->get_detail_user($id_user);
+			
+		/**
+		 * data passing ke halaman view content
+		 */
+		$data = array(
+			'title' => 'Pengelolaan Data Pasien',
+			'data_user' => $data_user
+		);
+
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => null,
+			'js'	=> 'data_pasien.js',
+			'view'	=> 'form_data_pasien'
+		];
+
+		$this->template_view->load_view($content, $data);
+	}
+
+	public function list_pasien()
+	{
+		$list = $this->m_pasien->get_datatables();
 		$data = array();
 		$no =$_POST['start'];
-		foreach ($list as $user) {
+		foreach ($list as $val) {
 			$no++;
 			$row = array();
 			//loop value tabel db
 			$row[] = $no;
-			$row[] = $user->kode_user;
-			$row[] = $user->username;
-			$row[] = $user->nama_role;
-			$aktif_txt = ($user->status == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
-			$row[] = $aktif_txt;
-			$row[] = ($user->last_login != '') ? $user->last_login : '-';
+			$row[] = $val->kode;
+			$row[] = $val->nama;
+			$row[] = $val->nik;
+			$row[] = ($val->jenis_kelamin == 'L') ? '<span style="color:blue;">Laki-Laki</span>' : '<span style="color:magenta;">Perempuan</span>';
+			$row[] = $val->alamat_rumah;
+			$row[] = $val->hp;
+			$row[] = ($val->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
 			
 			$str_aksi = '
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="detail_user(\''.$user->id.'\')">
-							<i class="la la-search"></i> Detail User
+						<button class="dropdown-item" onclick="detail_pasien(\''.$val->id.'\')">
+							<i class="la la-search"></i> Detail Pasien
 						</button>
-						<button class="dropdown-item" onclick="edit_user(\''.$user->id.'\')">
-							<i class="la la-pencil"></i> Edit User
+						<button class="dropdown-item" onclick="edit_pasien(\''.$val->id.'\')">
+							<i class="la la-pencil"></i> Edit Pasien
 						</button>
-						<button class="dropdown-item" onclick="delete_user(\''.$user->id.'\')">
+						<button class="dropdown-item" onclick="delete_pasien(\''.$val->id.'\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
 			';
 
-			if ($user->status == 1) {
+			if ($val->status == 1) {
 				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$user->id.'" value="aktif"><i class="la la-check">
+				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$val->id.'" value="aktif"><i class="la la-check">
 				</i> Aktif</button>';
 			}else{
 				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$user->id.'" value="nonaktif"><i class="la la-close">
+				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$val->id.'" value="nonaktif"><i class="la la-close">
 				</i> Non Aktif</button>';
 			}	
 
