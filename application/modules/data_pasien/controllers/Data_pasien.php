@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Master_user extends CI_Controller {
+class Data_pasien extends CI_Controller {
 	
 	public function __construct()
 	{
@@ -10,26 +10,22 @@ class Master_user extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model('m_user');
+		$this->load->model('master_user/m_user');
 		$this->load->model('m_global');
-		$this->load->model('set_role/m_set_role', 'm_role');
+		$this->load->model('m_pasien');
 	}
 
 	public function index()
 	{
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
-		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
-		$data_peg = $this->m_global->multi_row("*", "is_aktif = '1' and deleted_at is null", "m_pegawai", NULL, "nama asc");
 			
 		/**
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Pengelolaan Data User',
-			'data_user' => $data_user,
-			'data_role'	=> $data_role,
-			'data_peg'	=> $data_peg
+			'title' => 'Pengelolaan Data Pasien',
+			'data_user' => $data_user
 		);
 
 		/**
@@ -40,9 +36,9 @@ class Master_user extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_master_user',
-			'js'	=> 'master_user.js',
-			'view'	=> 'view_master_user'
+			'modal' => 'modal_data_pasien',
+			'js'	=> 'data_pasien.js',
+			'view'	=> 'view_data_pasien'
 		];
 
 		$this->template_view->load_view($content, $data);

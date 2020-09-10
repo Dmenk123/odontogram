@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class M_user extends CI_Model
+class M_pasien extends CI_Model
 {
-	var $table = 'm_user';
+	var $table = 'm_pasien';
 	var $column_search = ['username','kode_user','nama_role'];
 	
 	var $column_order = [
@@ -93,11 +93,11 @@ class M_user extends CI_Model
 		return $this->db->count_all_results();
 	}
 
-	public function get_detail_user($id_user)
+	public function get_detail($id)
 	{
 		$this->db->select('*');
-		$this->db->from('m_user');
-		$this->db->where('id', $id_user);
+		$this->db->from($this->table);
+		$this->db->where('id', $id);
 
         $query = $this->db->get();
 
