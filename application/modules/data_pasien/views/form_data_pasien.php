@@ -31,18 +31,26 @@
             <input type="hidden" class="form-control" name="id_pasien" value="">
             <label class="col-lg-1 col-form-label">Nama Pasien:</label>
             <div class="col-lg-3">
-              <input type="text" class="form-control" name="nama">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">No RM:</label>
-            <div class="col-lg-3">
-              <input type="text" class="form-control" placeholder="No RM" name="no_rm">
+              <input type="text" class="form-control" name="nama" onKeyUP="this.value = this.value.toUpperCase();">
               <span class="help-block"></span>
             </div>
             <label class="col-lg-1 col-form-label">NIK:</label>
-            <div class="col-lg-3">
-              <input type="text" class="form-control" name="nik">
+            <div class="col-lg-2">
+              <input type="text" class="form-control" name="nik" maxlength="16">
               <span class="help-block"></span>
+            </div>
+            <label class="col-lg-1 col-form-label">No RM:</label>
+            <div class="col-lg-2">
+              <input type="text" class="form-control mask_rm" name="no_rm" onKeyUP="this.value = this.value.toUpperCase();" disabled>
+              <span class="help-block"></span>
+            </div>
+            <div class="col-lg-2">
+              <div class="kt-checkbox-list">
+                <label class="kt-checkbox kt-checkbox--tick kt-checkbox--brand">
+                  <input type="checkbox" class="form-control" id="cek_manual"> Manual
+                  <span></span>
+                </label>
+              </div>
             </div>
           </div>
           <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
@@ -54,7 +62,7 @@
             </div>
             <label class="col-lg-1 col-form-label">Tanggal Lahir:</label>
             <div class="col-lg-3">
-              <input type="text" class="form-control" name="tanggal_lahir">
+              <input type="text" class="form-control mask_tanggal" name="tanggal_lahir" autocomplete="off">
               <span class="help-block"></span>
             </div>
             <label class="col-lg-1 col-form-label">Jenis Kelamin:</label>
@@ -204,7 +212,7 @@
               <span class="help-block"></span>
             </div>
             <div class="col-lg-6">
-              <input type="text" class="form-control" name="alergi_obat_val">
+              <input type="text" class="form-control" name="alergi_obat_val" disabled>
               <span class="help-block"></span>
             </div>
           </div>
@@ -218,7 +226,7 @@
               <span class="help-block"></span>
             </div>
             <div class="col-lg-6">
-              <input type="text" class="form-control" name="alergi_makanan_val">
+              <input type="text" class="form-control" name="alergi_makanan_val" disabled>
               <span class="help-block"></span>
             </div>
           </div>
@@ -229,7 +237,7 @@
               <div class="col-lg-5"></div>
               <div class="col-lg-7">
                 <button type="button" class="btn btn-brand" onclick="save()">Simpan</button>
-                <button type="reset" class="btn btn-secondary">Batal</button>
+                <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1))?>">Batal</a>
               </div>
             </div>
           </div>

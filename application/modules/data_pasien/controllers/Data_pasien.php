@@ -13,6 +13,7 @@ class Data_pasien extends CI_Controller {
 		$this->load->model('master_user/m_user');
 		$this->load->model('m_global');
 		$this->load->model('m_pasien');
+		$this->load->model('m_data_medik');
 	}
 
 	public function index()
@@ -135,8 +136,10 @@ class Data_pasien extends CI_Controller {
 	public function simpan_data()
 	{
 		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$id_pasien = $this->input->post('id_pasien');
 		
+		######### flag pasien baru
 		if($id_pasien != '') {
 			$cek = $this->m_pasien->get_by_id($id_pasien);
 			if($cek) {
@@ -147,8 +150,15 @@ class Data_pasien extends CI_Controller {
 		}else{
 			$flag_data_baru = true;
 		}
+		######### end flag pasien baru
 
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		######## flag no_rm otomatis
+		if($this->input->post('no_rm') != ''){
+			$rm_otomatis = false;
+		}else{
+			$rm_otomatis = true;
+		}
+		######## end flag no_rm otomatis
 		$arr_valid = $this->rule_validasi();
 		
 		if ($arr_valid['status'] == FALSE) {
@@ -156,7 +166,7 @@ class Data_pasien extends CI_Controller {
 			return;
 		}
 
-		$nama = contul(trim($this->input->post('nama')));
+		$nama = contul(trim(strtoupper($this->input->post('nama'))));
 		$nik = contul(trim($this->input->post('nik')));
 		$tempat_lahir = contul(trim($this->input->post('tempat_lahir')));
 		$tanggal_lahir = contul(trim($this->input->post('tanggal_lahir')));
@@ -184,30 +194,90 @@ class Data_pasien extends CI_Controller {
 
 		$this->db->trans_begin();
 		
-		$data_user = [
+		###################### data pasien
+
+		$pasien = [
 			'nama' => $nama,
 			'nik' => $nik,
 			'tempat_lahir' => $tempat_lahir,
-			'tanggal_lahir' => $tanggal_lahir,
-			'jenkel' => $jenkel,
+			'tanggal_lahir' => $obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('Y-m-d'),
+			'jenis_kelamin' => $jenkel,
 			'suku' => $suku,
 			'pekerjaan' => $pekerjaan,
 			'hp' => $hp,
-			'telp' => $telp,
+			'telp_rumah' => $telp,
 			'alamat_rumah' => $alamat_rumah,
 			'alamat_kantor' => $alamat_kantor
 		];
+
+		##jika data baru
+		if($flag_data_baru) {
+			$id_pasien = $this->m_pasien->get_max_id_pasien();
+
+			$pasien['id'] = $id_pasien;
+			
+			if($rm_otomatis) {
+				$pasien['no_rm'] = $this->m_pasien->get_kode_rm(substr($nama,0,2));
+			}else{
+				$pasien['no_rm'] = trim($this->input->post('no_rm'));
+			}
+
+			$pasien['created_at'] = $timestamp;
+			$pasien['is_aktif'] = 1;
+
+			$insert = $this->m_pasien->save($pasien);
+		}
+		##jika update data
+		else{
+			$pasien['updated_at'] = $timestamp;
+			
+			$where = ['id' => $id_pasien];
+			$update = $this->m_pasien->update($where, $pasien);
+		}
+
+		###################### data medik
 		
-		$insert = $this->m_user->save($data_user);
+		$medik = [
+			'gol_darah' => $gol_darah,
+			'tekanan_darah' => $tekanan_darah,
+			'tekanan_darah_val' => $tekanan_darah_val,
+			'penyakit_jantung' => $penyakit_jantung,
+			'diabetes' => $diabetes,
+			'haemopila' => $haemopilia,
+			'hepatitis' => $hepatitis,
+			'gastring' => $gastring,
+			'penyakit_lainnya' => $penyakit_lainnya,
+			'alergi_obat' => $alergi_obat,
+			'alergi_obat_val' => $alergi_obat_val,
+			'alergi_makanan' => $alergi_makanan,
+			'alergi_makanan_val' => $alergi_makanan_val
+		];
+
+		##jika data baru
+		if($flag_data_baru) {
+			$medik['id'] = $this->m_data_medik->get_max_id_medik();
+			$medik['id_pasien'] = $id_pasien;
+			$medik['created_at'] = $timestamp;
+
+			$insert = $this->m_data_medik->save($medik);
+		}
+		##jika update data
+		else{
+			$cek_medik = $this->m_data_medik->get_by_condition(['id_pasien' => $id_pasien], true);
+			$medik['updated_at'] = $timestamp;
+
+			$where = ['id' => $cek_medik->id];
+			$update = $this->m_data_medik->update($where, $medik);
+		}
 		
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan user';
+			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan user';
+			$retval['pesan'] = 'Sukses menambahkan Data Pasien';
 		}
 
 		echo json_encode($retval);
@@ -422,7 +492,6 @@ class Data_pasien extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
-
 		$file_mimes = ['text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
 		$retval = [];
 
@@ -605,11 +674,11 @@ class Data_pasien extends CI_Controller {
             $data['status'] = FALSE;
 		}
 
-		if ($this->input->post('no_rm') == '') {
-			$data['inputerror'][] = 'no_rm';
-			$data['error_string'][] = 'Wajib mengisi NO RM';
-			$data['status'] = FALSE;
-		}
+		// if ($this->input->post('no_rm') == '') {
+		// 	$data['inputerror'][] = 'no_rm';
+		// 	$data['error_string'][] = 'Wajib mengisi NO RM';
+		// 	$data['status'] = FALSE;
+		// }
 
 		if ($this->input->post('nik') == '') {
 			$data['inputerror'][] = 'nik';

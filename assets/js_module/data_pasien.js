@@ -28,9 +28,6 @@ $(document).ready(function() {
 		],
     });
     
-    $("#foto").change(function() {
-        readURL(this);
-    });
 
     //change menu status
     $(document).on('click', '.btn_edit_status', function(){
@@ -75,9 +72,37 @@ $(document).ready(function() {
     });
 
     $(".modal").on("hidden.bs.modal", function(){
-        reset_modal_form();
         reset_modal_form_import();
     });
+
+    $('#alergi_obat').change(function (e) { 
+        e.preventDefault();
+        if($(this).val() == '1') {
+            $('[name="alergi_obat_val"]').attr('disabled', false).val('');
+        }else{
+            $('[name="alergi_obat_val"]').attr('disabled', true).val('');
+        }
+    });
+
+    $('#alergi_makanan').change(function (e) { 
+        e.preventDefault();
+        if($(this).val() == '1') {
+            $('[name="alergi_makanan_val"]').attr('disabled', false).val('');
+        }else{
+            $('[name="alergi_makanan_val"]').attr('disabled', true).val('');
+        }
+    });
+
+    $("#cek_manual").change(function() {
+        if(this.checked) {
+            $('[name="no_rm"]').attr('disabled', false).val('');
+        }else{
+            $('[name="no_rm"]').attr('disabled', true).val('');
+        }
+    });
+
+    $('.mask_tanggal').mask("00/00/0000", {placeholder: "DD/MM/YYYY"});
+    $('.mask_rm').mask("AA.00.00");
 });	
 
 function edit_user(id)
@@ -162,14 +187,10 @@ function save()
         timeout: 600000,
         success: function (data) {
             if(data.status) {
-                swal.fire("Sukses!!", "Aksi "+txtAksi+" Berhasil", "success");
+                swal.fire("Sukses!!", data.pesan, "success");
                 $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');
-                
-                reset_modal_form();
-                $(".modal").modal('hide');
-                
-                reload_table();
+                $('#btnSave').text('Simpan');                
+                window.location.href = base_url+"data_registrasi/add";
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {
@@ -190,9 +211,6 @@ function save()
             console.log("ERROR : ", e);
             $("#btnSave").prop("disabled", false);
             $('#btnSave').text('Simpan');
-
-            reset_modal_form();
-            $(".modal").modal('hide');
         }
     });
 }
@@ -286,18 +304,4 @@ function import_data_excel(){
             table.ajax.reload();
         }
     });
-}
-
-function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        $('#div_preview_foto').css("display","block");
-        $('#preview_img').attr('src', e.target.result);
-      }
-      reader.readAsDataURL(input.files[0]);
-    } else {
-        $('#div_preview_foto').css("display","none");
-        $('#preview_img').attr('src', '');
-    }
 }
