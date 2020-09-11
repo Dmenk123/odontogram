@@ -147,41 +147,23 @@ class M_pasien extends CI_Model
 		return $this->db->update($this->table, $data, $where);
 	}
 
-	//dibutuhkan di contoller login untuk ambil data user
-	function login($data){
-		return $this->db->select('*')
-			->where('username',$data['data_user'])
-			->where('password',$data['data_password'])
-			->where('status', 1 )
-			->get($this->table)->row();
-	}
-
-	//dibutuhkan di contoller login untuk set last login
-	function set_lastlogin($id){
-		$this->db->where('id',$id);
-		$this->db->update(
-			$this->table, 
-			['last_login'=>date('Y-m-d H:i:s')]
-		);			
-	}
-
-	function get_kode_user(){
-            $q = $this->db->query("select MAX(RIGHT(kode_user,5)) as kode_max from m_user");
-            $kd = "";
-            if($q->num_rows()>0){
-                foreach($q->result() as $k){
-                    $tmp = ((int)$k->kode_max)+1;
-                    $kd = sprintf("%05s", $tmp);
-                }
-            }else{
-                $kd = "00001";
-            }
-            return "USR-".$kd;
+	function get_kode_pasien(){
+		$q = $this->db->query("select MAX(RIGHT(kode,5)) as kode_max from ".$this->table."");
+		$kd = "";
+		if($q->num_rows()>0){
+			foreach($q->result() as $k){
+				$tmp = ((int)$k->kode_max)+1;
+				$kd = sprintf("%05s", $tmp);
+			}
+		}else{
+			$kd = "00001";
+		}
+		return "PSN-".$kd;
 	}
 	
-	public function get_max_id_user()
+	public function get_max_id_pasien()
 	{
-		$q = $this->db->query("SELECT MAX(id) as kode_max from m_user");
+		$q = $this->db->query("SELECT MAX(id) as kode_max from ".$this->table."");
 		$kd = "";
 		if($q->num_rows()>0){
 			$kd = $q->row();

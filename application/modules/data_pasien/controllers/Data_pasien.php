@@ -132,118 +132,70 @@ class Data_pasien extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	public function edit_user()
+	public function simpan_data()
 	{
-		$this->load->library('Enkripsi');
-		$id_user = $this->session->userdata('id_user');
-		$data_user = $this->m_user->get_by_id($id_user);
-	
-		$id = $this->input->post('id');
-		//$oldData = $this->m_user->get_by_id($id);
-
-		$select = "m_user.*, m_pegawai.nama as nama_pegawai, m_role.nama as nama_role";
-		$where = ['m_user.id' => $id];
-		$table = 'm_user';
-		$join = [ 
-			[
-				'table' => 'm_pegawai',
-				'on'	=> 'm_user.id_pegawai = m_pegawai.id'
-			],
-			[
-				'table' => 'm_role',
-				'on'	=> 'm_user.id_role = m_role.id'
-			]
-		];
-
-		$oldData = $this->m_global->single_row($select, $where, $table, $join, 'm_user.kode_user');
+		$obj_date = new DateTime();
+		$id_pasien = $this->input->post('id_pasien');
 		
-		if(!$oldData){
-			return redirect($this->uri->segment(1));
+		if($id_pasien != '') {
+			$cek = $this->m_pasien->get_by_id($id_pasien);
+			if($cek) {
+				$flag_data_baru = false;
+			}else{
+				$flag_data_baru = true;
+			}
+		}else{
+			$flag_data_baru = true;
 		}
 
-		$url_foto = base_url('files/img/user_img/').$oldData->foto;
-		$foto = base64_encode(file_get_contents($url_foto));  
-		
-		$data = array(
-			'data_user' => $data_user,
-			'old_data'	=> $oldData,
-			'foto_encoded' => $foto
-		);
-		
-		echo json_encode($data);
-	}
-
-	public function add_data_user()
-	{
-		$this->load->library('Enkripsi');
-		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$arr_valid = $this->rule_validasi();
 		
-		$username = trim($this->input->post('username'));
-		$password = trim($this->input->post('password'));
-		$repassword = trim($this->input->post('repassword'));
-		$role = $this->input->post('role');
-		$status = $this->input->post('status');
-		$id_pegawai = $this->input->post('pegawai');
-		$namafileseo = $this->seoUrl($username.' '.time());
-
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
 			return;
 		}
 
-		if ($password != $repassword) {
-			$data['inputerror'][] = 'password';
-			$data['error_string'][] = 'Password Tidak Cocok';
-			$data['status'] = FALSE;
-		
-			$data['inputerror'][] = 'repassword';
-			$data['error_string'][] = 'Password Tidak Cocok';
-			$data['status'] = FALSE;
+		$nama = contul(trim($this->input->post('nama')));
+		$nik = contul(trim($this->input->post('nik')));
+		$tempat_lahir = contul(trim($this->input->post('tempat_lahir')));
+		$tanggal_lahir = contul(trim($this->input->post('tanggal_lahir')));
+		$jenkel = contul(trim($this->input->post('jenkel')));
+		$suku = contul(trim($this->input->post('suku')));
+		$pekerjaan = contul(trim($this->input->post('pekerjaan')));
+		$hp = contul(trim($this->input->post('hp')));
+		$telp = contul(trim($this->input->post('telp')));
+		$alamat_rumah = contul(trim($this->input->post('alamat_rumah')));
+		$alamat_kantor = contul(trim($this->input->post('alamat_kantor')));
 
-			echo json_encode($data);
-			return;
-		}
+		$gol_darah = contul(trim($this->input->post('gol_darah')));
+		$tekanan_darah_val = contul(trim($this->input->post('tekanan_darah_val')));
+		$tekanan_darah = $this->input->post('tekanan_darah');
+		$penyakit_jantung = $this->input->post('penyakit_jantung');
+		$diabetes = $this->input->post('diabetes');
+		$haemopilia = $this->input->post('haemopilia');
+		$hepatitis = $this->input->post('hepatitis');
+		$gastring = $this->input->post('gastring');
+		$penyakit_lainnya = $this->input->post('penyakit_lainnya');
+		$alergi_obat = $this->input->post('alergi_obat');
+		$alergi_obat_val = contul(trim($this->input->post('alergi_obat_val')));
+		$alergi_makanan = $this->input->post('alergi_makanan');
+		$alergi_makanan_val = contul(trim($this->input->post('alergi_makanan_val')));
 
-		$hasil_password = $this->enkripsi->enc_dec('encrypt', $password);
 		$this->db->trans_begin();
 		
-		$file_mimes = ['image/png', 'image/x-citrix-png', 'image/x-png', 'image/x-citrix-jpeg', 'image/jpeg', 'image/pjpeg'];
-
-		if(isset($_FILES['foto']['name']) && in_array($_FILES['foto']['type'], $file_mimes)) {
-			$this->konfigurasi_upload_img($namafileseo);
-			//get detail extension
-			$pathDet = $_FILES['foto']['name'];
-			$extDet = pathinfo($pathDet, PATHINFO_EXTENSION);
-			
-			if ($this->file_obj->do_upload('foto')) 
-			{
-				$gbrBukti = $this->file_obj->data();
-				$nama_file_foto = $gbrBukti['file_name'];
-				$this->konfigurasi_image_resize($nama_file_foto);
-				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
-				$this->image_lib->clear();
-				## replace nama file + ext
-				$namafileseo = $this->seoUrl($username.' '.time()).'.'.$extDet;
-			} else {
-				$error = array('error' => $this->file_obj->display_errors());
-				var_dump($error);exit;
-			}
-		}else{
-			$namafileseo = 'user_default.png';
-		}
-
 		$data_user = [
-			'id' => $this->m_user->get_max_id_user(),
-			'id_role' => $role,
-			'id_pegawai' => $id_pegawai,
-			'kode_user' => $this->m_user->get_kode_user(),
-			'username' => $username,
-			'password' => $hasil_password,
-			'status' => $status,
-			'created_at' => $timestamp,
-			'foto'	=> $namafileseo
+			'nama' => $nama,
+			'nik' => $nik,
+			'tempat_lahir' => $tempat_lahir,
+			'tanggal_lahir' => $tanggal_lahir,
+			'jenkel' => $jenkel,
+			'suku' => $suku,
+			'pekerjaan' => $pekerjaan,
+			'hp' => $hp,
+			'telp' => $telp,
+			'alamat_rumah' => $alamat_rumah,
+			'alamat_kantor' => $alamat_kantor
 		];
 		
 		$insert = $this->m_user->save($data_user);
@@ -322,45 +274,12 @@ class Data_pasien extends CI_Controller {
 		
 		$this->db->trans_begin();
 
-		$file_mimes = ['image/png', 'image/x-citrix-png', 'image/x-png', 'image/x-citrix-jpeg', 'image/jpeg', 'image/pjpeg'];
-
-		if(isset($_FILES['foto']['name']) && in_array($_FILES['foto']['type'], $file_mimes)) {
-			$this->konfigurasi_upload_img($namafileseo);
-			//get detail extension
-			$pathDet = $_FILES['foto']['name'];
-			$extDet = pathinfo($pathDet, PATHINFO_EXTENSION);
-			
-			if ($this->file_obj->do_upload('foto')) 
-			{
-				$gbrBukti = $this->file_obj->data();
-				$nama_file_foto = $gbrBukti['file_name'];
-				$this->konfigurasi_image_resize($nama_file_foto);
-				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
-				$this->image_lib->clear();
-				## replace nama file + ext
-				$namafileseo = $this->seoUrl($q->username.' '.time()).'.'.$extDet;
-				$foto = $namafileseo;
-			} else {
-				$error = array('error' => $this->file_obj->display_errors());
-				var_dump($error);exit;
-			}
-		}else{
-			$foto = null;
-		}
 
 		$data_user = [
 			'id_role' => $role,
 			'status' => $status,
 			'updated_at' => $timestamp
 		];
-
-		if($skip_pass == false) {
-			$data_user['password'] = $hash_password;
-		}
-		
-		if($foto != null) {
-			$data_user['foto'] = $foto;
-		}
 
 		$where = ['id' => $id_user];
 		$update = $this->m_user->update($where, $data_user);
@@ -679,122 +598,82 @@ class Data_pasien extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if($is_update == false) {
-			if ($this->input->post('username') == '') {
-				$data['inputerror'][] = 'username';
-				$data['error_string'][] = 'Wajib mengisi Username';
-				$data['status'] = FALSE;
-			}
-		}else{
-			if($skip_pass === false) {
-				if ($this->input->post('password_lama') == '') {
-					$data['inputerror'][] = 'password_lama';
-					$data['error_string'][] = 'Wajib mengisi Password Lama';
-					$data['status'] = FALSE;
-				}
-			}
-		}
-
-		if ($this->input->post('pegawai') == '') {
-			$data['inputerror'][] = 'pegawai';
-            $data['error_string'][] = 'Wajib mengisi Nama Pegawai';
+		
+		if ($this->input->post('nama') == '') {
+			$data['inputerror'][] = 'nama';
+            $data['error_string'][] = 'Wajib mengisi Nama';
             $data['status'] = FALSE;
 		}
 
-		if($skip_pass === false) {
-			if ($this->input->post('password') == '') {
-				$data['inputerror'][] = 'password';
-				$data['error_string'][] = 'Wajib mengisi Password';
-				$data['status'] = FALSE;
-			}
-	
-			if ($this->input->post('repassword') == '') {
-				$data['inputerror'][] = 'repassword';
-				$data['error_string'][] = 'Wajib Menulis Ulang Password';
-				$data['status'] = FALSE;
-			}
+		if ($this->input->post('no_rm') == '') {
+			$data['inputerror'][] = 'no_rm';
+			$data['error_string'][] = 'Wajib mengisi NO RM';
+			$data['status'] = FALSE;
+		}
+
+		if ($this->input->post('nik') == '') {
+			$data['inputerror'][] = 'nik';
+			$data['error_string'][] = 'Wajib Mengisi NIK';
+			$data['status'] = FALSE;
 		}
 		
-		// if ($this->input->post('icon_menu') == '') {
-		// 	$data['inputerror'][] = 'icon_menu';
-        //     $data['error_string'][] = 'Wajib mengisi icon menu';
-        //     $data['status'] = FALSE;
-		// }
-
-		if ($this->input->post('role') == '') {
-			$data['inputerror'][] = 'role';
-            $data['error_string'][] = 'Wajib Memilih Role User';
+		if ($this->input->post('tempat_lahir') == '') {
+			$data['inputerror'][] = 'tempat_lahir';
+            $data['error_string'][] = 'Wajib Mengisi Tempat Lahir';
             $data['status'] = FALSE;
 		}
 
-		if ($this->input->post('status') == '') {
-			$data['inputerror'][] = 'status';
-            $data['error_string'][] = 'Wajib Memilih Status';
+		if ($this->input->post('tanggal_lahir') == '') {
+			$data['inputerror'][] = 'tanggal_lahir';
+            $data['error_string'][] = 'Wajib Mengisi Tanggal Lahir';
             $data['status'] = FALSE;
 		}
+
+		if ($this->input->post('jenkel') == '') {
+			$data['inputerror'][] = 'jenkel';
+            $data['error_string'][] = 'Wajib Mengisi Jenis Kelamin';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('suku') == '') {
+			$data['inputerror'][] = 'suku';
+            $data['error_string'][] = 'Wajib Mengisi Suku Bangsa';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('pekerjaan') == '') {
+			$data['inputerror'][] = 'pekerjaan';
+            $data['error_string'][] = 'Wajib Mengisi Pekerjaan';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('hp') == '') {
+			$data['inputerror'][] = 'hp';
+            $data['error_string'][] = 'Wajib Mengisi HP/WA';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('alamat_rumah') == '') {
+			$data['inputerror'][] = 'alamat_rumah';
+            $data['error_string'][] = 'Wajib Mengisi Alamat Rumah';
+            $data['status'] = FALSE;
+		}
+
+		#### data medik
+
+		if ($this->input->post('tekanan_darah_val') == '') {
+			$data['inputerror'][] = 'tekanan_darah_val';
+            $data['error_string'][] = 'Wajib Mengisi Tekanan Darah';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('tekanan_darah') == '') {
+			$data['inputerror'][] = 'tekanan_darah';
+            $data['error_string'][] = 'Wajib Memilih Kategori';
+            $data['status'] = FALSE;
+		}
+
 
         return $data;
-	}
-
-	private function konfigurasi_upload_img($nmfile)
-	{ 
-		//konfigurasi upload img display
-		$config['upload_path'] = './files/img/user_img/';
-		$config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
-		$config['overwrite'] = TRUE;
-		$config['max_size'] = '4000';//in KB (4MB)
-		$config['max_width']  = '0';//zero for no limit 
-		$config['max_height']  = '0';//zero for no limit
-		$config['file_name'] = $nmfile;
-		//load library with custom object name alias
-		$this->load->library('upload', $config, 'file_obj');
-		$this->file_obj->initialize($config);
-	}
-
-	private function konfigurasi_image_resize($filename)
-	{
-		//konfigurasi image lib
-	    $config['image_library'] = 'gd2';
-	    $config['source_image'] = './files/img/user_img/'.$filename;
-	    $config['create_thumb'] = FALSE;
-	    $config['maintain_ratio'] = FALSE;
-	    $config['new_image'] = './files/img/user_img/'.$filename;
-	    $config['overwrite'] = TRUE;
-	    $config['width'] = 450; //resize
-	    $config['height'] = 500; //resize
-	    $this->load->library('image_lib',$config); //load image library
-	    $this->image_lib->initialize($config);
-	    $this->image_lib->resize();
-	}
-
-	private function konfigurasi_image_thumb($filename, $gbr)
-	{
-		//konfigurasi image lib
-	    $config2['image_library'] = 'gd2';
-	    $config2['source_image'] = './files/img/user_img/'.$filename;
-	    $config2['create_thumb'] = TRUE;
-	 	$config2['thumb_marker'] = '_thumb';
-	    $config2['maintain_ratio'] = FALSE;
-	    $config2['new_image'] = './files/img/user_img/thumbs/'.$filename;
-	    $config2['overwrite'] = TRUE;
-	    $config2['quality'] = '60%';
-	 	$config2['width'] = 45;
-	 	$config2['height'] = 45;
-	    $this->load->library('image_lib',$config2); //load image library
-	    $this->image_lib->initialize($config2);
-	    $this->image_lib->resize();
-	    return $output_thumb = $gbr['raw_name'].'_thumb'.$gbr['file_ext'];	
-	}
-
-	private function seoUrl($string) {
-	    //Lower case everything
-	    $string = strtolower($string);
-	    //Make alphanumeric (removes all other characters)
-	    $string = preg_replace("/[^a-z0-9_\s-]/", "", $string);
-	    //Clean up multiple dashes or whitespaces
-	    $string = preg_replace("/[\s-]+/", " ", $string);
-	    //Convert whitespaces and underscore to dash
-	    $string = preg_replace("/[\s_]/", "-", $string);
-	    return $string;
 	}
 }

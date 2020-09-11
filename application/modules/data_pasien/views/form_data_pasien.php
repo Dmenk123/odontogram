@@ -16,7 +16,7 @@
   <!-- begin:: Content -->
   <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
     <!--begin::Form-->
-    <form class="kt-form kt-form--label-right">
+    <form class="kt-form kt-form--label-right" id="form_pasien">
       <!-- form data pasien -->
       <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
@@ -28,72 +28,82 @@
         </div>
         <div class="kt-portlet__body">
           <div class="form-group row form-group-marginless kt-margin-t-20">
-            <label class="col-lg-1 col-form-label">Full Name:</label>
+            <input type="hidden" class="form-control" name="id_pasien" value="">
+            <label class="col-lg-1 col-form-label">Nama Pasien:</label>
             <div class="col-lg-3">
-              <input type="email" class="form-control" placeholder="Full name">
-              <span class="form-text text-muted">Please enter your full name</span>
+              <input type="text" class="form-control" name="nama">
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">Email:</label>
+            <label class="col-lg-1 col-form-label">No RM:</label>
             <div class="col-lg-3">
-              <input type="email" class="form-control" placeholder="Email">
-              <span class="form-text text-muted">Please enter your email</span>
+              <input type="text" class="form-control" placeholder="No RM" name="no_rm">
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">Username:</label>
+            <label class="col-lg-1 col-form-label">NIK:</label>
             <div class="col-lg-3">
-              <div class="input-group">
-                <div class="input-group-prepend"><span class="input-group-text"><i class="la la-user"></i></span></div>
-                <input type="text" class="form-control" placeholder="">
-              </div>
-              <span class="form-text text-muted">Please enter your username</span>
+              <input type="text" class="form-control" name="nik">
+              <span class="help-block"></span>
             </div>
           </div>
           <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
           <div class="form-group row form-group-marginless">
-            <label class="col-lg-1 col-form-label">Contact:</label>
+            <label class="col-lg-1 col-form-label">Tempat Lahir:</label>
             <div class="col-lg-3">
-              <input type="email" class="form-control" placeholder="Enter contact number">
-              <span class="form-text text-muted">Please enter your contact</span>
+              <input type="text" class="form-control" name="tempat_lahir">
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">Fax:</label>
+            <label class="col-lg-1 col-form-label">Tanggal Lahir:</label>
             <div class="col-lg-3">
-              <div class="kt-input-icon">
-                <input type="text" class="form-control" placeholder="Fax number">
-                <span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-info-circle"></i></span></span>
-              </div>
-              <span class="form-text text-muted">Please enter fax</span>
+              <input type="text" class="form-control" name="tanggal_lahir">
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">Address:</label>
+            <label class="col-lg-1 col-form-label">Jenis Kelamin:</label>
             <div class="col-lg-3">
-              <div class="kt-input-icon">
-                <input type="text" class="form-control" placeholder="Enter your address">
-                <span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-map-marker"></i></span></span>
-              </div>
-              <span class="form-text text-muted">Please enter your address</span>
+              <select class="form-control required" name="jenkel" id="jenkel">
+              <option value=""> Pilih Jenis Kelamin </option>
+              <option value="L"> Laki-Laki </option>
+              <option value="P"> Perempuan </option>
+            </select>
+              <span class="help-block"></span>
             </div>
           </div>
           <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
           <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Postcode:</label>
-            <div class="col-lg-3">
-              <div class="kt-input-icon">
-                <input type="text" class="form-control" placeholder="Enter your postcode">
-                <span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-bookmark-o"></i></span></span>
-              </div>
-              <span class="form-text text-muted">Please enter your postcode</span>
+            <label class="col-lg-1 col-form-label">Suku Bangsa:</label>
+            <div class="col-lg-5">
+              <input type="text" class="form-control" name="suku">
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">User Group:</label>
-            <div class="col-lg-3">
-              <div class="kt-radio-inline">
-                <label class="kt-radio kt-radio--solid">
-                  <input type="radio" name="example_2" checked value="2"> Sales Person
-                  <span></span>
-                </label>
-                <label class="kt-radio kt-radio--solid">
-                  <input type="radio" name="example_2" value="2"> Customer
-                  <span></span>
-                </label>
-              </div>
-              <span class="form-text text-muted">Please select user group</span>
+            <label class="col-lg-1 col-form-label">Pekerjaan:</label>
+            <div class="col-lg-5">
+              <input type="text" class="form-control" name="pekerjaan">
+              <span class="help-block"></span>
+            </div>
+          </div>
+          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+          <div class="form-group row">
+            <label class="col-lg-1 col-form-label">HP/WA:</label>
+            <div class="col-lg-5">
+              <input type="text" class="form-control" name="hp">
+              <span class="help-block"></span>
+            </div>
+            <label class="col-lg-1 col-form-label">Telp Rumah:</label>
+            <div class="col-lg-5">
+              <input type="text" class="form-control" name="telp">
+              <span class="help-block"></span>
+            </div>
+          </div>
+          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+          <div class="form-group row">
+            <label class="col-lg-1 col-form-label">Alamat Rumah:</label>
+            <div class="col-lg-5">
+              <input type="text" class="form-control" name="alamat_rumah">
+              <span class="help-block"></span>
+            </div>
+            <label class="col-lg-1 col-form-label">Alamat Kantor:</label>
+            <div class="col-lg-5">
+              <input type="text" class="form-control" name="alamat_kantor">
+              <span class="help-block"></span>
             </div>
           </div>
         </div>
@@ -109,72 +119,107 @@
         </div>
         <div class="kt-portlet__body">
           <div class="form-group row form-group-marginless kt-margin-t-20">
-            <label class="col-lg-1 col-form-label">Full Name:</label>
+            <label class="col-lg-1 col-form-label">Golongan Darah:</label>
             <div class="col-lg-3">
-              <input type="email" class="form-control" placeholder="Full name">
-              <span class="form-text text-muted">Please enter your full name</span>
+              <input type="text" class="form-control" name="gol_darah">
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">Email:</label>
+            <label class="col-lg-2 col-form-label">Tekanan Darah:</label>
             <div class="col-lg-3">
-              <input type="email" class="form-control" placeholder="Email">
-              <span class="form-text text-muted">Please enter your email</span>
+              <input type="text" class="form-control" name="tekanan_darah_val">
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">Username:</label>
             <div class="col-lg-3">
-              <div class="input-group">
-                <div class="input-group-prepend"><span class="input-group-text"><i class="la la-user"></i></span></div>
-                <input type="text" class="form-control" placeholder="">
-              </div>
-              <span class="form-text text-muted">Please enter your username</span>
-            </div>
-          </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row form-group-marginless">
-            <label class="col-lg-1 col-form-label">Contact:</label>
-            <div class="col-lg-3">
-              <input type="email" class="form-control" placeholder="Enter contact number">
-              <span class="form-text text-muted">Please enter your contact</span>
-            </div>
-            <label class="col-lg-1 col-form-label">Fax:</label>
-            <div class="col-lg-3">
-              <div class="kt-input-icon">
-                <input type="text" class="form-control" placeholder="Fax number">
-                <span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-info-circle"></i></span></span>
-              </div>
-              <span class="form-text text-muted">Please enter fax</span>
-            </div>
-            <label class="col-lg-1 col-form-label">Address:</label>
-            <div class="col-lg-3">
-              <div class="kt-input-icon">
-                <input type="text" class="form-control" placeholder="Enter your address">
-                <span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-map-marker"></i></span></span>
-              </div>
-              <span class="form-text text-muted">Please enter your address</span>
+              <select class="form-control required" name="tekanan_darah" id="tekanan_darah">
+                <option value=""> Pilih Kategori </option>
+                <option value="HYPERTENSI"> Hypertensi </option>
+                <option value="HYPOTENSI"> Hypotensi </option>
+                <option value="NORMAL"> Normal </option>
+              </select>
+              <span class="help-block"></span>
             </div>
           </div>
           <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
           <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Postcode:</label>
+            <label class="col-lg-1 col-form-label">Penyakit Jantung:</label>
             <div class="col-lg-3">
-              <div class="kt-input-icon">
-                <input type="text" class="form-control" placeholder="Enter your postcode">
-                <span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-bookmark-o"></i></span></span>
-              </div>
-              <span class="form-text text-muted">Please enter your postcode</span>
+              <select class="form-control required" name="penyakit_jantung" id="penyakit_jantung">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
             </div>
-            <label class="col-lg-1 col-form-label">User Group:</label>
+            <label class="col-lg-1 col-form-label">Diabetes:</label>
             <div class="col-lg-3">
-              <div class="kt-radio-inline">
-                <label class="kt-radio kt-radio--solid">
-                  <input type="radio" name="example_2" checked value="2"> Sales Person
-                  <span></span>
-                </label>
-                <label class="kt-radio kt-radio--solid">
-                  <input type="radio" name="example_2" value="2"> Customer
-                  <span></span>
-                </label>
-              </div>
-              <span class="form-text text-muted">Please select user group</span>
+              <select class="form-control required" name="diabetes" id="diabetes">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+            <label class="col-lg-1 col-form-label">Haemopilia:</label>
+            <div class="col-lg-3">
+              <select class="form-control required" name="haemopilia" id="haemopilia">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+          </div>
+          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+          <div class="form-group row">
+            <label class="col-lg-1 col-form-label">Hepatitis:</label>
+            <div class="col-lg-3">
+              <select class="form-control required" name="hepatitis" id="hepatitis">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+            <label class="col-lg-1 col-form-label">Gastring:</label>
+            <div class="col-lg-3">
+              <select class="form-control required" name="gastring" id="gastring">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+            <label class="col-lg-1 col-form-label">Penyakit Lainnya:</label>
+            <div class="col-lg-3">
+              <select class="form-control required" name="penyakit_lainnya" id="penyakit_lainnya">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+          </div>
+          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+          <div class="form-group row">
+            <label class="col-lg-2 col-form-label">Alergi Obat-Obatan:</label>
+            <div class="col-lg-4">
+              <select class="form-control required" name="alergi_obat" id="alergi_obat">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+            <div class="col-lg-6">
+              <input type="text" class="form-control" name="alergi_obat_val">
+              <span class="help-block"></span>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-lg-2 col-form-label">Alergi Makanan:</label>
+            <div class="col-lg-4">
+              <select class="form-control required" name="alergi_makanan" id="alergi_makanan">
+                <option value="0"> Tidak Ada </option>
+                <option value="1"> Ada </option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+            <div class="col-lg-6">
+              <input type="text" class="form-control" name="alergi_makanan_val">
+              <span class="help-block"></span>
             </div>
           </div>
         </div>
@@ -183,14 +228,13 @@
             <div class="row">
               <div class="col-lg-5"></div>
               <div class="col-lg-7">
-                <button type="reset" class="btn btn-brand">Submit</button>
-                <button type="reset" class="btn btn-secondary">Cancel</button>
+                <button type="button" class="btn btn-brand" onclick="save()">Simpan</button>
+                <button type="reset" class="btn btn-secondary">Batal</button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      
+      </div>      
     </form>
     <!--end::Form-->
   </div>

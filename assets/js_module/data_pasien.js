@@ -145,18 +145,7 @@ function reload_table()
 
 function save()
 {
-    var url;
-    var txtAksi;
-
-    if(save_method == 'add') {
-        url = base_url + 'master_user/add_data_user';
-        txtAksi = 'Tambah User';
-    }else{
-        url = base_url + 'master_user/update_data_user';
-        txtAksi = 'Edit User';
-    }
-    
-    var form = $('#form_modal_input')[0];
+    var form = $('#form_pasien')[0];
     var data = new FormData(form);
     
     $("#btnSave").prop("disabled", true);
@@ -164,10 +153,10 @@ function save()
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: url,
+        url: base_url + 'data_pasien/simpan_data',
         data: data,
         dataType: "JSON",
-        processData: false, // false, it prevent jQuery form transforming the data into a query string
+        processData: false,
         contentType: false, 
         cache: false,
         timeout: 600000,

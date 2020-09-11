@@ -29,4 +29,15 @@ if ( ! function_exists('timeAgo'))
         }
     }
 }
+
+if ( ! function_exists('contul'))
+{
+	function contul($string){
+        if($string == '') {
+            return null;
+        }else{
+            return $string;
+        }
+    }
+}
 ?>
