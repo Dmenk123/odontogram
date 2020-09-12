@@ -36,12 +36,11 @@
         <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_index">
           <thead>
             <tr>
-              <th style="width: 5%;">No</th>
-              <th>Kode</th>
+              <th>No RM</th>
               <th>Nama</th>
               <th>NIK</th>
               <th>Jenis Kelamin</th>
-              <th>Alamat</th>
+              <th>Alamat Rumah</th>
               <th>Telp/HP</th>
               <th>Status</th>
               <th style="width: 5%;">Aksi</th>

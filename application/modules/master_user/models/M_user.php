@@ -3,14 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_user extends CI_Model
 {
 	var $table = 'm_user';
-	var $column_search = ['username','kode_user','nama_role'];
+	var $column_search = ['m_user.username','m_user.kode_user','m_role.nama'];
 	
 	var $column_order = [
 		null, 
-		'username',
-		'nama_role',
-		'status',
-		'last_login',
+		'm_user.username',
+		'm_role.nama',
+		'm_user.status',
+		'm_user.last_login',
 		null
 	];
 
@@ -31,9 +31,10 @@ class M_user extends CI_Model
 		');
 
 		$this->db->from('m_user');
-		$this->db->join('m_role', 'm_user.id_role = m_role.id', 'left');	$i = 0;
+		$this->db->join('m_role', 'm_user.id_role = m_role.id', 'left');	
 		$this->db->where('m_user.deleted_at is null');
 		
+		$i = 0;
 		// loop column 
 		foreach ($this->column_search as $item) 
 		{

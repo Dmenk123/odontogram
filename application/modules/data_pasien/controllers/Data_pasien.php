@@ -76,15 +76,15 @@ class Data_pasien extends CI_Controller {
 
 	public function list_pasien()
 	{
-		$list = $this->m_pasien->get_datatables();
+		$list = $this->m_pasien->get_datatable_pasien();
 		$data = array();
-		$no =$_POST['start'];
+		// $no =$_POST['start'];
 		foreach ($list as $val) {
-			$no++;
+			// $no++;
 			$row = array();
 			//loop value tabel db
-			$row[] = $no;
-			$row[] = $val->kode;
+			// $row[] = $no;
+			$row[] = $val->no_rm;
 			$row[] = $val->nama;
 			$row[] = $val->nik;
 			$row[] = ($val->jenis_kelamin == 'L') ? '<span style="color:blue;">Laki-Laki</span>' : '<span style="color:magenta;">Perempuan</span>';
@@ -107,7 +107,7 @@ class Data_pasien extends CI_Controller {
 						</button>
 			';
 
-			if ($val->status == 1) {
+			if ($val->is_aktif == 1) {
 				$str_aksi .=
 				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$val->id.'" value="aktif"><i class="la la-check">
 				</i> Aktif</button>';
@@ -125,8 +125,8 @@ class Data_pasien extends CI_Controller {
 
 		$output = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->m_user->count_all(),
-			"recordsFiltered" => $this->m_user->count_filtered(),
+			"recordsTotal" => $this->m_pasien->count_all(),
+			"recordsFiltered" => $this->m_pasien->count_filtered(),
 			"data" => $data
 		];
 		

@@ -31,7 +31,7 @@
             <input type="hidden" class="form-control" name="id_pasien" value="">
             <label class="col-lg-1 col-form-label">Nama Pasien:</label>
             <div class="col-lg-3">
-              <input type="text" class="form-control" name="nama" onKeyUP="this.value = this.value.toUpperCase();">
+              <input type="text" class="form-control" name="nama" onkeyup="to_upper(this)">
               <span class="help-block"></span>
             </div>
             <label class="col-lg-1 col-form-label">NIK:</label>
@@ -41,7 +41,7 @@
             </div>
             <label class="col-lg-1 col-form-label">No RM:</label>
             <div class="col-lg-2">
-              <input type="text" class="form-control mask_rm" name="no_rm" onKeyUP="this.value = this.value.toUpperCase();" disabled>
+              <input type="text" class="form-control mask_rm" name="no_rm" onkeyup="to_upper(this)" disabled>
               <span class="help-block"></span>
             </div>
             <div class="col-lg-2">

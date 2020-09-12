@@ -3,11 +3,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_pasien extends CI_Model
 {
 	var $table = 'm_pasien';
-	var $column_search = ['kode','nama','nik','jenis_kelamin','alamat_rumah','hp'];
+	var $column_search = [
+		'no_rm',
+		'nama',
+		'nik',
+		'jenkel',
+		'alamat_rumah',
+		'hp',
+		'status_pasien'
+	];
 	
 	var $column_order = [
-		null, 
-		'kode',
+		'no_rm',
 		'nama',
 		'nik',
 		'jenis_kelamin',
@@ -17,7 +24,7 @@ class M_pasien extends CI_Model
 		null
 	];
 
-	var $order = ['kode' => 'desc']; 
+	var $order = ['no_rm' => 'asc']; 
 
 	public function __construct()
 	{
@@ -28,8 +35,7 @@ class M_pasien extends CI_Model
 
 	private function _get_datatables_query($term='')
 	{
-		$this->db->select("
-			*, CASE WHEN is_aktif = 0 THEN 'Aktif' ELSE 'Non Aktif' END as status_pasien, CASE WHEN jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
+		$this->db->select("*, CASE WHEN is_aktif = 1 THEN 'Aktif' ELSE 'Non Aktif' END as status_pasien, CASE WHEN jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
 		$this->db->from($this->table);
 		$this->db->where('deleted_at is null');
 		
@@ -50,7 +56,18 @@ class M_pasien extends CI_Model
 				}
 				else
 				{
-					$this->db->or_like($item, $_POST['search']['value']);
+					if($item == 'status_pasien') {
+						/**
+						 * param both untuk wildcard pada awal dan akhir kata
+						 * param false untuk disable escaping (karena pake subquery)
+						 */
+						$this->db->or_like('(CASE WHEN is_aktif = 1 THEN \'Aktif\' ELSE \'Non Aktif\' END)', $_POST['search']['value'],'both',false);
+					}elseif($item == 'jenkel'){
+						$this->db->or_like('(CASE WHEN jenis_kelamin = \'L\' THEN \'Laki-Laki\' ELSE \'Perempuan\' END)', $_POST['search']['value'],'both',false);
+					}
+					else{
+						$this->db->or_like($item, $_POST['search']['value']);
+					}
 				}
 				//last loop
 				if(count($this->column_search) - 1 == $i) 
@@ -68,9 +85,10 @@ class M_pasien extends CI_Model
 			$order = $this->order;
             $this->db->order_by(key($order), $order[key($order)]);
 		}
+
 	}
 
-	function get_datatables()
+	function get_datatable_pasien()
 	{
 		$term = $_REQUEST['search']['value'];
 		$this->_get_datatables_query($term);

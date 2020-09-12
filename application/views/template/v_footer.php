@@ -103,6 +103,11 @@
                 buttonsStyling: false
             });
 
+            function to_upper(objek) {
+                var _a = objek.value;
+                objek.value = _a.toUpperCase();
+            }
+
             $(document).ready(function () {
                 $('.select2').select2({
                     allowClear: true,
