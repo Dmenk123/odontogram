@@ -15,7 +15,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
 		ajax: {
-			url  : base_url + "data_pasien/list_pasien",
+			url  : base_url + "data_pasien/list_data",
 			type : "POST" 
 		},
 
@@ -34,7 +34,7 @@ $(document).ready(function() {
         var id = $(this).attr('id');
         var status = $(this).val();
         swalConfirm.fire({
-            title: 'Ubah Status Data User ?',
+            title: 'Ubah Status Data Pasien ?',
             text: "Apakah Anda Yakin ?",
             icon: 'warning',
             showCancelButton: true,
@@ -44,13 +44,13 @@ $(document).ready(function() {
           }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url : base_url + 'master_user/edit_status_user/'+ id,
+                    url : base_url + 'data_pasien/edit_status_aktif',
                     type: "POST",
                     dataType: "JSON",
-                    data : {status : status},
+                    data : {status : status, id : id},
                     success: function(data)
                     {
-                        swalConfirm.fire('Berhasil Ubah Status User!', data.pesan, 'success');
+                        swalConfirm.fire('Berhasil Ubah Status Pasien!', data.pesan, 'success');
                         table.ajax.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown)
@@ -105,56 +105,67 @@ $(document).ready(function() {
     $('.mask_rm').mask("AA.00.00");
 });	
 
-function edit_user(id)
-{
-    reset_modal_form();
-    save_method = 'update';
-    //Ajax Load data from ajax
+function detail_pasien(id) {
     $.ajax({
-        url : base_url + 'master_user/edit_user',
+        url : base_url + 'data_pasien/detail_pasien',
         type: "POST",
         dataType: "JSON",
         data : {id:id},
         success: function(data)
         {
-            // data.data_menu.forEach(function(dataLoop) {
-            //     $("#parent_menu").append('<option value = '+dataLoop.id+' class="append-opt">'+dataLoop.nama+'</option>');
-            // });
-            $('#div_pass_lama').css("display","block");
-            $('#div_preview_foto').css("display","block");
-            $('#div_skip_password').css("display", "block");
-            $('[name="id_user"]').val(data.old_data.id);
-            $('[name="username"]').val(data.old_data.username).attr('disabled', true);
-            $('[name="role"]').val(data.old_data.id_role);
-            $('[name="status"]').val(data.old_data.status);
-            $("#pegawai").val(data.old_data.id_pegawai).trigger("change");
-            $('#preview_img').attr('src', 'data:image/jpeg;base64,'+data.foto_encoded);
-            $('#modal_user_form').modal('show');
-	        $('#modal_title').text('Edit User'); 
+            $('#no_rm_det').text(data.old_data.no_rm);
+            $('#nik_det').text(data.old_data.nik);
+            $('#pasien_det').text(data.old_data.nama);
+            $('#ttl_det').text(function () {
+                let tgl =  data.old_data.tanggal_lahir;
+                return data.old_data.tempat_lahir+' / '+tgl.split("-").reverse().join("-");
+            });
+            $('#jenkel_det').text(data.old_data.jenkel);
+            $('#alamat_rmh_det').text(data.old_data.alamat_rumah);
+            $('#alamat_ktr_det').text(data.old_data.alamat_kantor);
+            $('#suku_det').text(data.old_data.suku);
+            $('#pekerjaan_det').text(data.old_data.pekerjaan);
+            $('#hp_det').text(data.old_data.hp);
+            $('#telp_det').text(data.old_data.telp_rumah);
 
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
-        }
-    });
-}
+            $('#goldarah_det').text(data.old_data.gol_darah);
+            $('#tekanandarah_det').text(data.old_data.tekanan_darah+' ('+data.old_data.tekanan_darah_val+')');
+            $('#jantung_det').text(handle_boolean(data.old_data.penyakit_jantung));
+            $('#diabetes_det').text(handle_boolean(data.old_data.diabetes));
+            $('#hepatitis_det').text(handle_boolean(data.old_data.hepatitis));
+            $('#haemopilia_det').text(handle_boolean(data.old_data.haemopilia));
+            $('#gastring_det').text(handle_boolean(data.old_data.gastring));
+            $('#penyakitlain_det').text(handle_boolean(data.old_data.penyakit_lainnya));
+            $('#alergiobat_det').text(function () {
+                let strAlergiObat;
+                if(data.old_data.alergi_obat == '1'){
+                    strAlergiObat = 'Ya';
+                }else{
+                    strAlergiObat = 'Tidak';
+                }
 
-function detail_user(id) {
-    $.ajax({
-        url : base_url + 'master_user/edit_user',
-        type: "POST",
-        dataType: "JSON",
-        data : {id:id},
-        success: function(data)
-        {
-            $('#username_det').text(data.old_data.id);
-            $('#pegawai_det').text(data.old_data.username);
-            $('#role_det').text(data.old_data.id_role);
-            $('#status_det').text(data.old_data.status);
-            $('#preview_img_det').attr('src', 'data:image/jpeg;base64,'+data.foto_encoded);
-            $('#modal_user_detail').modal('show');
-	        $('#modal_title_det').text('Detail User'); 
+                if(data.old_data.alergi_obat_val){
+                    return strAlergiObat+', '+data.old_data.alergi_obat_val;
+                }else{
+                    return strAlergiObat;
+                }
+            });
+            $('#alergimakan_det').text(function () {
+                let strAlergiMakan;
+                if(data.old_data.alergi_makanan == '1'){
+                    strAlergiMakan = 'Ya';
+                }else{
+                    strAlergiMakan = 'Tidak';
+                }
+
+                if(data.old_data.alergi_makanan_val){
+                    return strAlergiMakan+', '+data.old_data.alergi_makanan_val;
+                }else{
+                    return strAlergiMakan;
+                }
+            });
+            $('#modal_detail').modal('show');
+	        $('#modal_title_det').text('Detail Pasien'); 
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
@@ -215,9 +226,9 @@ function save()
     });
 }
 
-function delete_user(id){
+function delete_pasien(id){
     swalConfirmDelete.fire({
-        title: 'Hapus Data User ?',
+        title: 'Hapus Data Pasien ?',
         text: "Data Akan dihapus permanen ?",
         type: 'warning',
         showCancelButton: true,
@@ -227,13 +238,13 @@ function delete_user(id){
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'master_user/delete_user',
+                url : base_url + 'data_pasien/delete_data',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
                 success: function(data)
                 {
-                    swalConfirm.fire('Berhasil Hapus User!', data.pesan, 'success');
+                    swalConfirm.fire('Berhasil Hapus Pasien!', data.pesan, 'success');
                     table.ajax.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown)
@@ -274,10 +285,10 @@ function import_data_excel(){
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: base_url + 'master_user/import_data_master',
+        url: base_url + 'data_pasien/import_data',
         data: data,
         dataType: "JSON",
-        processData: false, // false, it prevent jQuery form transforming the data into a query string
+        processData: false,
         contentType: false, 
         success: function (data) {
             if(data.status) {
@@ -304,4 +315,12 @@ function import_data_excel(){
             table.ajax.reload();
         }
     });
+}
+
+function handle_boolean(str) {
+    if(str == '1'){
+        return 'Ya';
+    }else{
+        return 'Tidak';
+    }
 }

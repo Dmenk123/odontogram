@@ -221,8 +221,8 @@ class M_pasien extends CI_Model
 		}
 	}
 
-	public function trun_master_user()
+	public function trun_data_pasien()
 	{
-		$this->db->query("truncate table m_user");
+		$this->db->query("truncate table m_pasien");
 	}
 }

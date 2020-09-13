@@ -37,7 +37,7 @@ class Data_pasien extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => null,
+			'modal' => 'modal_data_pasien',
 			'js'	=> 'data_pasien.js',
 			'view'	=> 'view_data_pasien'
 		];
@@ -74,8 +74,103 @@ class Data_pasien extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
-	public function list_pasien()
+	public function edit($enc_id)
 	{
+		if(strlen($enc_id) != 32) {
+			return redirect(base_url($this->uri->segment(1)));
+		}
+
+		$this->load->library('Enkripsi');
+		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		
+		$id_user = $this->session->userdata('id_user'); 
+		$data_user = $this->m_user->get_detail_user($id_user);
+
+		$select = "pas.*, mdk.*";
+		$where = ['pas.deleted_at' => null, 'pas.id' => $id_pasien];
+		$table = 'm_pasien as pas';
+		$join = [ 
+			[
+				'table' => 'm_data_medik as mdk',
+				'on'	=> 'pas.id = mdk.id_pasien'
+			]
+		];
+		$data_pasien = $this->m_global->single_row($select,$where,$table, $join);
+		
+		if(!$data_pasien) {
+			return redirect(base_url($this->uri->segment(1)));
+		}
+
+		/**
+		 * data passing ke halaman view content
+		 */
+		$data = array(
+			'title' => 'Edit Data Pasien',
+			'data_user' => $data_user,
+			'data_pasien' => $data_pasien
+		);
+
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => null,
+			'js'	=> 'data_pasien.js',
+			'view'	=> 'form_data_pasien'
+		];
+
+		$this->template_view->load_view($content, $data);
+	}
+
+	public function detail_pasien()
+	{
+		$enc_id = $this->input->post('id');
+		
+		if(strlen($enc_id) != 32) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Data Tidak Valid'
+			]);
+			return;
+		}
+
+		$this->load->library('Enkripsi');
+		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
+
+		$select = "pas.*, mdk.*, CASE WHEN pas.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
+		$where = ['pas.deleted_at' => null, 'pas.id' => $id_pasien];
+		$table = 'm_pasien as pas';
+		$join = [ 
+			[
+				'table' => 'm_data_medik as mdk',
+				'on'	=> 'pas.id = mdk.id_pasien'
+			]
+		];
+		$data_pasien = $this->m_global->single_row($select,$where,$table, $join);
+		
+		if(!$data_pasien) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Data Pasien Tidak Ditemukan'
+			]);
+			return;
+		}
+
+		$data = array(
+			'status' => true,
+			'old_data' => $data_pasien
+		);
+
+		echo json_encode($data);
+	}
+
+	public function list_data()
+	{
+		$this->load->library('Enkripsi');
 		$list = $this->m_pasien->get_datatable_pasien();
 		$data = array();
 		// $no =$_POST['start'];
@@ -96,24 +191,27 @@ class Data_pasien extends CI_Controller {
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="detail_pasien(\''.$val->id.'\')">
+						<button class="dropdown-item" onclick="detail_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
 							<i class="la la-search"></i> Detail Pasien
 						</button>
-						<button class="dropdown-item" onclick="edit_pasien(\''.$val->id.'\')">
+						<a class="dropdown-item" href="'.base_url('data_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
 							<i class="la la-pencil"></i> Edit Pasien
-						</button>
-						<button class="dropdown-item" onclick="delete_pasien(\''.$val->id.'\')">
+						</a>
+						<button class="dropdown-item" onclick="delete_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
+						<a class="dropdown-item" target="_blank" href="'.base_url('data_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
+							<i class="la la-print"></i> Cetak Pasien Ini
+						</a>
 			';
 
 			if ($val->is_aktif == 1) {
 				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$val->id.'" value="aktif"><i class="la la-check">
+				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="aktif"><i class="la la-check">
 				</i> Aktif</button>';
 			}else{
 				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$val->id.'" value="nonaktif"><i class="la la-close">
+				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="nonaktif"><i class="la la-close">
 				</i> Non Aktif</button>';
 			}	
 
@@ -243,7 +341,7 @@ class Data_pasien extends CI_Controller {
 			'tekanan_darah_val' => $tekanan_darah_val,
 			'penyakit_jantung' => $penyakit_jantung,
 			'diabetes' => $diabetes,
-			'haemopila' => $haemopilia,
+			'haemopilia' => $haemopilia,
 			'hepatitis' => $hepatitis,
 			'gastring' => $gastring,
 			'penyakit_lainnya' => $penyakit_lainnya,
@@ -283,125 +381,65 @@ class Data_pasien extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	public function update_data_user()
-	{
-		$sesi_id_user = $this->session->userdata('id_user'); 
-		$id_user = $this->input->post('id_user');
-		$this->load->library('Enkripsi');
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		
-		if($this->input->post('skip_pass') != null){
-			$skip_pass = true;
-		}else{
-			$skip_pass = false;
-		}
-		
-		$arr_valid = $this->rule_validasi(true, $skip_pass);
-
-		if ($arr_valid['status'] == FALSE) {
-			echo json_encode($arr_valid);
-			return;
-		}
-
-		$password = trim($this->input->post('password'));
-		$repassword = trim($this->input->post('repassword'));
-		$role = $this->input->post('role');
-		$status = $this->input->post('status');
-		
-		$q = $this->m_user->get_by_id($id_user);
-		$namafileseo = $this->seoUrl($q->username.' '.time());
-
-		if($skip_pass == false) {
-			if ($password != $repassword) {
-				$data['inputerror'][] = 'password';
-				$data['error_string'][] = 'Password Tidak Cocok';
-				$data['status'] = FALSE;
-			
-				$data['inputerror'][] = 'repassword';
-				$data['error_string'][] = 'Password Tidak Cocok';
-				$data['status'] = FALSE;
-	
-				echo json_encode($data);
-				return;
-			}
-		}
-		
-		$hash_password = $this->enkripsi->enc_dec('encrypt', $password);
-		$hash_password_lama = $this->enkripsi->enc_dec('encrypt', trim($this->input->post('password_lama')));
-		$dataOld = $this->m_user->get_by_id($this->input->post('id_user'));
-		
-		if($skip_pass == false) {
-			if($hash_password_lama != $dataOld->password) {
-				$data['inputerror'][] = 'password_lama';
-				$data['error_string'][] = 'Password lama salah';
-				$data['status'] = FALSE;
-	
-				echo json_encode($data);
-				return;
-			}
-		}
-		
-		$this->db->trans_begin();
-
-
-		$data_user = [
-			'id_role' => $role,
-			'status' => $status,
-			'updated_at' => $timestamp
-		];
-
-		$where = ['id' => $id_user];
-		$update = $this->m_user->update($where, $data_user);
-
-		if ($this->db->trans_status() === FALSE){
-			$this->db->trans_rollback();
-			$data['status'] = false;
-			$data['pesan'] = 'Gagal update Master User';
-		}else{
-			$this->db->trans_commit();
-			$data['status'] = true;
-			$data['pesan'] = 'Sukses update Master User';
-		}
-		
-		echo json_encode($data);
-	}
 
 	/**
 	 * Hanya melakukan softdelete saja
 	 * isi kolom updated_at dengan datetime now()
 	 */
-	public function delete_user()
+	public function delete_data()
 	{
-		$id = $this->input->post('id');
-		$del = $this->m_user->softdelete_by_id($id);
+		$this->load->library('Enkripsi');
+		$enc_id = $this->input->post('id');
+		
+		if(strlen($enc_id) != 32) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Data Tidak Valid'
+			]);
+			return;
+		}
+
+		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		$del = $this->m_pasien->softdelete_by_id($id_pasien);
 		if($del) {
 			$retval['status'] = TRUE;
-			$retval['pesan'] = 'Data Master User dihapus';
+			$retval['pesan'] = 'Data Pasien Sukses dihapus';
 		}else{
 			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Data Master User dihapus';
+			$retval['pesan'] = 'Data Pasien Gagal dihapus';
 		}
 
 		echo json_encode($retval);
 	}
 
-	public function edit_status_user($id)
+	public function edit_status_aktif()
 	{
+		$this->load->library('Enkripsi');
+		$enc_id = $this->input->post('id');
+		
+		if(strlen($enc_id) != 32) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Data Tidak Valid'
+			]);
+			return;
+		}
+
+		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
 		$input_status = $this->input->post('status');
 		// jika aktif maka di set ke nonaktif / "0"
 		$status = ($input_status == "aktif") ? $status = 0 : $status = 1;
 			
-		$input = array('status' => $status);
+		$input = array('is_aktif' => $status);
 
-		$where = ['id' => $id];
+		$where = ['id' => $id_pasien];
 
-		$this->m_user->update($where, $input);
+		$this->m_pasien->update($where, $input);
 
 		if ($this->db->affected_rows() == '1') {
 			$data = array(
 				'status' => TRUE,
-				'pesan' => "Status User berhasil di ubah.",
+				'pesan' => "Status Pasien berhasil di ubah.",
 			);
 		}else{
 			$data = array(
@@ -414,7 +452,7 @@ class Data_pasien extends CI_Controller {
 
 	public function template_excel()
 	{
-		$file_url = base_url().'files/template_dokumen/template_master_user.xlsx';
+		$file_url = base_url().'files/template_dokumen/template_data_pasien.xlsx';
 		header('Content-Type: application/octet-stream');
 		header("Content-Transfer-Encoding: Binary"); 
 		header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\""); 
@@ -423,41 +461,65 @@ class Data_pasien extends CI_Controller {
 
 	public function export_excel()
 	{
-		$select = "m_user.*, m_pegawai.nama as nama_pegawai, m_role.nama as nama_role";
-		$where = ['m_pegawai.deleted_at' => null];
-		$table = 'm_user';
+		$select = "pas.*, mdk.*, CASE WHEN pas.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, CASE WHEN is_aktif = 1 THEN 'Aktif' ELSE 'Non Aktif' END as status_pasien";
+		$where = ['pas.deleted_at' => null];
+		$table = 'm_pasien as pas';
 		$join = [ 
 			[
-				'table' => 'm_pegawai',
-				'on'	=> 'm_user.id_pegawai = m_pegawai.id'
-			],
-			[
-				'table' => 'm_role',
-				'on'	=> 'm_user.id_role = m_role.id'
+				'table' => 'm_data_medik as mdk',
+				'on'	=> 'pas.id = mdk.id_pasien'
 			]
 		];
+		$data = $this->m_global->multi_row($select,$where,$table,$join);
+		if($data) {
+			$counter = count($data)+1;
+		}else{
+			$counter = 1;
+		}
 
-		$data = $this->m_global->multi_row($select, $where, $table, $join, 'm_user.kode_user');
-		
 		$spreadsheet = $this->excel->spreadsheet_obj();
 		$writer = $this->excel->xlsx_obj($spreadsheet);
 		$number_format_obj = $this->excel->number_format_obj();
 		
 		$spreadsheet
 			->getActiveSheet()
-			->getStyle('A1:E1000')
+			->getStyle('A1:AA'.$counter)
 			->getNumberFormat()
-			->setFormatCode($number_format_obj::FORMAT_TEXT);
+			//format text masih ada bug di nip. jadi kacau
+			//->setFormatCode($number_format_obj::FORMAT_TEXT);
+			// solusi pake format custom
+			->setFormatCode('#');
 		
 		$sheet = $spreadsheet->getActiveSheet();
 
 		$sheet
-			->setCellValue('A1', 'Kode User')
-			->setCellValue('B1', 'Username')
-			->setCellValue('C1', 'Nama Pegawai')
-			->setCellValue('D1', 'Role')
-			->setCellValue('E1', 'Status Aktif');
-		
+			->setCellValue('A1', 'No RM')
+			->setCellValue('B1', 'Nama')
+			->setCellValue('C1', 'Tempat Lahir')
+			->setCellValue('D1', 'Tgl Lahir')
+			->setCellValue('E1', 'NIK')
+			->setCellValue('F1', 'Jenis Kelamin')
+			->setCellValue('G1', 'Suku')
+			->setCellValue('H1', 'Pekerjaan')
+			->setCellValue('I1', 'Alamat Rumah')
+			->setCellValue('J1', 'Telp Rumah')
+			->setCellValue('K1', 'Alamat Kantor')
+			->setCellValue('L1', 'HP/WA')
+			->setCellValue('M1', 'Status Pasien')
+			->setCellValue('N1', 'Golongan Darah')
+			->setCellValue('O1', 'Tekanan Darah')
+			->setCellValue('P1', 'Nilai Tek Darah')
+			->setCellValue('Q1', 'Penyakit Jantung')
+			->setCellValue('R1', 'Diabetes')
+			->setCellValue('S1', 'Haemopilia')
+			->setCellValue('T1', 'Hepatitis')
+			->setCellValue('U1', 'Gastring')
+			->setCellValue('V1', 'Penyakit Lainnya')
+			->setCellValue('W1', 'Alergi Obat')
+			->setCellValue('X1', 'List Alergi Obat')
+			->setCellValue('Y1', 'Alergi Makanan')
+			->setCellValue('Z1', 'List Alergi Makanan');
+					
 		$startRow = 2;
 		$row = $startRow;
 		if($data){
@@ -465,11 +527,32 @@ class Data_pasien extends CI_Controller {
 				$sts = ($val->status = '1') ? 'Aktif' : 'Non Aktif';
 				
 				$sheet
-					->setCellValue("A{$row}", $val->kode_user)
-					->setCellValue("B{$row}", $val->username)
-					->setCellValue("C{$row}", $val->nama_pegawai)
-					->setCellValue("D{$row}", $val->nama_role)
-					->setCellValue("E{$row}", $sts);
+					->setCellValue("A{$row}", $val->no_rm)
+					->setCellValue("B{$row}", $val->nama)
+					->setCellValue("C{$row}", $val->tempat_lahir)
+					->setCellValue("D{$row}", DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d/m/Y'))
+					->setCellValue("E{$row}", $val->nik)
+					->setCellValue("F{$row}", $val->jenis_kelamin)
+					->setCellValue("G{$row}", $val->suku)
+					->setCellValue("H{$row}", $val->pekerjaan)
+					->setCellValue("I{$row}", $val->alamat_rumah)
+					->setCellValue("J{$row}", $val->telp_rumah)
+					->setCellValue("K{$row}", $val->alamat_kantor)
+					->setCellValue("L{$row}", $val->hp)
+					->setCellValue("M{$row}", $val->status_pasien)
+					->setCellValue("N{$row}", $val->gol_darah)
+					->setCellValue("O{$row}", $val->tekanan_darah)
+					->setCellValue("P{$row}", $val->tekanan_darah_val)
+					->setCellValue("Q{$row}", ($val->penyakit_jantung == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("R{$row}", ($val->diabetes == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("S{$row}", ($val->haemopilia == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("T{$row}", ($val->hepatitis == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("U{$row}", ($val->gastring == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("V{$row}", ($val->penyakit_lainnya == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("W{$row}", ($val->alergi_obat == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("X{$row}", $val->alergi_obat_val)
+					->setCellValue("Y{$row}", ($val->alergi_makanan == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("Z{$row}", $val->alergi_makanan_val);
 				$row++;
 			}
 
@@ -477,7 +560,7 @@ class Data_pasien extends CI_Controller {
 		}
 		
 		
-		$filename = 'master-user-'.time();
+		$filename = 'data-pasien-'.time();
 		
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -487,9 +570,8 @@ class Data_pasien extends CI_Controller {
 		
 	}
 
-	public function import_data_master()
+	public function import_data()
 	{
-		$this->load->library('Enkripsi');
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$file_mimes = ['text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
@@ -507,9 +589,14 @@ class Data_pasien extends CI_Controller {
 			$spreadsheet = $reader->load($_FILES['file_excel']['tmp_name']);
 			$sheetData = $spreadsheet->getActiveSheet()->toArray();
 			
-			for ($i=0; $i <count($sheetData); $i++) { 
+			// echo "<pre>";
+			// print_r ($sheetData);
+			// echo "</pre>";
+			// exit;
+
+			for ($i=1; $i <count($sheetData); $i++) { 
 				
-				if ($sheetData[$i][0] == null || $sheetData[$i][1] == null || $sheetData[$i][2] == null || $sheetData[$i][3] == null) {
+				if ($sheetData[$i][0] == null || $sheetData[$i][1] == null) {
 					if($i == 0) {
 						$flag_kosongan = true;
 						$status_import = false;
@@ -523,49 +610,42 @@ class Data_pasien extends CI_Controller {
 					break;
 				}
 
-				$data['kode_user'] = strtoupper(strtolower(trim($sheetData[$i][0])));
-				$data['username'] = strtolower(trim($sheetData[$i][1]));
-				
-				#pegawai
-				$id_pegawai = $this->m_user->get_id_pegawai_by_name(strtolower(trim($sheetData[$i][2])));
-				if($id_pegawai){
-					$data['id_pegawai'] = $id_pegawai->id;
-				}else{
-					if($i == 0) {
-						continue;
-					}else{
-						$flag_kosongan = false;
-						$status_import = false;
-						$pesan = "Terjadi Kesalahan Dalam Penulisan Nama Pegawai, Mohon Cek Kembali";
-						break;
-					}
-				}
-				#end pegawai
+				$id_pasien = $this->m_pasien->get_max_id_pasien();
+				$pasien['id'] = $id_pasien;
+				$pasien['no_rm'] = strtoupper(strtolower(trim($sheetData[$i][0])));
+				$pasien['nama'] = strtoupper(strtolower(trim($sheetData[$i][1])));
+				$pasien['tempat_lahir'] = strtoupper(strtolower(trim($sheetData[$i][2])));
+				$pasien['tanggal_lahir'] = DateTime::createFromFormat('d-m-Y', trim($sheetData[$i][3]))->format('Y-m-d');
+				$pasien['nik'] = trim($sheetData[$i][4]);
+				$pasien['jenis_kelamin'] = strtoupper(strtolower(trim($sheetData[$i][5])));
+				$pasien['suku'] = strtoupper(strtolower(trim($sheetData[$i][6])));
+				$pasien['pekerjaan'] = strtoupper(strtolower(trim($sheetData[$i][7])));
+				$pasien['alamat_rumah'] = strtoupper(strtolower(trim($sheetData[$i][8])));
+				$pasien['telp_rumah'] = trim($sheetData[$i][9]);
+				$pasien['alamat_kantor'] = strtoupper(strtolower(trim($sheetData[$i][10])));
+				$pasien['hp'] = trim($sheetData[$i][11]);
+				$pasien['is_aktif'] = 1;
+				$pasien['created_at'] = $timestamp;
+				$data_pasien[] = $pasien;
 
-				#role
-				$id_role = $this->m_user->get_id_role_by_name(strtolower(trim($sheetData[$i][3])));
+				################# DATA MEDIK
+				$medik['id_pasien'] = $id_pasien;
+				$medik['gol_darah'] = strtoupper(strtolower(trim($sheetData[$i][12])));
+				$medik['tekanan_darah'] = strtoupper(strtolower(trim($sheetData[$i][13])));
+				$medik['tekanan_darah_val'] = strtoupper(strtolower(trim($sheetData[$i][14])));
+				$medik['penyakit_jantung'] = strtoupper(strtolower(trim($sheetData[$i][15])));
+				$medik['diabetes'] = strtoupper(strtolower(trim($sheetData[$i][16])));
+				$medik['haemopilia'] = strtoupper(strtolower(trim($sheetData[$i][17])));
+				$medik['hepatitis'] = strtoupper(strtolower(trim($sheetData[$i][18])));
+				$medik['gastring'] = strtoupper(strtolower(trim($sheetData[$i][19])));
+				$medik['penyakit_lainnya'] = strtoupper(strtolower(trim($sheetData[$i][20])));
+				$medik['alergi_obat'] = strtoupper(strtolower(trim($sheetData[$i][21])));
+				$medik['alergi_obat_val'] = strtoupper(strtolower(trim($sheetData[$i][22])));
+				$medik['alergi_makanan'] = strtoupper(strtolower(trim($sheetData[$i][23])));
+				$medik['alergi_makanan_val'] = strtoupper(strtolower(trim($sheetData[$i][24])));
+				$medik['created_at'] = $timestamp;
+				$data_medik[] = $medik;
 
-				if($id_role){
-					$data['id_role'] = $id_role->id;
-				}else{
-					if($i == 0) {
-						continue;
-					}else{
-						$flag_kosongan = false;
-						$status_import = false;
-						$pesan = "Terjadi Kesalahan Dalam Penulisan Nama Role, Mohon Cek Kembali";
-						break;
-					}
-				}
-				#end role
-
-				$data['created_at'] = $timestamp;
-				$data['foto'] = 'user_default.png';
-				$data['status'] = 1;
-				#default password 123456
-				$data['password'] = $this->enkripsi->enc_dec('encrypt', '123456');
-
-				$retval[] = $data;
 
 				######## jika lancar sampai akhir beri flag sukses
 				if($i == (count($sheetData) - 1)) {
@@ -576,9 +656,7 @@ class Data_pasien extends CI_Controller {
 			}
 
 			if($status_import) {
-				// var_dump(count($retval));exit;
-				## jika array maks cuma 1, maka batalkan (soalnya hanya header saja disana) ##
-				if(count($retval) <= 1) {
+				if(count($data_pasien) < 1) {
 					echo json_encode([
 						'status' => false,
 						'pesan'	=> 'Import dibatalkan, Data Kosong...'
@@ -590,12 +668,17 @@ class Data_pasien extends CI_Controller {
 				$this->db->trans_begin();
 				
 				#### truncate loh !!!!!!
-				$this->m_user->trun_master_user();
+				$this->m_data_medik->trun_data_medik();
+				$this->m_pasien->trun_data_pasien();
 				
-				foreach ($retval as $keys => $vals) {
+				foreach ($data_pasien as $key => $val) {
+					$simpan = $this->m_pasien->save($val);
+				}
+
+				foreach ($data_medik as $keys => $vals) {
 					#### simpan
-					$vals['id'] = $this->m_user->get_max_id_user();
-					$simpan = $this->m_user->save($vals);
+					$vals['id'] = $this->m_data_medik->get_max_id_medik();
+					$simpan = $this->m_data_medik->save($vals);
 				}
 
 				if ($this->db->trans_status() === FALSE){
@@ -605,7 +688,7 @@ class Data_pasien extends CI_Controller {
 				}else{
 					$this->db->trans_commit();
 					$status = true;
-					$pesan = 'Sukses Import data pegawai';
+					$pesan = 'Sukses Import data Pasien';
 				}
 
 				echo json_encode([
