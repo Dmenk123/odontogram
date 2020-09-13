@@ -280,7 +280,7 @@ function import_data_excel(){
     var form = $('#form_import_excel')[0];
     var data = new FormData(form);
     
-    $("#btnSaveImport").prop("disabled", true);
+    $("#btnSaveImport").attr("disabled", true);
     $('#btnSaveImport').text('Import Data');
     $.ajax({
         type: "POST",
@@ -293,11 +293,11 @@ function import_data_excel(){
         success: function (data) {
             if(data.status) {
                 swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSaveImport").prop("disabled", false);
+                $("#btnSaveImport").attr("disabled", false);
                 $('#btnSaveImport').text('Simpan');
             }else {
                 swal.fire("Gagal!!", data.pesan, "error");
-                $("#btnSaveImport").prop("disabled", false);
+                $("#btnSaveImport").attr("disabled", false);
                 $('#btnSaveImport').text('Simpan');
             }
 
@@ -307,7 +307,7 @@ function import_data_excel(){
         },
         error: function (e) {
             console.log("ERROR : ", e);
-            $("#btnSaveImport").prop("disabled", false);
+            $("#btnSaveImport").attr("disabled", false);
             $('#btnSaveImport').text('Simpan');
 
             reset_modal_form_import();

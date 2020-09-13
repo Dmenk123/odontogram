@@ -612,37 +612,37 @@ class Data_pasien extends CI_Controller {
 
 				$id_pasien = $this->m_pasien->get_max_id_pasien();
 				$pasien['id'] = $id_pasien;
-				$pasien['no_rm'] = strtoupper(strtolower(trim($sheetData[$i][0])));
-				$pasien['nama'] = strtoupper(strtolower(trim($sheetData[$i][1])));
-				$pasien['tempat_lahir'] = strtoupper(strtolower(trim($sheetData[$i][2])));
+				$pasien['no_rm'] = contul(strtoupper(strtolower(trim($sheetData[$i][0]))));
+				$pasien['nama'] = contul(strtoupper(strtolower(trim($sheetData[$i][1]))));
+				$pasien['tempat_lahir'] = contul(strtoupper(strtolower(trim($sheetData[$i][2]))));
 				$pasien['tanggal_lahir'] = DateTime::createFromFormat('d-m-Y', trim($sheetData[$i][3]))->format('Y-m-d');
-				$pasien['nik'] = trim($sheetData[$i][4]);
-				$pasien['jenis_kelamin'] = strtoupper(strtolower(trim($sheetData[$i][5])));
-				$pasien['suku'] = strtoupper(strtolower(trim($sheetData[$i][6])));
-				$pasien['pekerjaan'] = strtoupper(strtolower(trim($sheetData[$i][7])));
-				$pasien['alamat_rumah'] = strtoupper(strtolower(trim($sheetData[$i][8])));
-				$pasien['telp_rumah'] = trim($sheetData[$i][9]);
-				$pasien['alamat_kantor'] = strtoupper(strtolower(trim($sheetData[$i][10])));
-				$pasien['hp'] = trim($sheetData[$i][11]);
+				$pasien['nik'] = contul(trim($sheetData[$i][4]));
+				$pasien['jenis_kelamin'] = contul(strtoupper(strtolower(trim($sheetData[$i][5]))));
+				$pasien['suku'] = contul(strtoupper(strtolower(trim($sheetData[$i][6]))));
+				$pasien['pekerjaan'] = contul(strtoupper(strtolower(trim($sheetData[$i][7]))));
+				$pasien['alamat_rumah'] = contul(strtoupper(strtolower(trim($sheetData[$i][8]))));
+				$pasien['telp_rumah'] = contul(trim($sheetData[$i][9]));
+				$pasien['alamat_kantor'] = contul(strtoupper(strtolower(trim($sheetData[$i][10]))));
+				$pasien['hp'] = contul(trim($sheetData[$i][11]));
 				$pasien['is_aktif'] = 1;
 				$pasien['created_at'] = $timestamp;
 				$data_pasien[] = $pasien;
 
 				################# DATA MEDIK
 				$medik['id_pasien'] = $id_pasien;
-				$medik['gol_darah'] = strtoupper(strtolower(trim($sheetData[$i][12])));
-				$medik['tekanan_darah'] = strtoupper(strtolower(trim($sheetData[$i][13])));
-				$medik['tekanan_darah_val'] = strtoupper(strtolower(trim($sheetData[$i][14])));
-				$medik['penyakit_jantung'] = strtoupper(strtolower(trim($sheetData[$i][15])));
-				$medik['diabetes'] = strtoupper(strtolower(trim($sheetData[$i][16])));
-				$medik['haemopilia'] = strtoupper(strtolower(trim($sheetData[$i][17])));
-				$medik['hepatitis'] = strtoupper(strtolower(trim($sheetData[$i][18])));
-				$medik['gastring'] = strtoupper(strtolower(trim($sheetData[$i][19])));
-				$medik['penyakit_lainnya'] = strtoupper(strtolower(trim($sheetData[$i][20])));
-				$medik['alergi_obat'] = strtoupper(strtolower(trim($sheetData[$i][21])));
-				$medik['alergi_obat_val'] = strtoupper(strtolower(trim($sheetData[$i][22])));
-				$medik['alergi_makanan'] = strtoupper(strtolower(trim($sheetData[$i][23])));
-				$medik['alergi_makanan_val'] = strtoupper(strtolower(trim($sheetData[$i][24])));
+				$medik['gol_darah'] = contul(strtoupper(strtolower(trim($sheetData[$i][12]))));
+				$medik['tekanan_darah'] = contul(strtoupper(strtolower(trim($sheetData[$i][13]))));
+				$medik['tekanan_darah_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][14]))));
+				$medik['penyakit_jantung'] = contul(strtoupper(strtolower(trim($sheetData[$i][15]))));
+				$medik['diabetes'] = contul(strtoupper(strtolower(trim($sheetData[$i][16]))));
+				$medik['haemopilia'] = contul(strtoupper(strtolower(trim($sheetData[$i][17]))));
+				$medik['hepatitis'] = contul(strtoupper(strtolower(trim($sheetData[$i][18]))));
+				$medik['gastring'] = contul(strtoupper(strtolower(trim($sheetData[$i][19]))));
+				$medik['penyakit_lainnya'] = contul(strtoupper(strtolower(trim($sheetData[$i][20]))));
+				$medik['alergi_obat'] = contul(strtoupper(strtolower(trim($sheetData[$i][21]))));
+				$medik['alergi_obat_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][22]))));
+				$medik['alergi_makanan'] = contul(strtoupper(strtolower(trim($sheetData[$i][23]))));
+				$medik['alergi_makanan_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][24]))));
 				$medik['created_at'] = $timestamp;
 				$data_medik[] = $medik;
 
@@ -709,6 +709,40 @@ class Data_pasien extends CI_Controller {
 				'pesan'	=> 'Terjadi Kesalahan dalam upload file. pastikan file adalah file excel .xlsx/.xls'
 			]);
 		}
+	}
+
+	public function cetak_data_individu($enc_id)
+	{
+		if(strlen($enc_id) != 32) {
+			return redirect(base_url($this->uri->segment(1)));
+		}
+
+		$this->load->library('Enkripsi');
+		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
+
+		$select = "pas.*, mdk.*, CASE WHEN pas.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
+		$where = ['pas.deleted_at' => null, 'pas.id' => $id_pasien];
+		$table = 'm_pasien as pas';
+		$join = [ 
+			[
+				'table' => 'm_data_medik as mdk',
+				'on'	=> 'pas.id = mdk.id_pasien'
+			]
+		];
+
+		$data = $this->m_global->single_row($select,$where,$table, $join);
+		$data_klinik = $this->m_global->single_row('*', 'deleted_at is null', 'm_klinik');
+
+		$retval = [
+			'data' => $data,
+			'data_klinik' => $data_klinik,
+			'title' => 'Detail Data Pasien'
+		];
+
+		$this->load->view('pdf', $retval);
+		$html = $this->load->view('pdf', $retval, true);
+	    $filename = 'detail_pasien_'.$data->no_rm.'_'.time();
+	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
 	}
 
 	public function cetak_data()

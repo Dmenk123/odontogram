@@ -11,11 +11,42 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 09/09/2020 23:00:37
+ Date: 14/09/2020 00:44:04
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for m_data_medik
+-- ----------------------------
+DROP TABLE IF EXISTS `m_data_medik`;
+CREATE TABLE `m_data_medik`  (
+  `id` int(11) NOT NULL,
+  `id_pasien` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `gol_darah` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tekanan_darah` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tekanan_darah_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `penyakit_jantung` int(1) NULL DEFAULT NULL,
+  `diabetes` int(1) NULL DEFAULT NULL,
+  `haemopilia` int(1) NULL DEFAULT NULL,
+  `hepatitis` int(1) NULL DEFAULT NULL,
+  `gastring` int(1) NULL DEFAULT NULL,
+  `penyakit_lainnya` int(1) NULL DEFAULT NULL,
+  `alergi_obat` int(1) NULL DEFAULT NULL,
+  `alergi_obat_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `alergi_makanan` int(1) NULL DEFAULT NULL,
+  `alergi_makanan_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_data_medik
+-- ----------------------------
+INSERT INTO `m_data_medik` VALUES (1, '5', 'O', 'HYPERTENSI', '140/10', 1, 1, 1, 1, 1, 1, 0, NULL, 0, NULL, '2020-09-13 17:53:03', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_diagnosa
@@ -137,12 +168,12 @@ INSERT INTO `m_menu` VALUES (18, 17, 'Data Pasien', 'Data pasien', 'data_pasien'
 DROP TABLE IF EXISTS `m_pasien`;
 CREATE TABLE `m_pasien`  (
   `id` int(11) NOT NULL,
-  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `no_rm` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `tempat_lahir` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `tanggal_lahir` date NULL DEFAULT NULL,
   `nik` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `jenis_kelamin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `jenis_kelamin` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `suku` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `pekerjaan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `alamat_rumah` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
@@ -159,6 +190,7 @@ CREATE TABLE `m_pasien`  (
 -- ----------------------------
 -- Records of m_pasien
 -- ----------------------------
+INSERT INTO `m_pasien` VALUES (5, 'LU.00.01', 'LUCAS', 'MANOKWARI', '1990-02-05', '38128121291219', 'L', 'PAPUA', 'CHEF PAPEDA', 'JALAN AKSJAKSJAKSJA', NULL, NULL, '0812131212121', 1, '2020-09-13 17:53:03', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_pegawai
@@ -274,39 +306,9 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-09 19:32:57', 'user_default.png', '2020-09-06 20:18:00', '2020-09-09 19:32:57', NULL);
-INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'user_default.png', '2020-09-06 20:18:00', NULL, NULL);
+INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-13 22:01:34', 'user_default.png', '2020-09-06 20:18:00', '2020-09-13 22:01:34', NULL);
+INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
-
--- ----------------------------
--- Table structure for t_data_medik
--- ----------------------------
-DROP TABLE IF EXISTS `t_data_medik`;
-CREATE TABLE `t_data_medik`  (
-  `id` int(11) NOT NULL,
-  `id_pasien` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `gol_darah` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `tekanan_darah` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `tekanan_darah_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `penyakit_jantung` int(1) NULL DEFAULT NULL,
-  `diabetes` int(1) NULL DEFAULT NULL,
-  `haemopila` int(1) NULL DEFAULT NULL,
-  `hepatitis` int(1) NULL DEFAULT NULL,
-  `gastring` int(1) NULL DEFAULT NULL,
-  `penyakit_lainnya` int(1) NULL DEFAULT NULL,
-  `alergi_obat` int(1) NULL DEFAULT NULL,
-  `alergi_obat_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `alergi_makanan` int(1) NULL DEFAULT NULL,
-  `alergi_makanan_val` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `created_at` datetime(0) NULL DEFAULT NULL,
-  `updated_at` datetime(0) NULL DEFAULT NULL,
-  `deleted_at` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of t_data_medik
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_role_menu
@@ -347,5 +349,8 @@ INSERT INTO `t_role_menu` VALUES (18, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (1, 2, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (17, 2, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (18, 2, 1, 1, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
