@@ -254,6 +254,45 @@ class Master_logistik extends CI_Controller {
 		echo json_encode($retval);
 	}
 
+	public function add_data_jenis_logistik()
+	{
+	
+		$this->load->library('Enkripsi');
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		// $arr_valid = $this->rule_validasi();
+		
+		$nama 		= trim($this->input->post('nama_jenis'));
+
+		// if ($arr_valid['status'] == FALSE) {
+		// 	echo json_encode($arr_valid);
+		// 	return;
+		// }
+
+
+		$this->db->trans_begin();
+		
+		$data = [
+			
+			'jenis' => $nama,
+			'created_at' => $timestamp
+		];
+		
+		$insert = $this->m_logistik->save_jenis($data);
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan Jenis Logistik';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses menambahkan Jenis Logistik';
+		}
+
+		echo json_encode($retval);
+	}
+
 	public function update_data_logistik()
 	{
 		$id_user = $this->session->userdata('id_user'); 

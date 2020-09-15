@@ -65,6 +65,20 @@
                                 </table>
                                 </div>
                                 <div class="tab-pane" id="otorisasi" role="tabpanel">
+                                  <form id="jenis-logistik" name="jenis-logistik">
+                                    <div class="form-group row">
+                                      <label for="inputPassword" class="col-sm-2 col-form-label">Jenis Logistik</label>
+                                      <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="nama_jenis" name="nama_jenis">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row">
+                                      <label for="inputPassword" class="col-sm-2 col-form-label"></label>
+                                      <div class="col-sm-10">
+                                        <button type="button" class="btn btn-primary" id="btnSave" onclick="save_jenis()">Tambah</button>
+                                      </div>
+                                    </div>
+                                  </form>
                                   <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_jenis_logistik">
                                     <thead>
                                       <tr>

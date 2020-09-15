@@ -141,6 +141,11 @@ class M_logistik extends CI_Model
 		return $this->db->insert($this->table, $data);	
 	}
 
+	public function save_jenis($data)
+	{
+		return $this->db->insert('m_jenis_logistik', $data);	
+	}
+
 	public function update($where, $data)
 	{
 		return $this->db->update($this->table, $data, $where);
