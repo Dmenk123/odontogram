@@ -740,7 +740,7 @@ class Data_pasien extends CI_Controller {
 		];
 
 		$this->load->view('pdf_individu', $retval);
-		$html = $this->load->view('pdf', $retval, true);
+		$html = $this->load->view('pdf_individu', $retval, true);
 	    $filename = 'detail_pasien_'.$data->no_rm.'_'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
 	}
