@@ -2,10 +2,6 @@
 
 <head>
   <title><?php echo $title; ?></title>
-  <!--begin::Global Theme Styles(used by all pages) -->
-   <!-- <link href="<?= base_url('assets/template/'); ?>assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" /> -->
-  <!--<link href="<?= base_url('assets/template/'); ?>assets/css/style.bundle.css" rel="stylesheet" type="text/css" /> -->
-  <!-- Latest compiled and minified CSS -->
   <style type="text/css">
     #outtable {
       padding: 10px;
@@ -113,11 +109,10 @@
     }
 
     table {
-      /* border-collapse: separate; */
+      border-collapse: collapse;
       font-family: arial;
       color: black;
       font-size: 12px;
-      border-spacing: 10px;
     }
 
     thead th {
@@ -125,26 +120,45 @@
       font-style: bold;
     }
 
-    tbody th {
-      text-align: left;
-      font-style: bold;
-    }
-
     .clear {
       clear: both;
     }
 
-    table.table-borderless tbody {
-      padding-top: 10px;
-      text-align: left;
-      font-size: 14px;
-    }
-    
-    
+    footer { position: fixed; bottom: -60px; left: 0px; right: 0px; height: 80px;}
+
   </style>
 </head>
 
 <body>
+  <footer>
+    <table class="table table-bordered table-hover" cellspacing="0" width="50%" border="1" style="margin: 0 auto;">
+      <thead>
+        <tr>
+          <th style="text-align: center;" colspan="7">KETERANGAN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center;" class="tebal">PJT</td>
+          <td style="text-align: center;" class="tebal">DBS</td>
+          <td style="text-align: center;" class="tebal">HML</td>
+          <td style="text-align: center;" class="tebal">GSG</td>
+          <td style="text-align: center;" class="tebal">PLN</td>
+          <td style="text-align: center;" class="tebal">ALO</td>
+          <td style="text-align: center;" class="tebal">ALM</td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">Penyakit Jantung</td>
+          <td style="text-align: center;">Diabetes</td>
+          <td style="text-align: center;">Haemopilia</td>
+          <td style="text-align: center;">Gastring</td>
+          <td style="text-align: center;">Penyakit Lainnya</td>
+          <td style="text-align: center;">Alergi Obat</td>
+          <td style="text-align: center;">Alergi Makanan</td>
+        </tr>
+      </tbody>
+    </table>
+  </footer>
   <div class="container">
     <table class="tbl-outer">
       <tr>
@@ -160,7 +174,7 @@
           <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat.' '.$data_klinik->kelurahan.' '.$data_klinik->kecamatan; ?></p>
           <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota.', '.$data_klinik->provinsi.' '.$data_klinik->kode_pos; ?></p>
         </td>
-
+        
       </tr>
     </table>
 
@@ -171,146 +185,55 @@
         </td>
       </tr>
     </table>
-    <div class="row">
-      <div class="modal-header col-md-12"><h4 class="modal-title">Data Pasien</h4></div>
-      <div class="col-md-6">
-        <table class="table table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">No. RM</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= $data->no_rm; ?></span></td>
-            </tr>
-            <tr>
-              <th>NIK</th>
-              <td> : </td>
-              <td><span><?= $data->nik; ?></span></td>
-            </tr>
-            <tr>
-              <th>Nama Pasien</th>
-              <td> : </td>
-              <td><span><?= $data->nama; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Tempat / Tanggal Lahir</th>
-              <td> : </td>
-              <td><span><?= $data->tempat_lahir.' / '.DateTime::createFromFormat('Y-m-d', $data->tanggal_lahir)->format('d-m-Y'); ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-6">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Suku Bangsa</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= $data->suku; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Jenis Kelamin</th>
-              <td> : </td>
-              <td><span><?= $data->jenkel; ?></span></td>
-            </tr>
-            <tr>
-              <th>Pekerjaan</th>
-              <td> : </td>
-              <td><span><?= $data->pekerjaan; ?></span></td>
-            </tr>
-            <tr>
-              <th>No. HP/WA</th>
-              <td> : </td>
-              <td><span><?= $data->hp; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-12">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Alamat Rumah</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= $data->alamat_rumah; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Alamat Kantor</th>
-              <td> : </td>
-              <td><span><?= $data->alamat_kantor; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-header col-md-12"><h4 class="modal-title">Data Medik</h4></div>
-      <div class="col-md-6">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Golongan Darah</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= $data->gol_darah; ?></span></td>
-            </tr>
-            <tr>
-              <th>Tekanan Darah</th>
-              <td> : </td>
-              <td><span><?= $data->tekanan_darah.' ('.$data->tekanan_darah_val.')'; ?></span></td>
-            </tr>
-            <tr>
-              <th>Penyakit Jantung</th>
-              <td> : </td>
-              <td><span><?= ($data->penyakit_jantung == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Diabetes</th>
-              <td> : </td>
-              <td><span><?= ($data->diabetes == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-6">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Hepatitis</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= ($data->hepatitis == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Haemopilia</th>
-              <td> : </td>
-              <td><span><?= ($data->haemopilia == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr>
-              <th>Gastring</th>
-              <td> : </td>
-              <td><span><?= ($data->gastring == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr>
-              <th>Penyakit Lainnya</th>
-              <td> : </td>
-              <td><span><?= ($data->penyakit_lainnya == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-12">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Alergi Obat-Obatan</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= ($data->alergi_obat == '1') ? 'Ya'.', '.$data->alergi_obat_val : 'Tidak'; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Alergi Makanan</th>
-              <td> : </td>
-              <td><span><?= ($data->alergi_makanan == '1') ? 'Ya'.', '.$data->alergi_makanan_val : 'Tidak'; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    
+    <table id="tbl_content" class="table table-bordered table-hover" cellspacing="0" width="100%" border="1">
+      <thead>
+        <tr>
+          <th style="width: 10%; text-align: center;">No RM</th>
+          <th style="width: 20%; text-align: center;">Nama</th>
+          <th style="width: 20%; text-align: center;">TTL</th>
+          <th style="width: 10%;text-align: center;">NIK</th>
+          <th style="width: 3%; text-align: center;">JK</th>
+          <th style="width: 15%; text-align: center;">Pekerjaan</th>
+          <th style="width: 15%; text-align: center;">Alamat</th>
+          <th style="width: 10%; text-align: center;">HP/WA</th>
+          <th style="width: 5%; text-align: center;">Gol Darah</th>
+          <th style="width: 10%; text-align: center;">Tkn Darah</th>
+          <th style="width: 3%; text-align: center;">PJT</th>
+          <th style="width: 3%; text-align: center;">DBS</th>
+          <th style="width: 3%; text-align: center;">HML</th>
+          <th style="width: 3%; text-align: center;">GSG</th>
+          <th style="width: 3%; text-align: center;">PLN</th>
+          <th style="width: 3%; text-align: center;">ALO</th>
+          <th style="width: 3%; text-align: center;">ALM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        foreach ($data as $key => $val) : ?>
+          <?php $nomor = $key += 1; ?>
+          <tr>
+            <td class="text-center"><?= $val->no_rm; ?></td>
+            <td class="text-center"><?= $val->nama; ?></td>
+            <td class="text-center"><?= $val->tempat_lahir.'/'.DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d-m-Y'); ?></td>
+            <td class="text-center"><?= $val->nik; ?></td>
+            <td class="text-center"><?= $val->jenis_kelamin; ?></td>
+            <td class="text-center"><?= $val->pekerjaan; ?></td>
+            <td class="text-center"><?= $val->alamat_rumah; ?></td>
+            <td class="text-center"><?= $val->hp; ?></td>
+            <td class="text-center"><?= $val->gol_darah; ?></td>
+            <td class="text-center"><?= $val->tekanan_darah.' ('.$val->tekanan_darah_val.')'; ?></td>
+            <td class="text-center"><?= ($val->penyakit_jantung == '1') ? 'Ya' : '-' ; ?></td>
+            <td class="text-center"><?= ($val->diabetes == '1') ? 'Ya' : '-' ; ?></td>
+            <td class="text-center"><?= ($val->haemopilia == '1') ? 'Ya' : '-' ; ?></td>
+            <td class="text-center"><?= ($val->gastring == '1') ? 'Ya' : '-' ; ?></td>
+            <td class="text-center"><?= ($val->penyakit_lainnya == '1') ? 'Ya' : '-' ; ?></td>
+            <td class="text-center"><?= ($val->alergi_obat == '1') ? 'Ya' : '-' ; ?></td>
+            <td class="text-center"><?= ($val->alergi_makanan == '1') ? 'Ya' : '-' ; ?></td>
+          </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
   </div>
 </body>
 

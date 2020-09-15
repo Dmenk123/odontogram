@@ -739,7 +739,7 @@ class Data_pasien extends CI_Controller {
 			'title' => 'Detail Data Pasien'
 		];
 
-		$this->load->view('pdf', $retval);
+		$this->load->view('pdf_individu', $retval);
 		$html = $this->load->view('pdf', $retval, true);
 	    $filename = 'detail_pasien_'.$data->no_rm.'_'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
@@ -747,33 +747,30 @@ class Data_pasien extends CI_Controller {
 
 	public function cetak_data()
 	{
-		$select = "m_user.*, m_pegawai.nama as nama_pegawai, m_role.nama as nama_role";
-		$where = ['m_user.deleted_at' => null];
-		$table = 'm_user';
+		$select = "pas.*, mdk.*, CASE WHEN pas.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
+		$where = ['pas.deleted_at' => null];
+		$table = 'm_pasien as pas';
 		$join = [ 
 			[
-				'table' => 'm_pegawai',
-				'on'	=> 'm_user.id_pegawai = m_pegawai.id'
-			],
-			[
-				'table' => 'm_role',
-				'on'	=> 'm_user.id_role = m_role.id'
+				'table' => 'm_data_medik as mdk',
+				'on'	=> 'pas.id = mdk.id_pasien'
 			]
 		];
 
-		$data = $this->m_global->multi_row($select, $where, $table, $join, 'm_user.kode_user');
+		$data = $this->m_global->multi_row($select, $where, $table, $join, 'pas.no_rm');
 		$data_klinik = $this->m_global->single_row('*', 'deleted_at is null', 'm_klinik');
 
 		$retval = [
 			'data' => $data,
-			'title' => 'Master Data Pegawai',
+			'title' => 'Data Pasien',
 			'data_klinik' => $data_klinik
 		];
 
+
 		// $this->load->view('pdf', $retval);
 		$html = $this->load->view('pdf', $retval, true);
-	    $filename = 'master_data_pegawai_'.time();
-	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
+	    $filename = 'data_pasien'.time();
+	    $this->lib_dompdf->generate($html, $filename, true, 'legal', 'landscape');
 	}
 
 	// ===============================================
