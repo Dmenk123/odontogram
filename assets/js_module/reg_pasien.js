@@ -17,7 +17,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
 		ajax: {
-			url  : base_url + "data_pasien/list_data",
+			url  : base_url + "reg_pasien/list_data",
 			type : "POST" 
 		},
 
@@ -86,14 +86,15 @@ $(document).ready(function() {
 
     $(".modal").on("hidden.bs.modal", function(){
         reset_modal_form_import();
+        reset_form("form-asuransi");
     });
 
     $("#nama").select2({
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
-        minimumInputLength: 2,
-        minimumResultsForSearch: 10,
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
         ajax: {
             url: base_url+'reg_pasien/get_select_pasien',
             dataType: "json",
@@ -139,8 +140,8 @@ $(document).ready(function() {
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
-        minimumInputLength: 2,
-        minimumResultsForSearch: 10,
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
         ajax: {
             url: base_url+'reg_pasien/get_select_dokter',
             dataType: "json",
@@ -166,7 +167,6 @@ $(document).ready(function() {
     });
 
     $('.mask_tanggal').mask("00/00/0000", {placeholder: "DD/MM/YYYY"});
-    // minimum setup
 
     $('#jam_reg').timepicker({
         minuteStep: 1,
@@ -198,8 +198,8 @@ function trigger_select_asuransi(){
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
-        minimumInputLength: 2,
-        minimumResultsForSearch: 10,
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
         ajax: {
             url: base_url+'master_asuransi/get_select_asuransi',
             dataType: "json",
@@ -236,6 +236,25 @@ function tambah_data_asuransi() {
     save_method = 'add';
     $('#modal_form_asuransi').modal('show');
     $('#modal_form_asuransi_title').text('Master Asuransi'); 
+}
+
+function edit_asuransi(id){
+    save_method = 'update';
+    $.ajax({
+        type: "get",
+        url: base_url+'master_asuransi/edit_data',
+        data: {id:id},
+        dataType: "json",
+        success: function (response) {
+            if(response.status) {
+                $('#id_asuransi').val(response.old_data.id);
+                $('#nama_asuransi').val(response.old_data.nama).focus();
+                $('#ket_asuransi').val(response.old_data.keterangan);
+            }else{
+                swalConfirm.fire('Dibatalkan','Aksi Dibatalakan','error');
+            }
+        }
+    }); 
 }
 
 function detail_pasien(id) {
@@ -327,7 +346,7 @@ function reset_form(jqIdForm) {
 
 function save()
 {
-    var form = $('#form_pasien')[0];
+    var form = $('#form_registrasi')[0];
     var data = new FormData(form);
     
     $("#btnSave").prop("disabled", true);
@@ -335,7 +354,7 @@ function save()
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: base_url + 'data_pasien/simpan_data',
+        url: base_url + 'reg_pasien/simpan_data',
         data: data,
         dataType: "JSON",
         processData: false,
@@ -347,11 +366,11 @@ function save()
                 swal.fire("Sukses!!", data.pesan, "success");
                 $("#btnSave").prop("disabled", false);
                 $('#btnSave').text('Simpan');                
-                window.location.href = base_url+"data_registrasi/add";
+                window.location.href = base_url+"reg_pasien";
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {
-                    if (data.inputerror[i] != 'pegawai') {
+                    if (data.is_select2[i] == false) {
                         $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
                         $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
                     }else{
@@ -416,6 +435,7 @@ function simpanAsuransi(){
             $('#btnSaveAsuransi').text('Simpan');
             reload_table2();
             reset_form("form-asuransi");
+            save_method = 'add';
         },
         error: function (e) {
             console.log("ERROR : ", e);
@@ -463,6 +483,47 @@ function delete_pasien(id){
         }
     });
 }
+
+
+function delete_asuransi(id) {
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Asuransi ?',
+        text: "Data Akan dihapus permanen ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'master_asuransi/delete_data',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                    table2.ajax.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}
+
 
 function reset_modal_form_import()
 {

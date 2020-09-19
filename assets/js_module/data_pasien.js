@@ -201,7 +201,7 @@ function save()
                 swal.fire("Sukses!!", data.pesan, "success");
                 $("#btnSave").prop("disabled", false);
                 $('#btnSave').text('Simpan');                
-                window.location.href = base_url+"data_registrasi/add";
+                window.location.href = base_url+"reg_pasien/add";
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {

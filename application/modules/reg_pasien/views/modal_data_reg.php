@@ -10,7 +10,7 @@
         <div class="col-md-12">
           <form id="form-asuransi" name="form-asuransi">
             <div class="form-group">
-              <input type="hidden" class="form-control" id="id" name="id">
+              <input type="hidden" class="form-control" id="id_asuransi" name="id_asuransi">
               <label for="lbl_nama" class="form-control-label">Nama:</label>
               <input type="text" class="form-control" id="nama_asuransi" name="nama_asuransi">
               <span class="help-block"></span>

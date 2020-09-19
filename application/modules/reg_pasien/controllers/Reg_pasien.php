@@ -167,7 +167,131 @@ class Reg_pasien extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
-	
+	public function simpan_data()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		
+		if($this->input->post('asuransi') !== null){
+			$flag_asuransi = true;
+			$id_asuransi = $this->input->post('asuransi');
+			$no_asuransi = $this->input->post('no_asuransi');
+		}else{
+			$flag_asuransi = false;
+			$id_asuransi = null;
+			$no_asuransi = null;
+		}
+
+		$arr_valid = $this->rule_validasi($flag_asuransi);
+		
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+
+		$id_pasien = $this->input->post('nama');
+		$no_reg = $this->t_registrasi->get_kode_reg();
+		$tanggal_reg = contul($this->input->post('tanggal_reg'));
+		$jam_reg = contul($this->input->post('jam_reg'));
+		$id_pegawai = contul($this->input->post('dokter'));
+		$is_asuransi = ($flag_asuransi) ? 1 : null;
+		$umur = contul(trim($this->input->post('umur_reg')));
+		$id_pemetaan = contul($this->input->post('pemetaan'));
+
+		$this->db->trans_begin();
+		
+		$registrasi = [
+			'id' => $this->t_registrasi->get_max_id(),
+			'id_pasien' => $id_pasien,
+			'no_reg' => $no_reg,
+			'tanggal_reg' => $obj_date->createFromFormat('d/m/Y', $tanggal_reg)->format('Y-m-d'),
+			'jam_reg' => $jam_reg,
+			'id_pegawai' => $id_pegawai,
+			'is_asuransi' => $is_asuransi,
+			'id_asuransi' => $id_asuransi,
+			'no_asuransi' => $no_asuransi,
+			'umur' => $umur,
+			'id_pemetaan' => $id_pemetaan,
+			'created_at' => $timestamp
+		];
+
+		$insert = $this->t_registrasi->save($registrasi);
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan Data Registrasi';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses menambahkan Data Registrasi';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function list_data()
+	{
+		$this->load->library('Enkripsi');
+		$list = $this->t_registrasi->get_datatable();
+		$data = array();
+		// $no =$_POST['start'];
+		foreach ($list as $val) {
+			// $no++;
+			$row = array();
+			//loop value tabel db
+			// $row[] = $no;
+			$row[] = $val->no_rm;
+			$row[] = $val->nama;
+			$row[] = $val->nik;
+			$row[] = ($val->jenis_kelamin == 'L') ? '<span style="color:blue;">Laki-Laki</span>' : '<span style="color:magenta;">Perempuan</span>';
+			$row[] = $val->alamat_rumah;
+			$row[] = $val->hp;
+			$row[] = ($val->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
+			
+			$str_aksi = '
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-item" onclick="detail_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
+							<i class="la la-search"></i> Detail Pasien
+						</button>
+						<a class="dropdown-item" href="'.base_url('data_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
+							<i class="la la-pencil"></i> Edit Pasien
+						</a>
+						<button class="dropdown-item" onclick="delete_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
+							<i class="la la-trash"></i> Hapus
+						</button>
+						<a class="dropdown-item" target="_blank" href="'.base_url('data_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
+							<i class="la la-print"></i> Cetak Pasien Ini
+						</a>
+			';
+
+			if ($val->is_aktif == 1) {
+				$str_aksi .=
+				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="aktif"><i class="la la-check">
+				</i> Aktif</button>';
+			}else{
+				$str_aksi .=
+				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="nonaktif"><i class="la la-close">
+				</i> Non Aktif</button>';
+			}	
+
+			$str_aksi .= '</div></div>';
+			$row[] = $str_aksi;
+
+			$data[] = $row;
+		}//end loop
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->t_registrasi->count_all(),
+			"recordsFiltered" => $this->t_registrasi->count_filtered(),
+			"data" => $data
+		];
+		
+		echo json_encode($output);
+	}	
 
 
 
@@ -276,218 +400,9 @@ class Reg_pasien extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	public function list_data()
-	{
-		$this->load->library('Enkripsi');
-		$list = $this->t_registrasi->get_datatable_pasien();
-		$data = array();
-		// $no =$_POST['start'];
-		foreach ($list as $val) {
-			// $no++;
-			$row = array();
-			//loop value tabel db
-			// $row[] = $no;
-			$row[] = $val->no_rm;
-			$row[] = $val->nama;
-			$row[] = $val->nik;
-			$row[] = ($val->jenis_kelamin == 'L') ? '<span style="color:blue;">Laki-Laki</span>' : '<span style="color:magenta;">Perempuan</span>';
-			$row[] = $val->alamat_rumah;
-			$row[] = $val->hp;
-			$row[] = ($val->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
-			
-			$str_aksi = '
-				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
-					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="detail_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
-							<i class="la la-search"></i> Detail Pasien
-						</button>
-						<a class="dropdown-item" href="'.base_url('data_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
-							<i class="la la-pencil"></i> Edit Pasien
-						</a>
-						<button class="dropdown-item" onclick="delete_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
-							<i class="la la-trash"></i> Hapus
-						</button>
-						<a class="dropdown-item" target="_blank" href="'.base_url('data_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
-							<i class="la la-print"></i> Cetak Pasien Ini
-						</a>
-			';
+	
 
-			if ($val->is_aktif == 1) {
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="aktif"><i class="la la-check">
-				</i> Aktif</button>';
-			}else{
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="nonaktif"><i class="la la-close">
-				</i> Non Aktif</button>';
-			}	
-
-			$str_aksi .= '</div></div>';
-			$row[] = $str_aksi;
-
-			$data[] = $row;
-		}//end loop
-
-		$output = [
-			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->t_registrasi->count_all(),
-			"recordsFiltered" => $this->t_registrasi->count_filtered(),
-			"data" => $data
-		];
-		
-		echo json_encode($output);
-	}
-
-	public function simpan_data()
-	{
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		$id_pasien = $this->input->post('id_pasien');
-		
-		######### flag pasien baru
-		if($id_pasien != '') {
-			$cek = $this->t_registrasi->get_by_id($id_pasien);
-			if($cek) {
-				$flag_data_baru = false;
-			}else{
-				$flag_data_baru = true;
-			}
-		}else{
-			$flag_data_baru = true;
-		}
-		######### end flag pasien baru
-
-		######## flag no_rm otomatis
-		if($this->input->post('no_rm') != ''){
-			$rm_otomatis = false;
-		}else{
-			$rm_otomatis = true;
-		}
-		######## end flag no_rm otomatis
-		$arr_valid = $this->rule_validasi();
-		
-		if ($arr_valid['status'] == FALSE) {
-			echo json_encode($arr_valid);
-			return;
-		}
-
-		$nama = contul(trim(strtoupper($this->input->post('nama'))));
-		$nik = contul(trim($this->input->post('nik')));
-		$tempat_lahir = contul(trim($this->input->post('tempat_lahir')));
-		$tanggal_lahir = contul(trim($this->input->post('tanggal_lahir')));
-		$jenkel = contul(trim($this->input->post('jenkel')));
-		$suku = contul(trim($this->input->post('suku')));
-		$pekerjaan = contul(trim($this->input->post('pekerjaan')));
-		$hp = contul(trim($this->input->post('hp')));
-		$telp = contul(trim($this->input->post('telp')));
-		$alamat_rumah = contul(trim($this->input->post('alamat_rumah')));
-		$alamat_kantor = contul(trim($this->input->post('alamat_kantor')));
-
-		$gol_darah = contul(trim($this->input->post('gol_darah')));
-		$tekanan_darah_val = contul(trim($this->input->post('tekanan_darah_val')));
-		$tekanan_darah = $this->input->post('tekanan_darah');
-		$penyakit_jantung = $this->input->post('penyakit_jantung');
-		$diabetes = $this->input->post('diabetes');
-		$haemopilia = $this->input->post('haemopilia');
-		$hepatitis = $this->input->post('hepatitis');
-		$gastring = $this->input->post('gastring');
-		$penyakit_lainnya = $this->input->post('penyakit_lainnya');
-		$alergi_obat = $this->input->post('alergi_obat');
-		$alergi_obat_val = contul(trim($this->input->post('alergi_obat_val')));
-		$alergi_makanan = $this->input->post('alergi_makanan');
-		$alergi_makanan_val = contul(trim($this->input->post('alergi_makanan_val')));
-
-		$this->db->trans_begin();
-		
-		###################### data pasien
-
-		$pasien = [
-			'nama' => $nama,
-			'nik' => $nik,
-			'tempat_lahir' => $tempat_lahir,
-			'tanggal_lahir' => $obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('Y-m-d'),
-			'jenis_kelamin' => $jenkel,
-			'suku' => $suku,
-			'pekerjaan' => $pekerjaan,
-			'hp' => $hp,
-			'telp_rumah' => $telp,
-			'alamat_rumah' => $alamat_rumah,
-			'alamat_kantor' => $alamat_kantor
-		];
-
-		##jika data baru
-		if($flag_data_baru) {
-			$id_pasien = $this->t_registrasi->get_max_id_pasien();
-
-			$pasien['id'] = $id_pasien;
-			
-			if($rm_otomatis) {
-				$pasien['no_rm'] = $this->t_registrasi->get_kode_rm(substr($nama,0,2));
-			}else{
-				$pasien['no_rm'] = trim($this->input->post('no_rm'));
-			}
-
-			$pasien['created_at'] = $timestamp;
-			$pasien['is_aktif'] = 1;
-
-			$insert = $this->t_registrasi->save($pasien);
-		}
-		##jika update data
-		else{
-			$pasien['updated_at'] = $timestamp;
-			
-			$where = ['id' => $id_pasien];
-			$update = $this->t_registrasi->update($where, $pasien);
-		}
-
-		###################### data medik
-		
-		$medik = [
-			'gol_darah' => $gol_darah,
-			'tekanan_darah' => $tekanan_darah,
-			'tekanan_darah_val' => $tekanan_darah_val,
-			'penyakit_jantung' => $penyakit_jantung,
-			'diabetes' => $diabetes,
-			'haemopilia' => $haemopilia,
-			'hepatitis' => $hepatitis,
-			'gastring' => $gastring,
-			'penyakit_lainnya' => $penyakit_lainnya,
-			'alergi_obat' => $alergi_obat,
-			'alergi_obat_val' => $alergi_obat_val,
-			'alergi_makanan' => $alergi_makanan,
-			'alergi_makanan_val' => $alergi_makanan_val
-		];
-
-		##jika data baru
-		if($flag_data_baru) {
-			$medik['id'] = $this->m_data_medik->get_max_id_medik();
-			$medik['id_pasien'] = $id_pasien;
-			$medik['created_at'] = $timestamp;
-
-			$insert = $this->m_data_medik->save($medik);
-		}
-		##jika update data
-		else{
-			$cek_medik = $this->m_data_medik->get_by_condition(['id_pasien' => $id_pasien], true);
-			$medik['updated_at'] = $timestamp;
-
-			$where = ['id' => $cek_medik->id];
-			$update = $this->m_data_medik->update($where, $medik);
-		}
-		
-		if ($this->db->trans_status() === FALSE){
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
-		}else{
-			$this->db->trans_commit();
-			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan Data Pasien';
-		}
-
-		echo json_encode($retval);
-	}
+	
 
 
 	/**
@@ -882,7 +797,7 @@ class Reg_pasien extends CI_Controller {
 	}
 
 	// ===============================================
-	private function rule_validasi($is_update=false, $skip_pass=false)
+	private function rule_validasi($is_asuransi = FALSE)
 	{
 		$data = array();
 		$data['error_string'] = array();
@@ -893,77 +808,59 @@ class Reg_pasien extends CI_Controller {
 		if ($this->input->post('nama') == '') {
 			$data['inputerror'][] = 'nama';
             $data['error_string'][] = 'Wajib mengisi Nama';
-            $data['status'] = FALSE;
+			$data['status'] = FALSE;
+			$data['is_select2'][] = TRUE;
 		}
 
-		// if ($this->input->post('no_rm') == '') {
-		// 	$data['inputerror'][] = 'no_rm';
-		// 	$data['error_string'][] = 'Wajib mengisi NO RM';
-		// 	$data['status'] = FALSE;
-		// }
-
-		if ($this->input->post('nik') == '') {
-			$data['inputerror'][] = 'nik';
-			$data['error_string'][] = 'Wajib Mengisi NIK';
+		if ($this->input->post('tanggal_reg') == '') {
+			$data['inputerror'][] = 'tanggal_reg';
+			$data['error_string'][] = 'Wajib Mengisi Tanggal';
 			$data['status'] = FALSE;
+			$data['is_select2'][] = FALSE;
 		}
 		
-		if ($this->input->post('tempat_lahir') == '') {
-			$data['inputerror'][] = 'tempat_lahir';
-            $data['error_string'][] = 'Wajib Mengisi Tempat Lahir';
+		if ($this->input->post('jam_reg') == '') {
+			$data['inputerror'][] = 'jam_reg';
+            $data['error_string'][] = 'Wajib Mengisi Pukul';
+			$data['status'] = FALSE;
+			$data['is_select2'][] = FALSE;
+		}
+
+		if ($this->input->post('pemetaan') == '') {
+			$data['inputerror'][] = 'pemetaan';
+            $data['error_string'][] = 'Wajib Mengisi Pemetaan';
             $data['status'] = FALSE;
 		}
 
-		if ($this->input->post('tanggal_lahir') == '') {
-			$data['inputerror'][] = 'tanggal_lahir';
-            $data['error_string'][] = 'Wajib Mengisi Tanggal Lahir';
-            $data['status'] = FALSE;
+		if ($this->input->post('dokter') == '') {
+			$data['inputerror'][] = 'dokter';
+            $data['error_string'][] = 'Wajib Mengisi Dokter';
+			$data['status'] = FALSE;
+			$data['is_select2'][] = TRUE;
 		}
 
-		if ($this->input->post('jenkel') == '') {
-			$data['inputerror'][] = 'jenkel';
-            $data['error_string'][] = 'Wajib Mengisi Jenis Kelamin';
-            $data['status'] = FALSE;
+		if ($this->input->post('umur_reg') == '') {
+			$data['inputerror'][] = 'umur_reg';
+            $data['error_string'][] = 'Wajib Mengisi Umur';
+			$data['status'] = FALSE;
+			$data['is_select2'][] = FALSE;
 		}
 
-		if ($this->input->post('suku') == '') {
-			$data['inputerror'][] = 'suku';
-            $data['error_string'][] = 'Wajib Mengisi Suku Bangsa';
-            $data['status'] = FALSE;
+		if($is_asuransi) {
+			if ($this->input->post('asuransi') == '') {
+				$data['inputerror'][] = 'asuransi';
+				$data['error_string'][] = 'Wajib Mengisi Asuransi';
+				$data['status'] = FALSE;
+				$data['is_select2'][] = TRUE;
+			}
+			
+			if ($this->input->post('no_asuransi') == '') {
+				$data['inputerror'][] = 'no_asuransi';
+				$data['error_string'][] = 'Wajib Mengisi Nomor Asuransi';
+				$data['status'] = FALSE;
+				$data['is_select2'][] = FALSE;
+			}
 		}
-
-		if ($this->input->post('pekerjaan') == '') {
-			$data['inputerror'][] = 'pekerjaan';
-            $data['error_string'][] = 'Wajib Mengisi Pekerjaan';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('hp') == '') {
-			$data['inputerror'][] = 'hp';
-            $data['error_string'][] = 'Wajib Mengisi HP/WA';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('alamat_rumah') == '') {
-			$data['inputerror'][] = 'alamat_rumah';
-            $data['error_string'][] = 'Wajib Mengisi Alamat Rumah';
-            $data['status'] = FALSE;
-		}
-
-		#### data medik
-
-		if ($this->input->post('tekanan_darah_val') == '') {
-			$data['inputerror'][] = 'tekanan_darah_val';
-            $data['error_string'][] = 'Wajib Mengisi Tekanan Darah';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('tekanan_darah') == '') {
-			$data['inputerror'][] = 'tekanan_darah';
-            $data['error_string'][] = 'Wajib Memilih Kategori';
-            $data['status'] = FALSE;
-		}
-
 
         return $data;
 	}

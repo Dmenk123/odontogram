@@ -90,6 +90,8 @@ class M_asuransi extends CI_Model
 	{
 		$this->db->from($this->table);
 		$this->db->where('id',$id);
+		$this->db->where('deleted_at', null);
+		
 		$query = $this->db->get();
 
 		return $query->row();
@@ -138,6 +140,7 @@ class M_asuransi extends CI_Model
 			return '1';
 		} 
 	}
+	
 
 	public function trun_master_data()
 	{

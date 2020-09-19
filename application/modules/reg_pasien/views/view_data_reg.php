@@ -34,13 +34,23 @@
         <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_index">
           <thead>
             <tr>
-              <th>No RM</th>
+              <th>No Reg</th>
               <th>Nama</th>
+              <th>Tgl Masuk</th>
+              <th>Pkl Masuk</th>
+              <th>Pulang</th>
+              <th>Tgl Keluar</th>
+              <th>Pkl Keluar</th>
+              <th>No Rm</th>
+              <th>TTL</th>
               <th>NIK</th>
-              <th>Jenis Kelamin</th>
-              <th>Alamat Rumah</th>
-              <th>Telp/HP</th>
-              <th>Status</th>
+              <th>JK</th>
+              <th>Dokter</th>
+              <th>jenis Penjamin</th>
+              <th>Asuransi</th>
+              <th>No Asuransi</th>
+              <th>Umur</th>
+              <th>Pemetaan</th>
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>

@@ -2,25 +2,20 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class T_registrasi extends CI_Model
 {
-	var $table = 'm_pasien';
+	var $table = 't_registrasi';
 	var $column_search = [
-		'no_rm',
-		'nama',
-		'nik',
-		'jenkel',
-		'alamat_rumah',
-		'hp',
-		'status_pasien'
+		'reg.no_reg', 'reg.tanggal_reg', 'reg.jam_reg', 'reg.tanggal_pulang', 'reg.jam_pulang', 'reg.is_asuransi', 'reg.id_asuransi', 'reg.umur', 'reg.no_asuransi', 'psn.nama', 'psn.no_rm', 'psn.tanggal_lahir', 'psn.tempat_lahir', 'psn.nik', 'psn.jenis_kelamin', 
+		'peg.nama', 'asu.nama', 'asu.keterangan', 'pem.keterangan'
 	];
 	
 	var $column_order = [
-		'no_rm',
-		'nama',
-		'nik',
-		'jenis_kelamin',
-		'alamat_rumah',
-		'hp',
-		'is_aktif',
+		'reg.no_reg',
+		'psn.nama',
+		'reg.tanggal_reg',
+		'reg.jam_reg',
+		'reg.is_pulang',
+		'reg.tanggal_pulang',
+		'reg.jam_pulang',
 		null
 	];
 
@@ -88,7 +83,7 @@ class T_registrasi extends CI_Model
 
 	}
 
-	function get_datatable_pasien()
+	function get_datatable()
 	{
 		$term = $_REQUEST['search']['value'];
 		$this->_get_datatables_query($term);
@@ -165,25 +160,32 @@ class T_registrasi extends CI_Model
 		return $this->db->update($this->table, $data, $where);
 	}
 
-	function get_kode_rm($str){
-		// $q = $this->db->query("select MAX(RIGHT(no_rm,6)) as kode_max from ".$this->table."");
-		$q = $this->db->query("select REPLACE(MAX(RIGHT(no_rm,6)),'.','') as kode_max from ".$this->table."	where no_rm like '".$str."%'");
+	function get_kode_reg(){
+		$q = $this->db->query("select REPLACE(MAX(RIGHT(no_reg,15)),'.','') as kode_max from ".$this->table."");
 		$kd_fix = "";
 		if($q->num_rows()>0){
 			foreach($q->result() as $k){
 				$tmp = ((int)$k->kode_max)+1;
-				//memberi tambahan padding angka 0 dalam 4 string 
-				$kd = sprintf("%04s", $tmp); 
+				//memberi tambahan padding angka 0 dalam 12 string 
+				$kd = sprintf("%012s", $tmp);
 				// insert string pada huruf ke dua dan param 0 (false untuk hapus lanjutannya)
-				$kd_fix = substr_replace($kd,".",2,0);
+				for ($i=3; $i <= 9; $i+=3) { 
+					if($i == 3){
+						$kd_fix = substr_replace($kd,".",$i,0);
+					}else if($i == 6){
+						$kd_fix = substr_replace($kd_fix,".",$i+1,0);
+					}else{
+						$kd_fix = substr_replace($kd_fix,".",$i+2,0);
+					}
+				}
 			}
 		}else{
-			$kd_fix = "00.01";
+			$kd_fix = "000.000.000.001";
 		}
-		return $str.'.'.$kd_fix;
+
+		return $kd_fix;
 	}
-	
-	public function get_max_id_pasien()
+	public function get_max_id()
 	{
 		$q = $this->db->query("SELECT MAX(id) as kode_max from ".$this->table."");
 		$kd = "";

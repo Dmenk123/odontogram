@@ -104,39 +104,20 @@ class Master_asuransi extends CI_Controller {
 	public function edit_data()
 	{
 		$this->load->library('Enkripsi');
-		$id_user = $this->session->userdata('id_user');
-		$data_user = $this->m_user->get_by_id($id_user);
-	
-		$id = $this->input->post('id');
-		//$oldData = $this->m_user->get_by_id($id);
-
-		$select = "m_user.*, m_pegawai.nama as nama_pegawai, m_role.nama as nama_role";
-		$where = ['m_user.id' => $id];
-		$table = 'm_user';
-		$join = [ 
-			[
-				'table' => 'm_pegawai',
-				'on'	=> 'm_user.id_pegawai = m_pegawai.id'
-			],
-			[
-				'table' => 'm_role',
-				'on'	=> 'm_user.id_role = m_role.id'
-			]
-		];
-
-		$oldData = $this->m_global->single_row($select, $where, $table, $join, 'm_user.kode_user');
+		$enc_id = $this->input->get('id');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		
+		$oldData = $this->m_asuransi->get_by_id($id);
 		
 		if(!$oldData){
-			return redirect($this->uri->segment(1));
+			$status = false;
+		}else{
+			$status = true;
 		}
-
-		$url_foto = base_url('files/img/user_img/').$oldData->foto;
-		$foto = base64_encode(file_get_contents($url_foto));  
 		
 		$data = array(
-			'data_user' => $data_user,
 			'old_data'	=> $oldData,
-			'foto_encoded' => $foto
+			'status' => $status
 		);
 		
 		echo json_encode($data);
@@ -182,116 +163,39 @@ class Master_asuransi extends CI_Controller {
 
 	public function update_data()
 	{
-		$sesi_id_user = $this->session->userdata('id_user'); 
-		$id_user = $this->input->post('id_user');
-		$this->load->library('Enkripsi');
+		$id = $this->input->post('id_asuransi');
+		$nama = trim($this->input->post('nama_asuransi'));
+		$keterangan = trim($this->input->post('ket_asuransi'));
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		
-		if($this->input->post('skip_pass') != null){
-			$skip_pass = true;
-		}else{
-			$skip_pass = false;
-		}
-		
-		$arr_valid = $this->rule_validasi(true, $skip_pass);
+
+		$arr_valid = $this->rule_validasi();
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
 			return;
 		}
 
-		$password = trim($this->input->post('password'));
-		$repassword = trim($this->input->post('repassword'));
-		$role = $this->input->post('role');
-		$status = $this->input->post('status');
-		
-		$q = $this->m_user->get_by_id($id_user);
-		$namafileseo = $this->seoUrl($q->username.' '.time());
-
-		if($skip_pass == false) {
-			if ($password != $repassword) {
-				$data['inputerror'][] = 'password';
-				$data['error_string'][] = 'Password Tidak Cocok';
-				$data['status'] = FALSE;
-			
-				$data['inputerror'][] = 'repassword';
-				$data['error_string'][] = 'Password Tidak Cocok';
-				$data['status'] = FALSE;
-	
-				echo json_encode($data);
-				return;
-			}
-		}
-		
-		$hash_password = $this->enkripsi->enc_dec('encrypt', $password);
-		$hash_password_lama = $this->enkripsi->enc_dec('encrypt', trim($this->input->post('password_lama')));
-		$dataOld = $this->m_user->get_by_id($this->input->post('id_user'));
-		
-		if($skip_pass == false) {
-			if($hash_password_lama != $dataOld->password) {
-				$data['inputerror'][] = 'password_lama';
-				$data['error_string'][] = 'Password lama salah';
-				$data['status'] = FALSE;
-	
-				echo json_encode($data);
-				return;
-			}
-		}
 		
 		$this->db->trans_begin();
 
-		$file_mimes = ['image/png', 'image/x-citrix-png', 'image/x-png', 'image/x-citrix-jpeg', 'image/jpeg', 'image/pjpeg'];
-
-		if(isset($_FILES['foto']['name']) && in_array($_FILES['foto']['type'], $file_mimes)) {
-			$this->konfigurasi_upload_img($namafileseo);
-			//get detail extension
-			$pathDet = $_FILES['foto']['name'];
-			$extDet = pathinfo($pathDet, PATHINFO_EXTENSION);
-			
-			if ($this->file_obj->do_upload('foto')) 
-			{
-				$gbrBukti = $this->file_obj->data();
-				$nama_file_foto = $gbrBukti['file_name'];
-				$this->konfigurasi_image_resize($nama_file_foto);
-				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
-				$this->image_lib->clear();
-				## replace nama file + ext
-				$namafileseo = $this->seoUrl($q->username.' '.time()).'.'.$extDet;
-				$foto = $namafileseo;
-			} else {
-				$error = array('error' => $this->file_obj->display_errors());
-				var_dump($error);exit;
-			}
-		}else{
-			$foto = null;
-		}
-
-		$data_user = [
-			'id_role' => $role,
-			'status' => $status,
+		$data = [
+			'nama' => $nama,
+			'keterangan' => $keterangan,
 			'updated_at' => $timestamp
 		];
 
-		if($skip_pass == false) {
-			$data_user['password'] = $hash_password;
-		}
-		
-		if($foto != null) {
-			$data_user['foto'] = $foto;
-		}
-
-		$where = ['id' => $id_user];
-		$update = $this->m_user->update($where, $data_user);
+		$where = ['id' => $id];
+		$update = $this->m_asuransi->update($where, $data);
 
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$data['status'] = false;
-			$data['pesan'] = 'Gagal update Master User';
+			$data['pesan'] = 'Gagal update Master Asuransi';
 		}else{
 			$this->db->trans_commit();
 			$data['status'] = true;
-			$data['pesan'] = 'Sukses update Master User';
+			$data['pesan'] = 'Sukses update Master Asuransi';
 		}
 		
 		echo json_encode($data);
@@ -303,14 +207,16 @@ class Master_asuransi extends CI_Controller {
 	 */
 	public function delete_data()
 	{
-		$id = $this->input->post('id');
-		$del = $this->m_user->softdelete_by_id($id);
+		$this->load->library('Enkripsi');
+		$enc_id = $this->input->post('id');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		$del = $this->m_asuransi->softdelete_by_id($id);
 		if($del) {
 			$retval['status'] = TRUE;
-			$retval['pesan'] = 'Data Master User dihapus';
+			$retval['pesan'] = 'Data Master Asuransi dihapus';
 		}else{
 			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Data Master User dihapus';
+			$retval['pesan'] = 'Data Master Asuransi dihapus';
 		}
 
 		echo json_encode($retval);

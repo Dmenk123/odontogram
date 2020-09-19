@@ -52,7 +52,7 @@ class M_global extends CI_Model
         return $q->row();
     }
 
-    function multi_row($select=NULL, $array_where=NULL, $table=NULL, $join= NULL, $order_by=NULL){
+    function multi_row($select=NULL, $array_where=NULL, $table=NULL, $join= NULL, $order_by=NULL, $limit=NULL){
 		if($select != null) {
 			$this->db->select($select);
 		}else{
@@ -73,6 +73,10 @@ class M_global extends CI_Model
 
 		if(isset($order_by)){
         	$this->db->order_by($order_by);
+        }
+
+        if(isset($$limit)) {
+            $this->db->limit($limit);
         }
 		
 		$q = $this->db->get();
