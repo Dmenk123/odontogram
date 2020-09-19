@@ -1,5 +1,7 @@
 var save_method;
+var txtAksi;
 var table;
+var table2;
 
 $(document).ready(function() {
 
@@ -27,7 +29,18 @@ $(document).ready(function() {
 			},
 		],
     });
-    
+
+    table2 = $('#tabel_asuransi').DataTable({
+        autoWidth: false,
+		responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: true,
+		ajax: {
+			url  : base_url + "master_asuransi/list_data",
+			type : "POST" 
+		}
+    });    
 
     //change menu status
     $(document).on('click', '.btn_edit_status', function(){
@@ -174,16 +187,55 @@ $(document).ready(function() {
             dataType: "json",
             success: function (response) {
                 $('#div-append-form').html(response);
+                trigger_select_asuransi();
             }
         });
     });
 });
+
+function trigger_select_asuransi(){
+    $("#asuransi").select2({
+        // tags: true,
+        //multiple: false,
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 2,
+        minimumResultsForSearch: 10,
+        ajax: {
+            url: base_url+'master_asuransi/get_select_asuransi',
+            dataType: "json",
+            type: "GET",
+            data: function (params) {
+
+                var queryParameters = {
+                    term: params.term
+                }
+                return queryParameters;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            id: item.id,
+                        }
+                    })
+                };
+            }
+        }
+    });
+}
 
 function clear_input_pasien() {
     $('#nik').val('');
     $('#no_rm').val('');
     $('#tempat_lahir').val('');
     $('#tanggal_lahir').val('');
+}
+
+function tambah_data_asuransi() {
+    save_method = 'add';
+    $('#modal_form_asuransi').modal('show');
+    $('#modal_form_asuransi_title').text('Master Asuransi'); 
 }
 
 function detail_pasien(id) {
@@ -257,7 +309,20 @@ function detail_pasien(id) {
 
 function reload_table()
 {
-    table.ajax.reload(null,false); //reload datatable ajax 
+    table.ajax.reload(null,false); 
+}
+
+function reload_table2()
+{
+    table2.ajax.reload(null,false); 
+}
+
+function reset_form(jqIdForm) {
+    $(':input','#'+jqIdForm)
+        .not(':button, :submit, :reset, :hidden')
+        .val('')
+        .prop('checked', false)
+        .prop('selected', false);
 }
 
 function save()
@@ -303,6 +368,59 @@ function save()
             console.log("ERROR : ", e);
             $("#btnSave").prop("disabled", false);
             $('#btnSave').text('Simpan');
+        }
+    });
+}
+
+function simpanAsuransi(){
+    if(save_method == 'add') {
+        url = base_url + 'master_asuransi/simpan_data';
+        txtAksi = 'Tambah Asuransi';
+    }else{
+        url = base_url + 'master_asuransi/update_data';
+        txtAksi = 'Edit Asuransi';
+    }
+
+    let form = $('#form-asuransi')[0];
+    let data = new FormData(form);
+    
+    $("#btnSaveAsuransi").prop("disabled", true);
+    $('#btnSaveAsuransi').text('Menyimpan Data'); //change button text
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: url,
+        data: data,
+        dataType: "JSON",
+        processData: false,
+        contentType: false, 
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            if(data.status) {
+                swal.fire("Sukses!!", data.pesan, "success");
+            }else {
+                for (var i = 0; i < data.inputerror.length; i++) 
+                {
+                    if (data.inputerror[i] != 'pegawai') {
+                        $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                    }else{
+                        //ikut style global
+                        $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                    }
+                }
+            }
+
+            $("#btnSaveAsuransi").prop("disabled", false);
+            $('#btnSaveAsuransi').text('Simpan');
+            reload_table2();
+            reset_form("form-asuransi");
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+            $("#btnSaveAsuransi").prop("disabled", false);
+            $('#btnSaveAsuransi').text('Simpan');
         }
     });
 }

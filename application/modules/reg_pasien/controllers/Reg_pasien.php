@@ -11,6 +11,7 @@ class Reg_pasien extends CI_Controller {
 		}
 
 		$this->load->model('master_user/m_user');
+		$this->load->model('master_asuransi/m_asuransi');
 		$this->load->model('m_global');
 		$this->load->model('t_registrasi');
 	}
@@ -110,17 +111,11 @@ class Reg_pasien extends CI_Controller {
 					<div class=" col-lg-6">
 					<select class="form-control kt-select2" id="asuransi" name="asuransi">
 						<option value="">Silahkan Pilih Nama Asuransi</option>
-			';
-
-			foreach ($data_asuransi as $key => $value) {
-				$html .= '<option value="'.$value->id.'">'.$value->nama.'</option>';
-			}
-
-			$html .='</select>
+					</select>
 					<span class="help-block"></span>
 					</div>
 					<div class="col-lg-2">
-						<button type="buton" onclick="tambah_data_asuransi()">
+						<button type="button" class="btn btn-sm btn-success" onclick="tambah_data_asuransi()">
 							<i class="la la-plus"></i> Tambah data Asuransi
 						</button>
 					</div>
@@ -164,13 +159,28 @@ class Reg_pasien extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => null,
+			'modal' => 'modal_data_reg',
 			'js'	=> 'reg_pasien.js',
 			'view'	=> 'form_data_reg'
 		];
 
 		$this->template_view->load_view($content, $data);
 	}
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+	/////////////////////////////////
 
 	public function edit($enc_id)
 	{
