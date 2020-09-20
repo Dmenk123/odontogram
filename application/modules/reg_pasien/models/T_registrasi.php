@@ -5,7 +5,7 @@ class T_registrasi extends CI_Model
 	var $table = 't_registrasi';
 	var $column_search = [
 		'reg.no_reg', 'reg.tanggal_reg', 'reg.jam_reg', 'reg.tanggal_pulang', 'reg.jam_pulang', 'reg.is_asuransi', 'reg.id_asuransi', 'reg.umur', 'reg.no_asuransi', 'psn.nama', 'psn.no_rm', 'psn.tanggal_lahir', 'psn.tempat_lahir', 'psn.nik', 'psn.jenis_kelamin', 
-		'peg.nama', 'asu.nama', 'asu.keterangan', 'pem.keterangan'
+		'peg.nama', 'asu.nama', 'asu.keterangan', 'pem.keterangan', 'penjamin', 'jenkel'
 	];
 	
 	var $column_order = [
@@ -16,10 +16,20 @@ class T_registrasi extends CI_Model
 		'reg.is_pulang',
 		'reg.tanggal_pulang',
 		'reg.jam_pulang',
+		'psn.no_rm',
+		'psn.tempat_lahir', 
+		'psn.tanggal_lahir',
+		'psn.nik',
+		'psn.jenis_kelamin',
+		'peg_nama',
+		'reg.is_asuransi',
+		'asu.nama',
+		'asu.keterangan',
+		'pem.keterangan',
 		null
 	];
 
-	var $order = ['no_rm' => 'asc']; 
+	var $order = ['reg.no_reg' => 'asc']; 
 
 	public function __construct()
 	{
@@ -28,11 +38,21 @@ class T_registrasi extends CI_Model
 		$this->load->database();
 	}
 
-	private function _get_datatables_query($term='')
+	private function _get_datatables_query($term='', $tgl_awal, $tgl_akhir)
 	{
-		$this->db->select("*, CASE WHEN is_aktif = 1 THEN 'Aktif' ELSE 'Non Aktif' END as status_pasien, CASE WHEN jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
-		$this->db->from($this->table);
-		$this->db->where('deleted_at is null');
+		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
+		peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
+		$this->db->from($this->table.' reg');
+		$this->db->join('m_pasien psn', 'reg.id_pasien = psn.id', 'left');
+		$this->db->join('m_pegawai peg', 'reg.id_pegawai = peg.id', 'left');
+		$this->db->join('m_asuransi asu', 'reg.id_asuransi = asu.id', 'left');
+		$this->db->join('m_pemetaan pem', 'reg.id_pemetaan = pem.id', 'left');
+		$this->db->where('reg.deleted_at is null');
+		
+		if($tgl_awal != null && $tgl_akhir != null) {
+			$this->db->where('reg.tanggal_reg >=', $tgl_awal);
+			$this->db->where('reg.tanggal_reg <=', $tgl_akhir);	
+		}
 		
 		$i = 0;
 
@@ -51,14 +71,14 @@ class T_registrasi extends CI_Model
 				}
 				else
 				{
-					if($item == 'status_pasien') {
+					if($item == 'penjamin') {
 						/**
 						 * param both untuk wildcard pada awal dan akhir kata
 						 * param false untuk disable escaping (karena pake subquery)
 						 */
-						$this->db->or_like('(CASE WHEN is_aktif = 1 THEN \'Aktif\' ELSE \'Non Aktif\' END)', $_POST['search']['value'],'both',false);
+						$this->db->or_like('(CASE WHEN reg.is_asuransi = 1 THEN \'Aktif\' ELSE \'Non Aktif\' END)', $_POST['search']['value'],'both',false);
 					}elseif($item == 'jenkel'){
-						$this->db->or_like('(CASE WHEN jenis_kelamin = \'L\' THEN \'Laki-Laki\' ELSE \'Perempuan\' END)', $_POST['search']['value'],'both',false);
+						$this->db->or_like('(CASE WHEN psn.jenis_kelamin = \'L\' THEN \'Laki-Laki\' ELSE \'Perempuan\' END)', $_POST['search']['value'],'both',false);
 					}
 					else{
 						$this->db->or_like($item, $_POST['search']['value']);
@@ -83,10 +103,10 @@ class T_registrasi extends CI_Model
 
 	}
 
-	function get_datatable()
+	function get_datatable($tgl_awal = null, $tgl_akhir = null)
 	{
 		$term = $_REQUEST['search']['value'];
-		$this->_get_datatables_query($term);
+		$this->_get_datatables_query($term,$tgl_awal,$tgl_akhir);
 		if($_REQUEST['length'] != -1)
 		$this->db->limit($_REQUEST['length'], $_REQUEST['start']);
 
@@ -94,9 +114,9 @@ class T_registrasi extends CI_Model
 		return $query->result();
 	}
 
-	function count_filtered()
+	function count_filtered($tgl_awal,$tgl_akhir)
 	{
-		$this->_get_datatables_query();
+		$this->_get_datatables_query($term='',$tgl_awal,$tgl_akhir);
 		$query = $this->db->get();
 		return $query->num_rows();
 	}

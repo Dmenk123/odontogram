@@ -5,29 +5,11 @@ var table2;
 
 $(document).ready(function() {
 
+    filter_tanggal();
+    
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
-    });
-
-	//datatables
-	table = $('#tabel_index').DataTable({
-		responsive: true,
-        searchDelay: 500,
-        processing: true,
-        serverSide: true,
-		ajax: {
-			url  : base_url + "reg_pasien/list_data",
-			type : "POST" 
-		},
-
-		//set column definition initialisation properties
-		columnDefs: [
-			{
-				targets: [-1], //last column
-				orderable: false, //set not orderable
-			},
-		],
     });
 
     table2 = $('#tabel_asuransi').DataTable({
@@ -191,7 +173,65 @@ $(document).ready(function() {
             }
         });
     });
+
+    //trigger select2 on edit
+    if($('#id_reg').val() != '') {
+        var $newOption = $("<option selected='selected'></option>").val($("#id_pasien").val()).text($('#nm_pas').val());
+        $("#nama").append($newOption).trigger('change');
+
+        var $newOption2 = $("<option selected='selected'></option>").val($("#id_dokter").val()).text($('#nm_dok').val());
+        $("#dokter").append($newOption2).trigger('change');
+
+        $('#jenis_penjamin').val($('#is_asuransi').val()).change();
+        
+        // cek apakah ada penjamin   
+        $.ajax({
+            type: "post",
+            url: base_url+"reg_pasien/cek_penjamin",
+            data: {id_reg : $('#id_reg').val()},
+            dataType: "json",
+            success: function (response) {
+                if(response.status) {
+                    $('#no_asuransi').val(response.data.no_asuransi);
+                    var $newOption3 = $("<option selected='selected'></option>").val(response.data.id_asuransi).text(response.data.nama_asuransi);
+                    $("#asuransi").append($newOption3).trigger('change');
+                    
+                }
+               
+            }
+        });
+    }
+    //end trigger select2 on edit
+   
 });
+
+function filter_tanggal(){
+    var tgl_awal = $('#tgl_filter_mulai').val();
+    var tgl_akhir = $('#tgl_filter_akhir').val();
+
+    //datatables
+	table = $('#tabel_index').DataTable({
+        destroy: true,
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: true,
+		ajax: {
+			url  : base_url + "reg_pasien/list_data",
+            type : "POST",
+            data : {tgl_awal:tgl_awal, tgl_akhir:tgl_akhir},
+            dataType : 'JSON',
+		},
+
+		//set column definition initialisation properties
+		columnDefs: [
+			{
+				targets: [-1], //last column
+				orderable: false, //set not orderable
+			},
+		],
+    });
+}
 
 function trigger_select_asuransi(){
     $("#asuransi").select2({
@@ -483,7 +523,6 @@ function delete_pasien(id){
         }
     });
 }
-
 
 function delete_asuransi(id) {
     swalConfirmDelete.fire({

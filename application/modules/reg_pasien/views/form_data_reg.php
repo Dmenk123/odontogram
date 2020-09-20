@@ -31,7 +31,13 @@ $obj_date = new DateTime();
         </div>
         <div class="kt-portlet__body">
           <div class="form-group row form-group-marginless kt-margin-t-20">
-            <input type="hidden" class="form-control" name="id_pasien" value="">
+            <input type="hidden" class="form-control" id="id_reg" name="id_reg" value="<?php if(isset($data_reg)) { echo $data_reg->id; } ?>">
+            <input type="hidden" class="form-control" id="id_pasien" name="id_pasien" value="<?php if(isset($data_reg)) { echo $data_reg->id_pasien; } ?>">
+            <input type="hidden" class="form-control" id="nm_pas" name="nm_pas" value="<?php if(isset($data_reg)) { echo '['.$data_reg->no_rm.' - '.$data_reg->nik.'] '.$data_reg->nama_pasien; } ?>">
+            <input type="hidden" class="form-control" id="id_dokter" name="id_dokter" value="<?php if(isset($data_reg)) { echo $data_reg->id_pegawai; } ?>">
+            <input type="hidden" class="form-control" id="nm_dok" name="nm_dok" value="<?php if(isset($data_reg)) { echo '['.$data_reg->kode_dokter.'] '.$data_reg->nama_dokter; } ?>">
+            <input type="hidden" class="form-control" id="is_asuransi" name="is_asuransi" value="<?php if(isset($data_reg)) { echo $data_reg->is_asuransi; } ?>">
+            
             <label class="col-lg-1 col-form-label">Nama Pasien:</label>
             <div class=" col-lg-4 col-md-9 col-sm-12">
               <select class="form-control kt-select2" id="nama" name="nama">
@@ -78,14 +84,14 @@ $obj_date = new DateTime();
           <div class="form-group row form-group-marginless kt-margin-t-20">
             <label class="col-lg-1 col-form-label">Tanggal:</label>
             <div class="col-lg-2">
-              <input type="text" class="form-control mask_tanggal" id="tanggal_reg" name="tanggal_reg" autocomplete="off" value="<?php if(isset($data_reg)) {echo DateTime::createFromFormat('Y-m-d', $data_reg->tanggal_lahir)->format('d/m/Y');}else{echo $obj_date->format('d/m/Y');} ?>">
+              <input type="text" class="form-control mask_tanggal" id="tanggal_reg" name="tanggal_reg" autocomplete="off" value="<?php if(isset($data_reg)) {echo DateTime::createFromFormat('Y-m-d', $data_reg->tanggal_reg)->format('d/m/Y');}else{echo $obj_date->format('d/m/Y');} ?>">
               <span class="help-block"></span>
             </div>
             <label class="col-lg-1 col-form-label">Pukul:</label>
             
             <div class="col-lg-2">
               <div class="input-group timepicker">
-                <input class="form-control" id="jam_reg" name="jam_reg" readonly placeholder="Pilih Jam" type="text">
+                <input class="form-control" id="jam_reg" name="jam_reg" readonly placeholder="Pilih Jam" type="text" value="<?php if(isset($data_reg)) {echo $data_reg->jam_reg;}?>">
                 <div class="input-group-append">
                   <span class="input-group-text">
                     <i class="la la-clock-o"></i>
@@ -97,7 +103,7 @@ $obj_date = new DateTime();
 
             <label class="col-lg-1 col-form-label">Umur:</label>
             <div class="col-lg-1">
-              <input type="text" class="form-control numberinput" id="umur_reg" name="umur_reg" autocomplete="off" value="<?php if(isset($data_reg)) {echo $data_reg->tanggal_lahir;} ?>">
+              <input type="text" class="form-control numberinput" id="umur_reg" name="umur_reg" autocomplete="off" value="<?php if(isset($data_reg)) {echo $data_reg->umur;} ?>">
               <span class="help-block"></span>
             </div>
 

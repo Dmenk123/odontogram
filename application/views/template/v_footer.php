@@ -113,6 +113,18 @@
                     allowClear: true,
                     placeholder: "Mohon Pilih Salah Satu"
                 });
+
+                $('.kt_datepicker').datepicker({
+                    rtl: KTUtil.isRTL(),
+                    todayHighlight: true,
+                    format: "dd/mm/yyyy",
+                    autoclose: true,
+                    orientation: "bottom left",
+                    templates: {
+                        leftArrow: '<i class="la la-angle-left"></i>',
+                        rightArrow: '<i class="la la-angle-right"></i>'
+                    }
+                });
             });
         </script>
 

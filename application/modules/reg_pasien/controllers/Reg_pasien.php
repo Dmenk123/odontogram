@@ -167,6 +167,88 @@ class Reg_pasien extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
+	public function edit($enc_id)
+	{
+		if(strlen($enc_id) != 32) {
+			return redirect(base_url($this->uri->segment(1)));
+		}
+
+		$this->load->library('Enkripsi');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		
+		$id_user = $this->session->userdata('id_user'); 
+		$data_user = $this->m_user->get_detail_user($id_user);
+
+		$pemetaan = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_pemetaan', null, 'umur_awal');
+
+		$select = "reg.id, reg.id_pasien, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
+		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
+		$table = 't_registrasi as reg';
+		$join = [ 
+			['table' => 'm_pasien as psn', 'on'	=> 'reg.id_pasien = psn.id'],
+			['table' => 'm_pegawai as peg', 'on'=> 'reg.id_pegawai = peg.id'],
+			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id'],
+			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id']
+		];
+		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
+		
+		if(!$data_reg) {
+			return redirect(base_url($this->uri->segment(1)));
+		}
+
+		/**
+		 * data passing ke halaman view content
+		 */
+		$data = array(
+			'title' => 'Edit Data Registrasi',
+			'data_user' => $data_user,
+			'data_reg' => $data_reg,
+			'data_pemetaan' => $pemetaan
+		);
+		
+
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => 'modal_data_reg',
+			'js'	=> 'reg_pasien.js',
+			'view'	=> 'form_data_reg'
+		];
+
+		$this->template_view->load_view($content, $data);
+	}
+
+	public function cek_penjamin()
+	{
+		$id_reg = $this->input->post('id_reg');
+		$select = "reg.*, asu.nama as nama_asuransi, asu.keterangan";
+		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id_reg];
+		$table = 't_registrasi as reg';
+		$join = [ 
+			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id']
+		];
+
+		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
+		if($data_reg) {
+			$retval = [
+				'status' => true,
+				'data' => $data_reg
+			];
+		}else{
+			$retval = [
+				'status' => false,
+				'data' => $data_reg
+			];
+		}
+
+		echo json_encode($retval);
+	}
+
 	public function simpan_data()
 	{
 		$obj_date = new DateTime();
@@ -190,7 +272,6 @@ class Reg_pasien extends CI_Controller {
 		}
 
 		$id_pasien = $this->input->post('nama');
-		$no_reg = $this->t_registrasi->get_kode_reg();
 		$tanggal_reg = contul($this->input->post('tanggal_reg'));
 		$jam_reg = contul($this->input->post('jam_reg'));
 		$id_pegawai = contul($this->input->post('dokter'));
@@ -201,9 +282,7 @@ class Reg_pasien extends CI_Controller {
 		$this->db->trans_begin();
 		
 		$registrasi = [
-			'id' => $this->t_registrasi->get_max_id(),
 			'id_pasien' => $id_pasien,
-			'no_reg' => $no_reg,
 			'tanggal_reg' => $obj_date->createFromFormat('d/m/Y', $tanggal_reg)->format('Y-m-d'),
 			'jam_reg' => $jam_reg,
 			'id_pegawai' => $id_pegawai,
@@ -211,20 +290,32 @@ class Reg_pasien extends CI_Controller {
 			'id_asuransi' => $id_asuransi,
 			'no_asuransi' => $no_asuransi,
 			'umur' => $umur,
-			'id_pemetaan' => $id_pemetaan,
-			'created_at' => $timestamp
+			'id_pemetaan' => $id_pemetaan
 		];
 
-		$insert = $this->t_registrasi->save($registrasi);
-		
+		if($this->input->post('id_reg') != '') {
+			###update
+			$registrasi['updated_at'] = $timestamp;
+			$where = ['id' => $this->input->post('id_reg')];
+			$update = $this->t_registrasi->update($where, $registrasi);
+			$pesan = 'Sukses Mengupdate data Registrasi';
+		}else{
+			###insert
+			$registrasi['id'] = $this->t_registrasi->get_max_id();
+			$registrasi['no_reg'] = $this->t_registrasi->get_kode_reg();
+			$registrasi['created_at'] = $timestamp;
+			$insert = $this->t_registrasi->save($registrasi);
+			$pesan = 'Sukses Menambah data Registrasi';
+		}
+				
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan Data Registrasi';
+			$retval['pesan'] = 'Gagal memproses Data Registrasi';
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan Data Registrasi';
+			$retval['pesan'] = $pesan;
 		}
 
 		echo json_encode($retval);
@@ -232,8 +323,17 @@ class Reg_pasien extends CI_Controller {
 
 	public function list_data()
 	{
+		$tgl_awal = contul(DateTime::createFromFormat('d/m/Y', $this->input->post('tgl_awal'))->format('Y-m-d'));
+		$tgl_akhir = contul(DateTime::createFromFormat('d/m/Y', $this->input->post('tgl_akhir'))->format('Y-m-d'));
+		
 		$this->load->library('Enkripsi');
-		$list = $this->t_registrasi->get_datatable();
+		$list = $this->t_registrasi->get_datatable($tgl_awal, $tgl_akhir);
+
+		// echo "<pre>";
+		// print_r ($list);
+		// echo "</pre>";
+		// exit;
+
 		$data = array();
 		// $no =$_POST['start'];
 		foreach ($list as $val) {
@@ -241,43 +341,45 @@ class Reg_pasien extends CI_Controller {
 			$row = array();
 			//loop value tabel db
 			// $row[] = $no;
+			$row[] = $val->no_reg;
+			$row[] = $val->nama_pasien;
+			$row[] = DateTime::createFromFormat('Y-m-d', $val->tanggal_reg)->format('d/m/Y');
+			$row[] = $val->jam_reg;
+			$row[] = ($val->is_pulang == '1') ? 'Pulang' : '-';
+			$row[] = ($val->tanggal_pulang) ? DateTime::createFromFormat('Y-m-d', $val->tanggal_pulang)->format('d/m/Y') : '-';
+			$row[] = $val->jam_pulang;
 			$row[] = $val->no_rm;
-			$row[] = $val->nama;
+			$row[] = $val->tempat_lahir;
+			$row[] = DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d/m/Y');
 			$row[] = $val->nik;
-			$row[] = ($val->jenis_kelamin == 'L') ? '<span style="color:blue;">Laki-Laki</span>' : '<span style="color:magenta;">Perempuan</span>';
-			$row[] = $val->alamat_rumah;
-			$row[] = $val->hp;
-			$row[] = ($val->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
+			$row[] = $val->jenkel;
+			$row[] = $val->nama_dokter;
+			$row[] = $val->penjamin;
+			$row[] = $val->nama_asuransi;
+			$row[] = $val->no_asuransi;
+			$row[] = $val->umur;
+			$row[] = $val->keterangan;
 			
 			$str_aksi = '
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="detail_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
-							<i class="la la-search"></i> Detail Pasien
+						<button class="dropdown-item" onclick="detail_reg(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
+							<i class="la la-search"></i> Detail Registrasi
 						</button>
-						<a class="dropdown-item" href="'.base_url('data_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
-							<i class="la la-pencil"></i> Edit Pasien
+						<a class="dropdown-item" href="'.base_url('reg_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
+							<i class="la la-pencil"></i> Edit Registrasi
 						</a>
-						<button class="dropdown-item" onclick="delete_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
+						<button class="dropdown-item" onclick="delete_reg(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
-						<a class="dropdown-item" target="_blank" href="'.base_url('data_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
-							<i class="la la-print"></i> Cetak Pasien Ini
+						<a class="dropdown-item" target="_blank" href="'.base_url('reg_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
+							<i class="la la-print"></i> Cetak Data Ini
 						</a>
+					</div>
+				</div>
 			';
 
-			if ($val->is_aktif == 1) {
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="aktif"><i class="la la-check">
-				</i> Aktif</button>';
-			}else{
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="nonaktif"><i class="la la-close">
-				</i> Non Aktif</button>';
-			}	
-
-			$str_aksi .= '</div></div>';
 			$row[] = $str_aksi;
 
 			$data[] = $row;
@@ -286,7 +388,7 @@ class Reg_pasien extends CI_Controller {
 		$output = [
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->t_registrasi->count_all(),
-			"recordsFiltered" => $this->t_registrasi->count_filtered(),
+			"recordsFiltered" => $this->t_registrasi->count_filtered($tgl_awal, $tgl_akhir),
 			"data" => $data
 		];
 		
@@ -306,58 +408,7 @@ class Reg_pasien extends CI_Controller {
 
 	/////////////////////////////////
 
-	public function edit($enc_id)
-	{
-		if(strlen($enc_id) != 32) {
-			return redirect(base_url($this->uri->segment(1)));
-		}
-
-		$this->load->library('Enkripsi');
-		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
-		
-		$id_user = $this->session->userdata('id_user'); 
-		$data_user = $this->m_user->get_detail_user($id_user);
-
-		$select = "pas.*, mdk.*";
-		$where = ['pas.deleted_at' => null, 'pas.id' => $id_pasien];
-		$table = 't_registrasi as pas';
-		$join = [ 
-			[
-				'table' => 'm_data_medik as mdk',
-				'on'	=> 'pas.id = mdk.id_pasien'
-			]
-		];
-		$data_pasien = $this->m_global->single_row($select,$where,$table, $join);
-		
-		if(!$data_pasien) {
-			return redirect(base_url($this->uri->segment(1)));
-		}
-
-		/**
-		 * data passing ke halaman view content
-		 */
-		$data = array(
-			'title' => 'Edit Data Pasien',
-			'data_user' => $data_user,
-			'data_pasien' => $data_pasien
-		);
-
-		/**
-		 * content data untuk template
-		 * param (css : link css pada direktori assets/css_module)
-		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
-		 * param (js : link js pada direktori assets/js_module)
-		 */
-		$content = [
-			'css' 	=> null,
-			'modal' => null,
-			'js'	=> 'data_pasien.js',
-			'view'	=> 'form_data_pasien'
-		];
-
-		$this->template_view->load_view($content, $data);
-	}
-
+	
 	public function detail_pasien()
 	{
 		$enc_id = $this->input->post('id');
