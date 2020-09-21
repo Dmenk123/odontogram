@@ -31,13 +31,7 @@ $obj_date = new DateTime();
         </div>
         <div class="kt-portlet__body">
           <div class="form-group row form-group-marginless kt-margin-t-20">
-            <input type="hidden" class="form-control" id="id_reg" name="id_reg" value="<?php if(isset($data_reg)) { echo $data_reg->id; } ?>">
-            <input type="hidden" class="form-control" id="id_pasien" name="id_pasien" value="<?php if(isset($data_reg)) { echo $data_reg->id_pasien; } ?>">
-            <input type="hidden" class="form-control" id="nm_pas" name="nm_pas" value="<?php if(isset($data_reg)) { echo '['.$data_reg->no_rm.' - '.$data_reg->nik.'] '.$data_reg->nama_pasien; } ?>">
-            <input type="hidden" class="form-control" id="id_dokter" name="id_dokter" value="<?php if(isset($data_reg)) { echo $data_reg->id_pegawai; } ?>">
-            <input type="hidden" class="form-control" id="nm_dok" name="nm_dok" value="<?php if(isset($data_reg)) { echo '['.$data_reg->kode_dokter.'] '.$data_reg->nama_dokter; } ?>">
-            <input type="hidden" class="form-control" id="is_asuransi" name="is_asuransi" value="<?php if(isset($data_reg)) { echo $data_reg->is_asuransi; } ?>">
-            
+            <input type="hidden" class="form-control" id="id_reg" name="id_reg" value="<?php if(isset($data_reg)) { echo $data_reg->id; } ?>">           
             <label class="col-lg-1 col-form-label">Nama Pasien:</label>
             <div class=" col-lg-4 col-md-9 col-sm-12">
               <select class="form-control kt-select2" id="nama" name="nama">

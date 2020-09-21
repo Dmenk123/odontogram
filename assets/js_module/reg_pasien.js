@@ -161,48 +161,23 @@ $(document).ready(function() {
     $('.mask_rm').mask("AA.00.00");
 
     $('#jenis_penjamin').change(function (e) { 
+        let id_regnya = get_uri_segment(4);
         e.preventDefault();
         $.ajax({
             type: "post",
             url: base_url+"reg_pasien/get_data_form_penjamin",
-            data: {jenis_penjamin : $(this).val()},
+            data: {jenis_penjamin : $(this).val(), id_regnya:id_regnya},
             dataType: "json",
             success: function (response) {
                 $('#div-append-form').html(response);
                 trigger_select_asuransi();
             }
         });
-    });
+    });   
 
-    //trigger select2 on edit
-    if($('#id_reg').val() != '') {
-        var $newOption = $("<option selected='selected'></option>").val($("#id_pasien").val()).text($('#nm_pas').val());
-        $("#nama").append($newOption).trigger('change');
-
-        var $newOption2 = $("<option selected='selected'></option>").val($("#id_dokter").val()).text($('#nm_dok').val());
-        $("#dokter").append($newOption2).trigger('change');
-
-        $('#jenis_penjamin').val($('#is_asuransi').val()).change();
-        
-        // cek apakah ada penjamin   
-        $.ajax({
-            type: "post",
-            url: base_url+"reg_pasien/cek_penjamin",
-            data: {id_reg : $('#id_reg').val()},
-            dataType: "json",
-            success: function (response) {
-                if(response.status) {
-                    $('#no_asuransi').val(response.data.no_asuransi);
-                    var $newOption3 = $("<option selected='selected'></option>").val(response.data.id_asuransi).text(response.data.nama_asuransi);
-                    $("#asuransi").append($newOption3).trigger('change');
-                    
-                }
-               
-            }
-        });
+    if(get_uri_segment(3) !== 'undefined' && get_uri_segment(3) == 'edit') {
+        get_data_form_edit();
     }
-    //end trigger select2 on edit
-   
 });
 
 function filter_tanggal(){
@@ -297,74 +272,119 @@ function edit_asuransi(id){
     }); 
 }
 
-function detail_pasien(id) {
-    $.ajax({
-        url : base_url + 'data_pasien/detail_pasien',
-        type: "POST",
-        dataType: "JSON",
-        data : {id:id},
-        success: function(data)
-        {
-            $('#no_rm_det').text(data.old_data.no_rm);
-            $('#nik_det').text(data.old_data.nik);
-            $('#pasien_det').text(data.old_data.nama);
-            $('#ttl_det').text(function () {
-                let tgl =  data.old_data.tanggal_lahir;
-                return data.old_data.tempat_lahir+' / '+tgl.split("-").reverse().join("-");
-            });
-            $('#jenkel_det').text(data.old_data.jenkel);
-            $('#alamat_rmh_det').text(data.old_data.alamat_rumah);
-            $('#alamat_ktr_det').text(data.old_data.alamat_kantor);
-            $('#suku_det').text(data.old_data.suku);
-            $('#pekerjaan_det').text(data.old_data.pekerjaan);
-            $('#hp_det').text(data.old_data.hp);
-            $('#telp_det').text(data.old_data.telp_rumah);
+function get_data_form_edit() {
+    var enc_id = get_uri_segment(4);
+     
+     $.ajax({
+        type: "post",
+        url: base_url+"reg_pasien/get_data_form_reg",
+        data: {enc_id : enc_id},
+        dataType: "json",
+        success: function (response) {
+            if(response.status) {
+                $("#id_reg").val(response.data.id);
+                var option_nama = $("<option selected='selected'></option>").val(response.data.id_pasien).text(response.txt_opt_pasien);
+                $("#nama").append(option_nama).trigger('change');
+                $('#nik').val(response.data.nik);
+                $('#no_rm').val(response.data.no_rm);
+                $('#tempat_lahir').val(response.data.tempat_lahir);
+               
+                let tgl_lhr = response.data.tanggal_lahir;
+                $('#tanggal_lahir').val(tgl_lhr.split("-").reverse().join("/"));
+                $('#umur_reg').val(response.data.umur);
+                $('#pemetaan').val(response.data.id_pemetaan);
+                
+                let tgl_reg = response.data.tanggal_reg;
+                $('#tanggal_reg').val(tgl_reg.split("-").reverse().join("/"));
+                $('#jam_reg').val(response.data.jam_reg);
 
-            $('#goldarah_det').text(data.old_data.gol_darah);
-            $('#tekanandarah_det').text(data.old_data.tekanan_darah+' ('+data.old_data.tekanan_darah_val+')');
-            $('#jantung_det').text(handle_boolean(data.old_data.penyakit_jantung));
-            $('#diabetes_det').text(handle_boolean(data.old_data.diabetes));
-            $('#hepatitis_det').text(handle_boolean(data.old_data.hepatitis));
-            $('#haemopilia_det').text(handle_boolean(data.old_data.haemopilia));
-            $('#gastring_det').text(handle_boolean(data.old_data.gastring));
-            $('#penyakitlain_det').text(handle_boolean(data.old_data.penyakit_lainnya));
-            $('#alergiobat_det').text(function () {
-                let strAlergiObat;
-                if(data.old_data.alergi_obat == '1'){
-                    strAlergiObat = 'Ya';
-                }else{
-                    strAlergiObat = 'Tidak';
-                }
+                var option_dokter = $("<option selected='selected'></option>").val(response.data.id_pegawai).text(response.txt_opt_dokter);
+                $("#dokter").append(option_dokter).trigger('change');
 
-                if(data.old_data.alergi_obat_val){
-                    return strAlergiObat+', '+data.old_data.alergi_obat_val;
-                }else{
-                    return strAlergiObat;
-                }
-            });
-            $('#alergimakan_det').text(function () {
-                let strAlergiMakan;
-                if(data.old_data.alergi_makanan == '1'){
-                    strAlergiMakan = 'Ya';
-                }else{
-                    strAlergiMakan = 'Tidak';
-                }
-
-                if(data.old_data.alergi_makanan_val){
-                    return strAlergiMakan+', '+data.old_data.alergi_makanan_val;
-                }else{
-                    return strAlergiMakan;
-                }
-            });
-            $('#modal_detail').modal('show');
-	        $('#modal_title_det').text('Detail Pasien'); 
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
+                $('#jenis_penjamin').val(response.data.is_asuransi).change();
+                
+                // $('#no_asuransi').val(response.data.no_asuransi);
+                // var $newOption3 = $("<option selected='selected'></option>").val(response.data.id_asuransi).text(response.data.nama_asuransi);
+                // $("#asuransi").append($newOption3).trigger('change');
+                
+            }else{
+                window.location.href = base_url+"reg_pasien";
+            }
         }
-    });
+    });  
+   
 }
+
+
+
+// function detail_pasien(id) {
+//     $.ajax({
+//         url : base_url + 'data_pasien/detail_pasien',
+//         type: "POST",
+//         dataType: "JSON",
+//         data : {id:id},
+//         success: function(data)
+//         {
+//             $('#no_rm_det').text(data.old_data.no_rm);
+//             $('#nik_det').text(data.old_data.nik);
+//             $('#pasien_det').text(data.old_data.nama);
+//             $('#ttl_det').text(function () {
+//                 let tgl =  data.old_data.tanggal_lahir;
+//                 return data.old_data.tempat_lahir+' / '+tgl.split("-").reverse().join("-");
+//             });
+//             $('#jenkel_det').text(data.old_data.jenkel);
+//             $('#alamat_rmh_det').text(data.old_data.alamat_rumah);
+//             $('#alamat_ktr_det').text(data.old_data.alamat_kantor);
+//             $('#suku_det').text(data.old_data.suku);
+//             $('#pekerjaan_det').text(data.old_data.pekerjaan);
+//             $('#hp_det').text(data.old_data.hp);
+//             $('#telp_det').text(data.old_data.telp_rumah);
+
+//             $('#goldarah_det').text(data.old_data.gol_darah);
+//             $('#tekanandarah_det').text(data.old_data.tekanan_darah+' ('+data.old_data.tekanan_darah_val+')');
+//             $('#jantung_det').text(handle_boolean(data.old_data.penyakit_jantung));
+//             $('#diabetes_det').text(handle_boolean(data.old_data.diabetes));
+//             $('#hepatitis_det').text(handle_boolean(data.old_data.hepatitis));
+//             $('#haemopilia_det').text(handle_boolean(data.old_data.haemopilia));
+//             $('#gastring_det').text(handle_boolean(data.old_data.gastring));
+//             $('#penyakitlain_det').text(handle_boolean(data.old_data.penyakit_lainnya));
+//             $('#alergiobat_det').text(function () {
+//                 let strAlergiObat;
+//                 if(data.old_data.alergi_obat == '1'){
+//                     strAlergiObat = 'Ya';
+//                 }else{
+//                     strAlergiObat = 'Tidak';
+//                 }
+
+//                 if(data.old_data.alergi_obat_val){
+//                     return strAlergiObat+', '+data.old_data.alergi_obat_val;
+//                 }else{
+//                     return strAlergiObat;
+//                 }
+//             });
+//             $('#alergimakan_det').text(function () {
+//                 let strAlergiMakan;
+//                 if(data.old_data.alergi_makanan == '1'){
+//                     strAlergiMakan = 'Ya';
+//                 }else{
+//                     strAlergiMakan = 'Tidak';
+//                 }
+
+//                 if(data.old_data.alergi_makanan_val){
+//                     return strAlergiMakan+', '+data.old_data.alergi_makanan_val;
+//                 }else{
+//                     return strAlergiMakan;
+//                 }
+//             });
+//             $('#modal_detail').modal('show');
+// 	        $('#modal_title_det').text('Detail Pasien'); 
+//         },
+//         error: function (jqXHR, textStatus, errorThrown)
+//         {
+//             alert('Error get data from ajax');
+//         }
+//     });
+// }
 
 function reload_table()
 {
@@ -627,4 +647,9 @@ function handle_boolean(str) {
 function time_now() {
     var d = new Date();
     return d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+}
+
+function get_uri_segment(segment) {
+    var pathArray = window.location.pathname.split( '/' );
+    return pathArray[segment];
 }

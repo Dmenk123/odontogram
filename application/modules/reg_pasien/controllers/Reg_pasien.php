@@ -102,8 +102,22 @@ class Reg_pasien extends CI_Controller {
 
 	public function get_data_form_penjamin()
 	{
+		$enc_id = $this->input->post('id_regnya');
+		
+		$this->load->library('Enkripsi');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+
+		$select = "reg.id_asuransi, reg.no_asuransi, asu.nama as nama_asuransi, asu.keterangan";
+		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
+		$table = 't_registrasi as reg';
+		$join = [ 
+			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id']
+		];
+
+		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
+		
 		$jenis = $this->input->post('jenis_penjamin');
-		$data_asuransi = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_asuransi', null, 'nama');
+		// $data_asuransi = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_asuransi', null, 'nama');
 		if($jenis == '1') {
 			$html = '
 				<div class="form-group row form-group-marginless kt-margin-t-20">
@@ -111,20 +125,32 @@ class Reg_pasien extends CI_Controller {
 					<div class=" col-lg-6">
 					<select class="form-control kt-select2" id="asuransi" name="asuransi">
 						<option value="">Silahkan Pilih Nama Asuransi</option>
-					</select>
-					<span class="help-block"></span>
-					</div>
-					<div class="col-lg-2">
-						<button type="button" class="btn btn-sm btn-success" onclick="tambah_data_asuransi()">
-							<i class="la la-plus"></i> Tambah data Asuransi
-						</button>
-					</div>
+			';
+			if($id != null) {
+				$html .= '<option value="'.$data_reg->id_asuransi.'" selected>'.$data_reg->nama_asuransi.'</option>';
+			}
+
+			$html .= '
+				</select>
+				<span class="help-block"></span>
 				</div>
-				<div><br /></div>
-				<div class="form-group row form-group-marginless kt-margin-t-20">
-					<label class="col-lg-2 col-form-label">No. Asuransi:</label>
-					<div class=" col-lg-8">
-					<input type="text" class="form-control" id="no_asuransi" name="no_asuransi" autocomplete="off" value="">
+				<div class="col-lg-2">
+					<button type="button" class="btn btn-sm btn-success" onclick="tambah_data_asuransi()">
+						<i class="la la-plus"></i> Tambah data Asuransi
+					</button>
+				</div>
+			</div>
+			<div><br /></div>
+			<div class="form-group row form-group-marginless kt-margin-t-20">
+				<label class="col-lg-2 col-form-label">No. Asuransi:</label>
+				<div class=" col-lg-8">
+			';
+			if($id != null) {
+				$html .= '<input type="text" class="form-control" id="no_asuransi" name="no_asuransi" autocomplete="off" value="'.$data_reg->no_asuransi.'">';
+			}else{
+				$html .= '<input type="text" class="form-control" id="no_asuransi" name="no_asuransi" autocomplete="off" value="">';
+			}
+			$html .= '	
 					<span class="help-block"></span>
 					</div>
 				</div>
@@ -172,29 +198,11 @@ class Reg_pasien extends CI_Controller {
 		if(strlen($enc_id) != 32) {
 			return redirect(base_url($this->uri->segment(1)));
 		}
-
-		$this->load->library('Enkripsi');
-		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 		
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 
 		$pemetaan = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_pemetaan', null, 'umur_awal');
-
-		$select = "reg.id, reg.id_pasien, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
-		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
-		$table = 't_registrasi as reg';
-		$join = [ 
-			['table' => 'm_pasien as psn', 'on'	=> 'reg.id_pasien = psn.id'],
-			['table' => 'm_pegawai as peg', 'on'=> 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id'],
-			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id']
-		];
-		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
-		
-		if(!$data_reg) {
-			return redirect(base_url($this->uri->segment(1)));
-		}
 
 		/**
 		 * data passing ke halaman view content
@@ -202,7 +210,6 @@ class Reg_pasien extends CI_Controller {
 		$data = array(
 			'title' => 'Edit Data Registrasi',
 			'data_user' => $data_user,
-			'data_reg' => $data_reg,
 			'data_pemetaan' => $pemetaan
 		);
 		
@@ -223,30 +230,40 @@ class Reg_pasien extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
-	public function cek_penjamin()
+	public function get_data_form_reg()
 	{
-		$id_reg = $this->input->post('id_reg');
-		$select = "reg.*, asu.nama as nama_asuransi, asu.keterangan";
-		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id_reg];
-		$table = 't_registrasi as reg';
-		$join = [ 
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id']
-		];
+		$enc_id = $this->input->post('enc_id');
 
-		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
-		if($data_reg) {
-			$retval = [
-				'status' => true,
-				'data' => $data_reg
-			];
-		}else{
-			$retval = [
-				'status' => false,
-				'data' => $data_reg
-			];
+		if(strlen($enc_id) != 32) {
+			$status = false;
 		}
 
-		echo json_encode($retval);
+		$this->load->library('Enkripsi');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+
+		$select = "reg.id, reg.id_pasien, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
+		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
+		$table = 't_registrasi as reg';
+		$join = [ 
+			['table' => 'm_pasien as psn', 'on'	=> 'reg.id_pasien = psn.id'],
+			['table' => 'm_pegawai as peg', 'on'=> 'reg.id_pegawai = peg.id'],
+			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id'],
+			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id']
+		];
+		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
+		
+		if(!$data_reg) {
+			$status = false;
+		}else{
+			$status = true;
+		}
+
+		echo json_encode([
+			'status' => $status,
+			'data' => $data_reg,
+			'txt_opt_pasien' => '['.$data_reg->no_rm.' - '.$data_reg->nik.'] '.$data_reg->nama_pasien,
+			'txt_opt_dokter' => '['.$data_reg->kode_dokter.'] '.$data_reg->nama_dokter
+		]);
 	}
 
 	public function simpan_data()
