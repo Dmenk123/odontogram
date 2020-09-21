@@ -1,4 +1,3 @@
-<?php require_once(APPPATH . 'views/template/temp_img_cetak_header.php'); ?>
 <html>
 
 <head>
@@ -70,7 +69,7 @@
     }
 
     .tbl-header {
-      padding-top: -15px;
+      padding-top: 1px;
       width: 100%;
       color: #070707;
       border-color: #070707;
@@ -124,7 +123,7 @@
     .clear {
       clear: both;
     }
-    
+
   </style>
 </head>
 
@@ -134,23 +133,24 @@
       <tr>
         
         <td align="left" class="outer-left">
-          <?php echo $img_laporan; ?>
+          <img src="<?=base_url('files/img/app_img/').$data_klinik->gambar;?>" height="75" width="75">
         </td>
 
-        <td align="right" class="outer-left">
+        <td align="right" class="outer-left" style="padding-top: 30px; padding-left:10px;">
           <p style="text-align: left; font-size: 14px" class="outer-left">
-            <strong>SMP. Darul Ulum Surabaya</strong>
+            <strong><?= $data_klinik->nama_klinik; ?></strong>
           </p>
-          <p style="text-align: left; font-size: 12px" class="outer-left">Jl. Raya Manukan Kulon No.98-100 Kota Surabaya, Jawa Timur 60185</p>
+          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat.' '.$data_klinik->kelurahan.' '.$data_klinik->kecamatan; ?></p>
+          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota.', '.$data_klinik->provinsi.' '.$data_klinik->kode_pos; ?></p>
         </td>
-
+        
       </tr>
     </table>
 
     <table class="tbl-header">
       <tr>
         <td align="center" class="head-center">
-          <p style="text-align: center; font-size: 16px" class="head-left"><strong> Master Data Pegawai </strong></p>
+          <p style="text-align: center; font-size: 16px; padding-top:10px;" class="head-left"><strong> <?= $title;?> </strong></p>
         </td>
       </tr>
     </table>
@@ -160,26 +160,21 @@
         <tr>
           <th style="width: 5%; text-align: center;">No</th>
           <th style="width: 10%; text-align: center;">Kode</th>
-          <th style="width: 30%; text-align: center;">Nama</th>
-          <th style="width: 30%; text-align: center;">Alamat</th>
-          <th style="width: 15%;text-align: center;">Telp 1</th>
-          <th style="width: 15%; text-align: center;">Telp 2</th>
-          <th style="width: 15%; text-align: center;">Jabatan</th>
-          <th style="width: 10%; text-align: center;">Status</th>
+          <th style="width: 30%; text-align: center;">Obat</th>
+          <th style="width: 30%; text-align: center;">Harga</th>
+          <th style="width: 5%; text-align: center;">Stok</th>
         </tr>
       </thead>
       <tbody>
         <?php
         foreach ($data as $key => $val) : ?>
+          <?php $nomor = $key += 1; ?>
           <tr>
-            <td class="text-center"><?= $key++; ?></td>
-            <td class="text-center"><?= $val->kode; ?></td>
-            <td class="text-center"><?= $val->nama; ?></td>
-            <td class="text-center"><?= $val->alamat; ?></td>
-            <td class="text-center"><?= $val->telp_1; ?></td>
-            <td class="text-center"><?= $val->telp_2 ?></td>
-            <td class="text-center"><?= $val->nama_jabatan ?></td>
-            <td class="text-center"><?= ($val->is_aktif == '1') ? 'Aktif' : 'Nonaktif' ; ?></td>
+            <td class="text-center"><?= $nomor; ?></td>
+            <td class="text-center"><?= $val->kode_logistik; ?></td>
+            <td class="text-center"><?= $val->nama_logistik; ?></td>
+            <td class="text-center"><?= number_format($val->harga_jual,2,',','.');;?></td>
+            <td class="text-center"><?= $val->stok; ?></td>
           </tr>
         <?php endforeach ?>
       </tbody>
