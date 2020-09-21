@@ -173,7 +173,7 @@
             <td class="text-center"><?= $nomor; ?></td>
             <td class="text-center"><?= $val->kode_logistik; ?></td>
             <td class="text-center"><?= $val->nama_logistik; ?></td>
-            <td class="text-center"><?= $val->harga_jual;?></td>
+            <td class="text-center"><?= number_format($val->harga_jual,2,',','.');;?></td>
             <td class="text-center"><?= $val->stok; ?></td>
           </tr>
         <?php endforeach ?>
