@@ -67,7 +67,6 @@ $(document).ready(function() {
     });
 
     $(".modal").on("hidden.bs.modal", function(){
-        reset_modal_form_import();
         reset_form("form-asuransi");
     });
 
@@ -315,77 +314,6 @@ function get_data_form_edit() {
    
 }
 
-
-
-// function detail_pasien(id) {
-//     $.ajax({
-//         url : base_url + 'data_pasien/detail_pasien',
-//         type: "POST",
-//         dataType: "JSON",
-//         data : {id:id},
-//         success: function(data)
-//         {
-//             $('#no_rm_det').text(data.old_data.no_rm);
-//             $('#nik_det').text(data.old_data.nik);
-//             $('#pasien_det').text(data.old_data.nama);
-//             $('#ttl_det').text(function () {
-//                 let tgl =  data.old_data.tanggal_lahir;
-//                 return data.old_data.tempat_lahir+' / '+tgl.split("-").reverse().join("-");
-//             });
-//             $('#jenkel_det').text(data.old_data.jenkel);
-//             $('#alamat_rmh_det').text(data.old_data.alamat_rumah);
-//             $('#alamat_ktr_det').text(data.old_data.alamat_kantor);
-//             $('#suku_det').text(data.old_data.suku);
-//             $('#pekerjaan_det').text(data.old_data.pekerjaan);
-//             $('#hp_det').text(data.old_data.hp);
-//             $('#telp_det').text(data.old_data.telp_rumah);
-
-//             $('#goldarah_det').text(data.old_data.gol_darah);
-//             $('#tekanandarah_det').text(data.old_data.tekanan_darah+' ('+data.old_data.tekanan_darah_val+')');
-//             $('#jantung_det').text(handle_boolean(data.old_data.penyakit_jantung));
-//             $('#diabetes_det').text(handle_boolean(data.old_data.diabetes));
-//             $('#hepatitis_det').text(handle_boolean(data.old_data.hepatitis));
-//             $('#haemopilia_det').text(handle_boolean(data.old_data.haemopilia));
-//             $('#gastring_det').text(handle_boolean(data.old_data.gastring));
-//             $('#penyakitlain_det').text(handle_boolean(data.old_data.penyakit_lainnya));
-//             $('#alergiobat_det').text(function () {
-//                 let strAlergiObat;
-//                 if(data.old_data.alergi_obat == '1'){
-//                     strAlergiObat = 'Ya';
-//                 }else{
-//                     strAlergiObat = 'Tidak';
-//                 }
-
-//                 if(data.old_data.alergi_obat_val){
-//                     return strAlergiObat+', '+data.old_data.alergi_obat_val;
-//                 }else{
-//                     return strAlergiObat;
-//                 }
-//             });
-//             $('#alergimakan_det').text(function () {
-//                 let strAlergiMakan;
-//                 if(data.old_data.alergi_makanan == '1'){
-//                     strAlergiMakan = 'Ya';
-//                 }else{
-//                     strAlergiMakan = 'Tidak';
-//                 }
-
-//                 if(data.old_data.alergi_makanan_val){
-//                     return strAlergiMakan+', '+data.old_data.alergi_makanan_val;
-//                 }else{
-//                     return strAlergiMakan;
-//                 }
-//             });
-//             $('#modal_detail').modal('show');
-// 	        $('#modal_title_det').text('Detail Pasien'); 
-//         },
-//         error: function (jqXHR, textStatus, errorThrown)
-//         {
-//             alert('Error get data from ajax');
-//         }
-//     });
-// }
-
 function reload_table()
 {
     table.ajax.reload(null,false); 
@@ -505,9 +433,9 @@ function simpanAsuransi(){
     });
 }
 
-function delete_pasien(id){
+function delete_reg(id){
     swalConfirmDelete.fire({
-        title: 'Hapus Data Pasien ?',
+        title: 'Hapus Data Registrasi ?',
         text: "Data Akan dihapus permanen ?",
         type: 'warning',
         showCancelButton: true,
@@ -517,13 +445,13 @@ function delete_pasien(id){
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'data_pasien/delete_data',
+                url : base_url + 'reg_pasien/delete_data',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
                 success: function(data)
                 {
-                    swalConfirm.fire('Berhasil Hapus Pasien!', data.pesan, 'success');
+                    swalConfirm.fire('Berhasil Hapus Registrasi!', data.pesan, 'success');
                     table.ajax.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown)
@@ -583,57 +511,19 @@ function delete_asuransi(id) {
     });
 }
 
+function ekspor_excel(){
+    let tgl_awal = $('#tgl_filter_mulai').val();
+    let tgl_akhir = $('#tgl_filter_akhir').val();
+    // redirect
+    window.open(base_url+'reg_pasien/export_excel?tgl_awal='+tgl_awal+'&tgl_akhir='+tgl_akhir, '_blank');
 
-function reset_modal_form_import()
-{
-    $('#form_import_excel')[0].reset();
-    $('#label_file_excel').text('Pilih file excel yang akan diupload');
 }
 
-function import_excel(){
-    $('#modal_import_excel').modal('show');
-	$('#modal_import_title').text('Import data user'); 
-}
-
-function import_data_excel(){
-    var form = $('#form_import_excel')[0];
-    var data = new FormData(form);
-    
-    $("#btnSaveImport").attr("disabled", true);
-    $('#btnSaveImport').text('Import Data');
-    $.ajax({
-        type: "POST",
-        enctype: 'multipart/form-data',
-        url: base_url + 'data_pasien/import_data',
-        data: data,
-        dataType: "JSON",
-        processData: false,
-        contentType: false, 
-        success: function (data) {
-            if(data.status) {
-                swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSaveImport").attr("disabled", false);
-                $('#btnSaveImport').text('Simpan');
-            }else {
-                swal.fire("Gagal!!", data.pesan, "error");
-                $("#btnSaveImport").attr("disabled", false);
-                $('#btnSaveImport').text('Simpan');
-            }
-
-            reset_modal_form_import();
-            $(".modal").modal('hide');
-            table.ajax.reload();
-        },
-        error: function (e) {
-            console.log("ERROR : ", e);
-            $("#btnSaveImport").attr("disabled", false);
-            $('#btnSaveImport').text('Simpan');
-
-            reset_modal_form_import();
-            $(".modal").modal('hide');
-            table.ajax.reload();
-        }
-    });
+function cetak_data(){
+    let tgl_awal = $('#tgl_filter_mulai').val();
+    let tgl_akhir = $('#tgl_filter_akhir').val();
+    // redirect
+    window.open(base_url+'reg_pasien/cetak_data?tgl_awal='+tgl_awal+'&tgl_akhir='+tgl_akhir, '_blank');
 }
 
 function handle_boolean(str) {

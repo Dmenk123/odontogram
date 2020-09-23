@@ -42,9 +42,17 @@
               <input type="text" class="form-control kt_datepicker" id="tgl_filter_akhir" readonly placeholder="Tanggal Akhir" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->format('d/m/Y'); ?>"/>
             </div>
           </div>
-          <div class="col-md-2 row">
-            <div class="col-lg-9">
+          <div class="col-md-3 row">
+            <div>
               <button type="button" class="btn btn-brand" onclick="filter_tanggal()">Cari</button>
+            </div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div>
+              <button type="button" class="btn btn-brand btn-success" onclick="ekspor_excel()">Eksport Excel</button>
+            </div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div>
+              <button type="button" class="btn btn-brand btn-warning" onclick="cetak_data()">Cetak Data</button>
             </div>
           </div>
         </div>

@@ -217,34 +217,32 @@ class T_registrasi extends CI_Model
 		} 
 	}
 
-	public function get_id_pegawai_by_name($nama)
+	public function get_data_ekspor($tgl_awal = false, $tgl_akhir = false, $id = false)
 	{
-		$this->db->select('id');
-		$this->db->from('m_pegawai');
-		$this->db->where('LCASE(nama)', $nama);
-		$q = $this->db->get();
-		if ($q) {
-			return $q->row();
-		}else{
-			return false;
+		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
+		peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
+		$this->db->from($this->table.' reg');
+		$this->db->join('m_pasien psn', 'reg.id_pasien = psn.id', 'left');
+		$this->db->join('m_pegawai peg', 'reg.id_pegawai = peg.id', 'left');
+		$this->db->join('m_asuransi asu', 'reg.id_asuransi = asu.id', 'left');
+		$this->db->join('m_pemetaan pem', 'reg.id_pemetaan = pem.id', 'left');
+		$this->db->where('reg.deleted_at is null');
+		
+		if($id) {
+			$this->db->where('reg.id', $id);
 		}
-	}
+		
+		if($tgl_awal == true && $tgl_akhir == true) {
+			$this->db->where('reg.tanggal_reg >=', $tgl_awal);
+			$this->db->where('reg.tanggal_reg <=', $tgl_akhir);
+		} 
+		
+		$query = $this->db->get();
 
-	public function get_id_role_by_name($nama)
-	{
-		$this->db->select('id');
-		$this->db->from('m_role');
-		$this->db->where('LCASE(nama)', $nama);
-		$q = $this->db->get();
-		if ($q) {
-			return $q->row();
+		if($id) {
+			return $query->row();
 		}else{
-			return false;
+			return $query->result();
 		}
-	}
-
-	public function trun_data_pasien()
-	{
-		$this->db->query("truncate table m_pasien");
 	}
 }

@@ -2,9 +2,6 @@
 
 <head>
   <title><?php echo $title; ?></title>
-  <!--begin::Global Theme Styles(used by all pages) -->
-   <!-- <link href="<?= base_url('assets/template/'); ?>assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" /> -->
-  <!--<link href="<?= base_url('assets/template/'); ?>assets/css/style.bundle.css" rel="stylesheet" type="text/css" /> -->
   <!-- Latest compiled and minified CSS -->
   <style type="text/css">
     #outtable {
@@ -172,13 +169,65 @@
       </tr>
     </table>
     <div class="row">
-      <div class="modal-header col-md-12"><h4 class="modal-title">Data Pasien</h4></div>
-      <div class="col-md-6">
+      <div class="modal-header col-md-12"><h4 class="modal-title">Data Registrasi</h4></div>
+      <div class="col-md-12">
         <table class="table table-borderless">
           <tbody>
             <tr>
-              <th style="width: 150px;">No. RM</th>
+              <th style="width: 150px;">No. Registrasi</th>
               <td style="width: 10px;"> : </td>
+              <td><span><?= $data->no_reg; ?></span></td>
+            </tr>
+            <tr> 
+              <th>Tanggal Reg</th>
+              <td> : </td>
+              <td><span><?= DateTime::createFromFormat('Y-m-d', $data->tanggal_reg)->format('d/m/Y'); ?></span></td>
+            </tr>
+            <tr>
+              <th>Jam Reg</th>
+              <td> : </td>
+              <td><span><?= $data->jam_reg; ?></span></td>
+            </tr>
+            <tr> 
+              <th>Tanggal Pulang</th>
+              <td> : </td>
+              <td><span><?php echo ($data->tanggal_pulang) ? DateTime::createFromFormat('Y-m-d', $data->tanggal_pulang)->format('d/m/Y') : '-'; ?></span></td>
+            </tr>
+            <tr>
+              <th>Dokter</th>
+              <td> : </td>
+              <td><span><?= $data->nama_dokter; ?></span></td>
+            </tr>
+            <tr>
+              <th>Jenis Penjamin</th>
+              <td> : </td>
+              <td><span><?php echo ($data->is_asuransi == '1') ? 'Asuransi' : 'Umum'; ?></span></td>
+            </tr>
+            <tr>
+              <th>Nama Asuransi</th>
+              <td> : </td>
+              <td><span><?php echo ($data->nama_asuransi) ? $data->nama_asuransi : '-'; ?></span></td>
+            </tr>
+            <tr>
+              <th>No Asuransi</th>
+              <td> : </td>
+              <td><span><?php echo ($data->no_asuransi) ? $data->no_asuransi : '-'; ?></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-header col-md-12"><h4 class="modal-title">Data Pasien</h4></div>
+      <div class="col-md-12">
+        <table class="table table-responsive table-borderless">
+          <tbody>
+            <tr>
+              <th style="width: 150px;">Nama Pasien</th>
+              <td style="width: 10px;"> : </td>
+              <td><span><?= $data->nama_pasien; ?></span></td>
+            </tr>
+            <tr>
+              <th>No RM</th>
+              <td> : </td>
               <td><span><?= $data->no_rm; ?></span></td>
             </tr>
             <tr>
@@ -186,126 +235,25 @@
               <td> : </td>
               <td><span><?= $data->nik; ?></span></td>
             </tr>
-            <tr>
-              <th>Nama Pasien</th>
-              <td> : </td>
-              <td><span><?= $data->nama; ?></span></td>
-            </tr>
             <tr> 
-              <th>Tempat / Tanggal Lahir</th>
+              <th>Tempat/Tanggal Reg</th>
               <td> : </td>
               <td><span><?= $data->tempat_lahir.' / '.DateTime::createFromFormat('Y-m-d', $data->tanggal_lahir)->format('d-m-Y'); ?></span></td>
             </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-6">
-        <table class="table table-responsive table-borderless">
-          <tbody>
             <tr>
-              <th style="width: 150px;">Suku Bangsa</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= $data->suku; ?></span></td>
+              <th>Umur</th>
+              <td> : </td>
+              <td><span><?= $data->umur.' Tahun'; ?></span></td>
             </tr>
-            <tr> 
+            <tr>
+              <th>Pemetaaan</th>
+              <td> : </td>
+              <td><span><?= $data->keterangan; ?></span></td>
+            </tr>
+            <tr>
               <th>Jenis Kelamin</th>
               <td> : </td>
               <td><span><?= $data->jenkel; ?></span></td>
-            </tr>
-            <tr>
-              <th>Pekerjaan</th>
-              <td> : </td>
-              <td><span><?= $data->pekerjaan; ?></span></td>
-            </tr>
-            <tr>
-              <th>No. HP/WA</th>
-              <td> : </td>
-              <td><span><?= $data->hp; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-12">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Alamat Rumah</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= $data->alamat_rumah; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Alamat Kantor</th>
-              <td> : </td>
-              <td><span><?= $data->alamat_kantor; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-header col-md-12"><h4 class="modal-title">Data Medik</h4></div>
-      <div class="col-md-6">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Golongan Darah</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= $data->gol_darah; ?></span></td>
-            </tr>
-            <tr>
-              <th>Tekanan Darah</th>
-              <td> : </td>
-              <td><span><?= $data->tekanan_darah.' ('.$data->tekanan_darah_val.')'; ?></span></td>
-            </tr>
-            <tr>
-              <th>Penyakit Jantung</th>
-              <td> : </td>
-              <td><span><?= ($data->penyakit_jantung == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Diabetes</th>
-              <td> : </td>
-              <td><span><?= ($data->diabetes == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-6">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Hepatitis</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= ($data->hepatitis == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Haemopilia</th>
-              <td> : </td>
-              <td><span><?= ($data->haemopilia == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr>
-              <th>Gastring</th>
-              <td> : </td>
-              <td><span><?= ($data->gastring == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-            <tr>
-              <th>Penyakit Lainnya</th>
-              <td> : </td>
-              <td><span><?= ($data->penyakit_lainnya == '1') ? 'Ya' : 'Tidak'; ?></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-12">
-        <table class="table table-responsive table-borderless">
-          <tbody>
-            <tr>
-              <th style="width: 150px;">Alergi Obat-Obatan</th>
-              <td style="width: 10px;"> : </td>
-              <td><span><?= ($data->alergi_obat == '1') ? 'Ya'.', '.$data->alergi_obat_val : 'Tidak'; ?></span></td>
-            </tr>
-            <tr> 
-              <th>Alergi Makanan</th>
-              <td> : </td>
-              <td><span><?= ($data->alergi_makanan == '1') ? 'Ya'.', '.$data->alergi_makanan_val : 'Tidak'; ?></span></td>
             </tr>
           </tbody>
         </table>
