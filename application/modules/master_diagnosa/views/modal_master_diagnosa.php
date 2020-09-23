@@ -1,4 +1,8 @@
-
+<!-- <style>
+  .modal-lg {
+    max-width: 80%;
+  }
+</style> -->
 <div class="modal fade modal_add_form" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_pegawai_form">
   <div class="modal-dialog modal-xs" role="document">
     <div class="modal-content">
