@@ -354,9 +354,15 @@ class Template_view extends CI_Controller {
 		}
 		
 		if($content['modal']){
-			$data['modal']         = $this->_ci->load->view($content['modal'], $data, TRUE);
+			if(is_array($content['modal'])){
+				foreach ($content['modal'] as $keys => $vals) {
+					$data['modal'][]  = $this->_ci->load->view($vals, $data, TRUE);
+				}
+			}else{
+				$data['modal']  = $this->_ci->load->view($content['modal'], $data, TRUE);
+			}
 		}
-
+		
 		//global modal for upload excel to master
 		$data['modal_excel_upload'] = $this->_ci->load->view('template/modal_upload_excel', $data, TRUE);
         
@@ -365,6 +371,7 @@ class Template_view extends CI_Controller {
         $data['content']    = $this->_ci->load->view($content['view'], $data, TRUE);
         $data['footer']     = $this->_ci->load->view('template/v_footer', $data, TRUE);
 		
+
         $this->_ci->load->view('template/v_index', $data);
 
     }

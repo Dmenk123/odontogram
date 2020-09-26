@@ -1,6 +1,12 @@
                     <?php
                         if(isset($modal)) {
-                            echo $modal;
+                            if(is_array($modal)){
+                                foreach ($modal as $keys => $values) {
+                                    echo $values;
+                                }
+                            }else{
+                                echo $modal;
+                            }
                         }
 
                         echo $modal_excel_upload;
