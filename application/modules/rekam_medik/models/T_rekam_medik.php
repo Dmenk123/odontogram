@@ -161,9 +161,13 @@ class T_rekam_medik extends CI_Model
 		}
 	}
 
-	public function save($data)
+	public function save($data, $table=null)
 	{
-		return $this->db->insert($this->table, $data);	
+		if($table == null) {
+			return $this->db->insert($this->table, $data);	
+		}else{
+			return $this->db->insert($table, $data);	
+		}
 	}
 
 	public function update($where, $data)
@@ -205,6 +209,19 @@ class T_rekam_medik extends CI_Model
 
 		return $kd_fix;
 	}
+
+	public function get_max_id_perawatan()
+	{
+		$q = $this->db->query("SELECT MAX(id) as kode_max from t_perawatan");
+		$kd = "";
+		if($q->num_rows()>0){
+			$kd = $q->row();
+			return (int)$kd->kode_max + 1;
+		}else{
+			return '1';
+		} 
+	}
+
 	public function get_max_id()
 	{
 		$q = $this->db->query("SELECT MAX(id) as kode_max from ".$this->table."");

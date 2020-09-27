@@ -36,6 +36,11 @@ $obj_date = new DateTime();
             </div>
           </div>
           <div class="col-md-12 table-responsive">
+            <div class="hidden">
+              <input type="hidden" id="id_reg" name="id_reg">
+              <input type="hidden" id="id_psn" name="id_psn">
+              <input type="hidden" id="id_peg" name="id_peg">
+            </div>
             <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pasien">
               <thead>
                 <tr>
@@ -75,7 +80,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Anamnesa</a>
+                        Anamnesa
                       </h5>
                       <div class="kt-iconbox__content">
                       Anamnesa
@@ -95,7 +100,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Diagnosa</a>
+                        Diagnosa
                       </h5>
                       <div class="kt-iconbox__content">Diagnosa</div>
                     </div>
@@ -113,7 +118,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Tindakan</a>
+                        Tindakan
                       </h5>
                       <div class="kt-iconbox__content">Tindakan</div>
                     </div>
@@ -131,7 +136,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Obat</a>
+                        Obat
                       </h5>
                       <div class="kt-iconbox__content">Obat</div>
                     </div>
@@ -149,7 +154,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Odonto</a>
+                        Odonto
                       </h5>
                       <div class="kt-iconbox__content">
                       Odonto
@@ -169,7 +174,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Kamera</a>
+                        Kamera
                       </h5>
                       <div class="kt-iconbox__content">Kamera</div>
                     </div>
@@ -187,7 +192,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Riwayat</a>
+                        Riwayat
                       </h5>
                       <div class="kt-iconbox__content">Riwayat</div>
                     </div>
@@ -205,7 +210,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Pasien</a>
+                        Pasien
                       </h5>
                       <div class="kt-iconbox__content">Data Pasien</div>
                     </div>
@@ -223,7 +228,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Diskon</a>
+                        Diskon
                       </h5>
                       <div class="kt-iconbox__content">Diskon</div>
                     </div>
@@ -241,7 +246,7 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        <a class="kt-link" href="#">Lab</a>
+                        Lab
                       </h5>
                       <div class="kt-iconbox__content">Laboratorium</div>
                     </div>

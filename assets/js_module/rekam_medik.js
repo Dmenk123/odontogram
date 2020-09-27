@@ -3,9 +3,20 @@ var txtAksi;
 var table;
 var table2;
 
+let id_peg;
+let id_psn;
+let id_reg;
+
 $(document).ready(function() {
 
-    filter_tanggal();
+    ClassicEditor
+        .create( document.querySelector( '#anamnesa' ) )
+        .then( editor => {
+            console.log( editor );
+        })
+        .catch( error => {
+            console.error( error );
+        });
     
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
@@ -13,9 +24,16 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '.div_menu', function(){
-        var txt_menu = $(this).data('id');
-        alert(txt_menu);
+        var nama_menu = $(this).data('id');
+        
+        if(id_peg == undefined || id_reg == undefined || id_psn == undefined) {
+            Swal.fire('Mohon Pilih Pasien Terlebih Dahulu');
+        }else{
+            $('#'+nama_menu+'_modal').modal('show');
+        } 
     });
+    
+    //////////////////////////////////////////////////////////////
 
     //change menu status
     $(document).on('click', '.btn_edit_status', function(){
@@ -173,6 +191,7 @@ $(document).ready(function() {
 });
 
 function show_modal_pasien() {
+
     $('#modal_pilih_pasien').modal('show');
     $('#modal_pilih_pasien_title').text('Pilih Pasien'); 
 }
@@ -209,11 +228,69 @@ function pilih_pasien(enc_id){
         dataType: "json",
         success: function (response) {
             $('#tabel_pasien tbody').html(response.data);
+            id_reg = response.data_id.id_reg;
+            id_peg = response.data_id.id_peg;
+            id_psn = response.data_id.id_psn;
             $('#modal_pilih_pasien').modal('hide');
         }
     });
 }
+
+function save(id_form)
+{
+    let str1 = '#';
+    let id_element = str1.concat(id_form);
+    var form = $('#form_anamnesa')[0];
+    
+    var data = new FormData(form);
+    data.append('id_peg', id_peg);
+    data.append('id_reg', id_reg);
+    data.append('id_psn', id_psn);
+    
+    $("#btnSave").prop("disabled", true);
+    $('#btnSave').text('Menyimpan Data'); //change button text
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: base_url+'rekam_medik/simpan_'+id_form,
+        data: data,
+        dataType: "JSON",
+        processData: false,
+        contentType: false, 
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            if(data.status) {
+                swal.fire("Sukses!!", data.pesan, "success");
+                $("#btnSave").prop("disabled", false);
+                $('#btnSave').text('Simpan');                
+                window.location.href = base_url+"reg_pasien";
+            }else {
+                for (var i = 0; i < data.inputerror.length; i++) 
+                {
+                    if (data.is_select2[i] == false) {
+                        $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                    }else{
+                        //ikut style global
+                        $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                    }
+                }
+
+                $("#btnSave").prop("disabled", false);
+                $('#btnSave').text('Simpan');
+            }
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+            $("#btnSave").prop("disabled", false);
+            $('#btnSave').text('Simpan');
+        }
+    });
+}
 ////////////////////////////////////////////////////////////////////////////
+
+
 function filter_tanggal(){
     var tgl_awal = $('#tgl_filter_mulai').val();
     var tgl_akhir = $('#tgl_filter_akhir').val();
@@ -363,7 +440,7 @@ function reset_form(jqIdForm) {
         .prop('selected', false);
 }
 
-function save()
+function save_gatel()
 {
     var form = $('#form_registrasi')[0];
     var data = new FormData(form);

@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 22/09/2020 06:51:48
+ Date: 28/09/2020 06:41:02
 */
 
 SET NAMES utf8mb4;
@@ -146,7 +146,8 @@ CREATE TABLE `m_klinik`  (
 -- ----------------------------
 -- Records of m_klinik
 -- ----------------------------
-INSERT INTO `m_klinik` VALUES (1, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '078121981291', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpeg', '2020-09-07 15:59:09', NULL, NULL);
+INSERT INTO `m_klinik` VALUES (1, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '078121981291', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpeg', '2020-09-07 15:59:09', NULL, '2020-09-26 22:33:56');
+INSERT INTO `m_klinik` VALUES (2, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '12671617182129', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpg', '2020-09-26 22:33:56', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_menu
@@ -190,6 +191,8 @@ INSERT INTO `m_menu` VALUES (16, 10, 'Jabatan', 'Master Jabatan', 'master_jabata
 INSERT INTO `m_menu` VALUES (17, 0, 'Registrasi', 'Registrasi', '', 'flaticon-list', 1, 1, 3, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (18, 17, 'Data Pasien', 'Data pasien', 'data_pasien', 'flaticon-profile-1', 1, 2, 1, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (19, 17, 'Registrasi Pasien', 'Registrasi Pasien', 'reg_pasien', 'flaticon-user-add', 1, 2, 2, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (20, 0, 'Rekam Medik', 'Rekam Medik', '', 'flaticon2-heart-rate-monitor', 1, 1, 4, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (21, 20, 'Data Rekam Medik', 'Data Rekam Medik', 'rekam_medik', 'flaticon2-medical-records', 1, 2, 1, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for m_pasien
@@ -336,9 +339,31 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-21 10:04:02', 'user_default.png', '2020-09-06 20:18:00', '2020-09-21 10:04:02', NULL);
+INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-27 09:34:32', 'user_default.png', '2020-09-06 20:18:00', '2020-09-27 09:34:32', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
+
+-- ----------------------------
+-- Table structure for t_perawatan
+-- ----------------------------
+DROP TABLE IF EXISTS `t_perawatan`;
+CREATE TABLE `t_perawatan`  (
+  `id` int(64) NOT NULL,
+  `id_reg` int(64) NULL DEFAULT NULL,
+  `id_pasien` int(11) NULL DEFAULT NULL,
+  `id_pegawai` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tanggal` date NULL DEFAULT NULL,
+  `anamnesa` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_perawatan
+-- ----------------------------
+INSERT INTO `t_perawatan` VALUES (1, 1, 6, '1', '2020-09-27', NULL, '2020-09-27 10:57:17', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_registrasi
@@ -370,6 +395,7 @@ CREATE TABLE `t_registrasi`  (
 -- ----------------------------
 INSERT INTO `t_registrasi` VALUES (1, '6', '000.000.000.001', '2020-09-19', '22:55:45', '1', '1', '20', '3', '6', '1iaosiaosi', NULL, NULL, NULL, '2020-09-19 22:55:55', '2020-09-20 23:45:20', NULL);
 INSERT INTO `t_registrasi` VALUES (2, '5', '000.000.000.002', '2020-09-19', '22:56:00', '1', '1', '30', '3', '1', 'gak cair bpjs e', NULL, NULL, NULL, '2020-09-19 22:56:22', '2020-09-21 13:29:48', NULL);
+INSERT INTO `t_registrasi` VALUES (3, '6', '000.000.000.003', '2020-09-24', '13:01:45', '1', NULL, '20', '3', NULL, NULL, NULL, NULL, NULL, '2020-09-26 13:02:04', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu
@@ -412,6 +438,8 @@ INSERT INTO `t_role_menu` VALUES (16, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (17, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (18, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (19, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (20, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (21, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
