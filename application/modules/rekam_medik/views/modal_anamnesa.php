@@ -7,18 +7,18 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="col-md-12">
-          <form id="form_anamnesa" name="form_anamnesa">
+        <form id="form_anamnesa" name="form_anamnesa">
+          <div class="col-md-12">
             <div class="form-group">
               <input type="hidden" class="form-control" id="id_anamnesa" name="id_anamnesa">
               <textarea name="anamnesa" id="anamnesa" class="form-control">
-			  	    </textarea>
+              </textarea>
             </div>
             <div class="form-group">
               <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_anamnesa')">Simpan</button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>

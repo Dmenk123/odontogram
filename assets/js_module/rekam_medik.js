@@ -6,17 +6,11 @@ var table2;
 let id_peg;
 let id_psn;
 let id_reg;
+let activeModal;
 
 $(document).ready(function() {
 
-    ClassicEditor
-        .create( document.querySelector( '#anamnesa' ) )
-        .then( editor => {
-            console.log( editor );
-        })
-        .catch( error => {
-            console.error( error );
-        });
+    $('#anamnesa').ckeditor();
     
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
@@ -29,6 +23,7 @@ $(document).ready(function() {
         if(id_peg == undefined || id_reg == undefined || id_psn == undefined) {
             Swal.fire('Mohon Pilih Pasien Terlebih Dahulu');
         }else{
+            activeModal =  nama_menu+'_modal';
             $('#'+nama_menu+'_modal').modal('show');
         } 
     });
@@ -77,9 +72,9 @@ $(document).ready(function() {
         });
     });
 
-    $(".modal").on("hidden.bs.modal", function(){
-        reset_form("form-asuransi");
-    });
+    // $(".modal").on("hidden.bs.modal", function(){
+    //     reset_form("form-asuransi");
+    // });
 
     $("#nama").select2({
         // tags: true,
@@ -240,13 +235,16 @@ function save(id_form)
 {
     let str1 = '#';
     let id_element = str1.concat(id_form);
-    var form = $('#form_anamnesa')[0];
-    
+    var form = $(id_element)[0];
+    console.log(form);
     var data = new FormData(form);
     data.append('id_peg', id_peg);
     data.append('id_reg', id_reg);
     data.append('id_psn', id_psn);
     
+    var value = CKEDITOR.instances['anamnesa'].getData()
+    data.append('txt_anamnesa', value);
+
     $("#btnSave").prop("disabled", true);
     $('#btnSave').text('Menyimpan Data'); //change button text
     $.ajax({
@@ -264,7 +262,7 @@ function save(id_form)
                 swal.fire("Sukses!!", data.pesan, "success");
                 $("#btnSave").prop("disabled", false);
                 $('#btnSave').text('Simpan');                
-                window.location.href = base_url+"reg_pasien";
+                $('#'+activeModal).modal('hide');
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {

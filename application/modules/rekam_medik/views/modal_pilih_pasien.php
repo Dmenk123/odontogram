@@ -45,7 +45,7 @@
               </div>
             </div>
           </div>
-        <form>
+        </form>
         <hr> 
         <div class="col-md-12 table-responsive">
           <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pilih_pasien" style="width:100%">

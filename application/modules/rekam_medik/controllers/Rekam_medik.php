@@ -143,6 +143,7 @@ class Rekam_medik extends CI_Controller {
 
 	public function simpan_form_anamnesa()
 	{
+
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$datenow = $obj_date->format('Y-m-d');
@@ -151,7 +152,7 @@ class Rekam_medik extends CI_Controller {
 		$id_psn = $this->input->post('id_psn');
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
-		$anamnesa = $this->input->post('anamnesa');
+		$anamnesa = $this->input->post('txt_anamnesa');
 		
 		$data = [
 			'id_pasien' => $id_psn,
