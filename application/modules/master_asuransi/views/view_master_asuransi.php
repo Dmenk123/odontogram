@@ -25,7 +25,7 @@
             <div class="kt-portlet__head-actions row">
               <div><?= $this->template_view->getOpsiButton(); ?></div>
               <div>&nbsp;</div>
-              <div><?= $this->template_view->getAddButton(true, 'add_menu'); ?></div>
+              <div><?= $this->template_view->getAddButton(true, 'add_asuransi'); ?></div>
             </div>
           </div>
         </div>
@@ -33,16 +33,13 @@
       <div class="kt-portlet__body">
 
         <!--begin: Datatable -->
-        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_user">
+        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_asuransi">
           <thead>
             <tr>
               <th style="width: 5%;">No</th>
-              <th>Kode</th>
-              <th>Nama User</th>
-              <th>Role</th>
-              <th>Status User</th>
-              <th>Terakhir Login</th>
-              <th style="width: 5%;">Aksi</th>
+              <th>Nama Asuransi</th>
+              <th>Keterangan</th>
+              <th style="width: 20%;" align="center">Aksi</th>
             </tr>
           </thead>
         </table>

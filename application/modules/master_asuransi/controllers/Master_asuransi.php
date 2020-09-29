@@ -38,9 +38,9 @@ class Master_asuransi extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_master_diagnosa',
-			'js'	=> 'master_diagnosa.js',
-			'view'	=> 'view_master_diagnosa'
+			'modal' => 'modal_master_asuransi',
+			'js'	=> 'master_asuransi.js',
+			'view'	=> 'view_master_asuransi'
 		];
 
 		$this->template_view->load_view($content, $data);
@@ -66,21 +66,22 @@ class Master_asuransi extends CI_Controller {
 	{
 		$this->load->library('Enkripsi');
 		$list = $this->m_asuransi->get_datatables();
+
 		$data = array();
-		//$no =$_POST['start'];
+		$no =$_POST['start'];
 		foreach ($list as $val) {
-			//$no++;
+			$no++;
 			$row = array();
 			//loop value tabel db
-			//$row[] = $no;
+			$row[] = $no;
 			$row[] = $val->nama;
 			$row[] = $val->keterangan;
 			
 			$str_aksi = '
-						<button class="button btn-sm btn-warning" onclick="edit_asuransi(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
+						<button class="button btn-sm btn-warning" onclick="edit_asuransi(\''.$val->id.'\')">
 							<i class="la la-pencil"></i> Edit
 						</button>
-						<button class="button btn-sm btn-danger" onclick="delete_asuransi(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
+						<button class="button btn-sm btn-danger" onclick="delete_asuransi(\''.$val->id.'\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
 			';
@@ -102,10 +103,10 @@ class Master_asuransi extends CI_Controller {
 	public function edit_data()
 	{
 		$this->load->library('Enkripsi');
-		$enc_id = $this->input->get('id');
+		$enc_id = $this->input->post('id');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 		
-		$oldData = $this->m_asuransi->get_by_id($id);
+		$oldData = $this->m_asuransi->get_by_id($enc_id);
 		
 		if(!$oldData){
 			$status = false;
@@ -127,8 +128,8 @@ class Master_asuransi extends CI_Controller {
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$arr_valid = $this->rule_validasi();
 		
-		$nama = trim($this->input->post('nama_asuransi'));
-		$keterangan = trim($this->input->post('ket_asuransi'));
+		$nama = trim($this->input->post('nama'));
+		$keterangan = trim($this->input->post('keterangan'));
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -149,11 +150,11 @@ class Master_asuransi extends CI_Controller {
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan data';
+			$retval['pesan'] = 'Gagal menambahkan data asuransi';
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan data';
+			$retval['pesan'] = 'Sukses menambahkan data asuransi';
 		}
 
 		echo json_encode($retval);
@@ -161,9 +162,9 @@ class Master_asuransi extends CI_Controller {
 
 	public function update_data()
 	{
-		$id = $this->input->post('id_asuransi');
-		$nama = trim($this->input->post('nama_asuransi'));
-		$keterangan = trim($this->input->post('ket_asuransi'));
+		$id = $this->input->post('id');
+		$nama = trim($this->input->post('nama'));
+		$keterangan = trim($this->input->post('keterangan'));
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 
@@ -208,13 +209,13 @@ class Master_asuransi extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$enc_id = $this->input->post('id');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
-		$del = $this->m_asuransi->softdelete_by_id($id);
+		$del = $this->m_asuransi->softdelete_by_id($enc_id);
 		if($del) {
 			$retval['status'] = TRUE;
 			$retval['pesan'] = 'Data Master Asuransi dihapus';
 		}else{
 			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Data Master Asuransi dihapus';
+			$retval['pesan'] = 'Data Master Asuransi gagal dihapus';
 		}
 
 		echo json_encode($retval);
@@ -229,15 +230,15 @@ class Master_asuransi extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if ($this->input->post('nama_asuransi') == '') {
-			$data['inputerror'][] = 'nama_asuransi';
+		if ($this->input->post('nama') == '') {
+			$data['inputerror'][] = 'nama';
             $data['error_string'][] = 'Wajib mengisi Nama Asuransi';
             $data['status'] = FALSE;
 		}
 
 
-		if ($this->input->post('ket_asuransi') == '') {
-			$data['inputerror'][] = 'ket_asuransi';
+		if ($this->input->post('keterangan') == '') {
+			$data['inputerror'][] = 'nama';
             $data['error_string'][] = 'Wajib Mengisi Keterangan Asuransi';
             $data['status'] = FALSE;
 		}
