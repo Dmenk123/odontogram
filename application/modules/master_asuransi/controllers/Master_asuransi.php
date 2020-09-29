@@ -19,17 +19,15 @@ class Master_asuransi extends CI_Controller {
 	{
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
-		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
-		$data_peg = $this->m_global->multi_row("*", "is_aktif = '1' and deleted_at is null", "m_pegawai", NULL, "nama asc");
-			
+		$data_jabatan = $this->m_global->multi_row('*', 'deleted_at is null', 'm_jabatan', null, 'nama');
+				
 		/**
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Pengelolaan Data User',
+			'title' => 'Pengelolaan Data Master Asuransi',
 			'data_user' => $data_user,
-			'data_role'	=> $data_role,
-			'data_peg'	=> $data_peg
+			'data_jabatan'	=> $data_jabatan
 		);
 
 		/**
@@ -40,9 +38,9 @@ class Master_asuransi extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_master_user',
-			'js'	=> 'master_user.js',
-			'view'	=> 'view_master_user'
+			'modal' => 'modal_master_diagnosa',
+			'js'	=> 'master_diagnosa.js',
+			'view'	=> 'view_master_diagnosa'
 		];
 
 		$this->template_view->load_view($content, $data);
