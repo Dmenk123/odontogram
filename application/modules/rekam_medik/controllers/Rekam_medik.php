@@ -36,7 +36,7 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa', 'modal_odonto'],
 			'js'	=> 'rekam_medik.js',
 			'view'	=> 'view_rekam_medik'
 		];
