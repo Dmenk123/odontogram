@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : sql local
+ Source Server         : local-mysql
  Source Server Type    : MySQL
- Source Server Version : 100414
+ Source Server Version : 100413
  Source Host           : localhost:3306
  Source Schema         : odontogram
 
  Target Server Type    : MySQL
- Target Server Version : 100414
+ Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 29/09/2020 08:52:29
+ Date: 30/09/2020 23:13:37
 */
 
 SET NAMES utf8mb4;
@@ -39,21 +39,32 @@ CREATE TABLE `t_role_menu`  (
 INSERT INTO `t_role_menu` VALUES (1, 3, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (2, 3, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (5, 3, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (1, 2, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (17, 2, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (18, 2, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (19, 2, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (1, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (6, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (11, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (12, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (9, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (13, 1, 1, 1, 1);
-INSERT INTO `t_role_menu` VALUES (15, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (14, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (10, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (7, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (8, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (15, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (16, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (17, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (18, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (19, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (20, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (21, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
-INSERT INTO `t_role_menu` VALUES (14, 1, 1, 1, 1);
-INSERT INTO `t_role_menu` VALUES (16, 1, 1, 1, 1);
-INSERT INTO `t_role_menu` VALUES (17, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (24, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (25, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (26, 1, 1, 1, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
