@@ -649,3 +649,23 @@ function get_uri_segment(segment) {
     var pathArray = window.location.pathname.split( '/' );
     return pathArray[segment];
 }
+
+$('#red').click(function(){
+    $('#pilihanwarna').val('red');
+});
+$('#green').click(function(){
+    $('#pilihanwarna').val('green');
+});
+
+$( document ).ready(function() {
+    console.log('tes');
+    
+        $("#barispertamakiri1").on('click', function(event){
+            $("#barispertamakiri1").css("fill", $('#pilihanwarna').val());
+        });
+        $("#barispertamaatas").on('click', function(event){
+            $("#barispertamaatas").css("fill", $('#pilihanwarna').val());
+        });
+    
+});
+
