@@ -657,15 +657,25 @@ $('#green').click(function(){
     $('#pilihanwarna').val('green');
 });
 
+
 $( document ).ready(function() {
     console.log('tes');
-    
+    var i;
+    var text = "";
+   
         $("#barispertamakiri1").on('click', function(event){
             $("#barispertamakiri1").css("fill", $('#pilihanwarna').val());
         });
-        $("#barispertamaatas").on('click', function(event){
-            $("#barispertamaatas").css("fill", $('#pilihanwarna').val());
+        $("#barispertamakiri2").on('click', function(event){
+            $("#barispertamakiri2").css("fill", $('#pilihanwarna').val());
         });
-    
+        $("#barispertamaatas1").on('click', function(event){
+            $("#barispertamaatas1").css("fill", $('#pilihanwarna').val());
+        });
+        $("#barispertamaatas6").on('click', function(event){
+            $("#barispertamaatas6").css("fill", $('#pilihanwarna').val());
+        });
+
+
 });
 
