@@ -651,29 +651,100 @@ function get_uri_segment(segment) {
 }
 
 $('#red').click(function(){
-    $('#pilihanwarna').val('red');
+    $('#pilihanwarna').val('#ff0000');
 });
 $('#green').click(function(){
-    $('#pilihanwarna').val('green');
+    $('#pilihanwarna').val('#00ff00');
+});
+
+$('#outline').click(function(){
+    $('#pilihanwarna').val('outline');
+});
+
+$('#pre').click(function(){
+    $('#pilihanwarna').val('PRE');
+});
+
+$('#silang').click(function(){
+    $('#pilihanwarna').val('silang');
 });
 
 
 $( document ).ready(function() {
     console.log('tes');
     var i;
-    var text = "";
-   
         $("#barispertamakiri1").on('click', function(event){
-            $("#barispertamakiri1").css("fill", $('#pilihanwarna').val());
+            var hasil = $('#pilihanwarna').val();
+            var subs  = hasil.substring(0,1);
+            if(subs == '#'){
+                $("#barispertamakiri1").css("fill", $('#pilihanwarna').val());
+            }else if (hasil == 'outline') {
+                $("#barispertamaoutline1").css("display", "block");
+            }else if (hasil == 'PRE') {
+                $("#barispertamapre1").css("display", "block");
+            }else if (hasil == 'silang') {
+                $("#barispertamasilang11").css("display", "block");
+                $("#barispertamasilang21").css("display", "block");
+            }
         });
         $("#barispertamakiri2").on('click', function(event){
             $("#barispertamakiri2").css("fill", $('#pilihanwarna').val());
         });
         $("#barispertamaatas1").on('click', function(event){
-            $("#barispertamaatas1").css("fill", $('#pilihanwarna').val());
+            var hasil = $('#pilihanwarna').val();
+            var subs  = hasil.substring(0,1);
+            if(subs == '#'){
+                $("#barispertamaatas1").css("fill", $('#pilihanwarna').val());
+            }else if (hasil == 'outline') {
+                $("#barispertamaoutline1").css("display", "block");
+            }else if (hasil == 'PRE') {
+                $("#barispertamapre1").css("display", "block");
+            }else if (hasil == 'silang') {
+                $("#barispertamasilang11").css("display", "block");
+                $("#barispertamasilang21").css("display", "block");
+            }
         });
-        $("#barispertamaatas6").on('click', function(event){
-            $("#barispertamaatas6").css("fill", $('#pilihanwarna').val());
+        $("#barispertamakanan1").on('click', function(event){
+            var hasil = $('#pilihanwarna').val();
+            var subs  = hasil.substring(0,1);
+            if(subs == '#'){
+                $("#barispertamakanan1").css("fill", $('#pilihanwarna').val());
+            }else if (hasil == 'outline') {
+                $("#barispertamaoutline1").css("display", "block");
+            }else if (hasil == 'PRE') {
+                $("#barispertamapre1").css("display", "block");
+            }else if (hasil == 'silang') {
+                $("#barispertamasilang11").css("display", "block");
+                $("#barispertamasilang21").css("display", "block");
+            }
+        });
+        $("#barispertamabawah1").on('click', function(event){
+            var hasil = $('#pilihanwarna').val();
+            var subs  = hasil.substring(0,1);
+            if(subs == '#'){
+                $("#barispertamabawah1").css("fill", $('#pilihanwarna').val());
+            }else if (hasil == 'outline') {
+                $("#barispertamaoutline1").css("display", "block");
+            }else if (hasil == 'PRE') {
+                $("#barispertamapre1").css("display", "block");
+            }else if (hasil == 'silang') {
+                $("#barispertamasilang11").css("display", "block");
+                $("#barispertamasilang21").css("display", "block");
+            }
+        });
+        $("#barispertamatengah1").on('click', function(event){
+            var hasil = $('#pilihanwarna').val();
+            var subs  = hasil.substring(0,1);
+            if(subs == '#'){
+                $("#barispertamatengah1").css("fill", $('#pilihanwarna').val());
+            }else if (hasil == 'outline') {
+                $("#barispertamaoutline1").css("display", "block");
+            }else if (hasil == 'PRE') {
+                $("#barispertamapre1").css("display", "block");
+            }else if (hasil == 'silang') {
+                $("#barispertamasilang11").css("display", "block");
+                $("#barispertamasilang21").css("display", "block");
+            }
         });
 
 

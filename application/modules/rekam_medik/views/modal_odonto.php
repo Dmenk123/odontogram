@@ -25,22 +25,23 @@
                     }
                 ?>
                   <svg height="125" width="<?=$lebar;?>" >
-                    <polyline points="2,22 57,22 57,77 2,77 2,22" style="fill:white;stroke:black;stroke-width:3; display:none"  />
+                    <polyline id="barispertamaoutline<?=$x;?>" points="2,22 57,22 57,77 2,77 2,22" style="fill:white;stroke:black;stroke-width:3; display:none"  />
                     <?php if ($x <= 5 || $x >= 12) { ?>
-                      <polyline id="barispertamakiri<?=$x;?>" points="4,24 4,75 15,63 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                      <polyline id="barispertamakiri<?=$x;?>" points="4,24 4,75 15,63 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" /> 
                       <polyline id="barispertamaatas<?=$x;?>" points="4,24 55,24 43,35 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" />
-                      <polyline points="55,24 55,75 43,63 43,35 55,24" style="fill:white;stroke:black;stroke-width:1" />
-                      <polyline points="55,75 4,75 15,63 43,63 55,75" style="fill:white;stroke:black;stroke-width:1" />
-                      <polyline points="15,35 43,35 43,63 15,63 15,35" style="fill:white;stroke:black;stroke-width:1" />
+                      <polyline id="barispertamakanan<?=$x;?>" points="55,24 55,75 43,63 43,35 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                      <polyline id="barispertamabawah<?=$x;?>" points="55,75 4,75 15,63 43,63 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                      <polyline id="barispertamatengah<?=$x;?>" points="15,35 43,35 43,63 15,63 15,35" style="fill:white;stroke:black;stroke-width:1" />
                     <?php }else{ ?>
                       <polyline id="barispertamakiri<?=$x;?>" points="4,24 4,75 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
                       <polyline id="barispertamaatas<?=$x;?>" points="4,24 55,24 43,50 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
                       <polyline points="55,24 55,75 43,50 55,24" style="fill:white;stroke:black;stroke-width:1" />
                       <polyline points="55,75 4,75 15,50 43,50 55,75" style="fill:white;stroke:black;stroke-width:1" />
                     <?php } ?>
-                    
-                    <text x="21" y="123" font-family="Verdana" font-size="13" fill="blue" >21</text>
-                     <text x="17" y="15" font-family="Verdana" font-size="13" fill="blue" align="center">PRE</text>
+                    <line id="barispertamasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                    <line id="barispertamasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                    <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" >21</text>
+                     <text x="17" y="15" id="barispertamapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                   </svg>
                 <?php } ?>
               </div>
@@ -50,6 +51,9 @@
                 </div>
                 <button class="button split btn-default" id="red">Tambalan Emas </button>
                 <button class="button split btn-default" id="green">Tambalan Sewarna</button>
+                <button class="button split btn-default" id="outline">Tambalan Sewarna</button>
+                <button class="button split btn-default" id="pre">Tambalan Sewarna</button>
+                <button class="button split btn-default" id="silang">Silang</button>
               </div>
       
       </div>
