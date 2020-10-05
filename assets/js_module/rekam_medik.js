@@ -657,6 +657,22 @@ $('#green').click(function(){
     $('#pilihanwarna').val('#00ff00');
 });
 
+$('#cyann').click(function(){
+    $('#pilihanwarna').val('#00ffff');
+});
+
+$('#old_brown').click(function(){
+    $('#pilihanwarna').val('#A9A9A9');
+});
+
+$('#pink').click(function(){
+    $('#pilihanwarna').val('#ff3399');
+});
+
+$('#biru_muda').click(function(){
+    $('#pilihanwarna').val('#b3b3ff');
+});
+
 $('#outline').click(function(){
     $('#pilihanwarna').val('outline');
 });
@@ -665,10 +681,32 @@ $('#pre').click(function(){
     $('#pilihanwarna').val('PRE');
 });
 
+$('#ano').click(function(){
+    $('#pilihanwarna').val('ANO');
+});
+
+$('#une').click(function(){
+    $('#pilihanwarna').val('UNE');
+});
+
 $('#silang').click(function(){
     $('#pilihanwarna').val('silang');
 });
 
+$('#border').click(function(){
+    $('#pilihanwarna').val('border');
+});
+
+$('#segitiga').click(function(){
+    $('#pilihanwarna').val('segitiga');
+});
+
+$('#panah_kanan').click(function(){
+    $('#pilihanwarna').val('panah_kanan');
+});
+$('#non_vital').click(function(){
+    $('#pilihanwarna').val('non_vital');
+});
 
 $( document ).ready(function() {
     console.log('tes');
@@ -682,9 +720,28 @@ $( document ).ready(function() {
                 $("#barispertamaoutline1").css("display", "block");
             }else if (hasil == 'PRE') {
                 $("#barispertamapre1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
+                $("#barispertamaune1").css("display", "none");
+            }else if (hasil == 'ANO') {
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "none");
+                $("#barispertamaano1").css("display", "block");
+            }else if(hasil == 'UNE'){
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
             }else if (hasil == 'silang') {
                 $("#barispertamasilang11").css("display", "block");
                 $("#barispertamasilang21").css("display", "block");
+            }else if (hasil == 'border'){
+                $("#barispertamakiri1").css("stroke-width", '2');
+            }else if (hasil == 'segitiga') {
+                $("#barispertamasegitiga1").css("display", "block");
+            }else if (hasil == 'panah_kanan') {
+                $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'non_vital') {
+                $("#barispertamasegitiga1").css("display", "block");
+                $("#barispertamasegitiga1").css("fill", "white");
             }
         });
         $("#barispertamakiri2").on('click', function(event){
@@ -699,9 +756,28 @@ $( document ).ready(function() {
                 $("#barispertamaoutline1").css("display", "block");
             }else if (hasil == 'PRE') {
                 $("#barispertamapre1").css("display", "block");
+                $("#barispertamaune1").css("display", "none");
+                $("#barispertamaano1").css("display", "none");
+            }else if (hasil == 'ANO') {
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "none");
+                $("#barispertamaano1").css("display", "block");
+            }else if(hasil == 'UNE'){
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
             }else if (hasil == 'silang') {
                 $("#barispertamasilang11").css("display", "block");
                 $("#barispertamasilang21").css("display", "block");
+            }else if (hasil == 'border'){
+                $("#barispertamaatas1").css("stroke-width", '2');
+            }else if (hasil == 'segitiga') {
+                $("#barispertamasegitiga1").css("display", "block");
+            }else if (hasil == 'panah_kanan') {
+                $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'non_vital') {
+                $("#barispertamasegitiga1").css("display", "block");
+                $("#barispertamasegitiga1").css("fill", "white");
             }
         });
         $("#barispertamakanan1").on('click', function(event){
@@ -713,9 +789,28 @@ $( document ).ready(function() {
                 $("#barispertamaoutline1").css("display", "block");
             }else if (hasil == 'PRE') {
                 $("#barispertamapre1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
+                $("#barispertamaune1").css("display", "none");
+            }else if (hasil == 'ANO') {
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaano1").css("display", "block");
+                $("#barispertamaune1").css("display", "none");
+            }else if(hasil == 'UNE'){
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
             }else if (hasil == 'silang') {
                 $("#barispertamasilang11").css("display", "block");
                 $("#barispertamasilang21").css("display", "block");
+            }else if (hasil == 'border'){
+                $("#barispertamakanan1").css("stroke-width", '2');
+            }else if (hasil == 'segitiga') {
+                $("#barispertamasegitiga1").css("display", "block");
+            }else if (hasil == 'panah_kanan') {
+                $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'non_vital') {
+                $("#barispertamasegitiga1").css("display", "block");
+                $("#barispertamasegitiga1").css("fill", "white");
             }
         });
         $("#barispertamabawah1").on('click', function(event){
@@ -727,9 +822,28 @@ $( document ).ready(function() {
                 $("#barispertamaoutline1").css("display", "block");
             }else if (hasil == 'PRE') {
                 $("#barispertamapre1").css("display", "block");
+                $("#barispertamaune1").css("display", "none");
+                $("#barispertamaano1").css("display", "none");
+            }else if (hasil == 'ANO') {
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "none");
+                $("#barispertamaano1").css("display", "block");
+            }else if(hasil == 'UNE'){
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
             }else if (hasil == 'silang') {
                 $("#barispertamasilang11").css("display", "block");
                 $("#barispertamasilang21").css("display", "block");
+            }else if (hasil == 'border'){
+                $("#barispertamabawah1").css("stroke-width", '2');
+            }else if (hasil == 'segitiga') {
+                $("#barispertamasegitiga1").css("display", "block");
+            }else if (hasil == 'panah_kanan') {
+                $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'non_vital') {
+                $("#barispertamasegitiga1").css("display", "block");
+                $("#barispertamasegitiga1").css("fill", "white");
             }
         });
         $("#barispertamatengah1").on('click', function(event){
@@ -741,9 +855,28 @@ $( document ).ready(function() {
                 $("#barispertamaoutline1").css("display", "block");
             }else if (hasil == 'PRE') {
                 $("#barispertamapre1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
+                $("#barispertamaune1").css("display", "none");
+            }else if (hasil == 'ANO') {
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "none");
+                $("#barispertamaano1").css("display", "block");
+            }else if(hasil == 'UNE'){
+                $("#barispertamapre1").css("display", "none");
+                $("#barispertamaune1").css("display", "block");
+                $("#barispertamaano1").css("display", "none");
             }else if (hasil == 'silang') {
                 $("#barispertamasilang11").css("display", "block");
                 $("#barispertamasilang21").css("display", "block");
+            }else if (hasil == 'border'){
+                $("#barispertamatengah1").css("stroke-width", '2');
+            }else if (hasil == 'segitiga') {
+                $("#barispertamasegitiga1").css("display", "block");
+            }else if (hasil == 'panah_kanan') {
+                $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'non_vital') {
+                $("#barispertamasegitiga1").css("display", "block");
+                $("#barispertamasegitiga1").css("fill", "white");
             }
         });
 
