@@ -349,8 +349,14 @@ class Template_view extends CI_Controller {
 		}
 		
 		if($content['js']){
-			// $data['js']      = $this->_ci->load->view($content['js'], $data, TRUE);
-			$data['link_js']      = 'assets/js_module/'.$content['js'];
+			if(is_array($content['js'])){
+				foreach ($content['js'] as $keys => $vals) {
+					$data['link_js'][] = 'assets/js_module/'.$vals;
+				}
+			}else{
+				$data['link_js']      = 'assets/js_module/'.$content['js'];
+			}
+			
 		}
 		
 		if($content['modal']){

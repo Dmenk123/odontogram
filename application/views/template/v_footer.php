@@ -123,9 +123,15 @@
                 });
             });
         </script>
-        <?php if(isset($link_js)){ ?> 
+        <?php if(isset($link_js)) { ?>
+        <?php if(is_array($link_js)){ ?>
+        <?php foreach ($link_js as $keys => $values) { ?>
+        <script src="<?= base_url("$values"); ?>" type="text/javascript"></script>
+        <?php } ?>
+        <?php }else{ ?>
         <script src="<?= base_url("$link_js"); ?>" type="text/javascript"></script>
         <?php } ?> 
+        <?php } ?>
     </body>
 
 	<!-- end::Body -->

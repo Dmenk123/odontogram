@@ -36,8 +36,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa', 'modal_odonto'],
-			'js'	=> 'rekam_medik.js',
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
@@ -165,7 +165,7 @@ class Rekam_medik extends CI_Controller {
 			###update
 			$data['updated_at'] = $timestamp;
 			$where = ['id' => $this->input->post('id_anamnesa')];
-			$update = $this->t_rekam_medik->update($where, $data);
+			$update = $this->t_rekam_medik->update($where, $data, 't_perawatan');
 			$pesan = 'Sukses Mengupdate data Perawatan';
 		}else{
 			###insert
@@ -188,6 +188,30 @@ class Rekam_medik extends CI_Controller {
 		}
 
 		echo json_encode($retval);
+	}
+
+	public function get_old_data()
+	{
+		$id_peg = $this->input->post('id_peg');
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$menu = $this->input->post('menu');
+		 
+		switch ($menu) {
+			case 'anamnesa':
+				$select = "*";
+				$where = ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg];
+				$table = 't_perawatan';
+				$datanya = $this->m_global->single_row($select,$where,$table);
+				
+				echo json_encode(['data'=>$datanya, 'status' => true, 'menu' => 'anamnesa']);
+				break;
+			
+			default:
+				$datanya = null;
+				echo json_encode(['data'=> null, 'status' => false, 'menu' => false]);
+				break;
+		}
 	}
 
 	///////////////////////////////////////////////////////////////////

@@ -483,6 +483,23 @@ class Master_diagnosa extends CI_Controller {
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
 	}
 
+	public function get_select_diagnosa()
+	{
+		$term = $this->input->get('term');
+		$data_diagnosa = $this->m_global->multi_row('*', ['deleted_at' => null, 'nama_diagnosa like' => '%'.$term.'%'], 'm_diagnosa', null, 'nama_diagnosa');
+		if($data_diagnosa) {
+			foreach ($data_diagnosa as $key => $value) {
+				$row['id'] = $value->id_diagnosa;
+				$row['text'] = $value->kode_diagnosa.' - '.$value->nama_diagnosa;
+				$row['kode'] = $value->kode_diagnosa;
+				$retval[] = $row;
+			}
+		}else{
+			$retval = false;
+		}
+		echo json_encode($retval);
+	}
+
 	// ===============================================
 	private function rule_validasi()
 	{
