@@ -51,6 +51,12 @@
                         <?php } ?>
                         <line id="barispertamasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
                         <line id="barispertamasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                        <line id="barispertamaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barispertamaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
                         <polyline id="barispertamasegitiga<?=$x;?>" points="13,80 45,80 29,103 13,80" style="fill:black;stroke:black;stroke-width:1;display:none;" />
                         <polyline id="barispertamapanahkanan<?=$x;?>" points="45,5 45,10 50,5 45,1 45,5 15,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
                         <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" >21</text>
@@ -112,7 +118,7 @@
                           <span></span>
                         </div>
                         <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" >Fractured</button>
+                          <button class="button split btn-default pull-right" style="width: 155px;" id="crash" >Fractured</button>
                         </div>
                       </div>
                       <div class="row">

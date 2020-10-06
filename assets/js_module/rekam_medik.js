@@ -693,6 +693,10 @@ $('#silang').click(function(){
     $('#pilihanwarna').val('silang');
 });
 
+$('#akar').click(function(){
+    $('#pilihanwarna').val('akar');
+});
+
 $('#border').click(function(){
     $('#pilihanwarna').val('border');
 });
@@ -706,6 +710,10 @@ $('#panah_kanan').click(function(){
 });
 $('#non_vital').click(function(){
     $('#pilihanwarna').val('non_vital');
+});
+
+$('#crash').click(function(){
+    $('#pilihanwarna').val('crash');
 });
 
 $( document ).ready(function() {
@@ -742,6 +750,14 @@ $( document ).ready(function() {
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
+            }else if (hasil == 'akar') {
+                $("#barispertamaakar11").css("display", "block");
+                $("#barispertamaakar21").css("display", "block");
+            }else if (hasil == 'crash') {
+                $("#barispertamacrash11").css("display", "block");
+                $("#barispertamacrash21").css("display", "block");
+                $("#barispertamacrash31").css("display", "block");
+                $("#barispertamacrash41").css("display", "block");
             }
         });
         $("#barispertamakiri2").on('click', function(event){
@@ -778,6 +794,14 @@ $( document ).ready(function() {
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
+            }else if (hasil == 'akar') {
+                $("#barispertamaakar11").css("display", "block");
+                $("#barispertamaakar21").css("display", "block");
+            }else if (hasil == 'crash') {
+                $("#barispertamacrash11").css("display", "block");
+                $("#barispertamacrash21").css("display", "block");
+                $("#barispertamacrash31").css("display", "block");
+                $("#barispertamacrash41").css("display", "block");
             }
         });
         $("#barispertamakanan1").on('click', function(event){
@@ -811,6 +835,14 @@ $( document ).ready(function() {
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
+            }else if (hasil == 'akar') {
+                $("#barispertamaakar11").css("display", "block");
+                $("#barispertamaakar21").css("display", "block");
+            }else if (hasil == 'crash') {
+                $("#barispertamacrash11").css("display", "block");
+                $("#barispertamacrash21").css("display", "block");
+                $("#barispertamacrash31").css("display", "block");
+                $("#barispertamacrash41").css("display", "block");
             }
         });
         $("#barispertamabawah1").on('click', function(event){
@@ -844,6 +876,14 @@ $( document ).ready(function() {
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
+            }else if (hasil == 'akar') {
+                $("#barispertamaakar11").css("display", "block");
+                $("#barispertamaakar21").css("display", "block");
+            }else if (hasil == 'crash') {
+                $("#barispertamacrash11").css("display", "block");
+                $("#barispertamacrash21").css("display", "block");
+                $("#barispertamacrash31").css("display", "block");
+                $("#barispertamacrash41").css("display", "block");
             }
         });
         $("#barispertamatengah1").on('click', function(event){
@@ -877,6 +917,14 @@ $( document ).ready(function() {
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
+            }else if (hasil == 'akar') {
+                $("#barispertamaakar11").css("display", "block");
+                $("#barispertamaakar21").css("display", "block");
+            }else if (hasil == 'crash') {
+                $("#barispertamacrash11").css("display", "block");
+                $("#barispertamacrash21").css("display", "block");
+                $("#barispertamacrash31").css("display", "block");
+                $("#barispertamacrash41").css("display", "block");
             }
         });
 
