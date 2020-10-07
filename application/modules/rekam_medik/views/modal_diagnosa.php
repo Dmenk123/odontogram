@@ -12,19 +12,45 @@
             <div class="kt-portlet__body">
               <div class="form-group">
                 <input type="hidden" class="form-control" id="id_diagnosa" name="id_diagnosa" value="">           
-                <label class="col-lg-4 col-form-label">Diagnosa :</label>
-                <div class=" col-lg-8 col-sm-12">
-                  <select class="form-control kt-select2" id="diagnosa" name="diagnosa" style="width: 100%;">
-                    <option value="">Silahkan Pilih Diagnosa</option>
-                  </select>
-                  <span class="help-block"></span>
+                <div class="col-md-12 row">
+                  <label class="col-lg-8 col-form-label">Diagnosa :</label>
+                  <label class="col-lg-4 col-form-label">Gigi :</label>
+                </div>
+                <div class="col-md-12 row">
+                  <div class=" col-lg-8 col-sm-12">
+                    <select class="form-control kt-select2" id="diagnosa" name="diagnosa" style="width: 100%;">
+                      <option value="">Silahkan Pilih Diagnosa</option>
+                    </select>
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-lg-4 col-sm-12">
+                    <input type="text" class="form-control" id="gigi" name="gigi" value="">   
+                    <span class="help-block"></span>
+                  </div>
+                </div>
+                <br>
+                <div class="col-md-12 col-md-12 col-sm-12">
+                  <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_diagnosa')">Tambahkan</button>
+                </div>
+                <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+               
+                <div class=" col-lg-12 col-sm-12">
+                  <h3>Tabel Diagnosa Pasien</h3>
+                  <table class="table table-striped- table-bordered table-hover" id="tabel_modal_diagnosa">
+                    <thead>
+                      <tr>
+                        <th>Gigi</th>
+                        <th>Kode</th>
+                        <th>Nama Diagnosa</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              <div class="form-group">
-                <div class=" col-lg-12 col-md-12 col-sm-12">
-                  <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_diagnosa')">Simpan</button>
-                </div>
-              </div>
+              
             </div>
           </div>
         </form>

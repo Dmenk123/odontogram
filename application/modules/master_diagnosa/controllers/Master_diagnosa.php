@@ -492,6 +492,7 @@ class Master_diagnosa extends CI_Controller {
 				$row['id'] = $value->id_diagnosa;
 				$row['text'] = $value->kode_diagnosa.' - '.$value->nama_diagnosa;
 				$row['kode'] = $value->kode_diagnosa;
+				$row['html'] = "<tr><td>$value->kode_diagnosa</td><td>$value->nama_diagnosa</td></tr>";
 				$retval[] = $row;
 			}
 		}else{

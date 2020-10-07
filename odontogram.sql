@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 28/09/2020 06:41:02
+ Date: 08/10/2020 00:00:16
 */
 
 SET NAMES utf8mb4;
@@ -193,6 +193,9 @@ INSERT INTO `m_menu` VALUES (18, 17, 'Data Pasien', 'Data pasien', 'data_pasien'
 INSERT INTO `m_menu` VALUES (19, 17, 'Registrasi Pasien', 'Registrasi Pasien', 'reg_pasien', 'flaticon-user-add', 1, 2, 2, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (20, 0, 'Rekam Medik', 'Rekam Medik', '', 'flaticon2-heart-rate-monitor', 1, 1, 4, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (21, 20, 'Data Rekam Medik', 'Data Rekam Medik', 'rekam_medik', 'flaticon2-medical-records', 1, 2, 1, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (24, 9, 'Logistik dan Obat', 'Logistik dan Obat', 'master_logistik', 'flaticon2-contract', 1, 3, 3, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (25, 9, 'Laboratorium', 'Laboratorium', 'master_laboratorium', 'flaticon2-contract', 1, 3, 4, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (26, 9, 'Asuransi', 'Asuransi', 'master_asuransi', 'flaticon2-contract', 1, 3, 5, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for m_pasien
@@ -339,9 +342,46 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-27 09:34:32', 'user_default.png', '2020-09-06 20:18:00', '2020-09-27 09:34:32', NULL);
+INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-10-07 23:09:19', 'user_default.png', '2020-09-06 20:18:00', '2020-10-07 23:09:19', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
+
+-- ----------------------------
+-- Table structure for t_diagnosa
+-- ----------------------------
+DROP TABLE IF EXISTS `t_diagnosa`;
+CREATE TABLE `t_diagnosa`  (
+  `id` int(64) NOT NULL AUTO_INCREMENT,
+  `id_reg` int(64) NULL DEFAULT NULL,
+  `id_pasien` int(11) NULL DEFAULT NULL,
+  `id_pegawai` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `id_user_adm` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tanggal` date NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_diagnosa
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_diagnosa_det
+-- ----------------------------
+DROP TABLE IF EXISTS `t_diagnosa_det`;
+CREATE TABLE `t_diagnosa_det`  (
+  `id` int(64) NOT NULL AUTO_INCREMENT,
+  `id_t_diagnosa` int(64) NULL DEFAULT NULL,
+  `id_diagnosa` int(32) NULL DEFAULT NULL,
+  `gigi` int(32) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_diagnosa_det
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_perawatan
@@ -363,7 +403,7 @@ CREATE TABLE `t_perawatan`  (
 -- ----------------------------
 -- Records of t_perawatan
 -- ----------------------------
-INSERT INTO `t_perawatan` VALUES (1, 1, 6, '1', '2020-09-27', NULL, '2020-09-27 10:57:17', NULL, NULL);
+INSERT INTO `t_perawatan` VALUES (1, 2, 5, '1', '2020-10-04', '<p>Perawatan&nbsp;</p>\n\n<p>1. ajkajska</p>\n\n<p>2. kjdkajdks</p>\n\n<p>3. biasalah</p>\n', '2020-10-04 21:30:14', '2020-10-06 23:12:39', NULL);
 
 -- ----------------------------
 -- Table structure for t_registrasi
@@ -443,5 +483,8 @@ INSERT INTO `t_role_menu` VALUES (21, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (24, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (25, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (26, 1, 1, 1, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
