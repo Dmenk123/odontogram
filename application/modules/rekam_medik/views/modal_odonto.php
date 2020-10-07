@@ -28,6 +28,24 @@
                 <div class="tab-pane active" id="all" role="tabpanel">
                     <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;">
                     <?php 
+                      $angka = array(
+                                '1' => '18',
+                                '2' => '17',
+                                '3' => '16',
+                                '4' => '15',
+                                '5' => '14',
+                                '6' => '13',
+                                '7' => '12',
+                                '8' => '11',
+                                '9' => '21',
+                                '10' => '22',
+                                '11' => '23',
+                                '12' => '24',
+                                '13' => '25',
+                                '14' => '26',
+                                '15' => '27',
+                                '16' => '28',
+                      );
                       for ($x = 1; $x <= 16; $x++) { 
                         if($x == 8){
                           $lebar = 90;
@@ -57,9 +75,13 @@
                         <line id="barispertamacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
                         <line id="barispertamacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
                         <line id="barispertamacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barispertamajembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="barispertamajembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="barispertamajembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="barispertamajembtengah<?=$x;?>" x1="0" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <polyline id="barispertamasegitiga<?=$x;?>" points="13,80 45,80 29,103 13,80" style="fill:black;stroke:black;stroke-width:1;display:none;" />
                         <polyline id="barispertamapanahkanan<?=$x;?>" points="45,5 45,10 50,5 45,1 45,5 15,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
-                        <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" >21</text>
+                        <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
                         <text x="17" y="20" id="barispertamapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                         <text x="17" y="20" id="barispertamaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
                         <text x="17" y="20" id="barispertamaune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
@@ -127,6 +149,20 @@
                         </div>
                         <div  class="col-sm-8">
                           <button class="button split btn-default pull-right" style="width: 155px;" id="outline">Mahkota Logam</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          &nbsp;
+                        </div>
+                        <div class="col-sm-3">
+                          <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_kiri"><---</button>
+                        </div>
+                        <div  class="col-sm-3">
+                          <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_tengah">----</button>
+                        </div>
+                        <div class="col-sm-3">
+                          <button class="button split btn-default pull-right" style="width: 75px;" id="jemb_kanan">---></button>
                         </div>
                       </div>
                       <div class="row">
