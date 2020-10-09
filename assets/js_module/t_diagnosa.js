@@ -34,7 +34,7 @@ $(document).ready(function() {
 
     // $('#diagnosa').on('select2:selecting', function(e) {
         // let data = e.params.args.data;
-        // $('#tabel_modal_diagnosa tbody').html(data.html);
+        
         // $('#nik').val(data.nik);
         // $('#no_rm').val(data.no_rm);
         // $('#tempat_lahir').val(data.tempat_lahir);
@@ -45,3 +45,60 @@ $(document).ready(function() {
     // });
     
 });
+
+function reloadFormDiagnosa(){
+    $.ajax({
+        type: "post",
+        url: base_url+"rekam_medik/load_form_diagnosa",
+        data: {
+            id_peg: id_peg,
+            id_psn: id_psn,
+            id_reg: id_reg
+        },
+        dataType: "json",
+        success: function (response) {
+           $('#tabel_modal_diagnosa tbody').html(response.html);
+        }
+    });
+}
+
+
+function hapus_asuransi_det(id) {
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Asuransi ?',
+        text: "Data Akan dihapus ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/delete_data_asuransi_det',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                    reloadFormDiagnosa();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}
+

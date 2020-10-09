@@ -206,6 +206,10 @@ class Rekam_medik extends CI_Controller {
 				
 				echo json_encode(['data'=>$datanya, 'status' => true, 'menu' => 'anamnesa']);
 				break;
+
+			case 'diagnosa':
+				echo json_encode(['menu' => 'diagnosa']);
+				break;
 			
 			default:
 				$datanya = null;
@@ -216,7 +220,6 @@ class Rekam_medik extends CI_Controller {
 
 	public function simpan_form_diagnosa()
 	{
-
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$datenow = $obj_date->format('Y-m-d');
@@ -235,42 +238,95 @@ class Rekam_medik extends CI_Controller {
 		$id_diagnosa = $this->input->post('diagnosa');
 		$gigi = $this->input->post('gigi');
 		
-		$data = [
-			'id_pasien' => $id_psn,
-			'id_pegawai' => $id_peg,
-			'id_reg' => $id_reg,
-			'id_user_adm' => $this->session->userdata('id_user'),
+		//cek sudah ada data / tidak
+		$data_diagnosa = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_diagnosa');
+		if(!$data_diagnosa){
+			###insert
+			$data = [
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'created_at' => $timestamp
+			];
+						
+			$insert = $this->t_rekam_medik->save($data, 't_diagnosa');
+			// $pesan = 'Sukses Menambah data Perawatan';
+		}
+
+		$cek_diagnosa = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_diagnosa');
+		$data_det = [
+			'id_t_diagnosa' => $cek_diagnosa->id,
+			'id_diagnosa' => $id_diagnosa,
+			'gigi' => $gigi,
+			'created_at' => $timestamp
 		];
 
-		if($this->input->post('id_diagnosa') != '') {
-			###update
-			$data['updated_at'] = $timestamp;
-			$where = ['id' => $this->input->post('id_anamnesa')];
-			$update = $this->t_rekam_medik->update($where, $data, 't_perawatan');
-			$pesan = 'Sukses Mengupdate data Perawatan';
-		}else{
-			###insert
-			$data['id'] = $this->t_rekam_medik->get_max_id_perawatan();
-			$data['tanggal'] = $datenow;
-			$data['created_at'] = $timestamp;
-			
-			$insert = $this->t_rekam_medik->save($data, 't_perawatan');
-			$pesan = 'Sukses Menambah data Perawatan';
-		}
-				
+		$insert_det = $this->t_rekam_medik->save($data_det, 't_diagnosa_det');
+
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal memproses Data Perawatan';
+			$retval['pesan'] = 'Gagal Menambah Data';
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
-			$retval['pesan'] = $pesan;
+			$retval['pesan'] = 'Sukses Menambah Data';
 		}
 
 		echo json_encode($retval);
 	}
 
+	public function load_form_diagnosa()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		
+		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, md.kode_diagnosa, md.nama_diagnosa";
+		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg];
+		$table = 't_diagnosa as d';
+		$join = [ 
+			['table' => 't_diagnosa_det as dt', 'on' => 'd.id = dt.id_t_diagnosa'],
+			['table' => 'm_diagnosa as md', 'on' => 'dt.id_diagnosa = md.id_diagnosa']
+		];
+
+		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		$html = '';
+		
+		if($data){
+			foreach ($data as $key => $value) {
+				if($value->kode_diagnosa){
+					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_diagnosa.'</td><td>'.$value->nama_diagnosa.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_asuransi_det(\''.$value->id_diagnosa_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+				}
+				
+			}
+		}
+
+		echo json_encode([
+			'html' => $html
+		]);
+	}
+
+	public function delete_data_asuransi_det()
+	{
+		$id = $this->input->post('id');
+		$hapus = $this->m_global->delete(['id' => $id], 't_diagnosa_det');
+		if($hapus) {
+			$data = [
+				'status' => true,
+				'pesan' => 'Berhasil Hapus Data',
+			];
+		}else{
+			$data = [
+				'status' => false,
+				'pesan' => 'Gagal Hapus Data',
+			];
+		}
+
+		echo json_encode($data);
+	}
 
 	///////////////////////////////////////////////////////////////////
 

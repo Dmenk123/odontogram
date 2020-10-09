@@ -102,14 +102,19 @@ function save(id_form)
             if(data.status) {
                 swal.fire("Sukses!!", data.pesan, "success");
                 $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');                
-                $('#'+activeModal).modal('hide');
+                $('#btnSave').text('Simpan');      
+                if(id_form == 'form_diagnosa') {
+                    reloadFormDiagnosa();
+                }else{
+                    $('#'+activeModal).modal('hide');
+                }       
+                
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {
                     if (data.is_select2[i] == false) {
                         $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
-                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback');
                     }else{
                         //ikut style global
                         $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
@@ -148,6 +153,8 @@ function cekDanSetValue(txt_div_modal){
         if(objData.menu == 'anamnesa') {
             $("#form_anamnesa input[name='id_anamnesa']").val(objData.data.id);
             $("#form_anamnesa textarea[name='anamnesa']").val(objData.data.anamnesa);
+        }else if(objData.menu == 'diagnosa'){
+            reloadFormDiagnosa();
         }
     }
     

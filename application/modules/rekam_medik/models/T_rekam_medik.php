@@ -114,7 +114,7 @@ class T_rekam_medik extends CI_Model
 			return '1';
 		} 
 	}
-
+	
 	public function get_data_ekspor($tgl_awal = false, $tgl_akhir = false, $id = false)
 	{
 		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
