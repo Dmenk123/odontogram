@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 08/10/2020 00:00:16
+ Date: 11/10/2020 21:38:03
 */
 
 SET NAMES utf8mb4;
@@ -75,6 +75,7 @@ CREATE TABLE `m_data_medik`  (
 -- ----------------------------
 INSERT INTO `m_data_medik` VALUES (1, '5', 'O', 'HYPERTENSI', '140/10', 1, 1, 1, 1, 1, 1, 0, NULL, 0, NULL, '2020-09-13 17:53:03', NULL, NULL);
 INSERT INTO `m_data_medik` VALUES (2, '6', 'AB', 'HYPERTENSI', '900/21', 1, 0, 0, 0, 1, 0, 1, 'kalpanax', 0, NULL, '2020-09-19 20:28:52', NULL, NULL);
+INSERT INTO `m_data_medik` VALUES (3, '7', 'O', 'HYPOTENSI', '8000/2', 1, 1, 1, 1, 1, 0, 1, 'kalpanax', 0, NULL, '2020-10-11 14:47:17', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_diagnosa
@@ -119,6 +120,25 @@ INSERT INTO `m_jabatan` VALUES (2, 'Resepsionis', 'Resepsionis', '2020-08-30 23:
 INSERT INTO `m_jabatan` VALUES (3, 'Cleaning Service', 'Resik Resik Klinik', '2020-09-08 19:57:55', NULL, NULL);
 
 -- ----------------------------
+-- Table structure for m_jenis_logistik
+-- ----------------------------
+DROP TABLE IF EXISTS `m_jenis_logistik`;
+CREATE TABLE `m_jenis_logistik`  (
+  `id_jenis_logistik` int(32) NOT NULL AUTO_INCREMENT,
+  `jenis` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id_jenis_logistik`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of m_jenis_logistik
+-- ----------------------------
+INSERT INTO `m_jenis_logistik` VALUES (1, 'Obat', NULL, NULL, NULL);
+INSERT INTO `m_jenis_logistik` VALUES (2, 'Bahan Habis Pakai', NULL, NULL, NULL);
+
+-- ----------------------------
 -- Table structure for m_klinik
 -- ----------------------------
 DROP TABLE IF EXISTS `m_klinik`;
@@ -148,6 +168,51 @@ CREATE TABLE `m_klinik`  (
 -- ----------------------------
 INSERT INTO `m_klinik` VALUES (1, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '078121981291', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpeg', '2020-09-07 15:59:09', NULL, '2020-09-26 22:33:56');
 INSERT INTO `m_klinik` VALUES (2, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '12671617182129', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpg', '2020-09-26 22:33:56', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for m_laboratorium
+-- ----------------------------
+DROP TABLE IF EXISTS `m_laboratorium`;
+CREATE TABLE `m_laboratorium`  (
+  `id_laboratorium` int(32) NOT NULL AUTO_INCREMENT,
+  `kode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tindakan_lab` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `harga` int(32) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id_laboratorium`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of m_laboratorium
+-- ----------------------------
+INSERT INTO `m_laboratorium` VALUES (1, 'L001', 'coba tes', 2000, NULL, NULL, NULL);
+INSERT INTO `m_laboratorium` VALUES (2, 'L002', 'lalala', 100000, '2020-09-17 11:04:30', '2020-09-17 11:27:55', NULL);
+
+-- ----------------------------
+-- Table structure for m_logistik
+-- ----------------------------
+DROP TABLE IF EXISTS `m_logistik`;
+CREATE TABLE `m_logistik`  (
+  `id_logistik` int(32) NOT NULL AUTO_INCREMENT,
+  `kode_logistik` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `nama_logistik` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `harga_beli` int(100) NULL DEFAULT NULL,
+  `harga_jual` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `stok` int(255) NULL DEFAULT NULL,
+  `id_jenis_logistik` int(32) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id_logistik`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of m_logistik
+-- ----------------------------
+INSERT INTO `m_logistik` VALUES (1, '001', 'Oskadon', 1000, '1500', 250, 1, NULL, '2020-10-11 14:44:42', NULL);
+INSERT INTO `m_logistik` VALUES (2, '002', 'Masker tes', 1000, '2000', 5, 2, '2020-09-15 11:54:34', '2020-09-15 13:48:10', NULL);
 
 -- ----------------------------
 -- Table structure for m_menu
@@ -227,6 +292,7 @@ CREATE TABLE `m_pasien`  (
 -- ----------------------------
 INSERT INTO `m_pasien` VALUES (5, 'LU.00.01', 'LUCAS', 'MANOKWARI', '1990-02-05', '38128121291219', 'L', 'PAPUA', 'CHEF PAPEDA', 'JALAN AKSJAKSJAKSJA', NULL, NULL, '0812131212121', 1, '2020-09-13 17:53:03', NULL, NULL);
 INSERT INTO `m_pasien` VALUES (6, 'YO.00.01', 'YONO', 'surabaya', '2000-01-04', '1271827182718211', 'L', 'jawa', 'macul', 'asaa', '031281821218', NULL, '08121281921829', 1, '2020-09-19 20:28:52', NULL, NULL);
+INSERT INTO `m_pasien` VALUES (7, 'AN.00.01', 'ANWAR', 'surabaya', '1990-03-03', '3578219291829119', 'L', 'bangladesh', 'BURUH PABRIK', 'jalan jalan', NULL, NULL, '081271927192', 1, '2020-10-11 14:47:17', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_pegawai
@@ -342,7 +408,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-10-07 23:09:19', 'user_default.png', '2020-09-06 20:18:00', '2020-10-07 23:09:19', NULL);
+INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-10-11 20:00:50', 'user_default.png', '2020-09-06 20:18:00', '2020-10-11 20:00:50', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
 
@@ -361,11 +427,13 @@ CREATE TABLE `t_diagnosa`  (
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_diagnosa
 -- ----------------------------
+INSERT INTO `t_diagnosa` VALUES (1, 2, 5, '1', '1', '2020-10-09', '2020-10-09 00:19:42', NULL, NULL);
+INSERT INTO `t_diagnosa` VALUES (2, 4, 7, '1', '1', '2020-10-11', '2020-10-11 14:48:47', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_diagnosa_det
@@ -376,11 +444,106 @@ CREATE TABLE `t_diagnosa_det`  (
   `id_t_diagnosa` int(64) NULL DEFAULT NULL,
   `id_diagnosa` int(32) NULL DEFAULT NULL,
   `gigi` int(32) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_diagnosa_det
+-- ----------------------------
+INSERT INTO `t_diagnosa_det` VALUES (11, 1, 1, 0, '2020-10-10 11:16:26', NULL, NULL);
+INSERT INTO `t_diagnosa_det` VALUES (12, 1, 2, 6, '2020-10-10 20:13:09', NULL, NULL);
+INSERT INTO `t_diagnosa_det` VALUES (16, 2, 1, 3, '2020-10-11 14:48:47', NULL, NULL);
+INSERT INTO `t_diagnosa_det` VALUES (17, 2, 2, 4, '2020-10-11 14:48:57', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for t_logistik
+-- ----------------------------
+DROP TABLE IF EXISTS `t_logistik`;
+CREATE TABLE `t_logistik`  (
+  `id` int(64) NOT NULL AUTO_INCREMENT,
+  `id_reg` int(64) NULL DEFAULT NULL,
+  `id_pasien` int(11) NULL DEFAULT NULL,
+  `id_pegawai` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `id_user_adm` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tanggal` date NULL DEFAULT NULL,
+  `keterangan_resep` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_logistik
+-- ----------------------------
+INSERT INTO `t_logistik` VALUES (1, 4, 7, '1', '1', '2020-10-11', 'Junaedi', '2020-10-11 21:31:16', '2020-10-11 21:36:04', NULL);
+
+-- ----------------------------
+-- Table structure for t_logistik_det
+-- ----------------------------
+DROP TABLE IF EXISTS `t_logistik_det`;
+CREATE TABLE `t_logistik_det`  (
+  `id` int(64) NOT NULL AUTO_INCREMENT,
+  `id_t_logistik` int(64) NULL DEFAULT NULL,
+  `id_logistik` int(32) NULL DEFAULT NULL,
+  `qty` int(32) NULL DEFAULT NULL,
+  `harga` float(20, 2) NULL DEFAULT NULL,
+  `subtotal` float(20, 2) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_logistik_det
+-- ----------------------------
+INSERT INTO `t_logistik_det` VALUES (1, 1, 1, 4, 1500.00, 6000.00, '2020-10-11 21:31:16', NULL, NULL);
+INSERT INTO `t_logistik_det` VALUES (2, 1, 2, 10, 2000.00, 20000.00, '2020-10-11 21:31:25', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for t_mutasi
+-- ----------------------------
+DROP TABLE IF EXISTS `t_mutasi`;
+CREATE TABLE `t_mutasi`  (
+  `id` int(64) NOT NULL,
+  `tanggal` date NULL DEFAULT NULL,
+  `jenis` int(1) NULL DEFAULT NULL COMMENT '1: pemasukan, 2: pengeluaran, 3: penjualan, 4: pembelian',
+  `id_logistik` int(32) NULL DEFAULT NULL,
+  `id_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `grand_total` float(20, 2) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_mutasi
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_mutasi_det
+-- ----------------------------
+DROP TABLE IF EXISTS `t_mutasi_det`;
+CREATE TABLE `t_mutasi_det`  (
+  `id` int(64) NOT NULL,
+  `id_mutasi` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `qty` int(32) NULL DEFAULT NULL,
+  `harga` double(20, 2) NULL DEFAULT NULL,
+  `subtotal` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_mutasi_det
 -- ----------------------------
 
 -- ----------------------------
@@ -404,6 +567,7 @@ CREATE TABLE `t_perawatan`  (
 -- Records of t_perawatan
 -- ----------------------------
 INSERT INTO `t_perawatan` VALUES (1, 2, 5, '1', '2020-10-04', '<p>Perawatan&nbsp;</p>\n\n<p>1. ajkajska</p>\n\n<p>2. kjdkajdks</p>\n\n<p>3. biasalah</p>\n', '2020-10-04 21:30:14', '2020-10-06 23:12:39', NULL);
+INSERT INTO `t_perawatan` VALUES (2, 4, 7, '1', '2020-10-11', '<p>1. ketuhanan yang maha esa</p>\n\n<p>2. kemanusiaan yang adil dan beradap</p>\n', '2020-10-11 14:48:39', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_registrasi
@@ -436,6 +600,7 @@ CREATE TABLE `t_registrasi`  (
 INSERT INTO `t_registrasi` VALUES (1, '6', '000.000.000.001', '2020-09-19', '22:55:45', '1', '1', '20', '3', '6', '1iaosiaosi', NULL, NULL, NULL, '2020-09-19 22:55:55', '2020-09-20 23:45:20', NULL);
 INSERT INTO `t_registrasi` VALUES (2, '5', '000.000.000.002', '2020-09-19', '22:56:00', '1', '1', '30', '3', '1', 'gak cair bpjs e', NULL, NULL, NULL, '2020-09-19 22:56:22', '2020-09-21 13:29:48', NULL);
 INSERT INTO `t_registrasi` VALUES (3, '6', '000.000.000.003', '2020-09-24', '13:01:45', '1', NULL, '20', '3', NULL, NULL, NULL, NULL, NULL, '2020-09-26 13:02:04', NULL, NULL);
+INSERT INTO `t_registrasi` VALUES (4, '7', '000.000.000.004', '2020-10-11', '14:47:30', '1', '1', '30', '3', '1', '1213121212121', NULL, NULL, NULL, '2020-10-11 14:48:02', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu
@@ -486,5 +651,52 @@ INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (24, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (25, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (26, 1, 1, 1, 1);
+
+-- ----------------------------
+-- Table structure for t_tindakan
+-- ----------------------------
+DROP TABLE IF EXISTS `t_tindakan`;
+CREATE TABLE `t_tindakan`  (
+  `id` int(64) NOT NULL AUTO_INCREMENT,
+  `id_reg` int(64) NULL DEFAULT NULL,
+  `id_pasien` int(11) NULL DEFAULT NULL,
+  `id_pegawai` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `id_user_adm` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tanggal` date NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_tindakan
+-- ----------------------------
+INSERT INTO `t_tindakan` VALUES (2, 2, 5, '1', '1', '2020-10-10', '2020-10-10 23:43:33', NULL, NULL);
+INSERT INTO `t_tindakan` VALUES (3, 4, 7, '1', '1', '2020-10-11', '2020-10-11 14:49:10', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for t_tindakan_det
+-- ----------------------------
+DROP TABLE IF EXISTS `t_tindakan_det`;
+CREATE TABLE `t_tindakan_det`  (
+  `id` int(64) NOT NULL AUTO_INCREMENT,
+  `id_t_tindakan` int(64) NULL DEFAULT NULL,
+  `id_tindakan` int(32) NULL DEFAULT NULL,
+  `gigi` int(32) NULL DEFAULT NULL,
+  `harga` float(20, 2) NULL DEFAULT NULL,
+  `keterangan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `deleted_at` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_tindakan_det
+-- ----------------------------
+INSERT INTO `t_tindakan_det` VALUES (5, 2, 1, 11, 100000.00, '', '2020-10-11 10:33:42', NULL, NULL);
+INSERT INTO `t_tindakan_det` VALUES (9, 3, 1, 1, 100000.00, '', '2020-10-11 14:49:10', NULL, NULL);
+INSERT INTO `t_tindakan_det` VALUES (10, 3, 2, 11, 50000.00, '', '2020-10-11 14:49:17', NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
