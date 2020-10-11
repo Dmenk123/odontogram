@@ -1,13 +1,13 @@
 $(document).ready(function() {
 
-    $("#diagnosa").select2({
+    $("#tindakan").select2({
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
         minimumInputLength: 0,
         minimumResultsForSearch: 5,
         ajax: {
-            url: base_url+'master_diagnosa/get_select_diagnosa',
+            url: base_url+'master_tindakan/get_select_tindakan',
             dataType: "json",
             type: "GET",
             data: function (params) {
@@ -24,7 +24,9 @@ $(document).ready(function() {
                             text: item.text,
                             id: item.id,
                             kode: item.kode,
-                            html: item.html
+                            nama: item.nama,
+                            harga: item.harga,
+                            harga_raw: item.harga_raw
                         }
                     })
                 };
@@ -32,25 +34,22 @@ $(document).ready(function() {
         }
     });
 
-    // $('#diagnosa').on('select2:selecting', function(e) {
-        // let data = e.params.args.data;
+    $('#tindakan').on('select2:selecting', function(e) {
+        let data = e.params.args.data;
         
-        // $('#nik').val(data.nik);
-        // $('#no_rm').val(data.no_rm);
-        // $('#tempat_lahir').val(data.tempat_lahir);
-        // let tgl_lhr = data.tanggal_lahir;
-        // $('#tanggal_lahir').val(tgl_lhr.split("-").reverse().join("/"));
-        // $('#umur_reg').val(data.umur);
-        // $('#pemetaan').val(data.pemetaan);
-    // });
+        $("#form_tindakan input[name='tdk_kode']").val(data.kode);
+        $("#form_tindakan input[name='tdk_tindakan']").val(data.nama);
+        $("#form_tindakan input[name='tdk_harga']").val(data.harga);
+        $("#form_tindakan input[name='tdk_harga_raw']").val(data.harga_raw);
+    });
     
 });
 
-function reloadFormDiagnosa(){
+function reloadFormTindakan(){
     $('#CssLoader').removeClass('hidden');
     $.ajax({
         type: "post",
-        url: base_url+"rekam_medik/load_form_diagnosa",
+        url: base_url+"rekam_medik/load_form_tindakan",
         data: {
             id_peg: id_peg,
             id_psn: id_psn,
@@ -59,15 +58,15 @@ function reloadFormDiagnosa(){
         dataType: "json",
         success: function (response) {
            $('#CssLoader').addClass('hidden');
-           $('#tabel_modal_diagnosa tbody').html(response.html);
+           $('#tabel_modal_tindakan tbody').html(response.html);
         }
     });
 }
 
 
-function hapus_diagnosa_det(id) {
+function hapus_tindakan_det(id) {
     swalConfirmDelete.fire({
-        title: 'Hapus Data Diagnosa ?',
+        title: 'Hapus Data Tindakan ?',
         text: "Data Akan dihapus ?",
         type: 'warning',
         showCancelButton: true,
@@ -77,14 +76,14 @@ function hapus_diagnosa_det(id) {
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'rekam_medik/delete_data_diagnosa_det',
+                url : base_url + 'rekam_medik/delete_data_tindakan_det',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
                 success: function(data)
                 {
                     swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
-                    reloadFormDiagnosa();
+                    reloadFormTindakan();
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

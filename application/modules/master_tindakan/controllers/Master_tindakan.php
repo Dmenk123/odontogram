@@ -75,30 +75,7 @@ class Master_tindakan extends CI_Controller {
 						</button>
 			';
 
-			// if ($peg->is_aktif == 1) {
-			// 	$str_aksi .=
-			// 	'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$diag->id_diagnosa.'" value="aktif"><i class="la la-check">
-			// 	</i> Aktif</button>';
-			// }else{
-			// 	$str_aksi .=
-			// 	'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$diag->id_diagnosa.'" value="nonaktif"><i class="la la-close">
-			// 	</i> Non Aktif</button>';
-			// }	
-
-			// $str_aksi .= '</div></div>';
-		
-
 			$row[] = $str_aksi;
-
-			// if ($peg->is_aktif == 1) {
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-success btn_edit_status" href="javascript:void(0)" title="aktif" id="'.$peg->id.'" value="aktif">Aktif</i></button>';
-			// }else{
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-danger btn_edit_status" href="javascript:void(0)" title="nonaktif" id="'.$peg->id.'" value="nonaktif">Non Aktif</button>';
-			// }
 
 			$data[] = $row;
 
@@ -486,6 +463,27 @@ class Master_tindakan extends CI_Controller {
 		$html = $this->load->view('pdf', $retval, true);
 	    $filename = 'master_data_tindakan_'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
+	}
+
+	public function get_select_tindakan()
+	{
+		$term = $this->input->get('term');
+		$data_tindakan = $this->m_global->multi_row('*', ['deleted_at' => null, 'nama_tindakan like' => '%'.$term.'%'], 'm_tindakan', null, 'nama_tindakan');
+		if($data_tindakan) {
+			foreach ($data_tindakan as $key => $value) {
+				$row['id'] = $value->id_tindakan;
+				$row['text'] = $value->kode_tindakan.' - '.$value->nama_tindakan;
+				$row['kode'] = $value->kode_tindakan;
+				$row['nama'] = $value->nama_tindakan;
+				$row['harga'] = number_format($value->harga,0,',','.');
+				$row['harga_raw'] = $value->harga;
+
+				$retval[] = $row;
+			}
+		}else{
+			$retval = false;
+		}
+		echo json_encode($retval);
 	}
 
 	// ===============================================

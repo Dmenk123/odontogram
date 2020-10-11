@@ -105,6 +105,10 @@ function save(id_form)
                 $('#btnSave').text('Simpan');      
                 if(id_form == 'form_diagnosa') {
                     reloadFormDiagnosa();
+                }else if(id_form == 'form_tindakan'){
+                    reloadFormTindakan();
+                }else if(id_form == 'form_logistik'){
+                    reloadFormLogistik();
                 }else{
                     $('#'+activeModal).modal('hide');
                 }       
@@ -155,6 +159,10 @@ function cekDanSetValue(txt_div_modal){
             $("#form_anamnesa textarea[name='anamnesa']").val(objData.data.anamnesa);
         }else if(objData.menu == 'diagnosa'){
             reloadFormDiagnosa();
+        }else if(objData.menu == 'tindakan'){
+            reloadFormTindakan();
+        }else if(objData.menu == 'logistik'){
+            reloadFormLogistik();
         }
     }
     

@@ -127,7 +127,7 @@ $obj_date = new DateTime();
               </div>
             </div>
             
-            <div class="col-lg-3 div_menu" data-id="div_obat" style="cursor:pointer">
+            <div class="col-lg-3 div_menu" data-id="div_logistik" style="cursor:pointer">
               <div class="kt-portlet kt-iconbox kt-iconbox--wave">
                 <div class="kt-portlet__body">
                   <div class="kt-iconbox__body">

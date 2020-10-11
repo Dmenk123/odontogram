@@ -80,31 +80,7 @@ class Master_logistik extends CI_Controller {
 						</button>
 			';
 
-			// if ($peg->is_aktif == 1) {
-			// 	$str_aksi .=
-			// 	'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$diag->id_diagnosa.'" value="aktif"><i class="la la-check">
-			// 	</i> Aktif</button>';
-			// }else{
-			// 	$str_aksi .=
-			// 	'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$diag->id_diagnosa.'" value="nonaktif"><i class="la la-close">
-			// 	</i> Non Aktif</button>';
-			// }	
-
-			// $str_aksi .= '</div></div>';
-		
-
 			$row[] = $str_aksi;
-
-			// if ($peg->is_aktif == 1) {
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-success btn_edit_status" href="javascript:void(0)" title="aktif" id="'.$peg->id.'" value="aktif">Aktif</i></button>';
-			// }else{
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-danger btn_edit_status" href="javascript:void(0)" title="nonaktif" id="'.$peg->id.'" value="nonaktif">Non Aktif</button>';
-			// }
-
 			$data[] = $row;
 
 		}//end loop
@@ -620,6 +596,27 @@ class Master_logistik extends CI_Controller {
 		$html = $this->load->view('pdf', $retval, true);
 	    $filename = 'master_data_logistik_'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
+	}
+
+	public function get_select_logistik()
+	{
+		$term = $this->input->get('term');
+		$data_logistik = $this->m_global->multi_row('*', ['deleted_at' => null, 'nama_logistik like' => '%'.$term.'%'], 'm_logistik', null, 'nama_logistik');
+		if($data_logistik) {
+			foreach ($data_logistik as $key => $value) {
+				$row['id'] = $value->id_logistik;
+				$row['text'] = $value->kode_logistik.' - '.$value->nama_logistik;
+				$row['kode'] = $value->kode_logistik;
+				$row['nama'] = $value->nama_logistik;
+				$row['harga_jual_raw'] = (float)$value->harga_jual;
+				$row['id_jenis_logistik'] =$value->id_jenis_logistik;
+
+				$retval[] = $row;
+			}
+		}else{
+			$retval = false;
+		}
+		echo json_encode($retval);
 	}
 
 	// ===============================================

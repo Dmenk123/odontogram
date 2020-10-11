@@ -36,8 +36,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto'],
-			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
@@ -141,6 +141,43 @@ class Rekam_medik extends CI_Controller {
 		
 	}
 
+	public function get_old_data()
+	{
+		$id_peg = $this->input->post('id_peg');
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$menu = $this->input->post('menu');
+		 
+		switch ($menu) {
+			case 'anamnesa':
+				$select = "*";
+				$where = ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg];
+				$table = 't_perawatan';
+				$datanya = $this->m_global->single_row($select,$where,$table);
+				
+				echo json_encode(['data'=>$datanya, 'status' => true, 'menu' => 'anamnesa']);
+				break;
+
+			case 'diagnosa':
+				echo json_encode(['menu' => 'diagnosa']);
+				break;
+			
+			case 'tindakan':
+				echo json_encode(['menu' => 'tindakan']);
+				break;
+
+			case 'logistik':
+				echo json_encode(['menu' => 'logistik']);
+				break;
+			
+			default:
+				$datanya = null;
+				echo json_encode(['data'=> null, 'status' => false, 'menu' => false]);
+				break;
+		}
+	}
+
+	///////////////////// start anamnesa grup ////////////////////
 	public function simpan_form_anamnesa()
 	{
 
@@ -189,35 +226,9 @@ class Rekam_medik extends CI_Controller {
 
 		echo json_encode($retval);
 	}
+	///////////////////// end anamnesa grup ////////////////////
 
-	public function get_old_data()
-	{
-		$id_peg = $this->input->post('id_peg');
-		$id_psn = $this->input->post('id_psn');
-		$id_reg = $this->input->post('id_reg');
-		$menu = $this->input->post('menu');
-		 
-		switch ($menu) {
-			case 'anamnesa':
-				$select = "*";
-				$where = ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg];
-				$table = 't_perawatan';
-				$datanya = $this->m_global->single_row($select,$where,$table);
-				
-				echo json_encode(['data'=>$datanya, 'status' => true, 'menu' => 'anamnesa']);
-				break;
-
-			case 'diagnosa':
-				echo json_encode(['menu' => 'diagnosa']);
-				break;
-			
-			default:
-				$datanya = null;
-				echo json_encode(['data'=> null, 'status' => false, 'menu' => false]);
-				break;
-		}
-	}
-
+	///////////////////////////// start diagnosa grup ///////////////////////////////////
 	public function simpan_form_diagnosa()
 	{
 		$obj_date = new DateTime();
@@ -298,7 +309,7 @@ class Rekam_medik extends CI_Controller {
 		if($data){
 			foreach ($data as $key => $value) {
 				if($value->kode_diagnosa){
-					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_diagnosa.'</td><td>'.$value->nama_diagnosa.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_asuransi_det(\''.$value->id_diagnosa_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_diagnosa.'</td><td>'.$value->nama_diagnosa.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\''.$value->id_diagnosa_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				}
 				
 			}
@@ -309,7 +320,7 @@ class Rekam_medik extends CI_Controller {
 		]);
 	}
 
-	public function delete_data_asuransi_det()
+	public function delete_data_diagnosa_det()
 	{
 		$id = $this->input->post('id');
 		$hapus = $this->m_global->delete(['id' => $id], 't_diagnosa_det');
@@ -327,6 +338,246 @@ class Rekam_medik extends CI_Controller {
 
 		echo json_encode($data);
 	}
+	///////////////////////////// end diagnosa grup ///////////////////////////////////
+
+	///////////////////// start tindakan grup ////////////////////
+	public function simpan_form_tindakan()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		if($this->input->post('tindakan') == '') {
+			echo json_encode([
+				'status'=> true,
+				'pesan' => 'wajib memilih tindakan'
+			]);
+			return;
+		}
+
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$id_tindakan = $this->input->post('tindakan');
+		$ket = $this->input->post('tdk_ket');
+		$gigi = $this->input->post('tdk_gigi');
+		$harga = $this->input->post('tdk_harga_raw');
+		
+		//cek sudah ada data / tidak
+		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		if(!$data){
+			###insert
+			$data = [
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'created_at' => $timestamp
+			];
+						
+			$insert = $this->t_rekam_medik->save($data, 't_tindakan');
+			// $pesan = 'Sukses Menambah data Perawatan';
+		}
+
+		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		$data_det = [
+			'id_t_tindakan' => $cek_tindakan->id,
+			'id_tindakan' => $id_tindakan,
+			'gigi' => $gigi,
+			'harga' => (float)$harga,
+			'keterangan' => $ket,
+			'created_at' => $timestamp
+		];
+
+		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
+
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Data';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Menambah Data';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function load_form_tindakan()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		
+		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan";
+		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg];
+		$table = 't_tindakan as d';
+		$join = [ 
+			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
+			['table' => 'm_tindakan as mt', 'on' => 'dt.id_tindakan = mt.id_tindakan']
+		];
+
+		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		$html = '';
+		$harga = 0;
+		if($data){
+			foreach ($data as $key => $value) {
+				if($value->kode_tindakan){
+					$harga += (float)$value->harga;
+					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_tindakan.'</td><td>'.$value->nama_tindakan.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakan_det(\''.$value->id_tindakan_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+				}				
+			}
+			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($harga,2,',','.').'</strong></td></tr>';
+		}
+
+		echo json_encode([
+			'html' => $html
+		]);
+	}
+
+	public function delete_data_tindakan_det()
+	{
+		$id = $this->input->post('id');
+		$hapus = $this->m_global->delete(['id' => $id], 't_tindakan_det');
+		if($hapus) {
+			$data = [
+				'status' => true,
+				'pesan' => 'Berhasil Hapus Data',
+			];
+		}else{
+			$data = [
+				'status' => false,
+				'pesan' => 'Gagal Hapus Data',
+			];
+		}
+
+		echo json_encode($data);
+	}
+	///////////////////// end tindakan grup ////////////////////
+
+	///////////////////// start logistik grup ////////////////////
+	public function simpan_form_logistik()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		if($this->input->post('qty_obat') == '') {
+			echo json_encode([
+				'status'=> true,
+				'pesan' => 'wajib Mengisi Qty'
+			]);
+			return;
+		}
+
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$logistik = $this->input->post('logistik');
+		$qty_obat = $this->input->post('qty_obat');
+		$ket_resep = $this->input->post('ket_resep');
+		$harga_jual_raw = $this->input->post('harga_jual_raw');
+		
+				
+		//cek sudah ada data / tidak
+		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
+		if(!$data){
+			###insert
+			$data = [
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'created_at' => $timestamp,
+				'keterangan_resep' => $ket_resep
+			];
+						
+			$insert = $this->t_rekam_medik->save($data, 't_logistik');
+		}else{
+			###update
+			$update = $this->t_rekam_medik->update(['id' => $data->id], ['updated_at' => $timestamp, 'keterangan_resep' => $ket_resep], 't_logistik');
+		}
+
+		$cek_logistik = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
+		$data_det = [
+			'id_t_logistik' => $cek_logistik->id,
+			'id_logistik' => $logistik,
+			'qty' => $qty_obat,
+			'harga' => (float)$harga_jual_raw,
+			'subtotal' => (float)$harga_jual_raw * (int)$qty_obat,
+			'created_at' => $timestamp
+		];
+
+		$insert_det = $this->t_rekam_medik->save($data_det, 't_logistik_det');
+
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Data';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Menambah Data';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function load_form_logistik()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		
+		$select = "tl.*, tld.id as id_logistik_det, tld.id_logistik, tld.qty, tld.harga, tld.subtotal, ml.kode_logistik, ml.nama_logistik, mjl.jenis as jenis_logistik";
+		$where = ['tl.id_reg' => $id_reg, 'tl.id_pasien' => $id_psn, 'tl.id_pegawai' => $id_peg];
+		$table = 't_logistik as tl';
+		$join = [ 
+			['table' => 't_logistik_det as tld', 'on' => 'tl.id = tld.id_t_logistik'],
+			['table' => 'm_logistik as ml', 'on' => 'tld.id_logistik = ml.id_logistik'],
+			['table' => 'm_jenis_logistik as mjl', 'on' => 'ml.id_jenis_logistik = mjl.jenis'],
+		];
+
+		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		$html = '';
+		$grand_total = 0;
+		if($data){
+			foreach ($data as $key => $value) {
+				if($value->kode_logistik){
+					$grand_total += (float)$value->subtotal;
+					$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->jenis_logistik.'</td><td>'.number_format($value->subtotal,0,',','.').'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+				}				
+			}
+			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($grand_total,2,',','.').'</strong></td></tr>';
+		}
+
+		echo json_encode([
+			'html' => $html
+		]);
+	}
+
+	public function delete_data_logistik_det()
+	{
+		$id = $this->input->post('id');
+		$hapus = $this->m_global->delete(['id' => $id], 't_logistik_det');
+		if($hapus) {
+			$data = [
+				'status' => true,
+				'pesan' => 'Berhasil Hapus Data',
+			];
+		}else{
+			$data = [
+				'status' => false,
+				'pesan' => 'Gagal Hapus Data',
+			];
+		}
+
+		echo json_encode($data);
+	}
+	///////////////////// end logistik grup ////////////////////
 
 	///////////////////////////////////////////////////////////////////
 

@@ -1,13 +1,13 @@
 $(document).ready(function() {
 
-    $("#diagnosa").select2({
+    $("#logistik").select2({
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
         minimumInputLength: 0,
         minimumResultsForSearch: 5,
         ajax: {
-            url: base_url+'master_diagnosa/get_select_diagnosa',
+            url: base_url+'master_logistik/get_select_logistik',
             dataType: "json",
             type: "GET",
             data: function (params) {
@@ -24,7 +24,9 @@ $(document).ready(function() {
                             text: item.text,
                             id: item.id,
                             kode: item.kode,
-                            html: item.html
+                            nama: item.nama,
+                            id_jenis_logistik: item.id_jenis_logistik,
+                            harga_jual_raw: item.harga_jual_raw
                         }
                     })
                 };
@@ -32,25 +34,18 @@ $(document).ready(function() {
         }
     });
 
-    // $('#diagnosa').on('select2:selecting', function(e) {
-        // let data = e.params.args.data;
-        
-        // $('#nik').val(data.nik);
-        // $('#no_rm').val(data.no_rm);
-        // $('#tempat_lahir').val(data.tempat_lahir);
-        // let tgl_lhr = data.tanggal_lahir;
-        // $('#tanggal_lahir').val(tgl_lhr.split("-").reverse().join("/"));
-        // $('#umur_reg').val(data.umur);
-        // $('#pemetaan').val(data.pemetaan);
-    // });
+    $('#logistik').on('select2:selecting', function(e) {
+        let data = e.params.args.data;
+        $("#form_logistik input[name='harga_jual_raw']").val(data.harga_jual_raw);
+    });
     
 });
 
-function reloadFormDiagnosa(){
+function reloadFormLogistik(){
     $('#CssLoader').removeClass('hidden');
     $.ajax({
         type: "post",
-        url: base_url+"rekam_medik/load_form_diagnosa",
+        url: base_url+"rekam_medik/load_form_logistik",
         data: {
             id_peg: id_peg,
             id_psn: id_psn,
@@ -59,15 +54,15 @@ function reloadFormDiagnosa(){
         dataType: "json",
         success: function (response) {
            $('#CssLoader').addClass('hidden');
-           $('#tabel_modal_diagnosa tbody').html(response.html);
+           $('#tabel_modal_logistik tbody').html(response.html);
         }
     });
 }
 
 
-function hapus_diagnosa_det(id) {
+function hapus_logistik_det(id) {
     swalConfirmDelete.fire({
-        title: 'Hapus Data Diagnosa ?',
+        title: 'Hapus Data logistik ?',
         text: "Data Akan dihapus ?",
         type: 'warning',
         showCancelButton: true,
@@ -77,14 +72,14 @@ function hapus_diagnosa_det(id) {
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'rekam_medik/delete_data_diagnosa_det',
+                url : base_url + 'rekam_medik/delete_data_logistik_det',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
                 success: function(data)
                 {
                     swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
-                    reloadFormDiagnosa();
+                    reloadFormLogistik();
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {
