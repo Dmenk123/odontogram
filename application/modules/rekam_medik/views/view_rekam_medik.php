@@ -30,12 +30,12 @@ $obj_date = new DateTime();
           </div>
         </div>
         <div class="kt-portlet__body">
-          <div class="col-md-12 row" style="padding-bottom: 20px;">
-            <div>
+          <div class="col-12 row" style="padding-bottom: 20px;">
+            <div class="col-12">
               <button type="button" class="btn btn-brand" onclick="show_modal_pasien()">Cari Pasien</button>
             </div>
           </div>
-          <div class="col-md-12 table-responsive">
+          <div class="col-12 table-responsive">
             <div class="hidden">
               <input type="hidden" id="id_reg" name="id_reg">
               <input type="hidden" id="id_psn" name="id_psn">

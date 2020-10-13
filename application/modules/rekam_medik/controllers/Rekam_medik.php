@@ -502,6 +502,7 @@ class Rekam_medik extends CI_Controller {
 		}
 
 		$cek_logistik = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
+
 		$data_det = [
 			'id_t_logistik' => $cek_logistik->id,
 			'id_logistik' => $logistik,
@@ -512,6 +513,32 @@ class Rekam_medik extends CI_Controller {
 		];
 
 		$insert_det = $this->t_rekam_medik->save($data_det, 't_logistik_det');
+		
+		$id_jenis_trans = 1;
+		$id_trans_flag = $cek_logistik->id;
+		$flag_transaksi = 2;
+		$data_raw = $this->m_global->multi_row('tl.*, tld.id as id_logistik_det, tld.id_logistik, tld.qty, tld.harga, tld.subtotal', ['tl.id' => $cek_logistik->id], 't_logistik as tl', [['table' => 't_logistik_det as tld', 'on' => 'tl.id = tld.id_t_logistik']]);
+		
+		if($data_raw) {
+			$harga_total = 0;
+			foreach ($data_raw as $key => $val) {
+				if($val->subtotal){
+					$harga_total += $val->subtotal;	
+				}
+			}
+		}
+
+		$datanya = ['harga_total' => $harga_total];
+		
+		$mutasi = $this->lib_mutasi->simpan_mutasi($id_jenis_trans, $id_trans_flag, $datanya, $flag_transaksi);
+		
+		if($mutasi == false) {
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Data';
+			echo json_encode($retval);
+			return;
+		}
 
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -528,6 +555,7 @@ class Rekam_medik extends CI_Controller {
 
 	public function load_form_logistik()
 	{
+		// $this->lib_mutasi->simpan_mutasi(1, 1);
 		$id_psn = $this->input->post('id_psn');
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');

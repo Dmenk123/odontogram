@@ -57,7 +57,7 @@
                   <label class="col-12 col-form-label">Keterangan :</label>
                 </div>
                 <div class="col-12">
-                  <input type="text" class="form-control" id="ket_resep" name="ket_resep" value="">   
+                  <input type="text" class="form-control" id="ket_resep" name="ket_resep" value="" autocomplete="off">   
                 </div>
               </div>
               

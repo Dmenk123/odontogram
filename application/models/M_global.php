@@ -142,5 +142,10 @@ class M_global extends CI_Model
 
         return $this->db->get($table);
     }
+
+    public function save($data, $table)
+	{
+		return $this->db->insert($table, $data);	
+	}
 		
 }
