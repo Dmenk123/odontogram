@@ -5,6 +5,22 @@
   polyline {
     z-index: 999;
   }
+  .main-border{
+      border:2px solid;
+      position:relative;
+      width:300px;
+      height:50px;
+      top:10px;
+
+  }
+  .sub{
+      
+      position:absolute;
+      right:10px;
+      top:-10px;
+      z-index:99;
+      background-color: #fff;
+  }
 </style>
 <div class="modal fade modal_detail" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="div_odonto_modal">
   <div class="modal-dialog modal-lg odonto-modal" role="document">
@@ -80,6 +96,7 @@
                         <line id="barispertamajembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="barispertamajembtengah<?=$x;?>" x1="0" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <polyline id="barispertamasegitiga<?=$x;?>" points="13,80 45,80 29,103 13,80" style="fill:black;stroke:black;stroke-width:1;display:none;" />
+                        <polyline id="barispertamapanahkiri<?=$x;?>" points="13,5 13,10 8,5 13,1 13,5 43,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
                         <polyline id="barispertamapanahkanan<?=$x;?>" points="45,5 45,10 50,5 45,1 45,5 15,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
                         <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
                         <text x="17" y="20" id="barispertamapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
@@ -151,21 +168,28 @@
                           <button class="button split btn-default pull-right" style="width: 155px;" id="outline">Mahkota Logam</button>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          &nbsp;
+                      
+                        <div class="main-border">
+                            <div class="row" style="padding-top:10px;">
+                              <div class="col-sm-3">
+                                &nbsp;
+                              </div>
+                              <div class="col-sm-3">
+                                <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_kiri"><---</button>
+                              </div>
+                              <div  class="col-sm-3">
+                                <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_tengah">----</button>
+                              </div>
+                              <div class="col-sm-3">
+                                <button class="button split btn-default pull-right" style="width: 75px;" id="jemb_kanan">---></button>
+                              </div>
+                            </div>
+                            <div class="sub">
+                                Jembatan
+                            </div>
                         </div>
-                        <div class="col-sm-3">
-                          <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_kiri"><---</button>
-                        </div>
-                        <div  class="col-sm-3">
-                          <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_tengah">----</button>
-                        </div>
-                        <div class="col-sm-3">
-                          <button class="button split btn-default pull-right" style="width: 75px;" id="jemb_kanan">---></button>
-                        </div>
-                      </div>
-                      <div class="row">
+
+                      <div class="row" style="padding-top:20px;">
                         <div class="col-sm-4" style="padding-left:80px;">
                           <span><img src="<?php echo base_url('assets/images/non_logam.png');?>" width="20px;" height="20px;"></span>
                         </div>
@@ -174,6 +198,7 @@
                         </div>
                       </div>
                       <button class="button split btn-default" id="panah_kanan">panah kanan</button>
+                      <button class="button split btn-default" id="panah_kiri">panah kiri</button>
                     </div>
                     <div class="col-sm-3">
                       <div class="row">

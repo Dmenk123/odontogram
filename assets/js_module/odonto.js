@@ -56,6 +56,9 @@ $('#segitiga').click(function(){
 $('#panah_kanan').click(function(){
     $('#pilihanwarna').val('panah_kanan');
 });
+$('#panah_kiri').click(function(){
+    $('#pilihanwarna').val('panah_kiri');
+});
 $('#non_vital').click(function(){
     $('#pilihanwarna').val('non_vital');
 });
@@ -107,6 +110,8 @@ $( document ).ready(function() {
                 $("#barispertamasegitiga1").css("display", "block");
             }else if (hasil == 'panah_kanan') {
                 $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'panah_kiri') {
+                $("#barispertamapanahkiri1").css("display", "block");
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
@@ -171,6 +176,8 @@ $( document ).ready(function() {
                 $("#barispertamasegitiga1").css("display", "block");
             }else if (hasil == 'panah_kanan') {
                 $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'panah_kiri') {
+                $("#barispertamapanahkiri1").css("display", "block");
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
@@ -220,6 +227,8 @@ $( document ).ready(function() {
                 $("#barispertamasegitiga1").css("display", "block");
             }else if (hasil == 'panah_kanan') {
                 $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'panah_kiri') {
+                $("#barispertamapanahkiri1").css("display", "block");
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
@@ -269,6 +278,8 @@ $( document ).ready(function() {
                 $("#barispertamasegitiga1").css("display", "block");
             }else if (hasil == 'panah_kanan') {
                 $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'panah_kiri') {
+                $("#barispertamapanahkiri1").css("display", "block");
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
@@ -318,6 +329,8 @@ $( document ).ready(function() {
                 $("#barispertamasegitiga1").css("display", "block");
             }else if (hasil == 'panah_kanan') {
                 $("#barispertamapanahkanan1").css("display", "block");
+            }else if (hasil == 'panah_kiri') {
+                $("#barispertamapanahkiri1").css("display", "block");
             }else if (hasil == 'non_vital') {
                 $("#barispertamasegitiga1").css("display", "block");
                 $("#barispertamasegitiga1").css("fill", "white");
