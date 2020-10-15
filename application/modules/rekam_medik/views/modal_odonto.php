@@ -21,6 +21,8 @@
       z-index:99;
       background-color: #fff;
   }
+  .st0{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st1{stroke:#000000;stroke-miterlimit:10;}
 </style>
 <div class="modal fade modal_detail" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="div_odonto_modal">
   <div class="modal-dialog modal-lg odonto-modal" role="document">
@@ -98,6 +100,10 @@
                         <polyline id="barispertamasegitiga<?=$x;?>" points="13,80 45,80 29,103 13,80" style="fill:black;stroke:black;stroke-width:1;display:none;" />
                         <polyline id="barispertamapanahkiri<?=$x;?>" points="13,5 13,10 8,5 13,1 13,5 43,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
                         <polyline id="barispertamapanahkanan<?=$x;?>" points="45,5 45,10 50,5 45,1 45,5 15,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
+                        <polyline id="barispertamalengkungatas1<?=$x;?>" class="st0" points="16,15 11,14 10,13 8,9 9,8 10,6 12,5 14,3 16,3 20,2 25,1 28,1 33,2 36,3" style="display:none;"  />
+                        <polyline id="barispertamalengkungatas2<?=$x;?>" points="36,3 35,8 42,5 37,1" style="fill:black;stroke:black;stroke-width:1;display:none;"  />
+                        <polyline id="barispertamalengkungbawah1<?=$x;?>" class="st0" points="16,93 11,95 10,97 8,99 9,103 10,104 12,105 14,107 16,107 20,108 25,109 30,109 33,108 36,107" style="display:none;"  />
+                        <polyline id="barispertamalengkungbawah2<?=$x;?>"  points="36,107 38,112 40,105 32,102 36,107" style="fill:black;stroke:black;stroke-width:1;display:none;"  /> 
                         <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
                         <text x="17" y="20" id="barispertamapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                         <text x="17" y="20" id="barispertamaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
@@ -154,7 +160,7 @@
                     <div class="col-sm-3">
                       <div class="row">
                         <div class="col-sm-4" style="padding-left:80px;">
-                          <span></span>
+                          <span><img src="<?php echo base_url('assets/images/crash.png');?>" width="20px;" height="20px;"></span>
                         </div>
                         <div  class="col-sm-8">
                           <button class="button split btn-default pull-right" style="width: 155px;" id="crash" >Fractured</button>
@@ -253,7 +259,7 @@
                       </div>
                       <div class="row">
                         <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/sea.png');?>" width="20px;" height="20px;"></span>
+                          <span><img src="<?php echo base_url('assets/images/akar.png');?>" width="20px;" height="20px;"></span>
                         </div>
                         <div  class="col-sm-8">
                           <button class="button split btn-default pull-right" style="width: 165px;" id="akar">Sisa Akar</button>
