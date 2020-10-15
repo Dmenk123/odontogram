@@ -23,6 +23,7 @@
   }
   .st0{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
 	.st1{stroke:#000000;stroke-miterlimit:10;}
+  .canvas{z-index:-9999;}
 </style>
 <div class="modal fade modal_detail" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="div_odonto_modal">
   <div class="modal-dialog modal-lg odonto-modal" role="document">
@@ -44,7 +45,7 @@
             </ul>
             <div class="tab-content padding-vertical-20">
                 <div class="tab-pane active" id="all" role="tabpanel">
-                    <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;">
+                    <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;" id="html-content-holder">
                     <?php 
                       $angka = array(
                                 '1' => '18',
@@ -64,6 +65,7 @@
                                 '15' => '27',
                                 '16' => '28',
                       );
+                      
                       for ($x = 1; $x <= 16; $x++) { 
                         if($x == 8){
                           $lebar = 90;
@@ -111,6 +113,8 @@
                       </svg>
                     <?php } ?>
                   </div>
+                 
+                  <div id="previewImage" style="display: none;"></div>
                   <div class="row" style="padding-top:20px;">
                     <div class="col-sm-3">
                       <div >
@@ -271,6 +275,12 @@
                         </div>
                         <div  class="col-sm-8">
                           <button class="button split btn-default pull-right" style="width: 165px;" id="silang">Gigi Hilang</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        
+                        <div  class="col-sm-12">
+                          <a id="btn-Convert-Html2Image" href="#">Download</a>
                         </div>
                       </div>
                     </div>
