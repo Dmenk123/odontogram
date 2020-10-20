@@ -114,7 +114,7 @@
                     <?php } ?>
                   </div>
                  
-                  <div id="previewImage" style="display: none;"></div>
+                  <div id="previewImage" style="display: block;"></div>
                   <div class="row" style="padding-top:20px;">
                     <div class="col-sm-3">
                       <div >
@@ -280,7 +280,9 @@
                       <div class="row">
                         
                         <div  class="col-sm-12">
-                          <a id="btn-Convert-Html2Image" href="#">Download</a>
+                        <input id="btn-Preview-Image" type="button" value="Preview"/>
+                        <a id="btn-Convert-Html2Image" href="#">Download</a>
+                         
                         </div>
                       </div>
                     </div>
