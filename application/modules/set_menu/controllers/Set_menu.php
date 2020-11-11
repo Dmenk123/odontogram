@@ -7,7 +7,7 @@ class Set_menu extends CI_Controller {
 	{
 		parent::__construct();
 		//profil data
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->model('m_set_menu','m_menu');
 
 		

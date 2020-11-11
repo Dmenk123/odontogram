@@ -33,15 +33,15 @@
       <div class="kt-portlet__body">
 
         <!--begin: Datatable -->
-        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_user">
+        <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_data">
           <thead>
             <tr>
               <th style="width: 5%;">No</th>
-              <th>Kode</th>
-              <th>Nama User</th>
-              <th>Role</th>
-              <th>Status User</th>
-              <th>Terakhir Login</th>
+              <th>Nama Dokter</th>
+              <th>Honor Visite</th>
+              <th>Honor Tindakan Dokter</th>
+              <th>Honor Obat Dokter</th>
+              <th>Honor Tidakan Lab</th>
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>

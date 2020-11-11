@@ -147,9 +147,9 @@ class Master_pegawai extends CI_Controller {
 
 
 		$this->db->trans_begin();
-		
+		$id_peg = $this->m_pegawai->get_max_id_pegawai();
 		$data = [
-			'id' => $this->m_pegawai->get_max_id_pegawai(),
+			'id' => $id_peg,
 			'id_jabatan' => $jabatan,
 			'kode' => $this->m_pegawai->get_kode_pegawai(),
 			'nama' => $nama,
@@ -161,6 +161,19 @@ class Master_pegawai extends CI_Controller {
 		];
 		
 		$insert = $this->m_pegawai->save($data);
+
+		if($jabatan == '1') {
+			//insert honor kalo jabatan dokter gigi
+			$data_honor = [
+				'id_dokter' => $id_peg,
+				'honor_visite' => 0,
+				'tindakan_persen_global' => 0,
+				'tindakan_lab_global' => 0,
+				'created_at' => $timestamp
+			];
+
+			$ins_honor = $this->m_global->store($data_honor, 't_honor'); 
+		}
 		
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();

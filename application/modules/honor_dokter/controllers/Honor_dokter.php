@@ -20,13 +20,13 @@ class Honor_dokter extends CI_Controller {
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
-		$data_peg = $this->m_global->multi_row("*", "is_aktif = '1' and deleted_at is null", "m_pegawai", NULL, "nama asc");
+		$data_peg = $this->m_global->multi_row("*", "is_aktif = '1' and deleted_at is null and id_jabatan = '1'", "m_pegawai", NULL, "nama asc");
 			
 		/**
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Pengelolaan Data User',
+			'title' => 'Pengelolaan Honor Dokter',
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
 			'data_peg'	=> $data_peg
@@ -40,13 +40,102 @@ class Honor_dokter extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_master_user',
-			'js'	=> 'master_user.js',
-			'view'	=> 'view_master_user'
+			'modal' => 'modal_honor_dokter',
+			'js'	=> 'honor_dokter.js',
+			'view'	=> 'view_honor_dokter'
 		];
 
 		$this->template_view->load_view($content, $data);
 	}
+
+	public function get_form_tindakan()
+	{
+		$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_tindakan', null, 'kode_tindakan');
+		$html = '';
+		$html .= '<div class="form-group row">
+					<div class="col-10">
+					<label for="" class="form-control-label">Pilih Tindakan:</label>
+					<br>
+					<select class="form-control kt-select2" id="id_tindakan" name="id_tindakan" style="width: 100%;">
+						<option value="">Silahkan Pilih Tindakan</option>';
+		
+		foreach ($data as $key => $value) {
+			$html .= '<option value="'.$value->id_tindakan.'">'.$value->kode_tindakan.'-'.$value->nama_tindakan.'</option>';
+		}
+
+		$html .= '</select>
+					<span class="help-block"></span>
+				</div>
+				<div class="col-2">
+					<label for="" class="form-control-label">&nbsp;</label>
+					<br>
+					<button type="button" class="button btn-sm btn-success" onclick="tambah_tindakan()"><i class="la la-plus"></i></button>
+				</div>
+			</div>';
+
+		$html .= '<div class="form-group">
+					<div class="kt-section__content">
+						<table class="table" id="tabel-tindakan-dokter">
+							<thead class="thead-light">
+								<tr>
+									<th>Kode</th>
+									<th>Tindakan</th>
+									<th>Tarif</th>
+									<th>Persen</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>';
+		
+		echo json_encode($html);
+	}
+
+	public function get_form_lab()
+	{
+		$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_laboratorium	', null, 'kode');
+		$html = '';
+		$html .= '<div class="form-group row">
+					<div class="col-10">
+					<label for="" class="form-control-label">Pilih Tindakan Lab :</label>
+					<br>
+					<select class="form-control kt-select2" id="id_lab" name="id_lab" style="width: 100%;">
+						<option value="">Silahkan Pilih Tindakan Lab</option>';
+		
+		foreach ($data as $key => $value) {
+			$html .= '<option value="'.$value->id_laboratorium.'">'.$value->kode.'-'.$value->tindakan_lab.'</option>';
+		}
+
+		$html .= '</select>
+					<span class="help-block"></span>
+				</div>
+				<div class="col-2">
+					<label for="" class="form-control-label">&nbsp;</label>
+					<br>
+					<button type="button" class="button btn-sm btn-success" onclick="#"><i class="la la-plus"></i></button>
+				</div>
+			</div>';
+
+		$html .= '<div class="form-group">
+					<div class="kt-section__content">
+						<table class="table" id="tabel-lab-dokter">
+							<thead class="thead-light">
+								<tr>
+									<th>Kode</th>
+									<th>Tindakan Lab</th>
+									<th>Tarif</th>
+									<th>Persen</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>';
+		
+		echo json_encode($html);
+	}
+	////////////////////////////////////////////////////////////////////////////////
 
 	public function list_user()
 	{
