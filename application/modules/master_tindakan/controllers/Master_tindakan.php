@@ -10,7 +10,7 @@ class Master_tindakan extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->model('m_tindakan');
 		$this->load->model('m_global');
 	}

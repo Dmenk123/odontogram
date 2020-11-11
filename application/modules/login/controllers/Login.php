@@ -22,7 +22,7 @@ class Login extends CI_Controller {
 
 	public function proses()
 	{
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->library('Enkripsi');
 		
 		$pass_string = $this->input->post('password');

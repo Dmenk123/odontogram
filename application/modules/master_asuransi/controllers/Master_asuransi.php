@@ -10,7 +10,7 @@ class Master_asuransi extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->model('m_asuransi');
 		$this->load->model('m_global');
 	}

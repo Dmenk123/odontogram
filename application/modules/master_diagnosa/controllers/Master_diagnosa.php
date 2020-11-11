@@ -10,7 +10,7 @@ class Master_diagnosa extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->model('m_diagnosa');
 		$this->load->model('m_global');
 	}

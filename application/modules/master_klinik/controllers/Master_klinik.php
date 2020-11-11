@@ -10,7 +10,7 @@ class Master_klinik extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model(['m_klinik', 'master_user/m_user', 'm_global']);
+		$this->load->model(['m_klinik', 'm_user', 'm_global']);
 	}
 
 	public function index()

@@ -10,7 +10,7 @@ class Master_pemetaan extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->model('m_pemetaan');
 		$this->load->model('m_global');
 	}

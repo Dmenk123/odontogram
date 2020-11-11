@@ -10,7 +10,7 @@ class Data_pasien extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->model('m_global');
 		$this->load->model('m_pasien');
 		$this->load->model('m_data_medik');

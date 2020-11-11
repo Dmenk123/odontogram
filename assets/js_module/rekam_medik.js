@@ -100,19 +100,24 @@ function save(id_form)
         timeout: 600000,
         success: function (data) {
             if(data.status) {
-                swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');      
-                if(id_form == 'form_diagnosa') {
-                    reloadFormDiagnosa();
-                }else if(id_form == 'form_tindakan'){
-                    reloadFormTindakan();
-                }else if(id_form == 'form_logistik'){
-                    reloadFormLogistik();
-                }else{
-                    $('#'+activeModal).modal('hide');
-                }       
-                
+                swal.fire({
+                    title: "Sukses!!", 
+                    text: data.pesan, 
+                    type: "success"
+                }).then(function() {
+                    $("#btnSave").prop("disabled", false);
+                    $('#btnSave').text('Simpan');      
+                    if(id_form == 'form_diagnosa') {
+                        reloadFormDiagnosa();
+                    }else if(id_form == 'form_tindakan'){
+                        reloadFormTindakan();
+                    }else if(id_form == 'form_logistik'){
+                        reloadFormLogistik();
+                    }else{
+                        $('#'+activeModal).modal('hide');
+                    }
+                });
+                // swal.fire("Sukses!!", data.pesan, "success");     
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {

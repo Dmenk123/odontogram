@@ -10,7 +10,7 @@ class Master_laboratorium extends CI_Controller {
 			return redirect('login');
 		}
 
-		$this->load->model('master_user/m_user');
+		$this->load->model('m_user');
 		$this->load->model('m_laboratorium');
 		$this->load->model('m_global');
 	}
