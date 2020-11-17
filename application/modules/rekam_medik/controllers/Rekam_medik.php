@@ -36,8 +36,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik'],
-			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_kamera'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_kamera.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
@@ -287,6 +287,39 @@ class Rekam_medik extends CI_Controller {
 		}
 
 		echo json_encode($retval);
+	}
+
+	public function simpan_form_kamera()
+	{	
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		$keterangan = $this->input->post('keterangan');
+		if($this->input->post('keterangan') == '') {
+			$retval['status'] = false;
+			$retval['pesan'] = 'Wajib mengisi form keterangan !';
+		}
+
+		if(!empty($_FILES['fileselect']['name'])){
+
+			$nama_gambar = $_FILES['fileselect']['name'];
+			$config['upload_path'] = 'uploads/'; 
+			$config['allowed_types'] = 'jpg|jpeg|png|gif';
+			$config['max_size'] = '1024'; // max_size in kb
+			$config['file_name'] = $_FILES['fileselect']['name'];
+	   
+			//Load upload library
+			$this->load->library('upload',$config); 
+	   
+			// File upload
+			if($this->upload->do_upload('file')){
+			  // Get data about the file
+			  $uploadData = $this->upload->data();
+			}
+		}else{
+			$retval['status'] = false;
+			$retval['pesan'] = 'File Photo tidak dipilih !';
+		}
 	}
 
 	public function load_form_diagnosa()
