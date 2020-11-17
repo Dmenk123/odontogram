@@ -113,6 +113,8 @@ function save(id_form)
                         reloadFormTindakan();
                     }else if(id_form == 'form_logistik'){
                         reloadFormLogistik();
+                    }else if(id_form == 'form_kamera'){
+                        reloadFormKamera();
                     }else{
                         $('#'+activeModal).modal('hide');
                     }
@@ -168,6 +170,8 @@ function cekDanSetValue(txt_div_modal){
             reloadFormTindakan();
         }else if(objData.menu == 'logistik'){
             reloadFormLogistik();
+        }else if(objData.menu == 'kamera'){
+            reloadFormKamera();
         }
     }
     

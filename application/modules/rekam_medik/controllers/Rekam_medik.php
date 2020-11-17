@@ -169,6 +169,10 @@ class Rekam_medik extends CI_Controller {
 			case 'logistik':
 				echo json_encode(['menu' => 'logistik']);
 				break;
+
+			case 'kamera':
+				echo json_encode(['menu' => 'kamera']);
+				break;
 			
 			default:
 				$datanya = null;
@@ -391,6 +395,37 @@ class Rekam_medik extends CI_Controller {
 				if($value->kode_diagnosa){
 					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_diagnosa.'</td><td>'.$value->nama_diagnosa.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\''.$value->id_diagnosa_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				}
+				
+			}
+		}
+
+		echo json_encode([
+			'html' => $html
+		]);
+	}
+
+	public function load_form_kamera()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		
+		$select = "k.*,dt.id as id_kamera_det, dt.keterangan, dt.nama_gambar";
+		$where = ['k.id_reg' => $id_reg, 'k.id_pasien' => $id_psn, 'k.id_pegawai' => $id_peg];
+		$table = 't_kamera as k';
+		$join = [ 
+			['table' => 't_kamera_det as dt', 'on' => 'k.id = dt.id_t_kamera']
+		];
+
+		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		$html = '';
+		$no = 1;
+		if($data){
+			foreach ($data as $key => $value) {
+				$i = $no++;
+				
+					$html .= '<tr><td>'.$i.'</td><td><img src='.base_url().'upload/kamera/'.$value->nama_gambar.' alt="tidak ditemukan" width="200"></td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\''.$value->id_kamera_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+				
 				
 			}
 		}

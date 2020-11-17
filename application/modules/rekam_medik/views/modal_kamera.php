@@ -73,7 +73,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="div_diagnosa_modal_title">Kamera</h5>
+        <h5 class="modal-title" id="div_diagnosa_modal_title">foto</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         </button>
       </div>
@@ -109,6 +109,22 @@
         <div class="col-12 row">
             <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_kamera')">Tambahkan</button>
         </div>
+        <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+               
+        <div class=" col-lg-12 col-sm-12">
+          <h3>Tabel Foto Pasien</h3>
+          <table class="table table-striped- table-bordered table-hover" id="tabel_modal_kamera">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Foto</th>
+                <th>Keterangan</th>
+                <th style="width: 10%;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
       </form>
       </div>
       <div class="modal-footer">

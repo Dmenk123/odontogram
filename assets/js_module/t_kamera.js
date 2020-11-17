@@ -109,4 +109,22 @@ Developed by Craig Buckler (@craigbuckler) of OptimalWorks.net
       Init();
     }
   })();
+
+function reloadFormKamera(){
+    $('#CssLoader').removeClass('hidden');
+    $.ajax({
+        type: "post",
+        url: base_url+"rekam_medik/load_form_kamera",
+        data: {
+            id_peg: id_peg,
+            id_psn: id_psn,
+            id_reg: id_reg
+        },
+        dataType: "json",
+        success: function (response) {
+           $('#CssLoader').addClass('hidden');
+           $('#tabel_modal_kamera tbody').html(response.html);
+        }
+    });
+}
   
