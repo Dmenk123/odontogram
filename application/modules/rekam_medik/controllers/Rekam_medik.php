@@ -295,6 +295,9 @@ class Rekam_medik extends CI_Controller {
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$datenow = $obj_date->format('Y-m-d');
 		$keterangan = $this->input->post('keterangan');
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
 		if($this->input->post('keterangan') == '') {
 			$retval['status'] = false;
 			$retval['pesan'] = 'Wajib mengisi form keterangan !';
@@ -302,24 +305,68 @@ class Rekam_medik extends CI_Controller {
 
 		if(!empty($_FILES['fileselect']['name'])){
 
+			$this->db->trans_begin();
+			$random = rand();
 			$nama_gambar = $_FILES['fileselect']['name'];
-			$config['upload_path'] = 'uploads/'; 
+			$tmp = explode('.', $nama_gambar);
+			$file_extension = end($tmp);
+   			$newfilename = $id_reg."_".$random.".".$file_extension;
+			$config['upload_path'] = 'upload/kamera/'; 
 			$config['allowed_types'] = 'jpg|jpeg|png|gif';
 			$config['max_size'] = '1024'; // max_size in kb
-			$config['file_name'] = $_FILES['fileselect']['name'];
+			$config['file_name'] = $newfilename;
 	   
 			//Load upload library
 			$this->load->library('upload',$config); 
 	   
 			// File upload
-			if($this->upload->do_upload('file')){
+			if($this->upload->do_upload('fileselect')){
 			  // Get data about the file
 			  $uploadData = $this->upload->data();
+			}
+
+			//cek sudah ada data / tidak
+			$data_kamera = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_kamera');
+			if(!$data_kamera){
+				###insert
+				$data = [
+					'id_pasien' => $id_psn,
+					'id_pegawai' => $id_peg,
+					'id_reg' => $id_reg,
+					'id_user_adm' => $this->session->userdata('id_user'),
+					'tanggal' => $datenow,
+					'created_at' => $timestamp
+				];
+							
+				$insert = $this->t_rekam_medik->save($data, 't_kamera');
+				// $pesan = 'Sukses Menambah data Perawatan';
+			}
+
+			$cek_kamera = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_kamera');
+			$data_det = [
+				'id_t_kamera' => $cek_kamera->id,
+				'keterangan'  => $keterangan,
+				'nama_gambar' => $newfilename,
+				'created_at'  => $timestamp
+			];
+
+			$insert_det = $this->t_rekam_medik->save($data_det, 't_kamera_det');
+
+			if ($this->db->trans_status() === FALSE){
+				$this->db->trans_rollback();
+				$retval['status'] = false;
+				$retval['pesan'] = 'Gagal Menambah Data';
+			}else{
+				$this->db->trans_commit();
+				$retval['status'] = true;
+				$retval['pesan'] = 'Sukses Menambah Data';
 			}
 		}else{
 			$retval['status'] = false;
 			$retval['pesan'] = 'File Photo tidak dipilih !';
 		}
+
+		echo json_encode($retval);
 	}
 
 	public function load_form_diagnosa()
