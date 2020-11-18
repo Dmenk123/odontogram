@@ -28,47 +28,8 @@ $(document).ready(function() {
 	// 	],
     // });
 
-    $('#sel_tindakan').change(function (e) { 
-        e.preventDefault();
-        if($(this).val() != '') {
-            if($(this).val() == '1') {
-                $('#tindakan_append_area').html('<div class="form-group"><label class="form-control-label">Honor Tindakan Dokter % :</label><input value="0" type="text" class="form-control numberinput" id="honor_tindakan" name="honor_tindakan" autocomplete="off"><span class="help-block"></span></div>');
-            }else{
-                $.ajax({
-                    type: "get",
-                    url: base_url+'honor_dokter/get_form_tindakan',
-                    // data: "data",
-                    dataType: "json",
-                    success: function (response) {
-                        $('#tindakan_append_area').html(response);
-                    }
-                });
-            }
-        }else{
-            $('#tindakan_append_area').empty();
-        }
-    });
 
-    $('#sel_lab').change(function (e) { 
-        e.preventDefault();
-        if($(this).val() != '') {
-            if($(this).val() == '1') {
-                $('#lab_append_area').html('<div class="form-group"><label class="form-control-label">Honor Tindakan Lab Dokter % :</label><input value="0" type="text" class="form-control numberinput" id="honor_lab" name="honor_lab" autocomplete="off"><span class="help-block"></span></div>');
-            }else{
-                $.ajax({
-                    type: "get",
-                    url: base_url+'honor_dokter/get_form_lab',
-                    // data: "data",
-                    dataType: "json",
-                    success: function (response) {
-                        $('#lab_append_area').html(response);
-                    }
-                });
-            }
-        }else{
-            $('#lab_append_area').empty();
-        }
-    });
+   
     
     //change menu status
     $(document).on('click', '.btn_edit_status', function(){
@@ -112,15 +73,22 @@ $(document).ready(function() {
         });
     });
 
-    $(".modal").on("hidden.bs.modal", function(){
-        reset_modal_form();
-        reset_modal_form_import();
-    });
+    // $(".modal").on("hidden.bs.modal", function(){
+    //     reset_modal_form();
+    //     reset_modal_form_import();
+    // });
 });	
 
 function add_menu()
 {
     reset_modal_form();
+    save_method = 'add';
+	$('#modal_honor_dokter').modal('show');
+	$('#modal_title').text('Tambah Honor Baru'); 
+}
+
+function show_modal_honor(){
+    $(".modal").modal('hide');
     save_method = 'add';
 	$('#modal_honor_dokter').modal('show');
 	$('#modal_title').text('Tambah Honor Baru'); 
@@ -139,6 +107,48 @@ function tambah_tindakan(){
     });
 }
 
+function bukaFormTindakan(){
+    let id_dokter = $('#dokter').val();
+    if(id_dokter == '') {
+        swalConfirm.fire('Perhatian!!', 'Mohon Memilih Dokter Terlebih Dahulu', 'error');
+        return;
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: base_url+"honor_dokter/get_data_form_tindakan",
+        data:{id_dokter:id_dokter},
+        dataType: "json",
+        success: function (response) {
+            $.each(response.tindakan, function(key, value) {
+                $('#id_tindakan').
+                    append($('<option></option>').
+                    val(value.id_tindakan).
+                    text(value.nama_tindakan)
+                );       
+            });
+
+            $('#nama_dokter_tindakan').val(response.dokter.nama);
+            $('#id_dokter_tindakan').val(response.dokter.id);
+
+            $('#tabel-tindakan-dokter tbody').html(response.html);
+
+            $(".modal").modal('hide');
+            $('#modal_honor_tindakan').modal('show');
+	        $('#modal_title_tindakan').text('Tambah Honor Tindakan');
+        }
+    });
+    
+}
+
+
+function reset_modal_form()
+{
+    $('#form-honor')[0].reset();
+    $('.append-opt').remove(); 
+    $('div.form-group').children().removeClass("is-invalid invalid-feedback");
+    $('span.help-block').text('');
+}
 
 ///////////////////////////////////////////////////////
 
@@ -309,18 +319,7 @@ function delete_user(id){
     });
 }
 
-function reset_modal_form()
-{
-    $('#form-honor')[0].reset();
-    $('.append-opt').remove(); 
-    $('div.form-group').children().removeClass("is-invalid invalid-feedback");
-    $('span.help-block').text('');
-    $('#div_pass_lama').css("display","none");
-    $('#div_preview_foto').css("display","none");
-    $('#div_skip_password').css("display", "none");
-    $('#label_foto').text('Pilih gambar yang akan diupload');
-    $('#username').attr('disabled', false);
-}
+
 
 function reset_modal_form_import()
 {

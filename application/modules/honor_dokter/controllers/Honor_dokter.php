@@ -48,6 +48,36 @@ class Honor_dokter extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
+	public function get_data_form_tindakan()
+ 	{
+		$id_dokter = $this->input->post('id_dokter');
+		
+		$dokter =  $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
+		$tindakan = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_tindakan', null, 'kode_tindakan');
+		
+		$join = [ 
+			[
+				'table' => 'm_tindakan',
+				'on'	=> 't_honor_dokter_tindakan.id_tindakan = m_tindakan.id_tindakan'
+			],
+		];
+
+		$data_tindakan = $this->m_global->multi_row('t_honor_dokter_tindakan.*, m_tindakan.kode_tindakan, m_tindakan.harga, m_tindakan.nama_tindakan', ['t_honor_dokter_tindakan.deleted_at' => null], 't_honor_dokter_tindakan', $join, 'id_tindakan');
+
+		$html = '';
+		if($data_tindakan) {
+			foreach ($data_tindakan as $key => $value) {
+				$html .= '<tr>
+							<th>'.$value->kode_tindakan.'</th>
+							<th>'.$value->nama_tindakan.'</th>
+							<th>'.$value->harga.'</th>
+							<th>'.$value->harga.'</th>
+						</tr>';
+			}
+		}
+		echo json_encode(['tindakan' => $tindakan, 'dokter' => $dokter, 'html' => $html]);
+	}
+
 	public function get_form_tindakan()
 	{
 		$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_tindakan', null, 'kode_tindakan');

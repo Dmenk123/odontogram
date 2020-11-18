@@ -107,6 +107,8 @@
             }
 
             $(document).ready(function () {
+                $('.mask_money').mask('000.000.000.000.000', {reverse: true});
+
                 $('.select2').select2({
                     allowClear: true,
                     placeholder: "Mohon Pilih Salah Satu"
