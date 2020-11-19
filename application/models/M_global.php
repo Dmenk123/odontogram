@@ -146,6 +146,14 @@ class M_global extends CI_Model
     public function save($data, $table)
 	{
 		return $this->db->insert($table, $data);	
-	}
+    }
+    
+    function softdelete($array_where=NULL, $table=NULL){
+        $obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+        $this->db->where($array_where);
+        $this->db->update($table, ['deleted_at' => $timestamp]);
+        return $this->db->affected_rows(); 
+    }
 		
 }

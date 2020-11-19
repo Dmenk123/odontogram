@@ -134,6 +134,200 @@ class Honor_dokter extends CI_Controller {
 		echo json_encode($retval);
 	}
 
+	public function add_data_honor_lab()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$arr_valid = $this->rule_validasi('lab');
+
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+		
+		$id_dokter_lab = trim($this->input->post('id_dokter_lab'));
+		// $nama_dokter_tindakan = trim($this->input->post('nama_dokter_tindakan'));
+		$id_lab = trim($this->input->post('id_lab'));
+		$honor_lab_persen = trim($this->input->post('honor_lab_persen'));
+		
+		//cek exist
+		$cek = $this->m_global->single_row('*', ['id_dokter' => $id_dokter_lab, 'id_lab' => $id_lab, 'deleted_at' => null], 't_honor_dokter_lab');
+		
+		if($cek) {
+			$retval['status'] = false;
+			$retval['is_alert'] = true;
+			$retval['pesan'] = 'Maaf Tindakan Lab Telah Ada';
+			echo json_encode($retval);
+			return;
+		}else{
+			$this->db->trans_begin();
+			$data_ins = [
+				'id_dokter' => $id_dokter_lab,
+				'id_lab' => $id_lab,
+				'persentase' => $honor_lab_persen,
+				'created_at' => $timestamp,
+				
+			];
+
+			$insert = $this->m_global->store($data_ins,'t_honor_dokter_lab');
+		}
+
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['is_alert'] = false;
+			$retval['id_dokter'] = null;
+			$retval['pesan'] = 'Gagal menambahkan Tindakan Lab';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['is_alert'] = false;
+			$retval['id_dokter'] = $id_dokter_lab;
+			$retval['pesan'] = 'Sukses menambahkan Tindakan Lab';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function add_data_honor()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$arr_valid = $this->rule_validasi();
+
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+		
+		$honor_visite = (int)str_replace(".","",$this->input->post('honor_visite'));
+		$id_dokter = trim($this->input->post('dokter'));
+		$tindakan_persen = trim($this->input->post('honor_tindakan'));
+		$obat_persen = trim($this->input->post('honor_obat'));
+		$tindakan_lab_persen = trim($this->input->post('honor_lab'));
+		
+		//cek exist
+		$cek = $this->m_global->single_row('*', ['id_dokter' => $id_dokter, 'deleted_at' => null], 't_honor');
+		
+		if($cek) {
+			$retval['status'] = false;
+			$retval['is_alert'] = true;
+			$retval['pesan'] = 'Maaf Data Honor pada dokter ini sudah ada';
+			echo json_encode($retval);
+			return;
+		}else{
+			$this->db->trans_begin();
+			$data_ins = [
+				// 'id_dokter' => $id_dokter_lab,
+				// 'id_lab' => $id_lab,
+				// 'persentase' => $honor_lab_persen,
+				'created_at' => $timestamp,
+				
+			];
+
+			$insert = $this->m_global->store($data_ins,'t_honor_dokter_lab');
+		}
+
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['is_alert'] = false;
+			$retval['id_dokter'] = null;
+			$retval['pesan'] = 'Gagal menambahkan Tindakan Lab';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['is_alert'] = false;
+			$retval['id_dokter'] = $id_dokter_lab;
+			$retval['pesan'] = 'Sukses menambahkan Tindakan Lab';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function get_data_form_lab()
+ 	{
+		$id_dokter = $this->input->post('id_dokter');
+		
+		$dokter =  $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
+		$lab = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_laboratorium', null, 'kode');
+		
+		$join = [ 
+			[
+				'table' => 'm_laboratorium',
+				'on'	=> 't_honor_dokter_lab.id_lab = m_laboratorium.id_laboratorium'
+			],
+		];
+
+		$data_lab = $this->m_global->multi_row('t_honor_dokter_lab.*, m_laboratorium.kode, m_laboratorium.harga, m_laboratorium.tindakan_lab', ['t_honor_dokter_lab.deleted_at' => null, 'id_dokter' => $id_dokter], 't_honor_dokter_lab', $join, 'id_lab');
+
+		$html = '';
+		if($data_lab) {
+			foreach ($data_lab as $key => $value) {
+				$html .= '<tr>
+							<th>'.$value->kode.'</th>
+							<th>'.$value->tindakan_lab.'</th>
+							<th>'.$value->harga.'</th>
+							<th>'.$value->persentase.'</th>
+							<th><button type="button" class="button btn-sm btn-danger" onclick="hapus_honor_lab(\''.$value->id.'\')"><i class="la la-trash"></i></button></th>	
+						</tr>';
+			}
+		}
+		echo json_encode(['lab' => $lab, 'dokter' => $dokter, 'html' => $html]);
+	}
+
+	public function delete_honor_tindakan()
+	{
+		$id = $this->input->post('id');
+		$oldData = $this->m_global->single_row('*', ['id' => $id], 't_honor_dokter_tindakan');
+		if($oldData){
+			##soft delete saja
+			$id_dokter = $oldData->id_dokter;
+			$del = $this->m_global->softdelete(['id'=>$id], 't_honor_dokter_tindakan');
+		}else{
+			$id_dokter = NULL;
+			$del = FALSE;
+		}
+		
+		if($del) {
+			$retval['status'] = TRUE;
+			$retval['id_dokter'] = $id_dokter;
+			$retval['pesan'] = 'Data Honor Tindakan Sukses dihapus';
+		}else{
+			$retval['status'] = FALSE;
+			$retval['id_dokter'] = $id_dokter;
+			$retval['pesan'] = 'Data Honor Tindakan Gagal dihapus';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function delete_honor_lab()
+	{
+		$id = $this->input->post('id');
+		$oldData = $this->m_global->single_row('*', ['id' => $id], 't_honor_dokter_lab');
+		if($oldData){
+			##soft delete saja
+			$id_dokter = $oldData->id_dokter;
+			$del = $this->m_global->softdelete(['id'=>$id], 't_honor_dokter_lab');
+		}else{
+			$id_dokter = NULL;
+			$del = FALSE;
+		}
+		
+		if($del) {
+			$retval['status'] = TRUE;
+			$retval['id_dokter'] = $id_dokter;
+			$retval['pesan'] = 'Data Honor Lab Sukses dihapus';
+		}else{
+			$retval['status'] = FALSE;
+			$retval['id_dokter'] = $id_dokter;
+			$retval['pesan'] = 'Data Honor Lab Gagal dihapus';
+		}
+
+		echo json_encode($retval);
+	}
+
 	// public function get_form_tindakan()
 	// {
 	// 	$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_tindakan', null, 'kode_tindakan');
@@ -320,94 +514,6 @@ class Honor_dokter extends CI_Controller {
 		);
 		
 		echo json_encode($data);
-	}
-
-	public function add_data_user()
-	{
-		$this->load->library('Enkripsi');
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		$arr_valid = $this->rule_validasi();
-		
-		$username = trim($this->input->post('username'));
-		$password = trim($this->input->post('password'));
-		$repassword = trim($this->input->post('repassword'));
-		$role = $this->input->post('role');
-		$status = $this->input->post('status');
-		$id_pegawai = $this->input->post('pegawai');
-		$namafileseo = $this->seoUrl($username.' '.time());
-
-		if ($arr_valid['status'] == FALSE) {
-			echo json_encode($arr_valid);
-			return;
-		}
-
-		if ($password != $repassword) {
-			$data['inputerror'][] = 'password';
-			$data['error_string'][] = 'Password Tidak Cocok';
-			$data['status'] = FALSE;
-		
-			$data['inputerror'][] = 'repassword';
-			$data['error_string'][] = 'Password Tidak Cocok';
-			$data['status'] = FALSE;
-
-			echo json_encode($data);
-			return;
-		}
-
-		$hasil_password = $this->enkripsi->enc_dec('encrypt', $password);
-		$this->db->trans_begin();
-		
-		$file_mimes = ['image/png', 'image/x-citrix-png', 'image/x-png', 'image/x-citrix-jpeg', 'image/jpeg', 'image/pjpeg'];
-
-		if(isset($_FILES['foto']['name']) && in_array($_FILES['foto']['type'], $file_mimes)) {
-			$this->konfigurasi_upload_img($namafileseo);
-			//get detail extension
-			$pathDet = $_FILES['foto']['name'];
-			$extDet = pathinfo($pathDet, PATHINFO_EXTENSION);
-			
-			if ($this->file_obj->do_upload('foto')) 
-			{
-				$gbrBukti = $this->file_obj->data();
-				$nama_file_foto = $gbrBukti['file_name'];
-				$this->konfigurasi_image_resize($nama_file_foto);
-				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
-				$this->image_lib->clear();
-				## replace nama file + ext
-				$namafileseo = $this->seoUrl($username.' '.time()).'.'.$extDet;
-			} else {
-				$error = array('error' => $this->file_obj->display_errors());
-				var_dump($error);exit;
-			}
-		}else{
-			$namafileseo = 'user_default.png';
-		}
-
-		$data_user = [
-			'id' => $this->m_user->get_max_id_user(),
-			'id_role' => $role,
-			'id_pegawai' => $id_pegawai,
-			'kode_user' => $this->m_user->get_kode_user(),
-			'username' => $username,
-			'password' => $hasil_password,
-			'status' => $status,
-			'created_at' => $timestamp,
-			'foto'	=> $namafileseo
-		];
-		
-		$insert = $this->m_user->save($data_user);
-		
-		if ($this->db->trans_status() === FALSE){
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan user';
-		}else{
-			$this->db->trans_commit();
-			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan user';
-		}
-
-		echo json_encode($retval);
 	}
 
 	public function update_data_user()
@@ -841,9 +947,14 @@ class Honor_dokter extends CI_Controller {
 			}
 		}elseif($tipe == 'lab'){
 			
-			if ($this->input->post('password_lama') == '') {
-				$data['inputerror'][] = 'password_lama';
-				$data['error_string'][] = 'Wajib mengisi Password Lama';
+			if ($this->input->post('id_lab') == '' || $this->input->post('id_lab') == '0') {
+				$data['inputerror'][] = 'id_lab';
+				$data['error_string'][] = 'Wajib mengisi Tindakan Lab';
+				$data['status'] = FALSE;
+			}
+			if ($this->input->post('honor_lab_persen') == '' || $this->input->post('honor_lab_persen') == '0') {
+				$data['inputerror'][] = 'honor_lab_persen';
+				$data['error_string'][] = 'Wajib mengisi Persentase';
 				$data['status'] = FALSE;
 			}
 			
