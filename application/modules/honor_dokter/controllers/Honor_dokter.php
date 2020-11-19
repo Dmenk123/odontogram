@@ -62,7 +62,7 @@ class Honor_dokter extends CI_Controller {
 			],
 		];
 
-		$data_tindakan = $this->m_global->multi_row('t_honor_dokter_tindakan.*, m_tindakan.kode_tindakan, m_tindakan.harga, m_tindakan.nama_tindakan', ['t_honor_dokter_tindakan.deleted_at' => null], 't_honor_dokter_tindakan', $join, 'id_tindakan');
+		$data_tindakan = $this->m_global->multi_row('t_honor_dokter_tindakan.*, m_tindakan.kode_tindakan, m_tindakan.harga, m_tindakan.nama_tindakan', ['t_honor_dokter_tindakan.deleted_at' => null, 'id_dokter' => $id_dokter], 't_honor_dokter_tindakan', $join, 'id_tindakan');
 
 		$html = '';
 		if($data_tindakan) {
@@ -71,100 +71,156 @@ class Honor_dokter extends CI_Controller {
 							<th>'.$value->kode_tindakan.'</th>
 							<th>'.$value->nama_tindakan.'</th>
 							<th>'.$value->harga.'</th>
-							<th>'.$value->harga.'</th>
+							<th>'.$value->persentase.'</th>
+							<th><button type="button" class="button btn-sm btn-danger" onclick="hapus_honor_tindakan(\''.$value->id.'\')"><i class="la la-trash"></i></button></th>	
 						</tr>';
 			}
 		}
 		echo json_encode(['tindakan' => $tindakan, 'dokter' => $dokter, 'html' => $html]);
 	}
 
-	public function get_form_tindakan()
+	public function add_data_honor_tindakan()
 	{
-		$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_tindakan', null, 'kode_tindakan');
-		$html = '';
-		$html .= '<div class="form-group row">
-					<div class="col-10">
-					<label for="" class="form-control-label">Pilih Tindakan:</label>
-					<br>
-					<select class="form-control kt-select2" id="id_tindakan" name="id_tindakan" style="width: 100%;">
-						<option value="">Silahkan Pilih Tindakan</option>';
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$arr_valid = $this->rule_validasi('tindakan');
+
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
 		
-		foreach ($data as $key => $value) {
-			$html .= '<option value="'.$value->id_tindakan.'">'.$value->kode_tindakan.'-'.$value->nama_tindakan.'</option>';
+		$id_dokter_tindakan = trim($this->input->post('id_dokter_tindakan'));
+		// $nama_dokter_tindakan = trim($this->input->post('nama_dokter_tindakan'));
+		$id_tindakan = trim($this->input->post('id_tindakan'));
+		$honor_tindakan_persen = trim($this->input->post('honor_tindakan_persen'));
+		
+		//cek exist
+		$cek = $this->m_global->single_row('*', ['id_dokter' => $id_dokter_tindakan, 'id_tindakan' => $id_tindakan, 'deleted_at' => null], 't_honor_dokter_tindakan');
+		
+		if($cek) {
+			$retval['status'] = false;
+			$retval['is_alert'] = true;
+			$retval['pesan'] = 'Maaf Tindakan Telah Ada';
+			echo json_encode($retval);
+			return;
+		}else{
+			$this->db->trans_begin();
+			$data_ins = [
+				'id_dokter' => $id_dokter_tindakan,
+				'id_tindakan' => $id_tindakan,
+				'persentase' => $honor_tindakan_persen,
+				'created_at' => $timestamp,
+				
+			];
+
+			$insert = $this->m_global->store($data_ins,'t_honor_dokter_tindakan');
 		}
 
-		$html .= '</select>
-					<span class="help-block"></span>
-				</div>
-				<div class="col-2">
-					<label for="" class="form-control-label">&nbsp;</label>
-					<br>
-					<button type="button" class="button btn-sm btn-success" onclick="tambah_tindakan()"><i class="la la-plus"></i></button>
-				</div>
-			</div>';
-
-		$html .= '<div class="form-group">
-					<div class="kt-section__content">
-						<table class="table" id="tabel-tindakan-dokter">
-							<thead class="thead-light">
-								<tr>
-									<th>Kode</th>
-									<th>Tindakan</th>
-									<th>Tarif</th>
-									<th>Persen</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
-					</div>
-				</div>';
-		
-		echo json_encode($html);
-	}
-
-	public function get_form_lab()
-	{
-		$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_laboratorium	', null, 'kode');
-		$html = '';
-		$html .= '<div class="form-group row">
-					<div class="col-10">
-					<label for="" class="form-control-label">Pilih Tindakan Lab :</label>
-					<br>
-					<select class="form-control kt-select2" id="id_lab" name="id_lab" style="width: 100%;">
-						<option value="">Silahkan Pilih Tindakan Lab</option>';
-		
-		foreach ($data as $key => $value) {
-			$html .= '<option value="'.$value->id_laboratorium.'">'.$value->kode.'-'.$value->tindakan_lab.'</option>';
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['is_alert'] = false;
+			$retval['id_dokter'] = null;
+			$retval['pesan'] = 'Gagal menambahkan tindakan';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['is_alert'] = false;
+			$retval['id_dokter'] = $id_dokter_tindakan;
+			$retval['pesan'] = 'Sukses menambahkan tindakan';
 		}
 
-		$html .= '</select>
-					<span class="help-block"></span>
-				</div>
-				<div class="col-2">
-					<label for="" class="form-control-label">&nbsp;</label>
-					<br>
-					<button type="button" class="button btn-sm btn-success" onclick="#"><i class="la la-plus"></i></button>
-				</div>
-			</div>';
-
-		$html .= '<div class="form-group">
-					<div class="kt-section__content">
-						<table class="table" id="tabel-lab-dokter">
-							<thead class="thead-light">
-								<tr>
-									<th>Kode</th>
-									<th>Tindakan Lab</th>
-									<th>Tarif</th>
-									<th>Persen</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
-					</div>
-				</div>';
-		
-		echo json_encode($html);
+		echo json_encode($retval);
 	}
+
+	// public function get_form_tindakan()
+	// {
+	// 	$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_tindakan', null, 'kode_tindakan');
+	// 	$html = '';
+	// 	$html .= '<div class="form-group row">
+	// 				<div class="col-10">
+	// 				<label for="" class="form-control-label">Pilih Tindakan:</label>
+	// 				<br>
+	// 				<select class="form-control kt-select2" id="id_tindakan" name="id_tindakan" style="width: 100%;">
+	// 					<option value="">Silahkan Pilih Tindakan</option>';
+		
+	// 	foreach ($data as $key => $value) {
+	// 		$html .= '<option value="'.$value->id_tindakan.'">'.$value->kode_tindakan.'-'.$value->nama_tindakan.'</option>';
+	// 	}
+
+	// 	$html .= '</select>
+	// 				<span class="help-block"></span>
+	// 			</div>
+	// 			<div class="col-2">
+	// 				<label for="" class="form-control-label">&nbsp;</label>
+	// 				<br>
+	// 				<button type="button" class="button btn-sm btn-success" onclick="tambah_tindakan()"><i class="la la-plus"></i></button>
+	// 			</div>
+	// 		</div>';
+
+	// 	$html .= '<div class="form-group">
+	// 				<div class="kt-section__content">
+	// 					<table class="table" id="tabel-tindakan-dokter">
+	// 						<thead class="thead-light">
+	// 							<tr>
+	// 								<th>Kode</th>
+	// 								<th>Tindakan</th>
+	// 								<th>Tarif</th>
+	// 								<th>Persen</th>
+	// 							</tr>
+	// 						</thead>
+	// 						<tbody></tbody>
+	// 					</table>
+	// 				</div>
+	// 			</div>';
+		
+	// 	echo json_encode($html);
+	// }
+
+	// public function get_form_lab()
+	// {
+	// 	$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_laboratorium	', null, 'kode');
+	// 	$html = '';
+	// 	$html .= '<div class="form-group row">
+	// 				<div class="col-10">
+	// 				<label for="" class="form-control-label">Pilih Tindakan Lab :</label>
+	// 				<br>
+	// 				<select class="form-control kt-select2" id="id_lab" name="id_lab" style="width: 100%;">
+	// 					<option value="">Silahkan Pilih Tindakan Lab</option>';
+		
+	// 	foreach ($data as $key => $value) {
+	// 		$html .= '<option value="'.$value->id_laboratorium.'">'.$value->kode.'-'.$value->tindakan_lab.'</option>';
+	// 	}
+
+	// 	$html .= '</select>
+	// 				<span class="help-block"></span>
+	// 			</div>
+	// 			<div class="col-2">
+	// 				<label for="" class="form-control-label">&nbsp;</label>
+	// 				<br>
+	// 				<button type="button" class="button btn-sm btn-success" onclick="#"><i class="la la-plus"></i></button>
+	// 			</div>
+	// 		</div>';
+
+	// 	$html .= '<div class="form-group">
+	// 				<div class="kt-section__content">
+	// 					<table class="table" id="tabel-lab-dokter">
+	// 						<thead class="thead-light">
+	// 							<tr>
+	// 								<th>Kode</th>
+	// 								<th>Tindakan Lab</th>
+	// 								<th>Tarif</th>
+	// 								<th>Persen</th>
+	// 							</tr>
+	// 						</thead>
+	// 						<tbody></tbody>
+	// 					</table>
+	// 				</div>
+	// 			</div>';
+		
+	// 	echo json_encode($html);
+	// }
 	////////////////////////////////////////////////////////////////////////////////
 
 	public function list_user()
@@ -765,65 +821,62 @@ class Honor_dokter extends CI_Controller {
 	}
 
 	// ===============================================
-	private function rule_validasi($is_update=false, $skip_pass=false)
+	private function rule_validasi($tipe='')
 	{
 		$data = array();
 		$data['error_string'] = array();
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if($is_update == false) {
-			if ($this->input->post('username') == '') {
-				$data['inputerror'][] = 'username';
-				$data['error_string'][] = 'Wajib mengisi Username';
+		if($tipe == 'tindakan') {
+			if ($this->input->post('id_tindakan') == '' || $this->input->post('id_tindakan') == '0') {
+				$data['inputerror'][] = 'id_tindakan';
+				$data['error_string'][] = 'Wajib mengisi Tindakan';
 				$data['status'] = FALSE;
 			}
+			if ($this->input->post('honor_tindakan_persen') == '' || $this->input->post('honor_tindakan_persen') == '0') {
+				$data['inputerror'][] = 'honor_tindakan_persen';
+				$data['error_string'][] = 'Wajib mengisi Persentase';
+				$data['status'] = FALSE;
+			}
+		}elseif($tipe == 'lab'){
+			
+			if ($this->input->post('password_lama') == '') {
+				$data['inputerror'][] = 'password_lama';
+				$data['error_string'][] = 'Wajib mengisi Password Lama';
+				$data['status'] = FALSE;
+			}
+			
 		}else{
-			if($skip_pass === false) {
-				if ($this->input->post('password_lama') == '') {
-					$data['inputerror'][] = 'password_lama';
-					$data['error_string'][] = 'Wajib mengisi Password Lama';
-					$data['status'] = FALSE;
-				}
-			}
-		}
-
-		if ($this->input->post('pegawai') == '') {
-			$data['inputerror'][] = 'pegawai';
-            $data['error_string'][] = 'Wajib mengisi Nama Pegawai';
-            $data['status'] = FALSE;
-		}
-
-		if($skip_pass === false) {
-			if ($this->input->post('password') == '') {
-				$data['inputerror'][] = 'password';
-				$data['error_string'][] = 'Wajib mengisi Password';
+			if ($this->input->post('honor_visite') == '') {
+				$data['inputerror'][] = 'honor_visite';
+				$data['error_string'][] = 'Minimal Honor adalah 0';
 				$data['status'] = FALSE;
 			}
-	
-			if ($this->input->post('repassword') == '') {
-				$data['inputerror'][] = 'repassword';
-				$data['error_string'][] = 'Wajib Menulis Ulang Password';
+
+			if ($this->input->post('dokter') == '') {
+				$data['inputerror'][] = 'dokter';
+				$data['error_string'][] = 'Wajib Memilih Dokter';
 				$data['status'] = FALSE;
 			}
-		}
-		
-		// if ($this->input->post('icon_menu') == '') {
-		// 	$data['inputerror'][] = 'icon_menu';
-        //     $data['error_string'][] = 'Wajib mengisi icon menu';
-        //     $data['status'] = FALSE;
-		// }
 
-		if ($this->input->post('role') == '') {
-			$data['inputerror'][] = 'role';
-            $data['error_string'][] = 'Wajib Memilih Role User';
-            $data['status'] = FALSE;
-		}
+			if ($this->input->post('honor_tindakan') == '') {
+				$data['inputerror'][] = 'honor_tindakan';
+				$data['error_string'][] = 'Minimal Honor adalah 0';
+				$data['status'] = FALSE;
+			}
 
-		if ($this->input->post('status') == '') {
-			$data['inputerror'][] = 'status';
-            $data['error_string'][] = 'Wajib Memilih Status';
-            $data['status'] = FALSE;
+			if ($this->input->post('honor_obat') == '') {
+				$data['inputerror'][] = 'honor_obat';
+				$data['error_string'][] = 'Minimal Honor adalah 0';
+				$data['status'] = FALSE;
+			}
+
+			if ($this->input->post('honor_lab') == '') {
+				$data['inputerror'][] = 'honor_lab';
+				$data['error_string'][] = 'Minimal Honor adalah 0';
+				$data['status'] = FALSE;
+			}
 		}
 
         return $data;

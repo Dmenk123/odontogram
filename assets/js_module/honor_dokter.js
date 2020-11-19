@@ -94,15 +94,56 @@ function show_modal_honor(){
 	$('#modal_title').text('Tambah Honor Baru'); 
 }
 
-function tambah_tindakan(){
-    var id_tindakan = $('#id_tindakan').val();
+function tambah_tindakan()
+{
+    var form = $('#form-honor-tindakan')[0];
+    var data = new FormData(form);
+    
+    $("#btnSaveTindakan").prop("disabled", true);
+    $('#btnSaveTindakan').text('Menyimpan Data'); //change button text
     $.ajax({
         type: "POST",
-        url: base_url+"honor_dokter/simpan_tindakan",
-        data: {id_tindakan:id_tindakan},
-        dataType: "json",
-        success: function (response) {
-            
+        enctype: 'multipart/form-data',
+        url: base_url + 'honor_dokter/add_data_honor_tindakan',
+        data: data,
+        dataType: "JSON",
+        processData: false, // false, it prevent jQuery form transforming the data into a query string
+        contentType: false, 
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            if(data.status) {
+                swalConfirm.fire('Berhasil Tambah Tindakan!', data.pesan, 'success');
+                $("#btnSaveTindakan").prop("disabled", false);
+                $('#btnSaveTindakan').text('Simpan Tindakan');
+                load_form_tindakan(data.id_dokter);
+            }else {
+                if(data.is_alert) {
+                    swalConfirm.fire('Oops !!!', data.pesan, 'error');
+                }else{
+                    for (var i = 0; i < data.inputerror.length; i++) 
+                    {
+                        if (data.inputerror[i] != 'id_tindakan') {
+                            $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                            $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                        }else{
+                            //ikut style global
+                            $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                        }
+                    }
+                }
+               
+                $("#btnSaveTindakan").prop("disabled", false);
+                $('#btnSaveTindakan').text('Simpan');
+            }
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+            $("#btnSaveTindakan").prop("disabled", false);
+            $('#btnSaveTindakan').text('Simpan');
+
+            reset_modal_form();
+            $(".modal").modal('hide');
         }
     });
 }
@@ -114,6 +155,20 @@ function bukaFormTindakan(){
         return;
     }
     
+    load_form_tindakan(id_dokter);
+    $(".modal").modal('hide');
+    $('#modal_honor_tindakan').modal('show');
+    $('#modal_title_tindakan').text('Tambah Honor Tindakan');
+    
+}
+
+function load_form_tindakan(id_dokter) {
+    $('#id_tindakan')
+        .find('option')
+        .remove()
+        .end()
+        .append('<option value="">Silahkan Pilih Tindakan</option>')
+        .val("");
     $.ajax({
         type: "POST",
         url: base_url+"honor_dokter/get_data_form_tindakan",
@@ -130,15 +185,9 @@ function bukaFormTindakan(){
 
             $('#nama_dokter_tindakan').val(response.dokter.nama);
             $('#id_dokter_tindakan').val(response.dokter.id);
-
             $('#tabel-tindakan-dokter tbody').html(response.html);
-
-            $(".modal").modal('hide');
-            $('#modal_honor_tindakan').modal('show');
-	        $('#modal_title_tindakan').text('Tambah Honor Tindakan');
         }
     });
-    
 }
 
 

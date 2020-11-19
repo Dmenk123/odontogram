@@ -99,7 +99,7 @@
             <span class="help-block"></span>
           </div>
           <div class="form-group">
-            <button type="button" class="btn btn-primary" onclick="tambah_tindakan()">Simpan Tindakan</button>
+            <button type="button" id="btnSaveTindakan" class="btn btn-primary" onclick="tambah_tindakan()">Simpan Tindakan</button>
           </div>
         </form>
 
@@ -112,6 +112,7 @@
                   <th>Tindakan</th>
                   <th>Tarif</th>
                   <th>Persen</th>
+                  <th style="width: 5%;">Hapus</th>
                 </tr>
               </thead>
               <tbody></tbody>
