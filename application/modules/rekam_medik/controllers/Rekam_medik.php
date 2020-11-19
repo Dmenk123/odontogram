@@ -36,8 +36,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_kamera'],
-			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_kamera.js'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_kamera', 'modal_pasien'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_kamera.js', 't_data_pasien.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
@@ -424,7 +424,7 @@ class Rekam_medik extends CI_Controller {
 			foreach ($data as $key => $value) {
 				$i = $no++;
 				
-					$html .= '<tr><td>'.$i.'</td><td><img src='.base_url().'upload/kamera/'.$value->nama_gambar.' alt="tidak ditemukan" width="200"></td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\''.$value->id_kamera_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					$html .= '<tr><td>'.$i.'</td><td><img src='.base_url().'upload/kamera/'.$value->nama_gambar.' alt="tidak ditemukan" width="200"></td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_kamera_det(\''.$value->id_kamera_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				
 				
 			}
@@ -439,6 +439,25 @@ class Rekam_medik extends CI_Controller {
 	{
 		$id = $this->input->post('id');
 		$hapus = $this->m_global->delete(['id' => $id], 't_diagnosa_det');
+		if($hapus) {
+			$data = [
+				'status' => true,
+				'pesan' => 'Berhasil Hapus Data',
+			];
+		}else{
+			$data = [
+				'status' => false,
+				'pesan' => 'Gagal Hapus Data',
+			];
+		}
+
+		echo json_encode($data);
+	}
+
+	public function delete_data_kamera_det()
+	{
+		$id = $this->input->post('id');
+		$hapus = $this->m_global->delete(['id' => $id], 't_kamera_det');
 		if($hapus) {
 			$data = [
 				'status' => true,

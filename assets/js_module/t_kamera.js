@@ -127,4 +127,43 @@ function reloadFormKamera(){
         }
     });
 }
+
+function hapus_kamera_det(id) {
+  swalConfirmDelete.fire({
+      title: 'Hapus Data Foto ini ?',
+      text: "Data Akan dihapus ?",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Hapus Data !',
+      cancelButtonText: 'Tidak, Batalkan!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+          $.ajax({
+              url : base_url + 'rekam_medik/delete_data_kamera_det',
+              type: "POST",
+              dataType: "JSON",
+              data : {id:id},
+              success: function(data)
+              {
+                  swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                  reloadFormKamera();
+              },
+              error: function (jqXHR, textStatus, errorThrown)
+              {
+                  Swal.fire('Terjadi Kesalahan');
+              }
+          });
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalConfirm.fire(
+          'Dibatalkan',
+          'Aksi Dibatalakan',
+          'error'
+        )
+      }
+  });
+}
   
