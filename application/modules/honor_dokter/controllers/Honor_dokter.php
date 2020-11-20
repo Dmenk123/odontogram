@@ -11,6 +11,7 @@ class Honor_dokter extends CI_Controller {
 		}
 
 		$this->load->model('m_user');
+		$this->load->model('t_honor');
 		$this->load->model('m_global');
 		$this->load->model('set_role/m_set_role', 'm_role');
 	}
@@ -46,6 +47,50 @@ class Honor_dokter extends CI_Controller {
 		];
 
 		$this->template_view->load_view($content, $data);
+	}
+
+	public function list_data()
+	{
+		$list = $this->t_honor->get_datatable();
+		$data = array();
+		$no =$_POST['start'];
+		foreach ($list as $val) {
+			// $no++;
+			$row = array();
+			//loop value tabel db
+			// $row[] = $no;
+			$row[] = $val->nama_dokter;
+			$row[] = "Rp " . number_format($val->honor_visite,2,',','.');
+			$row[] = $val->tindakan_persen.' %';
+			$row[] = $val->obat_persen.' %';
+			$row[] = $val->tindakan_lab_persen.' %';
+			
+			$str_aksi = '
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-item" onclick="edit_honor(\''.$val->id.'\')">
+							<i class="la la-pencil"></i> Edit Honor
+						</button>
+						<button class="dropdown-item" onclick="delete_honor(\''.$val->id.'\')">
+							<i class="la la-trash"></i> Hapus
+						</button>
+			';
+
+			$str_aksi .= '</div></div>';
+			$row[] = $str_aksi;
+
+			$data[] = $row;
+		}//end loop
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->t_honor->count_all(),
+			"recordsFiltered" => $this->t_honor->count_filtered(),
+			"data" => $data
+		];
+		
+		echo json_encode($output);
 	}
 
 	public function get_data_form_tindakan()
@@ -218,14 +263,15 @@ class Honor_dokter extends CI_Controller {
 		}else{
 			$this->db->trans_begin();
 			$data_ins = [
-				// 'id_dokter' => $id_dokter_lab,
-				// 'id_lab' => $id_lab,
-				// 'persentase' => $honor_lab_persen,
+				'id_dokter' => $id_dokter,
+				'honor_visite' => (float)$honor_visite,
+				'tindakan_persen' => $tindakan_persen,
+				'tindakan_lab_persen' => $tindakan_lab_persen,
+				'obat_persen' => $obat_persen,
 				'created_at' => $timestamp,
-				
 			];
 
-			$insert = $this->m_global->store($data_ins,'t_honor_dokter_lab');
+			$insert = $this->m_global->store($data_ins,'t_honor');
 		}
 
 		if ($this->db->trans_status() === FALSE){
@@ -233,13 +279,13 @@ class Honor_dokter extends CI_Controller {
 			$retval['status'] = false;
 			$retval['is_alert'] = false;
 			$retval['id_dokter'] = null;
-			$retval['pesan'] = 'Gagal menambahkan Tindakan Lab';
+			$retval['pesan'] = 'Gagal menambahkan Honor Dokter';
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
 			$retval['is_alert'] = false;
-			$retval['id_dokter'] = $id_dokter_lab;
-			$retval['pesan'] = 'Sukses menambahkan Tindakan Lab';
+			$retval['id_dokter'] = $id_dokter;
+			$retval['pesan'] = 'Sukses menambahkan Honor Dokter';
 		}
 
 		echo json_encode($retval);
@@ -328,194 +374,28 @@ class Honor_dokter extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	// public function get_form_tindakan()
-	// {
-	// 	$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_tindakan', null, 'kode_tindakan');
-	// 	$html = '';
-	// 	$html .= '<div class="form-group row">
-	// 				<div class="col-10">
-	// 				<label for="" class="form-control-label">Pilih Tindakan:</label>
-	// 				<br>
-	// 				<select class="form-control kt-select2" id="id_tindakan" name="id_tindakan" style="width: 100%;">
-	// 					<option value="">Silahkan Pilih Tindakan</option>';
-		
-	// 	foreach ($data as $key => $value) {
-	// 		$html .= '<option value="'.$value->id_tindakan.'">'.$value->kode_tindakan.'-'.$value->nama_tindakan.'</option>';
-	// 	}
-
-	// 	$html .= '</select>
-	// 				<span class="help-block"></span>
-	// 			</div>
-	// 			<div class="col-2">
-	// 				<label for="" class="form-control-label">&nbsp;</label>
-	// 				<br>
-	// 				<button type="button" class="button btn-sm btn-success" onclick="tambah_tindakan()"><i class="la la-plus"></i></button>
-	// 			</div>
-	// 		</div>';
-
-	// 	$html .= '<div class="form-group">
-	// 				<div class="kt-section__content">
-	// 					<table class="table" id="tabel-tindakan-dokter">
-	// 						<thead class="thead-light">
-	// 							<tr>
-	// 								<th>Kode</th>
-	// 								<th>Tindakan</th>
-	// 								<th>Tarif</th>
-	// 								<th>Persen</th>
-	// 							</tr>
-	// 						</thead>
-	// 						<tbody></tbody>
-	// 					</table>
-	// 				</div>
-	// 			</div>';
-		
-	// 	echo json_encode($html);
-	// }
-
-	// public function get_form_lab()
-	// {
-	// 	$data = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_laboratorium	', null, 'kode');
-	// 	$html = '';
-	// 	$html .= '<div class="form-group row">
-	// 				<div class="col-10">
-	// 				<label for="" class="form-control-label">Pilih Tindakan Lab :</label>
-	// 				<br>
-	// 				<select class="form-control kt-select2" id="id_lab" name="id_lab" style="width: 100%;">
-	// 					<option value="">Silahkan Pilih Tindakan Lab</option>';
-		
-	// 	foreach ($data as $key => $value) {
-	// 		$html .= '<option value="'.$value->id_laboratorium.'">'.$value->kode.'-'.$value->tindakan_lab.'</option>';
-	// 	}
-
-	// 	$html .= '</select>
-	// 				<span class="help-block"></span>
-	// 			</div>
-	// 			<div class="col-2">
-	// 				<label for="" class="form-control-label">&nbsp;</label>
-	// 				<br>
-	// 				<button type="button" class="button btn-sm btn-success" onclick="#"><i class="la la-plus"></i></button>
-	// 			</div>
-	// 		</div>';
-
-	// 	$html .= '<div class="form-group">
-	// 				<div class="kt-section__content">
-	// 					<table class="table" id="tabel-lab-dokter">
-	// 						<thead class="thead-light">
-	// 							<tr>
-	// 								<th>Kode</th>
-	// 								<th>Tindakan Lab</th>
-	// 								<th>Tarif</th>
-	// 								<th>Persen</th>
-	// 							</tr>
-	// 						</thead>
-	// 						<tbody></tbody>
-	// 					</table>
-	// 				</div>
-	// 			</div>';
-		
-	// 	echo json_encode($html);
-	// }
-	////////////////////////////////////////////////////////////////////////////////
-
-	public function list_user()
-	{
-		$list = $this->m_user->get_datatable_user();
-		$data = array();
-		$no =$_POST['start'];
-		foreach ($list as $user) {
-			$no++;
-			$row = array();
-			//loop value tabel db
-			$row[] = $no;
-			$row[] = $user->kode_user;
-			$row[] = $user->username;
-			$row[] = $user->nama_role;
-			$aktif_txt = ($user->status == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
-			$row[] = $aktif_txt;
-			$row[] = ($user->last_login != '') ? $user->last_login : '-';
-			
-			$str_aksi = '
-				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
-					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="detail_user(\''.$user->id.'\')">
-							<i class="la la-search"></i> Detail User
-						</button>
-						<button class="dropdown-item" onclick="edit_user(\''.$user->id.'\')">
-							<i class="la la-pencil"></i> Edit User
-						</button>
-						<button class="dropdown-item" onclick="delete_user(\''.$user->id.'\')">
-							<i class="la la-trash"></i> Hapus
-						</button>
-			';
-
-			if ($user->status == 1) {
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$user->id.'" value="aktif"><i class="la la-check">
-				</i> Aktif</button>';
-			}else{
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$user->id.'" value="nonaktif"><i class="la la-close">
-				</i> Non Aktif</button>';
-			}	
-
-			$str_aksi .= '</div></div>';
-			$row[] = $str_aksi;
-
-			$data[] = $row;
-		}//end loop
-
-		$output = [
-			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->m_user->count_all(),
-			"recordsFiltered" => $this->m_user->count_filtered(),
-			"data" => $data
-		];
-		
-		echo json_encode($output);
-	}
-
-	public function edit_user()
+	public function edit_data()
 	{
 		$this->load->library('Enkripsi');
-		$id_user = $this->session->userdata('id_user');
-		$data_user = $this->m_user->get_by_id($id_user);
-	
 		$id = $this->input->post('id');
-		//$oldData = $this->m_user->get_by_id($id);
-
-		$select = "m_user.*, m_pegawai.nama as nama_pegawai, m_role.nama as nama_role";
-		$where = ['m_user.id' => $id];
-		$table = 'm_user';
-		$join = [ 
-			[
-				'table' => 'm_pegawai',
-				'on'	=> 'm_user.id_pegawai = m_pegawai.id'
-			],
-			[
-				'table' => 'm_role',
-				'on'	=> 'm_user.id_role = m_role.id'
-			]
-		];
-
-		$oldData = $this->m_global->single_row($select, $where, $table, $join, 'm_user.kode_user');
-		
+		$oldData = $this->t_honor->get_by_id($id);
+			
 		if(!$oldData){
 			return redirect($this->uri->segment(1));
 		}
 
-		$url_foto = base_url('files/img/user_img/').$oldData->foto;
-		$foto = base64_encode(file_get_contents($url_foto));  
-		
 		$data = array(
-			'data_user' => $data_user,
-			'old_data'	=> $oldData,
-			'foto_encoded' => $foto
+			'old_data'	=> $oldData
 		);
 		
 		echo json_encode($data);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+
+	
+
+	
 	public function update_data_user()
 	{
 		$sesi_id_user = $this->session->userdata('id_user'); 

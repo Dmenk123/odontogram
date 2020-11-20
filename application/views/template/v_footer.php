@@ -56,6 +56,10 @@
         
         <!-- begin::Global Config(global config for global JS sciprts) -->
         <script>
+            $(window).on('load', function(){
+                $('div#CssLoader').addClass('hidden');
+            });
+
             let base_url = "<?= base_url(); ?>";
             var KTAppOptions = {
                 "colors": {
@@ -107,6 +111,7 @@
             }
 
             $(document).ready(function () {
+
                 $('.mask_money').mask('000.000.000.000.000', {reverse: true});
 
                 $('.select2').select2({

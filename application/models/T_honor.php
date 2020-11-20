@@ -3,33 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class T_honor extends CI_Model
 {
 	var $table = 't_honor';
-	var $column_search = [
-		'reg.no_reg', 'reg.tanggal_reg', 'reg.jam_reg', 'reg.tanggal_pulang', 'reg.jam_pulang', 'reg.is_asuransi', 'reg.id_asuransi', 'reg.umur', 'reg.no_asuransi', 'psn.nama', 'psn.no_rm', 'psn.tanggal_lahir', 'psn.tempat_lahir', 'psn.nik', 'psn.jenis_kelamin', 
-		'peg.nama', 'asu.nama', 'asu.keterangan', 'pem.keterangan', 'penjamin', 'jenkel'
-	];
+	var $column_search = ['m_pegawai.nama','t_honor.honor_visite','t_honor.tindakan_persen','t_honor.tindakan_lab_persen','t_honor.obat_persen'];
 	
-	var $column_order = [
-		'reg.no_reg',
-		'psn.nama',
-		'reg.tanggal_reg',
-		'reg.jam_reg',
-		'reg.is_pulang',
-		'reg.tanggal_pulang',
-		'reg.jam_pulang',
-		'psn.no_rm',
-		'psn.tempat_lahir', 
-		'psn.tanggal_lahir',
-		'psn.nik',
-		'psn.jenis_kelamin',
-		'peg_nama',
-		'reg.is_asuransi',
-		'asu.nama',
-		'asu.keterangan',
-		'pem.keterangan',
-		null
-	];
+	var $column_order = ['m_pegawai.nama','t_honor.honor_visite','t_honor.tindakan_persen','t_honor.tindakan_lab_persen','t_honor.obat_persen',null];
 
-	var $order = ['reg.no_reg' => 'asc']; 
+	var $order = ['m_pegawai.nama' => 'asc']; 
 
 	public function __construct()
 	{
@@ -38,22 +16,13 @@ class T_honor extends CI_Model
 		$this->load->database();
 	}
 
-	private function _get_datatables_query($term='', $tgl_awal, $tgl_akhir)
+	private function _get_datatables_query($term='')
 	{
-		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
-		peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
-		$this->db->from($this->table.' reg');
-		$this->db->join('m_pasien psn', 'reg.id_pasien = psn.id', 'left');
-		$this->db->join('m_pegawai peg', 'reg.id_pegawai = peg.id', 'left');
-		$this->db->join('m_asuransi asu', 'reg.id_asuransi = asu.id', 'left');
-		$this->db->join('m_pemetaan pem', 'reg.id_pemetaan = pem.id', 'left');
-		$this->db->where('reg.deleted_at is null');
-		
-		if($tgl_awal != null && $tgl_akhir != null) {
-			$this->db->where('reg.tanggal_reg >=', $tgl_awal);
-			$this->db->where('reg.tanggal_reg <=', $tgl_akhir);	
-		}
-		
+		$this->db->select("t_honor.*, m_pegawai.nama as nama_dokter");
+		$this->db->from($this->table);
+		$this->db->join('m_pegawai', 't_honor.id_dokter = m_pegawai.id', 'left');
+		$this->db->where('t_honor.deleted_at is null');
+				
 		$i = 0;
 
 		// loop column 
@@ -103,10 +72,10 @@ class T_honor extends CI_Model
 
 	}
 
-	function get_datatable($tgl_awal = null, $tgl_akhir = null)
+	function get_datatable()
 	{
 		$term = $_REQUEST['search']['value'];
-		$this->_get_datatables_query($term,$tgl_awal,$tgl_akhir);
+		$this->_get_datatables_query($term);
 		if($_REQUEST['length'] != -1)
 		$this->db->limit($_REQUEST['length'], $_REQUEST['start']);
 
@@ -114,9 +83,9 @@ class T_honor extends CI_Model
 		return $query->result();
 	}
 
-	function count_filtered($tgl_awal,$tgl_akhir)
+	function count_filtered()
 	{
-		$this->_get_datatables_query($term='',$tgl_awal,$tgl_akhir);
+		$this->_get_datatables_query($term='');
 		$query = $this->db->get();
 		return $query->num_rows();
 	}

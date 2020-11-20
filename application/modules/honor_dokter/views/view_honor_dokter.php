@@ -36,7 +36,6 @@
         <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_data">
           <thead>
             <tr>
-              <th style="width: 5%;">No</th>
               <th>Nama Dokter</th>
               <th>Honor Visite</th>
               <th>Honor Tindakan Dokter</th>

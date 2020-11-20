@@ -8,25 +8,24 @@ $(document).ready(function() {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
-	//datatables
-	// table = $('#tabel_data').DataTable({
-	// 	responsive: true,
-    //     searchDelay: 500,
-    //     processing: true,
-    //     serverSide: true,
-	// 	ajax: {
-	// 		url  : base_url + "honor_dokter/list_data",
-	// 		type : "POST" 
-	// 	},
+	table = $('#tabel_data').DataTable({
+		responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: true,
+		ajax: {
+			url  : base_url + "honor_dokter/list_data",
+			type : "POST" 
+		},
 
-	// 	//set column definition initialisation properties
-	// 	columnDefs: [
-	// 		{
-	// 			targets: [-1], //last column
-	// 			orderable: false, //set not orderable
-	// 		},
-	// 	],
-    // });
+		//set column definition initialisation properties
+		columnDefs: [
+			{
+				targets: [-1], //last column
+				orderable: false, //set not orderable
+			},
+		],
+    });
 
 
    
@@ -79,7 +78,6 @@ $(document).ready(function() {
         reset_modal_lab();
     });
 });	
-
 
 
 function add_menu()
@@ -204,6 +202,51 @@ function tambah_lab()
     });
 }
 
+function edit_honor(id)
+{
+    reset_modal();
+    save_method = 'update';
+    //Ajax Load data from ajax
+    $.ajax({
+        url : base_url + 'honor_dokter/edit_data',
+        type: "POST",
+        dataType: "JSON",
+        data : {id:id},
+        success: function(data)
+        {
+            $('[name="id_honor"]').val(data.old_data.id);
+            $('[name="honor_visite"]').val(formatAngka(parseInt(data.old_data.honor_visite)));
+            $('[name="honor_tindakan"]').val(data.old_data.tindakan_persen);
+            $('[name="honor_obat"]').val(data.old_data.obat_persen);
+            $('[name="honor_lab"]').val(data.old_data.tindakan_lab_persen);
+            $("#dokter").val(data.old_data.id_dokter).trigger("change");
+            $('#modal_honor_dokter').modal('show');
+	        $('#modal_title').text('Edit Honor Dokter'); 
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error get data from ajax');
+        }
+    });
+}
+
+function formatAngka(angka){
+    var number_string = angka.toString().replace(/[^,\d]/g, ''),
+    split   		= number_string.split(','),
+    sisa     		= split[0].length % 3,
+    rupiah     		= split[0].substr(0, sisa),
+    ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if(ribuan){
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+    }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return rupiah;
+}
+
 function save()
 {
     var url;
@@ -235,10 +278,8 @@ function save()
                 swal.fire("Sukses!!", "Aksi "+txtAksi+" Berhasil", "success");
                 $("#btnSave").prop("disabled", false);
                 $('#btnSave').text('Simpan');
-                
-                reset_modal_form();
+                reset_modal();
                 $(".modal").modal('hide');
-                
                 reload_table();
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
@@ -304,7 +345,6 @@ function load_form_tindakan(id_dokter) {
     });
 }
 
-
 function bukaFormLab(){
     let id_dokter = $('#dokter').val();
     if(id_dokter == '') {
@@ -341,7 +381,6 @@ function load_form_lab(id_dokter) {
         }
     });
 }
-
 
 function reset_modal(){
     reset_modal_form();
@@ -463,48 +502,12 @@ function hapus_honor_lab(id){
         }
     });
 }
-///////////////////////////////////////////////////////
-
-// function edit_user(id)
-// {
-//     reset_modal_form();
-//     save_method = 'update';
-//     //Ajax Load data from ajax
-//     $.ajax({
-//         url : base_url + 'master_user/edit_user',
-//         type: "POST",
-//         dataType: "JSON",
-//         data : {id:id},
-//         success: function(data)
-//         {
-//             // data.data_menu.forEach(function(dataLoop) {
-//             //     $("#parent_menu").append('<option value = '+dataLoop.id+' class="append-opt">'+dataLoop.nama+'</option>');
-//             // });
-//             $('#div_pass_lama').css("display","block");
-//             $('#div_preview_foto').css("display","block");
-//             $('#div_skip_password').css("display", "block");
-//             $('[name="id_user"]').val(data.old_data.id);
-//             $('[name="username"]').val(data.old_data.username).attr('disabled', true);
-//             $('[name="role"]').val(data.old_data.id_role);
-//             $('[name="status"]').val(data.old_data.status);
-//             $("#pegawai").val(data.old_data.id_pegawai).trigger("change");
-//             $('#preview_img').attr('src', 'data:image/jpeg;base64,'+data.foto_encoded);
-//             $('#modal_user_form').modal('show');
-// 	        $('#modal_title').text('Edit User'); 
-
-//         },
-//         error: function (jqXHR, textStatus, errorThrown)
-//         {
-//             alert('Error get data from ajax');
-//         }
-//     });
-// }
-
 
 function reload_table()
 {
     table.ajax.reload(null,false); //reload datatable ajax 
 }
+///////////////////////////////////////////////////////
 
 function reset_modal_form_import()
 {
