@@ -27,51 +27,6 @@ $(document).ready(function() {
 		],
     });
 
-
-   
-    
-    //change menu status
-    $(document).on('click', '.btn_edit_status', function(){
-        var id = $(this).attr('id');
-        var status = $(this).val();
-        swalConfirm.fire({
-            title: 'Ubah Status Data User ?',
-            text: "Apakah Anda Yakin ?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Ubah Status!',
-            cancelButtonText: 'Tidak, Batalkan!',
-            reverseButtons: true
-          }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    url : base_url + 'master_user/edit_status_user/'+ id,
-                    type: "POST",
-                    dataType: "JSON",
-                    data : {status : status},
-                    success: function(data)
-                    {
-                        swalConfirm.fire('Berhasil Ubah Status User!', data.pesan, 'success');
-                        table.ajax.reload();
-                    },
-                    error: function (jqXHR, textStatus, errorThrown)
-                    {
-                        Swal.fire('Terjadi Kesalahan');
-                    }
-                });
-            } else if (
-              /* Read more about handling dismissals below */
-              result.dismiss === Swal.DismissReason.cancel
-            ) {
-              swalConfirm.fire(
-                'Dibatalkan',
-                'Aksi Dibatalakan',
-                'error'
-              )
-            }
-        });
-    });
-
     $(".modal").on("hidden.bs.modal", function(){
         // reset_modal_form();
         reset_modal_tindakan();
@@ -415,7 +370,6 @@ function reset_modal_lab(){
     $('span.help-block').text('');
 }
 
-
 function reset_modal_form()
 {
     $('#form-honor')[0].reset();
@@ -507,70 +461,43 @@ function reload_table()
 {
     table.ajax.reload(null,false); //reload datatable ajax 
 }
-///////////////////////////////////////////////////////
 
-function reset_modal_form_import()
-{
-    $('#form_import_excel')[0].reset();
-    $('#label_file_excel').text('Pilih file excel yang akan diupload');
-}
-
-function import_excel(){
-    $('#modal_import_excel').modal('show');
-	$('#modal_import_title').text('Import data user'); 
-}
-
-function import_data_excel(){
-    var form = $('#form_import_excel')[0];
-    var data = new FormData(form);
-    
-    $("#btnSaveImport").prop("disabled", true);
-    $('#btnSaveImport').text('Import Data');
-    $.ajax({
-        type: "POST",
-        enctype: 'multipart/form-data',
-        url: base_url + 'master_user/import_data_master',
-        data: data,
-        dataType: "JSON",
-        processData: false, // false, it prevent jQuery form transforming the data into a query string
-        contentType: false, 
-        success: function (data) {
-            if(data.status) {
-                swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSaveImport").prop("disabled", false);
-                $('#btnSaveImport').text('Simpan');
-            }else {
-                swal.fire("Gagal!!", data.pesan, "error");
-                $("#btnSaveImport").prop("disabled", false);
-                $('#btnSaveImport').text('Simpan');
-            }
-
-            reset_modal_form_import();
-            $(".modal").modal('hide');
-            table.ajax.reload();
-        },
-        error: function (e) {
-            console.log("ERROR : ", e);
-            $("#btnSaveImport").prop("disabled", false);
-            $('#btnSaveImport').text('Simpan');
-
-            reset_modal_form_import();
-            $(".modal").modal('hide');
-            table.ajax.reload();
+function delete_honor(id){
+    swalConfirmDelete.fire({
+        title: 'Hapus Data ?',
+        text: "Data Akan dihapus permanen ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'honor_dokter/delete_honor',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil !!!', data.pesan, 'success');
+                    reload_table();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
         }
     });
 }
-
-function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        $('#div_preview_foto').css("display","block");
-        $('#preview_img').attr('src', e.target.result);
-      }
-      reader.readAsDataURL(input.files[0]);
-    } else {
-        $('#div_preview_foto').css("display","none");
-        $('#preview_img').attr('src', '');
-    }
-}
+///////////////////////////////////////////////////////
