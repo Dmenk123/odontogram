@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 22/11/2020 00:19:14
+ Date: 24/11/2020 00:48:44
 */
 
 SET NAMES utf8mb4;
@@ -154,7 +154,8 @@ CREATE TABLE `m_jenis_trans`  (
 -- ----------------------------
 INSERT INTO `m_jenis_trans` VALUES (1, 'logistik');
 INSERT INTO `m_jenis_trans` VALUES (2, 'tindakan');
-INSERT INTO `m_jenis_trans` VALUES (3, 'obat');
+INSERT INTO `m_jenis_trans` VALUES (3, 'lab');
+INSERT INTO `m_jenis_trans` VALUES (4, 'visite');
 
 -- ----------------------------
 -- Table structure for m_klinik
@@ -426,7 +427,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-11-21 19:52:23', 'user_default.png', '2020-09-06 20:18:00', '2020-11-21 19:52:23', NULL);
+INSERT INTO `m_user` VALUES ('1', 1, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-11-23 21:51:02', 'user_default.png', '2020-09-06 20:18:00', '2020-11-23 21:51:02', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
 
@@ -481,9 +482,9 @@ CREATE TABLE `t_honor`  (
   `id` int(64) NOT NULL AUTO_INCREMENT,
   `id_dokter` int(64) NULL DEFAULT NULL,
   `honor_visite` double(20, 2) NULL DEFAULT NULL,
-  `tindakan_persen` int(3) NULL DEFAULT NULL,
-  `tindakan_lab_persen` int(3) NULL DEFAULT NULL,
-  `obat_persen` int(3) NULL DEFAULT NULL,
+  `tindakan_persen` int(3) NULL DEFAULT 0,
+  `tindakan_lab_persen` int(3) NULL DEFAULT 0,
+  `obat_persen` int(3) NULL DEFAULT 0,
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
@@ -598,25 +599,24 @@ CREATE TABLE `t_mutasi`  (
   `id` int(64) NOT NULL AUTO_INCREMENT,
   `tanggal` date NULL DEFAULT NULL,
   `id_registrasi` int(64) NULL DEFAULT NULL,
-  `id_jenis_trans` int(2) NULL DEFAULT NULL,
-  `id_trans_flag` int(64) NULL DEFAULT NULL COMMENT 'id transaksi pada tabel transaksi di transaksi terkait',
+  `id_jenis_trans` int(2) NULL DEFAULT NULL COMMENT 'id m_jenis_trans',
+  `id_trans_flag` int(64) NULL DEFAULT NULL COMMENT 'id transaksi pada tabel transaksi di jenis transaksi terkait',
   `id_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `flag_transaksi` int(1) NULL DEFAULT NULL COMMENT '1: penerimaan, 2: pengeluaran',
-  `penerimaan_visite` float(20, 2) NULL DEFAULT NULL,
-  `total_honor_dokter` float(20, 2) NULL DEFAULT NULL COMMENT 'total honor dokter (persentase honor dari penerimaan gross)',
-  `total_penerimaan_gross` float(20, 2) NULL DEFAULT NULL COMMENT 'penerimaan visite, obat, tindakan',
-  `total_penerimaan_nett` float(20, 2) NULL DEFAULT NULL COMMENT 'penerimaan klinik (sudah dikurangi diskon dan honor dokter)',
-  `total_nilai_diskon` float(20, 2) NULL DEFAULT NULL COMMENT 'besaran diskon (dalam rupiah)',
-  `total_pengeluaran` float(20, 2) NULL DEFAULT NULL COMMENT 'pengeluaran, jika flag transaksi = 2',
+  `total_honor_dokter` float(20, 2) NULL DEFAULT 0 COMMENT 'honor dokter',
+  `total_penerimaan_gross` float(20, 2) NULL DEFAULT 0 COMMENT 'penerimaan keseluruhan (belum dikurangi honor dokter)',
+  `total_penerimaan_nett` float(20, 2) NULL DEFAULT 0 COMMENT 'penerimaan klinik',
+  `total_pengeluaran` float(20, 2) NULL DEFAULT 0 COMMENT 'pengeluaran, jika flag transaksi = 2',
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_mutasi
 -- ----------------------------
+INSERT INTO `t_mutasi` VALUES (1, '2020-11-24', 1, 2, 1, '1', 1, 0.00, 250000.00, 250000.00, 0.00, '2020-11-24 00:47:39', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_mutasi_det
@@ -625,11 +625,10 @@ DROP TABLE IF EXISTS `t_mutasi_det`;
 CREATE TABLE `t_mutasi_det`  (
   `id` int(64) NOT NULL,
   `id_mutasi` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `id_jenis_trans` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'id m_jenis_trans',
-  `id_trans_flag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'id transaksi pada tabel transaksi di transaksi terkait',
+  `id_trans_det_flag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'id transaksi pada tabel transaksi detail di transaksi terkait',
   `qty` int(32) NULL DEFAULT NULL,
   `harga` double(20, 2) NULL DEFAULT NULL,
-  `subtotal` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `subtotal` double(20, 0) NULL DEFAULT NULL,
   `created_at` datetime(0) NULL DEFAULT NULL,
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
@@ -639,6 +638,7 @@ CREATE TABLE `t_mutasi_det`  (
 -- ----------------------------
 -- Records of t_mutasi_det
 -- ----------------------------
+INSERT INTO `t_mutasi_det` VALUES (0, '1', '1', NULL, 250000.00, 250000, '2020-11-24 00:47:39', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_perawatan
@@ -763,7 +763,7 @@ CREATE TABLE `t_tindakan`  (
 -- ----------------------------
 -- Records of t_tindakan
 -- ----------------------------
-INSERT INTO `t_tindakan` VALUES (1, 1, 7, '1', '1', '2020-11-21', '2020-11-21 21:13:14', NULL, NULL);
+INSERT INTO `t_tindakan` VALUES (1, 1, 7, '1', '1', '2020-11-24', '2020-11-24 00:47:39', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_tindakan_det
@@ -785,5 +785,6 @@ CREATE TABLE `t_tindakan_det`  (
 -- ----------------------------
 -- Records of t_tindakan_det
 -- ----------------------------
+INSERT INTO `t_tindakan_det` VALUES (1, 1, 3, 4, 250000.00, '', '2020-11-24 00:47:39', NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;

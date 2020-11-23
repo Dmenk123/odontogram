@@ -1,9 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class T_rekam_medik extends CI_Model
+class T_mutasi_det extends CI_Model
 {
-	var $table = 't_rekam_medik';
-	
+	var $table = 't_mutasi_det';
+
+	public function __construct()
+	{
+		parent::__construct();
+		//alternative load library from config
+		$this->load->database();
+	}
+
 	public function get_detail($id)
 	{
 		$this->db->select('*');
@@ -38,26 +45,14 @@ class T_rekam_medik extends CI_Model
 		}
 	}
 
-	public function save($data, $table=null)
+	public function save($data)
 	{
-		if($table == null) {
-			$this->db->insert($this->table, $data);
-			$insert_id = $this->db->insert_id();
-   			return  $insert_id;	
-		}else{
-			$this->db->insert($table, $data);
-			$insert_id = $this->db->insert_id();
-   			return  $insert_id;	
-		}
+		return $this->db->insert($this->table, $data);	
 	}
 
-	public function update($where, $data, $table=null)
+	public function update($where, $data)
 	{
-		if($table == null) {
-			return $this->db->update($this->table, $data, $where);
-		}else{
-			return $this->db->update($table, $data, $where);
-		}
+		return $this->db->update($this->table, $data, $where);
 	}
 
 	public function softdelete_by_id($id)
@@ -94,19 +89,6 @@ class T_rekam_medik extends CI_Model
 
 		return $kd_fix;
 	}
-
-	public function get_max_id_perawatan()
-	{
-		$q = $this->db->query("SELECT MAX(id) as kode_max from t_perawatan");
-		$kd = "";
-		if($q->num_rows()>0){
-			$kd = $q->row();
-			return (int)$kd->kode_max + 1;
-		}else{
-			return '1';
-		} 
-	}
-
 	public function get_max_id()
 	{
 		$q = $this->db->query("SELECT MAX(id) as kode_max from ".$this->table."");
@@ -118,7 +100,7 @@ class T_rekam_medik extends CI_Model
 			return '1';
 		} 
 	}
-	
+
 	public function get_data_ekspor($tgl_awal = false, $tgl_akhir = false, $id = false)
 	{
 		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 

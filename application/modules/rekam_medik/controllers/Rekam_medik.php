@@ -501,7 +501,9 @@ class Rekam_medik extends CI_Controller {
 		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
 		if(!$data){
 			###insert
+			$id = $this->m_global->get_max_id('id', 't_tindakan');
 			$data = [
+				'id' => $id,
 				'id_pasien' => $id_psn,
 				'id_pegawai' => $id_peg,
 				'id_reg' => $id_reg,
@@ -511,11 +513,13 @@ class Rekam_medik extends CI_Controller {
 			];
 						
 			$insert = $this->t_rekam_medik->save($data, 't_tindakan');
-			// $pesan = 'Sukses Menambah data Perawatan';
+
 		}
 
 		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		$id_det = $this->m_global->get_max_id('id', 't_tindakan_det');
 		$data_det = [
+			'id' => $id_det,
 			'id_t_tindakan' => $cek_tindakan->id,
 			'id_tindakan' => $id_tindakan,
 			'gigi' => $gigi,
@@ -524,7 +528,19 @@ class Rekam_medik extends CI_Controller {
 			'created_at' => $timestamp
 		];
 
+		$data_det_kirim[] = $data_det;
+
 		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
+
+		// isi mutasi
+		/**
+		 * param 1 = id_registrasi
+		 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+		 * param 3 data tabel transaksi (parent tabel)
+		 * param 4 data tabel detail transaksi (child tabel)
+		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+		*/
+		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '2', $data, $data_det_kirim, '1');
 
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();

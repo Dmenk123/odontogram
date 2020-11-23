@@ -155,5 +155,17 @@ class M_global extends CI_Model
         $this->db->update($table, ['deleted_at' => $timestamp]);
         return $this->db->affected_rows(); 
     }
+
+    public function get_max_id($column, $table)
+	{
+		$q = $this->db->query("SELECT MAX($column) as kode_max from $table");
+		$kd = "";
+		if($q->num_rows()>0){
+			$kd = $q->row();
+			return (int)$kd->kode_max + 1;
+		}else{
+			return '1';
+		} 
+	}
 		
 }
