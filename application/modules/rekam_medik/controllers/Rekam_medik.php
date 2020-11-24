@@ -499,6 +499,7 @@ class Rekam_medik extends CI_Controller {
 		
 		//cek sudah ada data / tidak
 		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		
 		if(!$data){
 			###insert
 			$id = $this->m_global->get_max_id('id', 't_tindakan');
@@ -514,6 +515,16 @@ class Rekam_medik extends CI_Controller {
 						
 			$insert = $this->t_rekam_medik->save($data, 't_tindakan');
 
+		}else{
+			$data = [
+				'id' => $data->id,
+				'id_pasien' => $data->id_pasien,
+				'id_pegawai' => $data->id_pegawai,
+				'id_reg' => $data->id_reg,
+				'id_user_adm' => $data->id_user_adm,
+				'tanggal' => $data->tanggal,
+				'created_at' => $data->created_at
+			];
 		}
 
 		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');

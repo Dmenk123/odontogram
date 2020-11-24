@@ -73,7 +73,7 @@ class T_mutasi extends CI_Model
 		
 		$query = $this->db->get();
 		if($query){
-			return $query->result();
+			return $query->row();
 		}else{
 			return false;
 		}
