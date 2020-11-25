@@ -573,7 +573,7 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		
 		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan";
-		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg];
+		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg, 'dt.deleted_at' => null];
 		$table = 't_tindakan as d';
 		$join = [ 
 			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
@@ -601,20 +601,49 @@ class Rekam_medik extends CI_Controller {
 	public function delete_data_tindakan_det()
 	{
 		$id = $this->input->post('id');
-		$hapus = $this->m_global->delete(['id' => $id], 't_tindakan_det');
-		if($hapus) {
-			$data = [
-				'status' => true,
-				'pesan' => 'Berhasil Hapus Data',
-			];
-		}else{
+		$select = 't_tindakan_det.*, t_tindakan.id_reg';
+		$join = [ 
+			['table' => 't_tindakan', 'on' => 't_tindakan_det.id_t_tindakan = t_tindakan.id'],
+		];
+		$data_lawas = $this->m_global->single_row_array('*', ['t_tindakan_det.id' => $id], 't_tindakan_det', $join);
+
+		$id_reg = $data_lawas['id_reg'];
+		$id_trans_flag = $data_lawas['id_t_tindakan'];
+
+		$this->db->trans_begin();
+		$hapus = $this->m_global->softdelete(['id' => $id], 't_tindakan_det');
+		$hapus = true; 
+		if(!$hapus) {
 			$data = [
 				'status' => false,
-				'pesan' => 'Gagal Hapus Data',
+				'pesan' => 'Gagal Menghapus Data',
 			];
+			echo json_encode($data);
+			return;
+		}else{
+			
+			$data_kirim[] = $data_lawas;
+			/**
+			 * param 1 = id_registrasi
+			 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+			 * param 3 data tabel transaksi_detail (join)
+			 * param 4 id_trans_flag (id_parent_tabel_transaksi)
+			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+			*/
+			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '2', $data_kirim, $id_trans_flag, '1');
+
+			if ($this->db->trans_status() === FALSE){
+				$this->db->trans_rollback();
+				$retval['status'] = false;
+				$retval['pesan'] = 'Gagal Menghapus Data';
+			}else{
+				$this->db->trans_commit();
+				$retval['status'] = true;
+				$retval['pesan'] = 'Sukses Menghapus Data';
+			}
 		}
 
-		echo json_encode($data);
+		echo json_encode($retval);
 	}
 	///////////////////// end tindakan grup ////////////////////
 

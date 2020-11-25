@@ -92,6 +92,7 @@ class Lib_mutasi extends CI_Controller {
 				$data_upd['total_pengeluaran'] = $gross_total;	
 			}
 
+			$data_upd['updated_at'] = $timestamp;
 			$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data->id]);
 			
 			if($upd){
@@ -216,6 +217,88 @@ class Lib_mutasi extends CI_Controller {
 		}
 
 		return $tot_honor;
+	}
+
+
+	/**
+	 * param 1 = id_registrasi
+	 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+	 * param 3 data tabel transaksi_detail (join)
+	 * param 4 id_trans_flag (id_parent_tabel_transaksi)
+	*/
+	function delete_mutasi($id_reg, $id_jenis_trans, $data_transaksi,$id_trans_flag,$flag_transaksi) {
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		$data = $this->_ci->t_mutasi->cek_data_mutasi($id_reg, $id_jenis_trans, $id_trans_flag);
+		
+		if(!$data){	
+			####### FINAL RETURN
+			$retval = false;
+		}
+		else{
+			$data_header['id_pegawai'] = $data_transaksi[0]['id_pegawai'];
+			
+			//set variabel dengan data lama yg nantinya akan ditambahkan
+			$tot_honor = (float)$data->total_honor_dokter;
+			$gross_total = (float)$data->total_penerimaan_gross;
+
+			//insert detail
+			## return gross total penjumlahan dari data detail yg di delete + data lama
+			$gross_total -= $this->delete_data_det($data->id, $data->id_jenis_trans, $data_transaksi);
+
+			## cari honor dokter
+			## return tot_honor + data lama
+			$tot_honor -= $this->cari_honor_dokter($gross_total, $id_jenis_trans, $data_header, $data_transaksi);
+
+			## jika transaksi penerimaan/pengeluaran
+			if($flag_transaksi == 1) {
+				$data_upd['total_penerimaan_gross'] = $gross_total;
+				$data_upd['total_honor_dokter'] = $tot_honor;
+				$data_upd['total_penerimaan_nett'] = (float)$gross_total - (float)$tot_honor;
+			}else{
+				$data_upd['total_pengeluaran'] = $gross_total;	
+			}
+
+			$data_upd['updated_at'] = $timestamp;
+			$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data->id]);
+			
+			if($upd){
+				####### FINAL RETURN
+				$retval = true;
+			}else{
+				####### FINAL RETURN
+				$retval = false;
+			}
+		}
+
+		return $retval;
+	}
+
+	private function delete_data_det($id_mutasi, $id_jenis_trans, $data)
+	{
+		
+		$obj_date = new DateTime();
+		$nilai_total = 0;
+		foreach ($data as $key => $value) {
+			$timestamp = $obj_date->format('Y-m-d H:i:s');
+			$id = $value['id'];
+
+			###### logistik
+			if($id_jenis_trans == '1'){
+				$qty = $value['qty'];
+				$subtotal = (float)$value['harga'] * (int)$value['qty'];
+			}else{
+				$subtotal = $value['harga'];
+			}
+			
+			$hapus = $this->_ci->m_global->softdelete(['id' => $id], 't_mutasi_det');
+
+			// akumulasi subtotal
+			$nilai_total += $subtotal;
+		}
+		// nilai total yg digunakan untuk dikurangi
+		return $nilai_total;
 	}
 	
 	function new_id(){

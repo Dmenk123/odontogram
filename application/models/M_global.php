@@ -52,6 +52,28 @@ class M_global extends CI_Model
         return $q->row();
     }
 
+    function single_row_array($select=NULL,$array_where=NULL,$table=NULL, $join=NULL, $order_by=NULL){
+        $this->db->select($select);
+		$this->db->from($table);
+		if(isset($array_where)){
+        	$this->db->where($array_where);
+		}
+		
+		if(isset($join)) {
+			foreach($join as $j) :
+				$this->db->join($j["table"], $j["on"],'left');
+			endforeach;
+		}
+
+		if(isset($order_by)){
+        	$this->db->order_by($order_by);
+        }
+		
+		$q = $this->db->get();
+		
+        return $q->row_array();
+    }
+
     function multi_row($select=NULL, $array_where=NULL, $table=NULL, $join= NULL, $order_by=NULL, $limit=NULL){
 		if($select != null) {
 			$this->db->select($select);
