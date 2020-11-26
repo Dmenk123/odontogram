@@ -601,18 +601,18 @@ class Rekam_medik extends CI_Controller {
 	public function delete_data_tindakan_det()
 	{
 		$id = $this->input->post('id');
-		$select = 't_tindakan_det.*, t_tindakan.id_reg';
+		$select = 't_tindakan_det.*, t_tindakan.id_reg, t_tindakan.id_pegawai';
 		$join = [ 
 			['table' => 't_tindakan', 'on' => 't_tindakan_det.id_t_tindakan = t_tindakan.id'],
 		];
-		$data_lawas = $this->m_global->single_row_array('*', ['t_tindakan_det.id' => $id], 't_tindakan_det', $join);
-
+		$data_lawas = $this->m_global->single_row_array($select, ['t_tindakan_det.id' => $id], 't_tindakan_det', $join);
+		
 		$id_reg = $data_lawas['id_reg'];
 		$id_trans_flag = $data_lawas['id_t_tindakan'];
 
 		$this->db->trans_begin();
 		$hapus = $this->m_global->softdelete(['id' => $id], 't_tindakan_det');
-		$hapus = true; 
+		
 		if(!$hapus) {
 			$data = [
 				'status' => false,

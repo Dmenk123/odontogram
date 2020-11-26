@@ -43,7 +43,7 @@ class Lib_mutasi extends CI_Controller {
 
 				## cari honor dokter
 				## return tot_honor
-				$tot_honor = $this->cari_honor_dokter($gross_total, $id_jenis_trans, $data_header, $data_detail);
+				$tot_honor = $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_detail);
 				
 
 				## jika transaksi penerimaan/pengeluaran
@@ -74,14 +74,14 @@ class Lib_mutasi extends CI_Controller {
 			//set variabel dengan data lama yg nantinya akan ditambahkan
 			$tot_honor = (float)$data->total_honor_dokter;
 			$gross_total = (float)$data->total_penerimaan_gross;
-
+			// var_dump($tot_honor, $gross_total);exit;
 			//insert detail
 			## return gross total penjumlahan dari data detail yg di insert + data lama
 			$gross_total += $this->insert_data_det($data->id, $data->id_jenis_trans, $data_detail);
 
 			## cari honor dokter
 			## return tot_honor + data lama
-			$tot_honor += $this->cari_honor_dokter($gross_total, $id_jenis_trans, $data_header, $data_detail);
+			$tot_honor += $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_detail);
 
 			## jika transaksi penerimaan/pengeluaran
 			if($flag_transaksi == 1) {
@@ -136,7 +136,7 @@ class Lib_mutasi extends CI_Controller {
 		return $nilai_total;
 	}
 
-	private function cari_honor_dokter($gross_total, $id_jenis_trans, $data_header, $data_detail)
+	private function cari_honor_dokter($id_jenis_trans, $data_header, $data_detail)
 	{
 		###cek honor dokter
 		$honor = $this->_ci->m_global->single_row('*',['id_dokter' => $data_header['id_pegawai'], 'deleted_at' => null], 't_honor');
@@ -144,7 +144,7 @@ class Lib_mutasi extends CI_Controller {
 		if($honor){
 			// ###### logistik
 			if($id_jenis_trans == '1'){
-				$tot_honor = ((float)$gross_total * (int)$honor->obat_persen) / 100;
+				$tot_honor = ((float)$data_detail[0]['harga'] * (int)$honor->obat_persen) / 100;
 			}
 			###### tindakan
 			elseif($id_jenis_trans == '2'){
@@ -157,11 +157,12 @@ class Lib_mutasi extends CI_Controller {
 					foreach ($data_detail as $key => $val) {
 						$id_tindakan = $val['id_tindakan'];
 						$counter_list_tindakan_false = 0;
+						
 						foreach ($list_tindakan as $keys => $vals) {
 							if($id_tindakan == $vals->id_tindakan){
 								// persentase honor dokter berdasarkan penerimaan gross
 								// looping data, jika tidak ada di loop lakukan flag counter false
-								$tot_honor +=  ((float)$gross_total * (int)$vals->persentase) / 100;
+								$tot_honor +=  ((float)$val['harga'] * (int)$vals->persentase) / 100;
 								continue;
 							}else{
 								$counter_list_tindakan_false += 1;
@@ -171,12 +172,12 @@ class Lib_mutasi extends CI_Controller {
 						//jika counter == jumlah array maka honor tindakan khusus tidak ada. sehingga pakai honor tindakan global
 						if($counter_list_tindakan_false == count($list_tindakan)){
 							// ambil honor tindakan global
-							$tot_honor += ((float)$gross_total * (int)$honor->tindakan_persen) / 100;
+							$tot_honor += ((float)$val['harga'] * (int)$honor->tindakan_persen) / 100;
 						}
 					}
 				}else{
 					// ambil honor tindakan global
-					$tot_honor += ((float)$gross_total * (int)$honor->tindakan_persen) / 100;
+					$tot_honor += ((float)$data_detail[0]['harga'] * (int)$honor->tindakan_persen) / 100;
 				}						
 			}
 			###### lab
@@ -189,11 +190,12 @@ class Lib_mutasi extends CI_Controller {
 					foreach ($data_detail as $key => $val) {
 						$id_lab = $val['id_lab'];
 						$counter_list_tindakan_lab_false = 0;
+						
 						foreach ($list_tindakan_lab as $keys => $vals) {
 							if($id_lab == $vals->id_lab){
 								// persentase honor dokter berdasarkan penerimaan gross
 								// looping data, jika tidak ada di loop lakukan flag counter false
-								$tot_honor +=  ((float)$gross_total * (int)$vals->persentase) / 100;
+								$tot_honor +=  ((float)$val['harga'] * (int)$vals->persentase) / 100;
 								continue;
 							}else{
 								$counter_list_tindakan_lab_false += 1;
@@ -203,12 +205,12 @@ class Lib_mutasi extends CI_Controller {
 						//jika counter == jumlah array maka honor tindakan khusus tidak ada. sehingga pakai honor tindakan global
 						if($counter_list_tindakan_lab_false == count($list_tindakan_lab)){
 							// ambil honor tindakan global
-							$tot_honor += ((float)$gross_total * (int)$honor->tindakan_persen) / 100;
+							$tot_honor += ((float)$val['harga'] * (int)$honor->tindakan_persen) / 100;
 						}
 					}
 				}else{
 					// ambil honor tindakan global
-					$tot_honor += ((float)$gross_total * (int)$honor->tindakan_persen) / 100;
+					$tot_honor += ((float)$data_detail[0]['harga'] * (int)$honor->tindakan_persen) / 100;
 				}
 			}
 
@@ -226,7 +228,7 @@ class Lib_mutasi extends CI_Controller {
 	 * param 3 data tabel transaksi_detail (join)
 	 * param 4 id_trans_flag (id_parent_tabel_transaksi)
 	*/
-	function delete_mutasi($id_reg, $id_jenis_trans, $data_transaksi,$id_trans_flag,$flag_transaksi) {
+	function delete_mutasi($id_reg, $id_jenis_trans, $data_transaksi, $id_trans_flag,$flag_transaksi) {
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$datenow = $obj_date->format('Y-m-d');
@@ -239,17 +241,18 @@ class Lib_mutasi extends CI_Controller {
 		else{
 			$data_header['id_pegawai'] = $data_transaksi[0]['id_pegawai'];
 			
-			//set variabel dengan data lama yg nantinya akan ditambahkan
+			//set variabel dengan data lama yg nantinya akan dikurangi
 			$tot_honor = (float)$data->total_honor_dokter;
 			$gross_total = (float)$data->total_penerimaan_gross;
-
+			
 			//insert detail
 			## return gross total penjumlahan dari data detail yg di delete + data lama
 			$gross_total -= $this->delete_data_det($data->id, $data->id_jenis_trans, $data_transaksi);
 
 			## cari honor dokter
 			## return tot_honor + data lama
-			$tot_honor -= $this->cari_honor_dokter($gross_total, $id_jenis_trans, $data_header, $data_transaksi);
+			$tot_honor -= $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_transaksi);
+			// var_dump($tot_honor);exit;
 
 			## jika transaksi penerimaan/pengeluaran
 			if($flag_transaksi == 1) {
@@ -280,6 +283,7 @@ class Lib_mutasi extends CI_Controller {
 		
 		$obj_date = new DateTime();
 		$nilai_total = 0;
+				
 		foreach ($data as $key => $value) {
 			$timestamp = $obj_date->format('Y-m-d H:i:s');
 			$id = $value['id'];
