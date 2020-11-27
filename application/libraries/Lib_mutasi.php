@@ -144,7 +144,7 @@ class Lib_mutasi extends CI_Controller {
 		if($honor){
 			// ###### logistik
 			if($id_jenis_trans == '1'){
-				$tot_honor = ((float)$data_detail[0]['harga'] * (int)$honor->obat_persen) / 100;
+				$tot_honor = (((float)$data_detail[0]['harga'] * (int)$data_detail[0]['qty']) * (int)$honor->obat_persen) / 100;
 			}
 			###### tindakan
 			elseif($id_jenis_trans == '2'){
@@ -247,7 +247,7 @@ class Lib_mutasi extends CI_Controller {
 			
 			//insert detail
 			## return gross total penjumlahan dari data detail yg di delete + data lama
-			$gross_total -= $this->delete_data_det($data->id, $data->id_jenis_trans, $data_transaksi);
+			$gross_total -= $this->delete_data_det($data->id_mut_det, $data->id_jenis_trans, $data_transaksi);
 
 			## cari honor dokter
 			## return tot_honor + data lama
@@ -278,7 +278,7 @@ class Lib_mutasi extends CI_Controller {
 		return $retval;
 	}
 
-	private function delete_data_det($id_mutasi, $id_jenis_trans, $data)
+	private function delete_data_det($id_mutasi_det, $id_jenis_trans, $data)
 	{
 		
 		$obj_date = new DateTime();
@@ -286,7 +286,7 @@ class Lib_mutasi extends CI_Controller {
 				
 		foreach ($data as $key => $value) {
 			$timestamp = $obj_date->format('Y-m-d H:i:s');
-			$id = $value['id'];
+			$id = $id_mutasi_det;
 
 			###### logistik
 			if($id_jenis_trans == '1'){
