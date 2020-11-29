@@ -172,6 +172,8 @@ function cekDanSetValue(txt_div_modal){
             reloadFormLogistik();
         }else if(objData.menu == 'kamera'){
             reloadFormKamera();
+        }else if(objData.menu == 'tindakanlab'){
+            reloadFormTindakanLab();
         }
     }
     

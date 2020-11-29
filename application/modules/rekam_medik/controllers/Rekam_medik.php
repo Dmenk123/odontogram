@@ -173,6 +173,10 @@ class Rekam_medik extends CI_Controller {
 			case 'kamera':
 				echo json_encode(['menu' => 'kamera']);
 				break;
+
+			case 'tindakanlab':
+				echo json_encode(['menu' => 'tindakanlab']);
+				break;
 			
 			default:
 				$datanya = null;
@@ -822,6 +826,179 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode($retval);
 	}
 	///////////////////// end logistik grup ////////////////////
+
+	///////////////////// start tindakan lab grup ////////////////////
+	public function simpan_form_tindakanlab()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		if($this->input->post('tindakan') == '') {
+			echo json_encode([
+				'status'=> true,
+				'pesan' => 'wajib memilih tindakan'
+			]);
+			return;
+		}
+
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$id_tindakan = $this->input->post('tindakan');
+		$ket = $this->input->post('tdk_ket');
+		$gigi = $this->input->post('tdk_gigi');
+		$harga = $this->input->post('tdk_harga_raw');
+		
+		//cek sudah ada data / tidak
+		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		
+		if(!$data){
+			###insert
+			$id = $this->m_global->get_max_id('id', 't_tindakan');
+			$data = [
+				'id' => $id,
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'created_at' => $timestamp
+			];
+						
+			$insert = $this->t_rekam_medik->save($data, 't_tindakan');
+
+		}else{
+			$data = [
+				'id' => $data->id,
+				'id_pasien' => $data->id_pasien,
+				'id_pegawai' => $data->id_pegawai,
+				'id_reg' => $data->id_reg,
+				'id_user_adm' => $data->id_user_adm,
+				'tanggal' => $data->tanggal,
+				'created_at' => $data->created_at
+			];
+		}
+
+		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		$id_det = $this->m_global->get_max_id('id', 't_tindakan_det');
+		$data_det = [
+			'id' => $id_det,
+			'id_t_tindakan' => $cek_tindakan->id,
+			'id_tindakan' => $id_tindakan,
+			'gigi' => $gigi,
+			'harga' => (float)$harga,
+			'keterangan' => $ket,
+			'created_at' => $timestamp
+		];
+
+		$data_det_kirim[] = $data_det;
+
+		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
+
+		// isi mutasi
+		/**
+		 * param 1 = id_registrasi
+		 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+		 * param 3 data tabel transaksi (parent tabel)
+		 * param 4 data tabel detail transaksi (child tabel)
+		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+		*/
+		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '2', $data, $data_det_kirim, '1');
+
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Data';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Menambah Data';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function load_form_tindakanlab()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		
+		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan";
+		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg, 'dt.deleted_at' => null];
+		$table = 't_tindakan as d';
+		$join = [ 
+			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
+			['table' => 'm_tindakan as mt', 'on' => 'dt.id_tindakan = mt.id_tindakan']
+		];
+
+		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		$html = '';
+		$harga = 0;
+		if($data){
+			foreach ($data as $key => $value) {
+				if($value->kode_tindakan){
+					$harga += (float)$value->harga;
+					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_tindakan.'</td><td>'.$value->nama_tindakan.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakan_det(\''.$value->id_tindakan_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+				}				
+			}
+			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($harga,2,',','.').'</strong></td></tr>';
+		}
+
+		echo json_encode([
+			'html' => $html
+		]);
+	}
+
+	public function delete_data_tindakanlab_det()
+	{
+		$id = $this->input->post('id');
+		$select = 't_tindakan_det.*, t_tindakan.id_reg, t_tindakan.id_pegawai';
+		$join = [ 
+			['table' => 't_tindakan', 'on' => 't_tindakan_det.id_t_tindakan = t_tindakan.id'],
+		];
+		$data_lawas = $this->m_global->single_row_array($select, ['t_tindakan_det.id' => $id], 't_tindakan_det', $join);
+		
+		$id_reg = $data_lawas['id_reg'];
+		$id_trans_flag = $data_lawas['id_t_tindakan'];
+
+		$this->db->trans_begin();
+		$hapus = $this->m_global->softdelete(['id' => $id], 't_tindakan_det');
+		
+		if(!$hapus) {
+			$data = [
+				'status' => false,
+				'pesan' => 'Gagal Menghapus Data',
+			];
+			echo json_encode($data);
+			return;
+		}else{
+			
+			$data_kirim[] = $data_lawas;
+			/**
+			 * param 1 = id_registrasi
+			 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+			 * param 3 data tabel transaksi_detail (join)
+			 * param 4 id_trans_flag (id_parent_tabel_transaksi)
+			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+			*/
+			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '2', $data_kirim, $id_trans_flag, '1');
+
+			if ($this->db->trans_status() === FALSE){
+				$this->db->trans_rollback();
+				$retval['status'] = false;
+				$retval['pesan'] = 'Gagal Menghapus Data';
+			}else{
+				$this->db->trans_commit();
+				$retval['status'] = true;
+				$retval['pesan'] = 'Sukses Menghapus Data';
+			}
+		}
+
+		echo json_encode($retval);
+	}
+	///////////////////// end tindakan grup ////////////////////
 
 	///////////////////////////////////////////////////////////////////
 

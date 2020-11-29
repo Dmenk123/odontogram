@@ -517,4 +517,25 @@ class Master_laboratorium extends CI_Controller {
 	
         return $data;
 	}
+
+	public function get_select_tindakanlab()
+	{
+		$term = $this->input->get('term');
+		$data_tindakanlab = $this->m_global->multi_row('*', ['deleted_at' => null, 'tindakan_lab like' => '%'.$term.'%'], 'm_laboratorium', null, 'tindakan_lab');
+		if($data_tindakanlab) {
+			foreach ($data_tindakanlab as $key => $value) {
+				$row['id'] = $value->id_laboratorium;
+				$row['text'] = $value->kode.' - '.$value->tindakan_lab;
+				$row['kode'] = $value->kode;
+				$row['nama'] = $value->tindakan_lab;
+				$row['harga'] = number_format($value->harga,0,',','.');
+				$row['harga_raw'] = $value->harga;
+
+				$retval[] = $row;
+			}
+		}else{
+			$retval = false;
+		}
+		echo json_encode($retval);
+	}
 }
