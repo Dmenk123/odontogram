@@ -36,7 +36,7 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_pasien', 'modal_kamera' ],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_pasien', 'modal_kamera'],
 			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_kamera.js', 't_data_pasien.js'],
 			'view'	=> 'view_rekam_medik'
 		];
@@ -499,9 +499,12 @@ class Rekam_medik extends CI_Controller {
 		
 		//cek sudah ada data / tidak
 		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		
 		if(!$data){
 			###insert
+			$id = $this->m_global->get_max_id('id', 't_tindakan');
 			$data = [
+				'id' => $id,
 				'id_pasien' => $id_psn,
 				'id_pegawai' => $id_peg,
 				'id_reg' => $id_reg,
@@ -511,11 +514,23 @@ class Rekam_medik extends CI_Controller {
 			];
 						
 			$insert = $this->t_rekam_medik->save($data, 't_tindakan');
-			// $pesan = 'Sukses Menambah data Perawatan';
+
+		}else{
+			$data = [
+				'id' => $data->id,
+				'id_pasien' => $data->id_pasien,
+				'id_pegawai' => $data->id_pegawai,
+				'id_reg' => $data->id_reg,
+				'id_user_adm' => $data->id_user_adm,
+				'tanggal' => $data->tanggal,
+				'created_at' => $data->created_at
+			];
 		}
 
 		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		$id_det = $this->m_global->get_max_id('id', 't_tindakan_det');
 		$data_det = [
+			'id' => $id_det,
 			'id_t_tindakan' => $cek_tindakan->id,
 			'id_tindakan' => $id_tindakan,
 			'gigi' => $gigi,
@@ -524,7 +539,19 @@ class Rekam_medik extends CI_Controller {
 			'created_at' => $timestamp
 		];
 
+		$data_det_kirim[] = $data_det;
+
 		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
+
+		// isi mutasi
+		/**
+		 * param 1 = id_registrasi
+		 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+		 * param 3 data tabel transaksi (parent tabel)
+		 * param 4 data tabel detail transaksi (child tabel)
+		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+		*/
+		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '2', $data, $data_det_kirim, '1');
 
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -546,7 +573,7 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		
 		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan";
-		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg];
+		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg, 'dt.deleted_at' => null];
 		$table = 't_tindakan as d';
 		$join = [ 
 			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
@@ -574,20 +601,49 @@ class Rekam_medik extends CI_Controller {
 	public function delete_data_tindakan_det()
 	{
 		$id = $this->input->post('id');
-		$hapus = $this->m_global->delete(['id' => $id], 't_tindakan_det');
-		if($hapus) {
-			$data = [
-				'status' => true,
-				'pesan' => 'Berhasil Hapus Data',
-			];
-		}else{
+		$select = 't_tindakan_det.*, t_tindakan.id_reg, t_tindakan.id_pegawai';
+		$join = [ 
+			['table' => 't_tindakan', 'on' => 't_tindakan_det.id_t_tindakan = t_tindakan.id'],
+		];
+		$data_lawas = $this->m_global->single_row_array($select, ['t_tindakan_det.id' => $id], 't_tindakan_det', $join);
+		
+		$id_reg = $data_lawas['id_reg'];
+		$id_trans_flag = $data_lawas['id_t_tindakan'];
+
+		$this->db->trans_begin();
+		$hapus = $this->m_global->softdelete(['id' => $id], 't_tindakan_det');
+		
+		if(!$hapus) {
 			$data = [
 				'status' => false,
-				'pesan' => 'Gagal Hapus Data',
+				'pesan' => 'Gagal Menghapus Data',
 			];
+			echo json_encode($data);
+			return;
+		}else{
+			
+			$data_kirim[] = $data_lawas;
+			/**
+			 * param 1 = id_registrasi
+			 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+			 * param 3 data tabel transaksi_detail (join)
+			 * param 4 id_trans_flag (id_parent_tabel_transaksi)
+			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+			*/
+			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '2', $data_kirim, $id_trans_flag, '1');
+
+			if ($this->db->trans_status() === FALSE){
+				$this->db->trans_rollback();
+				$retval['status'] = false;
+				$retval['pesan'] = 'Gagal Menghapus Data';
+			}else{
+				$this->db->trans_commit();
+				$retval['status'] = true;
+				$retval['pesan'] = 'Sukses Menghapus Data';
+			}
 		}
 
-		echo json_encode($data);
+		echo json_encode($retval);
 	}
 	///////////////////// end tindakan grup ////////////////////
 
@@ -614,12 +670,14 @@ class Rekam_medik extends CI_Controller {
 		$ket_resep = $this->input->post('ket_resep');
 		$harga_jual_raw = $this->input->post('harga_jual_raw');
 		
-				
 		//cek sudah ada data / tidak
 		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
+		
 		if(!$data){
 			###insert
+			$id = $this->m_global->get_max_id('id', 't_tindakan');
 			$data = [
+				'id' => $id,
 				'id_pasien' => $id_psn,
 				'id_pegawai' => $id_peg,
 				'id_reg' => $id_reg,
@@ -631,13 +689,22 @@ class Rekam_medik extends CI_Controller {
 						
 			$insert = $this->t_rekam_medik->save($data, 't_logistik');
 		}else{
-			###update
-			$update = $this->t_rekam_medik->update(['id' => $data->id], ['updated_at' => $timestamp, 'keterangan_resep' => $ket_resep], 't_logistik');
+			$data = [
+				'id' => $data->id,
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'created_at' => $timestamp,
+				'keterangan_resep' => $ket_resep
+			];
 		}
 
 		$cek_logistik = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
-
+		$id_det = $this->m_global->get_max_id('id', 't_logistik_det');
 		$data_det = [
+			'id' => $id_det,
 			'id_t_logistik' => $cek_logistik->id,
 			'id_logistik' => $logistik,
 			'qty' => $qty_obat,
@@ -646,34 +713,20 @@ class Rekam_medik extends CI_Controller {
 			'created_at' => $timestamp
 		];
 
+		$data_det_kirim[] = $data_det;
+
 		$insert_det = $this->t_rekam_medik->save($data_det, 't_logistik_det');
-		
-		$id_jenis_trans = 1;
-		$id_trans_flag = $cek_logistik->id;
-		$flag_transaksi = 2;
-		$data_raw = $this->m_global->multi_row('tl.*, tld.id as id_logistik_det, tld.id_logistik, tld.qty, tld.harga, tld.subtotal', ['tl.id' => $cek_logistik->id], 't_logistik as tl', [['table' => 't_logistik_det as tld', 'on' => 'tl.id = tld.id_t_logistik']]);
-		
-		if($data_raw) {
-			$harga_total = 0;
-			foreach ($data_raw as $key => $val) {
-				if($val->subtotal){
-					$harga_total += $val->subtotal;	
-				}
-			}
-		}
 
-		$datanya = ['harga_total' => $harga_total];
+		// isi mutasi
+		/**
+		 * param 1 = id_registrasi
+		 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+		 * param 3 data tabel transaksi (parent tabel)
+		 * param 4 data tabel detail transaksi (child tabel)
+		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+		*/
+		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '1', $data, $data_det_kirim, '1');
 		
-		$mutasi = $this->lib_mutasi->simpan_mutasi($id_jenis_trans, $id_trans_flag, $datanya, $flag_transaksi);
-		
-		if($mutasi == false) {
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal Menambah Data';
-			echo json_encode($retval);
-			return;
-		}
-
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
@@ -695,7 +748,7 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		
 		$select = "tl.*, tld.id as id_logistik_det, tld.id_logistik, tld.qty, tld.harga, tld.subtotal, ml.kode_logistik, ml.nama_logistik, mjl.jenis as jenis_logistik";
-		$where = ['tl.id_reg' => $id_reg, 'tl.id_pasien' => $id_psn, 'tl.id_pegawai' => $id_peg];
+		$where = ['tl.id_reg' => $id_reg, 'tl.id_pasien' => $id_psn, 'tl.id_pegawai' => $id_peg, 'tld.deleted_at' => null];
 		$table = 't_logistik as tl';
 		$join = [ 
 			['table' => 't_logistik_det as tld', 'on' => 'tl.id = tld.id_t_logistik'],
@@ -724,20 +777,49 @@ class Rekam_medik extends CI_Controller {
 	public function delete_data_logistik_det()
 	{
 		$id = $this->input->post('id');
-		$hapus = $this->m_global->delete(['id' => $id], 't_logistik_det');
-		if($hapus) {
-			$data = [
-				'status' => true,
-				'pesan' => 'Berhasil Hapus Data',
-			];
-		}else{
+		$select = 't_logistik_det.*, t_logistik.id_reg, t_logistik.id_pegawai';
+		$join = [ 
+			['table' => 't_logistik', 'on' => 't_logistik_det.id_t_logistik = t_logistik.id'],
+		];
+		$data_lawas = $this->m_global->single_row_array($select, ['t_logistik_det.id' => $id], 't_logistik_det', $join);
+		
+		$id_reg = $data_lawas['id_reg'];
+		$id_trans_flag = $data_lawas['id_t_logistik'];
+
+		$this->db->trans_begin();
+		$hapus = $this->m_global->softdelete(['id' => $id], 't_logistik_det');
+		
+		if(!$hapus) {
 			$data = [
 				'status' => false,
-				'pesan' => 'Gagal Hapus Data',
+				'pesan' => 'Gagal Menghapus Data',
 			];
+			echo json_encode($data);
+			return;
+		}else{
+			
+			$data_kirim[] = $data_lawas;
+			/**
+			 * param 1 = id_registrasi
+			 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+			 * param 3 data tabel transaksi_detail (join)
+			 * param 4 id_trans_flag (id_parent_tabel_transaksi)
+			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+			*/
+			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '1', $data_kirim, $id_trans_flag, '1');
+
+			if ($this->db->trans_status() === FALSE){
+				$this->db->trans_rollback();
+				$retval['status'] = false;
+				$retval['pesan'] = 'Gagal Menghapus Data';
+			}else{
+				$this->db->trans_commit();
+				$retval['status'] = true;
+				$retval['pesan'] = 'Sukses Menghapus Data';
+			}
 		}
 
-		echo json_encode($data);
+		echo json_encode($retval);
 	}
 	///////////////////// end logistik grup ////////////////////
 

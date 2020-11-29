@@ -52,6 +52,28 @@ class M_global extends CI_Model
         return $q->row();
     }
 
+    function single_row_array($select=NULL,$array_where=NULL,$table=NULL, $join=NULL, $order_by=NULL){
+        $this->db->select($select);
+		$this->db->from($table);
+		if(isset($array_where)){
+        	$this->db->where($array_where);
+		}
+		
+		if(isset($join)) {
+			foreach($join as $j) :
+				$this->db->join($j["table"], $j["on"],'left');
+			endforeach;
+		}
+
+		if(isset($order_by)){
+        	$this->db->order_by($order_by);
+        }
+		
+		$q = $this->db->get();
+		
+        return $q->row_array();
+    }
+
     function multi_row($select=NULL, $array_where=NULL, $table=NULL, $join= NULL, $order_by=NULL, $limit=NULL){
 		if($select != null) {
 			$this->db->select($select);
@@ -146,6 +168,26 @@ class M_global extends CI_Model
     public function save($data, $table)
 	{
 		return $this->db->insert($table, $data);	
+    }
+    
+    function softdelete($array_where=NULL, $table=NULL){
+        $obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+        $this->db->where($array_where);
+        $this->db->update($table, ['deleted_at' => $timestamp]);
+        return $this->db->affected_rows(); 
+    }
+
+    public function get_max_id($column, $table)
+	{
+		$q = $this->db->query("SELECT MAX($column) as kode_max from $table");
+		$kd = "";
+		if($q->num_rows()>0){
+			$kd = $q->row();
+			return (int)$kd->kode_max + 1;
+		}else{
+			return '1';
+		} 
 	}
 		
 }
