@@ -44,7 +44,7 @@
                     <input type="hidden" class="form-control" id="tdklab_harga_raw" name="tdklab_harga_raw" value="">
                     <span class="help-block"></span>
                   </div>
-                  <div class="col-2">
+                  <div class="col-4">
                     <input type="text" class="form-control" id="tdklab_ket" name="tdklab_ket" value="">   
                     <span class="help-block"></span>
                   </div>

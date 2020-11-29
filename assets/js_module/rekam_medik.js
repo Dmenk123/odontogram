@@ -115,6 +115,8 @@ function save(id_form)
                         reloadFormLogistik();
                     }else if(id_form == 'form_kamera'){
                         reloadFormKamera();
+                    }else if(id_form == 'form_tindakanlab'){
+                        reloadFormTindakanLab();
                     }else{
                         $('#'+activeModal).modal('hide');
                     }

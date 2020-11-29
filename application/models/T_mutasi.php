@@ -69,11 +69,11 @@ class T_mutasi extends CI_Model
 		$this->db->select("m.*, md.id as id_mut_det, md.qty, md.harga, md.subtotal, md.id_trans_det_flag");
 		$this->db->from($this->table.' m');
 		$this->db->join('t_mutasi_det as md', 'm.id = md.id_mutasi', 'left');
-		$this->db->where(['id_registrasi' => $id_reg, 'm.id_jenis_trans' => $id_jenis_trans, 'm.id_trans_flag' => $id_trans_flag, 'm.deleted_at' => null]);
+		$this->db->where(['id_registrasi' => $id_reg, 'm.id_jenis_trans' => $id_jenis_trans, 'm.id_trans_flag' => $id_trans_flag, 'md.deleted_at' => null]);
 		
 		$query = $this->db->get();
 		if($query){
-			return $query->row();
+			return $query->result();
 		}else{
 			return false;
 		}

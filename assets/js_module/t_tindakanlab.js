@@ -58,15 +58,15 @@ function reloadFormTindakanLab(){
         dataType: "json",
         success: function (response) {
            $('#CssLoader').addClass('hidden');
-           $('#tabel_modal_tindakan tbody').html(response.html);
+           $('#tabel_modal_tindakanlab tbody').html(response.html);
         }
     });
 }
 
 
-function hapus_tindakan_det(id) {
+function hapus_tindakanlab_det(id) {
     swalConfirmDelete.fire({
-        title: 'Hapus Data Tindakan ?',
+        title: 'Hapus Data Tindakan Lab ?',
         text: "Data Akan dihapus ?",
         type: 'warning',
         showCancelButton: true,
@@ -76,14 +76,14 @@ function hapus_tindakan_det(id) {
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'rekam_medik/delete_data_tindakan_det',
+                url : base_url + 'rekam_medik/delete_data_tindakanlab_det',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
                 success: function(data)
                 {
                     swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
-                    reloadFormTindakan();
+                    reloadFormTindakanLab();
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

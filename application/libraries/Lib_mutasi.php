@@ -70,14 +70,12 @@ class Lib_mutasi extends CI_Controller {
 		}
 		else{
 			###update
-
-			//set variabel dengan data lama yg nantinya akan ditambahkan
-			$tot_honor = (float)$data->total_honor_dokter;
-			$gross_total = (float)$data->total_penerimaan_gross;
-			// var_dump($tot_honor, $gross_total);exit;
+			$tot_honor = (float)$data[0]->total_honor_dokter;
+			$gross_total = (float)$data[0]->total_penerimaan_gross;
+			
 			//insert detail
 			## return gross total penjumlahan dari data detail yg di insert + data lama
-			$gross_total += $this->insert_data_det($data->id, $data->id_jenis_trans, $data_detail);
+			$gross_total += $this->insert_data_det($data[0]->id, $data[0]->id_jenis_trans, $data_detail);
 
 			## cari honor dokter
 			## return tot_honor + data lama
@@ -93,7 +91,7 @@ class Lib_mutasi extends CI_Controller {
 			}
 
 			$data_upd['updated_at'] = $timestamp;
-			$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data->id]);
+			$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data[0]->id]);
 			
 			if($upd){
 				####### FINAL RETURN
@@ -188,7 +186,7 @@ class Lib_mutasi extends CI_Controller {
 				$list_tindakan_lab = $this->_ci->m_global->multi_row('*', ['id_dokter' => $data_header['id_pegawai'], 'deleted_at' => null], 't_honor_dokter_lab');
 				if($list_tindakan_lab){
 					foreach ($data_detail as $key => $val) {
-						$id_lab = $val['id_lab'];
+						$id_lab = $val['id_tindakan_lab'];
 						$counter_list_tindakan_lab_false = 0;
 						
 						foreach ($list_tindakan_lab as $keys => $vals) {
@@ -205,12 +203,12 @@ class Lib_mutasi extends CI_Controller {
 						//jika counter == jumlah array maka honor tindakan khusus tidak ada. sehingga pakai honor tindakan global
 						if($counter_list_tindakan_lab_false == count($list_tindakan_lab)){
 							// ambil honor tindakan global
-							$tot_honor += ((float)$val['harga'] * (int)$honor->tindakan_persen) / 100;
+							$tot_honor += ((float)$val['harga'] * (int)$honor->tindakan_lab_persen) / 100;
 						}
 					}
 				}else{
 					// ambil honor tindakan global
-					$tot_honor += ((float)$data_detail[0]['harga'] * (int)$honor->tindakan_persen) / 100;
+					$tot_honor += ((float)$data_detail[0]['harga'] * (int)$honor->tindakan_lab_persen) / 100;
 				}
 			}
 
@@ -228,7 +226,8 @@ class Lib_mutasi extends CI_Controller {
 	 * param 3 data tabel transaksi_detail (join)
 	 * param 4 id_trans_flag (id_parent_tabel_transaksi)
 	*/
-	function delete_mutasi($id_reg, $id_jenis_trans, $data_transaksi, $id_trans_flag,$flag_transaksi) {
+	function delete_mutasi($id_reg, $id_jenis_trans, $data_transaksi, $id_trans_flag, $flag_transaksi) {
+		
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$datenow = $obj_date->format('Y-m-d');
@@ -241,13 +240,13 @@ class Lib_mutasi extends CI_Controller {
 		else{
 			$data_header['id_pegawai'] = $data_transaksi[0]['id_pegawai'];
 			
-			//set variabel dengan data lama yg nantinya akan dikurangi
-			$tot_honor = (float)$data->total_honor_dokter;
-			$gross_total = (float)$data->total_penerimaan_gross;
-			
+			//set variabel dengan data lama yg nantinya akan ditambahkan
+			$tot_honor = (float)$data[0]->total_honor_dokter;
+			$gross_total = (float)$data[0]->total_penerimaan_gross;
+						
 			//insert detail
 			## return gross total penjumlahan dari data detail yg di delete + data lama
-			$gross_total -= $this->delete_data_det($data->id_mut_det, $data->id_jenis_trans, $data_transaksi);
+			$gross_total -= $this->delete_data_det($data[0]->id, $data_transaksi[0]['id'], $data[0]->id_jenis_trans, $data_transaksi);
 
 			## cari honor dokter
 			## return tot_honor + data lama
@@ -264,7 +263,7 @@ class Lib_mutasi extends CI_Controller {
 			}
 
 			$data_upd['updated_at'] = $timestamp;
-			$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data->id]);
+			$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data[0]->id]);
 			
 			if($upd){
 				####### FINAL RETURN
@@ -278,7 +277,7 @@ class Lib_mutasi extends CI_Controller {
 		return $retval;
 	}
 
-	private function delete_data_det($id_mutasi_det, $id_jenis_trans, $data)
+	private function delete_data_det($id_mutasi, $id_trans_det_flag, $id_jenis_trans, $data)
 	{
 		
 		$obj_date = new DateTime();
@@ -286,7 +285,6 @@ class Lib_mutasi extends CI_Controller {
 				
 		foreach ($data as $key => $value) {
 			$timestamp = $obj_date->format('Y-m-d H:i:s');
-			$id = $id_mutasi_det;
 
 			###### logistik
 			if($id_jenis_trans == '1'){
@@ -296,7 +294,7 @@ class Lib_mutasi extends CI_Controller {
 				$subtotal = $value['harga'];
 			}
 			
-			$hapus = $this->_ci->m_global->softdelete(['id' => $id], 't_mutasi_det');
+			$hapus = $this->_ci->m_global->softdelete(['id_mutasi' => $id_mutasi, 'id_trans_det_flag' => $id_trans_det_flag], 't_mutasi_det');
 
 			// akumulasi subtotal
 			$nilai_total += $subtotal;

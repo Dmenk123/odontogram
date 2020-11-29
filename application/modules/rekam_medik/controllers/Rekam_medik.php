@@ -36,8 +36,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_pasien', 'modal_kamera'],
-			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_kamera.js', 't_data_pasien.js'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_tindakan_lab', 'modal_pasien', 'modal_kamera'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_tindakanlab.js', 't_kamera.js', 't_data_pasien.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
@@ -833,10 +833,10 @@ class Rekam_medik extends CI_Controller {
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$datenow = $obj_date->format('Y-m-d');
-		if($this->input->post('tindakan') == '') {
+		if($this->input->post('tdklab_tindakan') == '') {
 			echo json_encode([
 				'status'=> true,
-				'pesan' => 'wajib memilih tindakan'
+				'pesan' => 'wajib memilih tindakan Lab'
 			]);
 			return;
 		}
@@ -845,17 +845,16 @@ class Rekam_medik extends CI_Controller {
 		$id_psn = $this->input->post('id_psn');
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
-		$id_tindakan = $this->input->post('tindakan');
-		$ket = $this->input->post('tdk_ket');
-		$gigi = $this->input->post('tdk_gigi');
-		$harga = $this->input->post('tdk_harga_raw');
+		$id_tindakanlab = $this->input->post('tindakanlab');
+		$ket = $this->input->post('tdklab_ket');
+		$harga = $this->input->post('tdklab_harga_raw');
 		
 		//cek sudah ada data / tidak
-		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakanlab');
 		
 		if(!$data){
 			###insert
-			$id = $this->m_global->get_max_id('id', 't_tindakan');
+			$id = $this->m_global->get_max_id('id', 't_tindakanlab');
 			$data = [
 				'id' => $id,
 				'id_pasien' => $id_psn,
@@ -866,7 +865,7 @@ class Rekam_medik extends CI_Controller {
 				'created_at' => $timestamp
 			];
 						
-			$insert = $this->t_rekam_medik->save($data, 't_tindakan');
+			$insert = $this->t_rekam_medik->save($data, 't_tindakanlab');
 
 		}else{
 			$data = [
@@ -880,13 +879,13 @@ class Rekam_medik extends CI_Controller {
 			];
 		}
 
-		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
-		$id_det = $this->m_global->get_max_id('id', 't_tindakan_det');
+		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakanlab');
+
+		$id_det = $this->m_global->get_max_id('id', 't_tindakanlab_det');
 		$data_det = [
 			'id' => $id_det,
-			'id_t_tindakan' => $cek_tindakan->id,
-			'id_tindakan' => $id_tindakan,
-			'gigi' => $gigi,
+			'id_t_tindakanlab' => $cek_tindakan->id,
+			'id_tindakan_lab' => $id_tindakanlab,
 			'harga' => (float)$harga,
 			'keterangan' => $ket,
 			'created_at' => $timestamp
@@ -894,7 +893,7 @@ class Rekam_medik extends CI_Controller {
 
 		$data_det_kirim[] = $data_det;
 
-		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
+		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakanlab_det');
 
 		// isi mutasi
 		/**
@@ -904,7 +903,7 @@ class Rekam_medik extends CI_Controller {
 		 * param 4 data tabel detail transaksi (child tabel)
 		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
 		*/
-		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '2', $data, $data_det_kirim, '1');
+		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '3', $data, $data_det_kirim, '1');
 
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -925,12 +924,12 @@ class Rekam_medik extends CI_Controller {
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 		
-		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan";
+		$select = "d.*, dt.id as id_tindakanlab_det, dt.id_tindakan_lab, dt.harga, dt.keterangan, ml.kode, ml.tindakan_lab";
 		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg, 'dt.deleted_at' => null];
-		$table = 't_tindakan as d';
+		$table = 't_tindakanlab as d';
 		$join = [ 
-			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
-			['table' => 'm_tindakan as mt', 'on' => 'dt.id_tindakan = mt.id_tindakan']
+			['table' => 't_tindakanlab_det as dt', 'on' => 'd.id = dt.id_t_tindakanlab'],
+			['table' => 'm_laboratorium as ml', 'on' => 'dt.id_tindakan_lab = ml.id_laboratorium']
 		];
 
 		$data = $this->m_global->multi_row($select, $where, $table, $join);
@@ -938,9 +937,9 @@ class Rekam_medik extends CI_Controller {
 		$harga = 0;
 		if($data){
 			foreach ($data as $key => $value) {
-				if($value->kode_tindakan){
+				if($value->kode){
 					$harga += (float)$value->harga;
-					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_tindakan.'</td><td>'.$value->nama_tindakan.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakan_det(\''.$value->id_tindakan_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					$html .= '<tr><td>'.$value->kode.'</td><td>'.$value->tindakan_lab.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakanlab_det(\''.$value->id_tindakanlab_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				}				
 			}
 			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($harga,2,',','.').'</strong></td></tr>';
@@ -954,17 +953,17 @@ class Rekam_medik extends CI_Controller {
 	public function delete_data_tindakanlab_det()
 	{
 		$id = $this->input->post('id');
-		$select = 't_tindakan_det.*, t_tindakan.id_reg, t_tindakan.id_pegawai';
+		$select = 't_tindakanlab_det.*, t_tindakanlab.id_reg, t_tindakanlab.id_pegawai';
 		$join = [ 
-			['table' => 't_tindakan', 'on' => 't_tindakan_det.id_t_tindakan = t_tindakan.id'],
+			['table' => 't_tindakanlab', 'on' => 't_tindakanlab_det.id_t_tindakanlab = t_tindakanlab.id'],
 		];
-		$data_lawas = $this->m_global->single_row_array($select, ['t_tindakan_det.id' => $id], 't_tindakan_det', $join);
+		$data_lawas = $this->m_global->single_row_array($select, ['t_tindakanlab_det.id' => $id], 't_tindakanlab_det', $join);
 		
 		$id_reg = $data_lawas['id_reg'];
-		$id_trans_flag = $data_lawas['id_t_tindakan'];
+		$id_trans_flag = $data_lawas['id_t_tindakanlab'];
 
 		$this->db->trans_begin();
-		$hapus = $this->m_global->softdelete(['id' => $id], 't_tindakan_det');
+		$hapus = $this->m_global->softdelete(['id' => $id], 't_tindakanlab_det');
 		
 		if(!$hapus) {
 			$data = [
@@ -983,7 +982,7 @@ class Rekam_medik extends CI_Controller {
 			 * param 4 id_trans_flag (id_parent_tabel_transaksi)
 			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
 			*/
-			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '2', $data_kirim, $id_trans_flag, '1');
+			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '3', $data_kirim, $id_trans_flag, '1');
 
 			if ($this->db->trans_status() === FALSE){
 				$this->db->trans_rollback();
