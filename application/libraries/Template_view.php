@@ -349,12 +349,18 @@ class Template_view extends CI_Controller {
 		}
 		
 		if($content['js']){
+			if(config_item('is_production') == TRUE) {
+				$path_url = 'build/js';
+			}else{
+				$path_url = 'assets/js_module';
+			}
+			
 			if(is_array($content['js'])){
 				foreach ($content['js'] as $keys => $vals) {
-					$data['link_js'][] = 'assets/js_module/'.$vals;
+					$data['link_js'][] = $path_url.'/'.$vals;
 				}
 			}else{
-				$data['link_js']      = 'assets/js_module/'.$content['js'];
+				$data['link_js']      = $path_url.'/'.$content['js'];
 			}
 			
 		}

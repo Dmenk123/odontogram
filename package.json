@@ -1,0 +1,24 @@
+{
+  "name": "odontogram",
+  "version": "1.0.0",
+  "description": "Oke",
+  "main": "iyes",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dmenk123/odontogram.git"
+  },
+  "author": "Melek Aplikasi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dmenk123/odontogram/issues"
+  },
+  "homepage": "https://github.com/Dmenk123/odontogram#readme",
+  "devDependencies": {
+    "grunt": "^1.4.1",
+    "grunt-contrib-cssmin": "^4.0.0",
+    "grunt-contrib-uglify": "^5.0.1"
+  }
+}

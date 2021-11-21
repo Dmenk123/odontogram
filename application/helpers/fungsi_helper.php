@@ -40,4 +40,38 @@ if ( ! function_exists('contul'))
         }
     }
 }
+
+if (!function_exists('tanggal_indo')) {
+    /**
+     * fungsi merubah YYYY-MM-DD ke DD String Bulan Indo YYYY
+     *
+     * @param [type] $string
+     * @return void
+     */
+    function tanggal_indo($date)
+    {
+        $arr_bulan = [
+            1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        $retval = date('d', strtotime($date)) . ' ' . $arr_bulan[(int) date('m', strtotime($date))] . ' ' . date('Y', strtotime($date));
+        return $retval;
+    }
+}
+
+if (!function_exists('bulan_indo')) {
+    /**
+     * fungsi merubah YYYY-MM-DD ke DD String Bulan Indo YYYY
+     *
+     * @param [type] $string
+     * @return void
+     */
+    function bulan_indo($int)
+    {
+        $arr_bulan = [
+            1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        
+        return $arr_bulan[$int];
+    }
+}
 ?>
