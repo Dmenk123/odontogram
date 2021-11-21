@@ -176,6 +176,8 @@ function cekDanSetValue(txt_div_modal){
             reloadFormKamera();
         }else if(objData.menu == 'tindakanlab'){
             reloadFormTindakanLab();
+        }else if(objData.menu == 'diskon'){
+            reloadFormDiskon();
         }
     }
     

@@ -43,16 +43,12 @@
             </div>
           </div>
           <div class="col-md-3 row">
-            <div>
-              <button type="button" class="btn btn-brand" onclick="filter_tanggal()">Cari</button>
-            </div>
-            <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
-            <div>
-              <button type="button" class="btn btn-brand btn-success" onclick="ekspor_excel()">Eksport Excel</button>
-            </div>
-            <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
-            <div>
-              <button type="button" class="btn btn-brand btn-warning" onclick="cetak_data()">Cetak Data</button>
+            <div class="kt-section">
+              <div class="kt-section__content">
+                <button type="button" class="btn btn-primary btn-sm" onclick="filter_tanggal()">Cari</button>
+                <button type="button" class="btn btn-sm btn-success" onclick="ekspor_excel()">Eksport Excel</button>
+                <button type="button" class="btn btn-sm btn-warning" onclick="cetak_data()">Cetak Data</button>
+              </div>
             </div>
           </div>
         </div>

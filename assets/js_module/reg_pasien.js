@@ -334,47 +334,69 @@ function reset_form(jqIdForm) {
 
 function save()
 {
-    var form = $('#form_registrasi')[0];
-    var data = new FormData(form);
-    
-    $("#btnSave").prop("disabled", true);
-    $('#btnSave').text('Menyimpan Data'); //change button text
-    $.ajax({
-        type: "POST",
-        enctype: 'multipart/form-data',
-        url: base_url + 'reg_pasien/simpan_data',
-        data: data,
-        dataType: "JSON",
-        processData: false,
-        contentType: false, 
-        cache: false,
-        timeout: 600000,
-        success: function (data) {
-            if(data.status) {
-                swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');                
-                window.location.href = base_url+"reg_pasien";
-            }else {
-                for (var i = 0; i < data.inputerror.length; i++) 
-                {
-                    if (data.is_select2[i] == false) {
-                        $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
-                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
-                    }else{
-                        //ikut style global
-                        $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
-                    }
-                }
+    swalConfirm.fire({
+        title: 'Simpan Data ?',
+        text: "Data Akan Disimpan",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Simpan Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: false
+      }).then((result) => {
+        if (result.value) {
+            
+            var form = $('#form_registrasi')[0];
+            var data = new FormData(form);
+            
+            $("#btnSave").prop("disabled", true);
+            $('#btnSave').text('Menyimpan Data'); //change button text
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: base_url + 'reg_pasien/simpan_data',
+                data: data,
+                dataType: "JSON",
+                processData: false,
+                contentType: false, 
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.status) {
+                        swalConfirm.fire('Sukses!!', data.pesan, 'success');
+                        $("#btnSave").prop("disabled", false);
+                        $('#btnSave').text('Simpan');                
+                        window.location.href = base_url+"reg_pasien";
+                    }else {
+                        for (var i = 0; i < data.inputerror.length; i++) 
+                        {
+                            if (data.is_select2[i] == false) {
+                                $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                                $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                            }else{
+                                //ikut style global
+                                $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                            }
+                        }
 
-                $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');
-            }
-        },
-        error: function (e) {
-            console.log("ERROR : ", e);
-            $("#btnSave").prop("disabled", false);
-            $('#btnSave').text('Simpan');
+                        $("#btnSave").prop("disabled", false);
+                        $('#btnSave').text('Simpan');
+                    }
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#btnSave").prop("disabled", false);
+                    $('#btnSave').text('Simpan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
         }
     });
 }

@@ -66,6 +66,7 @@
         </form>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="save('form_logistik')">Tambahkan</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
       </div>
     </div>

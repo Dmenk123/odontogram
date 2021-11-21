@@ -136,7 +136,7 @@ class Reg_pasien extends CI_Controller {
 				</div>
 				<div class="col-lg-2">
 					<button type="button" class="btn btn-sm btn-success" onclick="tambah_data_asuransi()">
-						<i class="la la-plus"></i> Tambah data Asuransi
+						Tambah data Asuransi
 					</button>
 				</div>
 			</div>
