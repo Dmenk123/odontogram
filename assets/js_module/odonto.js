@@ -106,278 +106,91 @@ $('#jemb_kanan').click(function(){
 });
 
 $( document ).ready(function() {
-    console.log('tes');
-    var i;
-        $("#barispertamakiri1").on('click', function(event){
-            var hasil = $('#pilihanwarna').val();
-            var subs  = hasil.substring(0,1);
-            if(subs == '#'){
-                $("#barispertamakiri1").css("fill", $('#pilihanwarna').val());
-            }else if (hasil == 'outline') {
-                $("#barispertamaoutline1").css("display", "block");
-            }else if (hasil == 'PRE') {
-                $("#barispertamapre1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-                $("#barispertamaune1").css("display", "none");
-            }else if (hasil == 'ANO') {
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "none");
-                $("#barispertamaano1").css("display", "block");
-            }else if(hasil == 'UNE'){
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-            }else if (hasil == 'silang') {
-                $("#barispertamasilang11").css("display", "block");
-                $("#barispertamasilang21").css("display", "block");
-            }else if (hasil == 'border'){
-                $("#barispertamakiri1").css("stroke-width", '2');
-            }else if (hasil == 'segitiga') {
-                $("#barispertamasegitiga1").css("display", "block");
-            }else if (hasil == 'panah_kanan') {
-                $("#barispertamapanahkanan1").css("display", "block");
-            }else if (hasil == 'panah_kiri') {
-                $("#barispertamapanahkiri1").css("display", "block");
-            }else if (hasil == 'non_vital') {
-                $("#barispertamasegitiga1").css("display", "block");
-                $("#barispertamasegitiga1").css("fill", "white");
-            }else if (hasil == 'akar') {
-                $("#barispertamaakar11").css("display", "block");
-                $("#barispertamaakar21").css("display", "block");
-            }else if (hasil == 'crash') {
-                $("#barispertamacrash11").css("display", "block");
-                $("#barispertamacrash21").css("display", "block");
-                $("#barispertamacrash31").css("display", "block");
-                $("#barispertamacrash41").css("display", "block");
-            }else if (hasil == 'jembatan_kiri') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkiri1").css("display", "block");
-            }else if (hasil == 'jembatan_tengah') {
-                $("#barispertamajembtengah1").css("display", "block");
-            }else if (hasil == 'jembatan_kanan') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkanan1").css("display", "block");
+    // console.log('tes');
+    let id;
+        for(var i = 1; i <= 16; i++) {
+            $('#barispertamakiri' + i).click( createCallback( i, 'kiri', 'pertama' ) );
+            $('#barispertamaatas' + i).click( createCallback( i, 'atas', 'pertama' ) );
+            $('#barispertamakanan' + i).click( createCallback( i, 'kanan', 'pertama' ) );
+            $('#barispertamabawah' + i).click( createCallback( i, 'bawah', 'pertama' ) );
+            $('#barispertamatengah' + i).click( createCallback( i, 'tengah', 'pertama' ) );
+
+            $('#bariskeduakiri' + i).click( createCallback( i, 'kiri', 'kedua' ) );
+            $('#bariskeduaatas' + i).click( createCallback( i, 'atas', 'kedua' ) );
+            $('#bariskeduakanan' + i).click( createCallback( i, 'kanan', 'kedua' ) );
+            $('#bariskeduabawah' + i).click( createCallback( i, 'bawah', 'kedua' ) );
+            $('#bariskeduatengah' + i).click( createCallback( i, 'tengah', 'kedua' ) );
+
+            $('#barisketigakiri' + i).click( createCallback( i, 'kiri', 'ketiga' ) );
+            $('#barisketigaatas' + i).click( createCallback( i, 'atas', 'ketiga' ) );
+            $('#barisketigakanan' + i).click( createCallback( i, 'kanan', 'ketiga' ) );
+            $('#barisketigabawah' + i).click( createCallback( i, 'bawah', 'ketiga' ) );
+            $('#barisketigatengah' + i).click( createCallback( i, 'tengah', 'ketiga' ) );
+
+            $('#bariskeempatkiri' + i).click( createCallback( i, 'kiri', 'keempat' ) );
+            $('#bariskeempatatas' + i).click( createCallback( i, 'atas', 'keempat' ) );
+            $('#bariskeempatkanan' + i).click( createCallback( i, 'kanan', 'keempat' ) );
+            $('#bariskeempatbawah' + i).click( createCallback( i, 'bawah', 'keempat' ) );
+            $('#bariskeempattengah' + i).click( createCallback( i, 'tengah', 'keempat' ) );
+        }
+
+        function createCallback( i , sebelah, baris){
+            return function(){
+                var hasil = $('#pilihanwarna').val();
+                var subs  = hasil.substring(0,1);
+                if(subs == '#'){
+                    $("#baris" + baris + '' + sebelah + '' + i).css("fill", $('#pilihanwarna').val());
+                }else if (hasil == 'outline') {
+                    $("#baris" + baris + "outline" + i).css("display", "block");
+                }else if (hasil == 'PRE') {
+                    $("#baris"+ baris +"pre" + i).css("display", "block");
+                    $("#baris"+ baris +"ano" + i).css("display", "none");
+                    $("#baris"+ baris +"une" + i).css("display", "none");
+                }else if (hasil == 'ANO') {
+                    $("#baris"+ baris +"pre" + i).css("display", "none");
+                    $("#baris"+ baris +"une" + i).css("display", "none");
+                    $("#baris"+ baris +"ano" + i).css("display", "block");
+                }else if(hasil == 'UNE'){
+                    $("#baris"+ baris +"pre" + i).css("display", "none");
+                    $("#baris"+ baris +"une" + i).css("display", "block");
+                    $("#baris"+ baris +"ano" + i).css("display", "none");
+                }else if (hasil == 'silang') {
+                    $("#baris"+ baris +"silang1" + i).css("display", "block");
+                    $("#baris"+ baris +"silang2" + i).css("display", "block");
+                }else if (hasil == 'border'){
+                    $("#baris" + baris + '' +sebelah+'' + i).css("stroke-width", '2');
+                }else if (hasil == 'segitiga') {
+                    $("#baris"+ baris +"segitiga" + i).css("display", "block");
+                }else if (hasil == 'panah_kanan') {
+                    $("#baris"+ baris +"panahkanan" + i).css("display", "block");
+                }else if (hasil == 'panah_kiri') {
+                    $("#baris"+ baris +"panahkiri" + i).css("display", "block");
+                }else if (hasil == 'non_vital') {
+                    $("#baris"+ baris +"segitiga" + i).css("display", "block");
+                    $("#baris"+ baris +"segitiga" + i).css("fill", "white");
+                }else if (hasil == 'akar') {
+                    $("#baris"+ baris +"akar1" + i).css("display", "block");
+                    $("#baris"+ baris +"akar2" + i).css("display", "block");
+                }else if (hasil == 'crash') {
+                    $("#baris"+ baris +"crash1" + i).css("display", "block");
+                    $("#baris"+ baris +"crash2" + i).css("display", "block");
+                    $("#baris"+ baris +"crash3" + i).css("display", "block");
+                    $("#baris"+ baris +"crash4" + i).css("display", "block");
+                }else if (hasil == 'jembatan_kiri') {
+                    $("#baris"+ baris +"jembtegak" + i).css("display", "block");
+                    $("#baris"+ baris +"jembkiri" + i).css("display", "block");
+                }else if (hasil == 'jembatan_tengah') {
+                    $("#baris"+ baris +"jembtengah" + i).css("display", "block");
+                }else if (hasil == 'jembatan_kanan') {
+                    $("#baris"+ baris +"jembtegak" + i).css("display", "block");
+                    $("#baris"+ baris +"jembkanan" + i).css("display", "block");
+                }
             }
-        });
-        $("#barispertamakiri2").on('click', function(event){
-            var hasil = $('#pilihanwarna').val();
-            var subs  = hasil.substring(0,1);
-            if(subs == '#'){
-                $("#barispertamakiri2").css("fill", $('#pilihanwarna').val());
-            }else if (hasil == 'jembatan_kiri') {
-                $("#barispertamajembtegak2").css("display", "block");
-                $("#barispertamajembkiri2").css("display", "block");
-            }else if (hasil == 'jembatan_tengah') {
-                $("#barispertamajembtengah2").css("display", "block");
-            }else if (hasil == 'jembatan_kanan') {
-                $("#barispertamajembtegak2").css("display", "block");
-                $("#barispertamajembkanan2").css("display", "block");
-            }
-        });
-        $("#barispertamaatas1").on('click', function(event){
-            var hasil = $('#pilihanwarna').val();
-            var subs  = hasil.substring(0,1);
-            if(subs == '#'){
-                $("#barispertamaatas1").css("fill", $('#pilihanwarna').val());
-            }else if (hasil == 'outline') {
-                $("#barispertamaoutline1").css("display", "block");
-            }else if (hasil == 'PRE') {
-                $("#barispertamapre1").css("display", "block");
-                $("#barispertamaune1").css("display", "none");
-                $("#barispertamaano1").css("display", "none");
-            }else if (hasil == 'ANO') {
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "none");
-                $("#barispertamaano1").css("display", "block");
-            }else if(hasil == 'UNE'){
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-            }else if (hasil == 'silang') {
-                $("#barispertamasilang11").css("display", "block");
-                $("#barispertamasilang21").css("display", "block");
-            }else if (hasil == 'border'){
-                $("#barispertamaatas1").css("stroke-width", '2');
-            }else if (hasil == 'segitiga') {
-                $("#barispertamasegitiga1").css("display", "block");
-            }else if (hasil == 'panah_kanan') {
-                $("#barispertamapanahkanan1").css("display", "block");
-            }else if (hasil == 'panah_kiri') {
-                $("#barispertamapanahkiri1").css("display", "block");
-            }else if (hasil == 'non_vital') {
-                $("#barispertamasegitiga1").css("display", "block");
-                $("#barispertamasegitiga1").css("fill", "white");
-            }else if (hasil == 'akar') {
-                $("#barispertamaakar11").css("display", "block");
-                $("#barispertamaakar21").css("display", "block");
-            }else if (hasil == 'crash') {
-                $("#barispertamacrash11").css("display", "block");
-                $("#barispertamacrash21").css("display", "block");
-                $("#barispertamacrash31").css("display", "block");
-                $("#barispertamacrash41").css("display", "block");
-            }else if (hasil == 'jembatan_kiri') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkiri1").css("display", "block");
-            }else if (hasil == 'jembatan_tengah') {
-                $("#barispertamajembtengah1").css("display", "block");
-            }else if (hasil == 'jembatan_kanan') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkanan1").css("display", "block");
-            }
-        });
-        $("#barispertamakanan1").on('click', function(event){
-            var hasil = $('#pilihanwarna').val();
-            var subs  = hasil.substring(0,1);
-            if(subs == '#'){
-                $("#barispertamakanan1").css("fill", $('#pilihanwarna').val());
-            }else if (hasil == 'outline') {
-                $("#barispertamaoutline1").css("display", "block");
-            }else if (hasil == 'PRE') {
-                $("#barispertamapre1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-                $("#barispertamaune1").css("display", "none");
-            }else if (hasil == 'ANO') {
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaano1").css("display", "block");
-                $("#barispertamaune1").css("display", "none");
-            }else if(hasil == 'UNE'){
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-            }else if (hasil == 'silang') {
-                $("#barispertamasilang11").css("display", "block");
-                $("#barispertamasilang21").css("display", "block");
-            }else if (hasil == 'border'){
-                $("#barispertamakanan1").css("stroke-width", '2');
-            }else if (hasil == 'segitiga') {
-                $("#barispertamasegitiga1").css("display", "block");
-            }else if (hasil == 'panah_kanan') {
-                $("#barispertamapanahkanan1").css("display", "block");
-            }else if (hasil == 'panah_kiri') {
-                $("#barispertamapanahkiri1").css("display", "block");
-            }else if (hasil == 'non_vital') {
-                $("#barispertamasegitiga1").css("display", "block");
-                $("#barispertamasegitiga1").css("fill", "white");
-            }else if (hasil == 'akar') {
-                $("#barispertamaakar11").css("display", "block");
-                $("#barispertamaakar21").css("display", "block");
-            }else if (hasil == 'crash') {
-                $("#barispertamacrash11").css("display", "block");
-                $("#barispertamacrash21").css("display", "block");
-                $("#barispertamacrash31").css("display", "block");
-                $("#barispertamacrash41").css("display", "block");
-            }else if (hasil == 'jembatan_kiri') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkiri1").css("display", "block");
-            }else if (hasil == 'jembatan_tengah') {
-                $("#barispertamajembtengah1").css("display", "block");
-            }else if (hasil == 'jembatan_kanan') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkanan1").css("display", "block");
-            }
-        });
-        $("#barispertamabawah1").on('click', function(event){
-            var hasil = $('#pilihanwarna').val();
-            var subs  = hasil.substring(0,1);
-            if(subs == '#'){
-                $("#barispertamabawah1").css("fill", $('#pilihanwarna').val());
-            }else if (hasil == 'outline') {
-                $("#barispertamaoutline1").css("display", "block");
-            }else if (hasil == 'PRE') {
-                $("#barispertamapre1").css("display", "block");
-                $("#barispertamaune1").css("display", "none");
-                $("#barispertamaano1").css("display", "none");
-            }else if (hasil == 'ANO') {
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "none");
-                $("#barispertamaano1").css("display", "block");
-            }else if(hasil == 'UNE'){
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-            }else if (hasil == 'silang') {
-                $("#barispertamasilang11").css("display", "block");
-                $("#barispertamasilang21").css("display", "block");
-            }else if (hasil == 'border'){
-                $("#barispertamabawah1").css("stroke-width", '2');
-            }else if (hasil == 'segitiga') {
-                $("#barispertamasegitiga1").css("display", "block");
-            }else if (hasil == 'panah_kanan') {
-                $("#barispertamapanahkanan1").css("display", "block");
-            }else if (hasil == 'panah_kiri') {
-                $("#barispertamapanahkiri1").css("display", "block");
-            }else if (hasil == 'non_vital') {
-                $("#barispertamasegitiga1").css("display", "block");
-                $("#barispertamasegitiga1").css("fill", "white");
-            }else if (hasil == 'akar') {
-                $("#barispertamaakar11").css("display", "block");
-                $("#barispertamaakar21").css("display", "block");
-            }else if (hasil == 'crash') {
-                $("#barispertamacrash11").css("display", "block");
-                $("#barispertamacrash21").css("display", "block");
-                $("#barispertamacrash31").css("display", "block");
-                $("#barispertamacrash41").css("display", "block");
-            }else if (hasil == 'jembatan_kiri') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkiri1").css("display", "block");
-            }else if (hasil == 'jembatan_tengah') {
-                $("#barispertamajembtengah1").css("display", "block");
-            }else if (hasil == 'jembatan_kanan') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkanan1").css("display", "block");
-            }
-        });
-        $("#barispertamatengah1").on('click', function(event){
-            var hasil = $('#pilihanwarna').val();
-            var subs  = hasil.substring(0,1);
-            if(subs == '#'){
-                $("#barispertamatengah1").css("fill", $('#pilihanwarna').val());
-            }else if (hasil == 'outline') {
-                $("#barispertamaoutline1").css("display", "block");
-            }else if (hasil == 'PRE') {
-                $("#barispertamapre1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-                $("#barispertamaune1").css("display", "none");
-            }else if (hasil == 'ANO') {
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "none");
-                $("#barispertamaano1").css("display", "block");
-            }else if(hasil == 'UNE'){
-                $("#barispertamapre1").css("display", "none");
-                $("#barispertamaune1").css("display", "block");
-                $("#barispertamaano1").css("display", "none");
-            }else if (hasil == 'silang') {
-                $("#barispertamasilang11").css("display", "block");
-                $("#barispertamasilang21").css("display", "block");
-            }else if (hasil == 'border'){
-                $("#barispertamatengah1").css("stroke-width", '2');
-            }else if (hasil == 'segitiga') {
-                $("#barispertamasegitiga1").css("display", "block");
-            }else if (hasil == 'panah_kanan') {
-                $("#barispertamapanahkanan1").css("display", "block");
-            }else if (hasil == 'panah_kiri') {
-                $("#barispertamapanahkiri1").css("display", "block");
-            }else if (hasil == 'non_vital') {
-                $("#barispertamasegitiga1").css("display", "block");
-                $("#barispertamasegitiga1").css("fill", "white");
-            }else if (hasil == 'akar') {
-                $("#barispertamaakar11").css("display", "block");
-                $("#barispertamaakar21").css("display", "block");
-            }else if (hasil == 'crash') {
-                $("#barispertamacrash11").css("display", "block");
-                $("#barispertamacrash21").css("display", "block");
-                $("#barispertamacrash31").css("display", "block");
-                $("#barispertamacrash41").css("display", "block");
-            }else if (hasil == 'jembatan_kiri') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkiri1").css("display", "block");
-            }else if (hasil == 'jembatan_tengah') {
-                $("#barispertamajembtengah1").css("display", "block");
-            }else if (hasil == 'jembatan_kanan') {
-                $("#barispertamajembtegak1").css("display", "block");
-                $("#barispertamajembkanan1").css("display", "block");
-            }
-        });
+        }
+        
+       
+       
+       
 
 
 });

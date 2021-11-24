@@ -45,7 +45,7 @@
             </ul>
             <div class="tab-content padding-vertical-20">
                 <div class="tab-pane active" id="all" role="tabpanel">
-                    <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;" id="html-content-holder">
+                  <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;">
                     <?php 
                       $angka = array(
                                 '1' => '18',
@@ -84,8 +84,8 @@
                         <?php }else{ ?>
                           <polyline id="barispertamakiri<?=$x;?>" points="4,24 4,75 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
                           <polyline id="barispertamaatas<?=$x;?>" points="4,24 55,24 43,50 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
-                          <polyline points="55,24 55,75 43,50 55,24" style="fill:white;stroke:black;stroke-width:1" />
-                          <polyline points="55,75 4,75 15,50 43,50 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barispertamakanan<?=$x;?>" points="55,24 55,75 43,50 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barispertamabawah<?=$x;?>" points="55,75 4,75 15,50 43,50 55,75" style="fill:white;stroke:black;stroke-width:1" />
                         <?php } ?>
                         <line id="barispertamasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
                         <line id="barispertamasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
@@ -110,6 +110,202 @@
                         <text x="17" y="20" id="barispertamapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                         <text x="17" y="20" id="barispertamaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
                         <text x="17" y="20" id="barispertamaune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
+                      </svg>
+                    <?php } ?>
+                  </div>
+                  <!-- baris kedua -->
+                  <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;margin-top:5px;">
+                    <?php 
+                      $angka = array(
+                                '1' => '55',
+                                '2' => '54',
+                                '3' => '53',
+                                '4' => '52',
+                                '5' => '51',
+                                '6' => '61',
+                                '7' => '62',
+                                '8' => '63',
+                                '9' => '64',
+                                '10' => '65',
+                      );
+                      
+                      for ($x = 1; $x <= 10; $x++) { 
+                        if($x == 5){
+                          $lebar = 90;
+                        }else{
+                          $lebar = 60;
+                        }
+                    ?>
+                      <svg height="125" width="<?=$lebar;?>" >
+                        <polyline id="bariskeduaoutline<?=$x;?>" points="2,22 57,22 57,77 2,77 2,22" style="fill:white;stroke:black;stroke-width:3; display:none"  />
+                        <?php if ($x <= 2 || $x >= 9) { ?>
+                          <polyline id="bariskeduakiri<?=$x;?>" points="4,24 4,75 15,63 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" /> 
+                          <polyline id="bariskeduaatas<?=$x;?>" points="4,24 55,24 43,35 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeduakanan<?=$x;?>" points="55,24 55,75 43,63 43,35 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeduabawah<?=$x;?>" points="55,75 4,75 15,63 43,63 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeduatengah<?=$x;?>" points="15,35 43,35 43,63 15,63 15,35" style="fill:white;stroke:black;stroke-width:1" />
+                        <?php }else{ ?>
+                          <polyline id="bariskeduakiri<?=$x;?>" points="4,24 4,75 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeduaatas<?=$x;?>" points="4,24 55,24 43,50 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeduakanan<?=$x;?>" points="55,24 55,75 43,50 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeduabawah<?=$x;?>" points="55,75 4,75 15,50 43,50 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                        <?php } ?>
+                        <line id="bariskeduasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                        <line id="bariskeduasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                        <line id="bariskeduaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeduaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeduajembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="bariskeduajembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="bariskeduajembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="bariskeduajembtengah<?=$x;?>" x1="0" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <polyline id="bariskeduasegitiga<?=$x;?>" points="13,80 45,80 29,103 13,80" style="fill:black;stroke:black;stroke-width:1;display:none;" />
+                        <polyline id="bariskeduapanahkiri<?=$x;?>" points="13,5 13,10 8,5 13,1 13,5 43,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
+                        <polyline id="bariskeduapanahkanan<?=$x;?>" points="45,5 45,10 50,5 45,1 45,5 15,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
+                        <polyline id="bariskedualengkungatas1<?=$x;?>" class="st0" points="16,15 11,14 10,13 8,9 9,8 10,6 12,5 14,3 16,3 20,2 25,1 28,1 33,2 36,3" style="display:none;"  />
+                        <polyline id="bariskedualengkungatas2<?=$x;?>" points="36,3 35,8 42,5 37,1" style="fill:black;stroke:black;stroke-width:1;display:none;"  />
+                        <polyline id="bariskedualengkungbawah1<?=$x;?>" class="st0" points="16,93 11,95 10,97 8,99 9,103 10,104 12,105 14,107 16,107 20,108 25,109 30,109 33,108 36,107" style="display:none;"  />
+                        <polyline id="bariskedualengkungbawah2<?=$x;?>"  points="36,107 38,112 40,105 32,102 36,107" style="fill:black;stroke:black;stroke-width:1;display:none;"  /> 
+                        <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
+                        <text x="17" y="20" id="bariskeduapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
+                        <text x="17" y="20" id="bariskeduaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
+                        <text x="17" y="20" id="bariskeduaune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
+                      </svg>
+                    <?php } ?>
+                  </div>
+
+                   <!-- baris ketiga -->
+                   <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;margin-top:5px;">
+                    <?php 
+                      $angka = array(
+                                '1' => '85',
+                                '2' => '84',
+                                '3' => '83',
+                                '4' => '82',
+                                '5' => '81',
+                                '6' => '71',
+                                '7' => '72',
+                                '8' => '73',
+                                '9' => '74',
+                                '10' => '75',
+                      );
+                      
+                      for ($x = 1; $x <= 10; $x++) { 
+                        if($x == 5){
+                          $lebar = 90;
+                        }else{
+                          $lebar = 60;
+                        }
+                    ?>
+                      <svg height="125" width="<?=$lebar;?>" >
+                        <polyline id="barisketigaoutline<?=$x;?>" points="2,22 57,22 57,77 2,77 2,22" style="fill:white;stroke:black;stroke-width:3; display:none"  />
+                        <?php if ($x <= 2 || $x >= 9) { ?>
+                          <polyline id="barisketigakiri<?=$x;?>" points="4,24 4,75 15,63 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" /> 
+                          <polyline id="barisketigaatas<?=$x;?>" points="4,24 55,24 43,35 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barisketigakanan<?=$x;?>" points="55,24 55,75 43,63 43,35 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barisketigabawah<?=$x;?>" points="55,75 4,75 15,63 43,63 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barisketigatengah<?=$x;?>" points="15,35 43,35 43,63 15,63 15,35" style="fill:white;stroke:black;stroke-width:1" />
+                        <?php }else{ ?>
+                          <polyline id="barisketigakiri<?=$x;?>" points="4,24 4,75 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barisketigaatas<?=$x;?>" points="4,24 55,24 43,50 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barisketigakanan<?=$x;?>" points="55,24 55,75 43,50 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="barisketigabawah<?=$x;?>" points="55,75 4,75 15,50 43,50 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                        <?php } ?>
+                        <line id="barisketigasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                        <line id="barisketigasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                        <line id="barisketigaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barisketigaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barisketigajembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="barisketigajembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="barisketigajembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="barisketigajembtengah<?=$x;?>" x1="0" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <polyline id="barisketigasegitiga<?=$x;?>" points="13,80 45,80 29,103 13,80" style="fill:black;stroke:black;stroke-width:1;display:none;" />
+                        <polyline id="barisketigapanahkiri<?=$x;?>" points="13,5 13,10 8,5 13,1 13,5 43,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
+                        <polyline id="barisketigapanahkanan<?=$x;?>" points="45,5 45,10 50,5 45,1 45,5 15,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
+                        <polyline id="barisketigalengkungatas1<?=$x;?>" class="st0" points="16,15 11,14 10,13 8,9 9,8 10,6 12,5 14,3 16,3 20,2 25,1 28,1 33,2 36,3" style="display:none;"  />
+                        <polyline id="barisketigalengkungatas2<?=$x;?>" points="36,3 35,8 42,5 37,1" style="fill:black;stroke:black;stroke-width:1;display:none;"  />
+                        <polyline id="barisketigalengkungbawah1<?=$x;?>" class="st0" points="16,93 11,95 10,97 8,99 9,103 10,104 12,105 14,107 16,107 20,108 25,109 30,109 33,108 36,107" style="display:none;"  />
+                        <polyline id="barisketigalengkungbawah2<?=$x;?>"  points="36,107 38,112 40,105 32,102 36,107" style="fill:black;stroke:black;stroke-width:1;display:none;"  /> 
+                        <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
+                        <text x="17" y="20" id="barisketigapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
+                        <text x="17" y="20" id="barisketigaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
+                        <text x="17" y="20" id="barisketigaune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
+                      </svg>
+                    <?php } ?>
+                  </div>
+                  <!-- baris keempat -->
+                  <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;margin-top:5px;margin-bottom:20px;">
+                    <?php 
+                      $angka = array(
+                                '1' => '48',
+                                '2' => '47',
+                                '3' => '46',
+                                '4' => '45',
+                                '5' => '44',
+                                '6' => '43',
+                                '7' => '42',
+                                '8' => '41',
+                                '9' => '31',
+                                '10' => '32',
+                                '11' => '33',
+                                '12' => '34',
+                                '13' => '35',
+                                '14' => '36',
+                                '15' => '37',
+                                '16' => '38',
+                      );
+                      
+                      for ($x = 1; $x <= 16; $x++) { 
+                        if($x == 8){
+                          $lebar = 90;
+                        }else{
+                          $lebar = 60;
+                        }
+                    ?>
+                      <svg height="125" width="<?=$lebar;?>" >
+                        <polyline id="bariskeempatoutline<?=$x;?>" points="2,22 57,22 57,77 2,77 2,22" style="fill:white;stroke:black;stroke-width:3; display:none"  />
+                        <?php if ($x <= 5 || $x >= 12) { ?>
+                          <polyline id="bariskeempatkiri<?=$x;?>" points="4,24 4,75 15,63 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" /> 
+                          <polyline id="bariskeempatatas<?=$x;?>" points="4,24 55,24 43,35 15,35 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeempatkanan<?=$x;?>" points="55,24 55,75 43,63 43,35 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeempatbawah<?=$x;?>" points="55,75 4,75 15,63 43,63 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeempattengah<?=$x;?>" points="15,35 43,35 43,63 15,63 15,35" style="fill:white;stroke:black;stroke-width:1" />
+                        <?php }else{ ?>
+                          <polyline id="bariskeempatkiri<?=$x;?>" points="4,24 4,75 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeempatatas<?=$x;?>" points="4,24 55,24 43,50 15,50 4,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeempatkanan<?=$x;?>" points="55,24 55,75 43,50 55,24" style="fill:white;stroke:black;stroke-width:1" />
+                          <polyline id="bariskeempatbawah<?=$x;?>" points="55,75 4,75 15,50 43,50 55,75" style="fill:white;stroke:black;stroke-width:1" />
+                        <?php } ?>
+                        <line id="bariskeempatsilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                        <line id="bariskeempatsilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
+                        <line id="bariskeempatakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeempatakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeempatjembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="bariskeempatjembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="bariskeempatjembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <line id="bariskeempatjembtengah<?=$x;?>" x1="0" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
+                        <polyline id="bariskeempatsegitiga<?=$x;?>" points="13,80 45,80 29,103 13,80" style="fill:black;stroke:black;stroke-width:1;display:none;" />
+                        <polyline id="bariskeempatpanahkiri<?=$x;?>" points="13,5 13,10 8,5 13,1 13,5 43,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
+                        <polyline id="bariskeempatpanahkanan<?=$x;?>" points="45,5 45,10 50,5 45,1 45,5 15,5" style="fill:black;stroke:black;stroke-width:1;display:none" />
+                        <polyline id="bariskeempatlengkungatas1<?=$x;?>" class="st0" points="16,15 11,14 10,13 8,9 9,8 10,6 12,5 14,3 16,3 20,2 25,1 28,1 33,2 36,3" style="display:none;"  />
+                        <polyline id="bariskeempatlengkungatas2<?=$x;?>" points="36,3 35,8 42,5 37,1" style="fill:black;stroke:black;stroke-width:1;display:none;"  />
+                        <polyline id="bariskeempatlengkungbawah1<?=$x;?>" class="st0" points="16,93 11,95 10,97 8,99 9,103 10,104 12,105 14,107 16,107 20,108 25,109 30,109 33,108 36,107" style="display:none;"  />
+                        <polyline id="bariskeempatlengkungbawah2<?=$x;?>"  points="36,107 38,112 40,105 32,102 36,107" style="fill:black;stroke:black;stroke-width:1;display:none;"  /> 
+                        <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
+                        <text x="17" y="20" id="bariskeempatpre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
+                        <text x="17" y="20" id="bariskeempatano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
+                        <text x="17" y="20" id="bariskeempatune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
                       </svg>
                     <?php } ?>
                   </div>
