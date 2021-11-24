@@ -24,6 +24,12 @@
   .st0{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
 	.st1{stroke:#000000;stroke-miterlimit:10;}
   .canvas{z-index:-9999;}
+
+  #imagesave {
+  /* background-color: red; */
+  /* height: 550px;
+  width: auto; */
+}
 </style>
 <div class="modal fade modal_detail" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="div_odonto_modal">
   <div class="modal-dialog modal-lg odonto-modal" role="document">
@@ -45,6 +51,13 @@
             </ul>
             <div class="tab-content padding-vertical-20">
                 <div class="tab-pane active" id="all" role="tabpanel">
+                <div id="imagesave">
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
                   <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;">
                     <?php 
                       $angka = array(
@@ -89,12 +102,12 @@
                         <?php } ?>
                         <line id="barispertamasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
                         <line id="barispertamasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
-                        <line id="barispertamaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barispertamaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barispertamacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barispertamacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barispertamacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barispertamacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barispertamaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barispertamaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barispertamacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:blue;stroke-width:2;display:none;" />
                         <line id="barispertamajembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="barispertamajembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="barispertamajembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
@@ -109,7 +122,7 @@
                         <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
                         <text x="17" y="20" id="barispertamapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                         <text x="17" y="20" id="barispertamaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
-                        <text x="17" y="20" id="barispertamaune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
+                        <text x="17" y="20" id="barispertamaune<?=$x;?>" font-family="Verdana" font-size="13" fill="navy" align="center" style="display:none;">UNE</text>
                       </svg>
                     <?php } ?>
                   </div>
@@ -152,12 +165,12 @@
                         <?php } ?>
                         <line id="bariskeduasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
                         <line id="bariskeduasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
-                        <line id="bariskeduaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeduaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeduacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeduacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeduacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeduacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeduaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeduaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeduacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:blue;stroke-width:2;display:none;" />
                         <line id="bariskeduajembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="bariskeduajembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="bariskeduajembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
@@ -172,7 +185,7 @@
                         <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
                         <text x="17" y="20" id="bariskeduapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                         <text x="17" y="20" id="bariskeduaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
-                        <text x="17" y="20" id="bariskeduaune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
+                        <text x="17" y="20" id="bariskeduaune<?=$x;?>" font-family="Verdana" font-size="13" fill="navy" align="center" style="display:none;">UNE</text>
                       </svg>
                     <?php } ?>
                   </div>
@@ -216,12 +229,12 @@
                         <?php } ?>
                         <line id="barisketigasilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
                         <line id="barisketigasilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
-                        <line id="barisketigaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barisketigaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barisketigacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barisketigacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barisketigacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="barisketigacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="barisketigaakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barisketigaakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="barisketigacrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:blue;stroke-width:2;display:none;" />
                         <line id="barisketigajembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="barisketigajembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="barisketigajembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
@@ -236,7 +249,7 @@
                         <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
                         <text x="17" y="20" id="barisketigapre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                         <text x="17" y="20" id="barisketigaano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
-                        <text x="17" y="20" id="barisketigaune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
+                        <text x="17" y="20" id="barisketigaune<?=$x;?>" font-family="Verdana" font-size="13" fill="navy" align="center" style="display:none;">UNE</text>
                       </svg>
                     <?php } ?>
                   </div>
@@ -285,12 +298,12 @@
                         <?php } ?>
                         <line id="bariskeempatsilang1<?=$x;?>" x1="4" y1="24" x2="55" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
                         <line id="bariskeempatsilang2<?=$x;?>" x1="55" y1="24" x2="4" y2="76" stroke="red" stroke-width="3" style="display:none;"/>
-                        <line id="bariskeempatakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeempatakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeempatcrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeempatcrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeempatcrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:#002699;stroke-width:2;display:none;" />
-                        <line id="bariskeempatcrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:#002699;stroke-width:2;display:none;" />
+                        <line id="bariskeempatakar1<?=$x;?>" x1="4" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeempatakar2<?=$x;?>" x1="55" y1="24" x2="28.5" y2="75" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash1<?=$x;?>" x1="27" y1="30" x2="20" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash2<?=$x;?>" x1="37" y1="30" x2="30" y2="68" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash3<?=$x;?>" x1="12" y1="45" x2="47" y2="45" style="stroke:blue;stroke-width:2;display:none;" />
+                        <line id="bariskeempatcrash4<?=$x;?>" x1="12" y1="55" x2="47" y2="55" style="stroke:blue;stroke-width:2;display:none;" />
                         <line id="bariskeempatjembtegak<?=$x;?>" x1="28.5" y1="24" x2="28.5" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="bariskeempatjembkanan<?=$x;?>" x1="28.5" y1="15" x2="60" y2="15" style="stroke:black;stroke-width:2;display:none;" />
                         <line id="bariskeempatjembkiri<?=$x;?>" x1="28.5" y1="15" x2="0" y2="15" style="stroke:black;stroke-width:2;display:none;" />
@@ -305,12 +318,14 @@
                         <text x="21" y="123" font-family="Verdana" font-size="13" fill="black" ><?php echo $angka[$x];?></text>
                         <text x="17" y="20" id="bariskeempatpre<?=$x;?>" font-family="Verdana" font-size="13" fill="blue" align="center" style="display:none;">PRE</text>
                         <text x="17" y="20" id="bariskeempatano<?=$x;?>" font-family="Verdana" font-size="13" fill="green" align="center" style="display:none;">ANO</text>
-                        <text x="17" y="20" id="bariskeempatune<?=$x;?>" font-family="Verdana" font-size="13" fill="#000080" align="center" style="display:none;">UNE</text>
+                        <text x="17" y="20" id="bariskeempatune<?=$x;?>" font-family="Verdana" font-size="13" fill="navy" align="center" style="display:none;">UNE</text>
                       </svg>
                     <?php } ?>
                   </div>
+                </div>
+                <div id="previewImg" style="display: block;" height="130" ></div>
                  
-                  <div id="previewImage" style="display: block;"></div>
+                  
                   <div class="row" style="padding-top:20px;">
                     <div class="col-sm-3">
                       <div >
@@ -476,13 +491,13 @@
                       <div class="row">
                         
                         <div  class="col-sm-12">
-                        <input id="btn-Preview-Image" type="button" value="Preview"/>
-                        <a id="btn-Convert-Html2Image" href="#">Download</a>
+                        <input id="save" type="button" value="Convert to Image" />
                          
                         </div>
                       </div>
                     </div>
                   </div>
+                  
                 </div>
                 <div class="tab-pane" id="otorisasi" role="tabpanel">
                   text

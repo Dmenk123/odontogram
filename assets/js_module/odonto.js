@@ -2,24 +2,36 @@
 $(document).ready(function(){
 
 	
-var element = $("#html-content-holder"); // global variable
-var getCanvas; // global variable
- 
-    $("#btn-Preview-Image").on('click', function () {
-         html2canvas(element, {
-         onrendered: function (canvas) {
-                $("#previewImage").append(canvas);
-                getCanvas = canvas;
-             }
-         });
-    });
+    // document.getElementById("btn_convert").addEventListener("click", function() {
+	// 	html2canvas(document.getElementById("html-content-holder")[0],
+	// 		{
+	// 			// allowTaint: true,
+	// 			// useCORS: true,
+    //             width: 2000,
+    //             height: 2000
+	// 		}).then(function (canvas) {
+	// 			var anchorTag = document.createElement("a");
+	// 			document.body.appendChild(anchorTag);
+	// 			document.getElementById("previewImg").appendChild(canvas);
+	// 			anchorTag.download = "filename.jpg";
+	// 			anchorTag.href = canvas.toDataURL();
+	// 			anchorTag.target = '_blank';
+	// 			anchorTag.click();
+	// 		});
+    // });
 
-	$("#btn-Convert-Html2Image").on('click', function () {
-    var imgageData = getCanvas.toDataURL("image/png");
-    // Now browser starts downloading it instead of just showing it
-    var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
-    $("#btn-Convert-Html2Image").attr("download", "your_pic_name.png").attr("href", newData);
-	});
+
+    $('#save').click(function() {
+        html2canvas($('#imagesave')[0], {
+            width : 1500,
+            height : 1500
+        }).then(function(canvas) {
+            var a = document.createElement('a');
+            a.href = canvas.toDataURL("image/png");
+            a.download = 'myfile.png';
+            a.click();
+        });
+    });
 
 });
 
