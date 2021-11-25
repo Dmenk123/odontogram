@@ -1,10 +1,17 @@
 let id_peg;
 let id_psn;
 let id_reg;
+let pid;
 let activeModal;
 
 $(document).ready(function() {
+    let uri = new URL(window.location.href);
+    pid = uri.searchParams.get("pid");
 
+    if(pid != '' || pid != undefined) {
+        pilih_pasien(pid);
+    }
+    
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
@@ -54,6 +61,10 @@ function cari_pasien() {
     });
 }
 
+function submit_pasien(enc_id){
+    location.href = base_url+'rekam_medik?pid='+enc_id;
+}
+
 function pilih_pasien(enc_id){
     $.ajax({
         type: "post",
@@ -65,7 +76,7 @@ function pilih_pasien(enc_id){
             id_reg = response.data_id.id_reg;
             id_peg = response.data_id.id_peg;
             id_psn = response.data_id.id_psn;
-            $('#modal_pilih_pasien').modal('hide');
+            // $('#modal_pilih_pasien').modal('hide');
         }
     });
 }

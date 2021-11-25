@@ -80,7 +80,8 @@ class Rekam_medik extends CI_Controller {
 				$html .= '<td>'.$value->no_rm.'</td>';
 				$html .= '<td>'.$value->is_pulang.'</td>';
 				$html .= '<td>'.$value->no_asuransi.'</td>';
-				$html .= '<td><button type="button" class="button btn-sm btn-success" onclick="pilih_pasien(\''.$this->enkripsi->enc_dec('encrypt', $value->id).'\')"> Pilih</button></td>';
+				// $html .= '<td><button type="button" class="button btn-sm btn-success" onclick="pilih_pasien(\''.$this->enkripsi->enc_dec('encrypt', $value->id).'\')"> Pilih</button></td>';
+				$html .= '<td><button type="button" class="button btn-sm btn-success" onclick="submit_pasien(\''.$this->enkripsi->enc_dec('encrypt', $value->id).'\')"> Pilih</button></td>';
 				$html .= '</tr>';
 			}
 		}else{
