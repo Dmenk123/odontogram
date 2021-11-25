@@ -25,8 +25,6 @@ $(document).ready(function(){
         html2canvas($('#imagesave')[0], {
             width : 1500,
             height : 1500,
-            scrollX: 0,
-            scrollY: -window.scrollY
         }).then(function(canvas) {
             var a = document.createElement('a');
             a.href = canvas.toDataURL("image/png");
