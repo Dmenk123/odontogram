@@ -1,6 +1,7 @@
 @media (min-width: 1025px) {
   .kt-aside__brand {
     background-color: #1a1a27;
+    background-color: #F1F0B0;
     -webkit-box-shadow: none;
     box-shadow: none; }
     .kt-aside__brand .kt-aside__brand-tools .kt-aside__brand-aside-toggler svg g [fill] {

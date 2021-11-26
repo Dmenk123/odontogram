@@ -51,7 +51,7 @@
             </ul>
             <div class="tab-content padding-vertical-20">
                 <div class="tab-pane active" id="all" role="tabpanel">
-                <div id="imagesave">
+                <div id="imagesave" style="background-color: red">
                   <br>
                   <br>
                   <br>
