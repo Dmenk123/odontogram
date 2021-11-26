@@ -30,6 +30,35 @@
   /* height: 550px;
   width: auto; */
 }
+
+fieldset {
+  border:1px solid gray;
+}
+fieldSet
+  {
+      width: 100%; 
+      margin-left: 10px;
+      border:1px solid grey;
+      margin: 2px;
+      padding-left: 5px;
+      padding-bottom: 3px;
+  }
+
+  legend
+  {
+
+      border-style:none;
+      background-color: #003366;
+      font-family: Tahoma, Arial, Helvetica;
+      font-weight: bold;
+      font-size: 9.5pt;
+      Color: White;
+      /* width:30%; */
+      padding-left:10px;
+
+  }
+
+    fieldset div { border:1px solid #003366; position:relative; top:-6px }
 </style>
 <div class="modal fade modal_detail" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="div_odonto_modal">
   <div class="modal-dialog modal-lg odonto-modal" role="document">
@@ -51,7 +80,7 @@
             </ul>
             <div class="tab-content padding-vertical-20">
                 <div class="tab-pane active" id="all" role="tabpanel">
-                <div id="imagesave" style="background-color: red">
+                <div id="imagesave">
                   <br>
                   <br>
                   <br>
@@ -325,175 +354,117 @@
                 </div>
                 <div id="previewImg" style="display: block;" height="130" ></div>
                  
-                  
+                  <div align="center">
+                    <table width="80%" border="0">
+                      <tbody>
+                        <tr>
+                          <td width="5%"><span><img src="<?php echo base_url('assets/images/pre.png');?>" width="30px;" height="15px;"></span></td>
+                          <td ><button class="button split btn-default pull-right" style="width: 150px;" id="pre">Erupsi Sebagian</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%"><span><img src="<?php echo base_url('assets/images/crash.png');?>" width="20px;" height="20px;"></span></td>
+                          <td ><button class="button split btn-default pull-right" style="width: 155px;" id="crash" >Fractured</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%"><span><img src="<?php echo base_url('assets/images/old_brown.png');?>" width="20px;" height="20px;"></span></td>
+                          <td ><button class="button split btn-default pull-right" style="width: 155px;" id="old_brown">Tambalan Logam</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%"><span><img src="<?php echo base_url('assets/images/segitiga.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 165px;" id="segitiga">Perawatan Sal. Akar</button></td>
+                          <td width="20%"></td>
+                        </tr>
+                        <tr>
+                          <td><span><img src="<?php echo base_url('assets/images/ano.png');?>" width="30px;" height="15px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 150px;" id="ano">Anomali Bentuk</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td><span><img src="<?php echo base_url('assets/images/mahkota_logam.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 155px;" id="outline">Mahkota Logam</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td><span><img src="<?php echo base_url('assets/images/green.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 155px;" id="green">Tambalan Sewarna</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td><span><img src="<?php echo base_url('assets/images/biru_muda.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 165px;" id="biru_muda">Tambalan Non Logam</button></td>
+                          <td width="20%"></td>
+                        </tr>
+                        <tr>
+                          <td><span><img src="<?php echo base_url('assets/images/une.png');?>" width="30px;" height="15px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 150px;" id="une">Belum Erupsi</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td rowspan="2" colspan="2">
+                            <fieldset>
+                                <legend style="width:40%">Jembatan</legend>
+                                <!-- <div class="row" >
+                                  <div class="col-sm-3"> -->
+                                    <button class="button split btn-default pull-right" style="width: 55px;"  id="jemb_kiri"><---</button>
+                                  <!-- </div>
+                                  <div  class="col-sm-3"> -->
+                                    <button class="button split btn-default pull-right" style="width: 55px;"  id="jemb_tengah">----</button>
+                                  <!-- </div>
+                                  <div class="col-sm-3"> -->
+                                    <button class="button split btn-default pull-right" style="width: 55px;" id="jemb_kanan">---></button>
+                                  <!-- </div>
+                                </div> -->
+                            </fieldset>
+              
+                          </td>
+                          <td width="5%">&nbsp;</td>
+                          <td><span><img src="<?php echo base_url('assets/images/red.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 155px;" id="red">Tambalan Emas</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td><span><img src="<?php echo base_url('assets/images/akar.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 165px;" id="akar">Sisa Akar</button></td>
+                          <td width="20%"></td>
+                        </tr>
+                        <tr>
+                          <td><span><img src="<?php echo base_url('assets/images/caries.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 150px;" id="border">Caries</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td><span><img src="<?php echo base_url('assets/images/pink.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 155px;" id="pink">Tambalan Pencegah</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td> <span><img src="<?php echo base_url('assets/images/silang2.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 165px;" id="silang">Gigi Hilang</button></td>
+                        </tr>
+                        <tr>
+                          <td><span><img src="<?php echo base_url('assets/images/non_vital.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 150px;" id="non_vital">Gigi Non Vital</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td><span><img src="<?php echo base_url('assets/images/non_logam.png');?>" width="20px;" height="20px;"></span></td>
+                          <td><button class="button split btn-default pull-right" style="width: 155px;" id="cyann">Mahkota Non Logam</button></td>
+                          <td width="5%">&nbsp;</td>
+                          <td rowspan="2" colspan="2">
+                            <fieldset>
+                                <legend style="width:90%">Migrasi/Version/Rotasi</legend>
+                                <button class="button split btn-default" id="panah_kanan">panah kanan</button>
+                                <button class="button split btn-default" id="panah_kiri">panah kiri</button>
+                            </fieldset>
+                          </td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="20%"></td>
+                        </tr>
+                        <tr>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                          <td width="5%">&nbsp;</td>
+                            <td >
+                            <input id="save" type="button" class="btn btn-lg btn-success" value="Simpan" />
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                   <div class="row" style="padding-top:20px;">
                     <div class="col-sm-3">
                       <div >
                         <input type="hidden" id="pilihanwarna" value="">
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/pre.png');?>" width="30px;" height="15px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 150px;" id="pre">Erupsi Sebagian</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/ano.png');?>" width="30px;" height="15px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 150px;" id="ano">Anomali Bentuk</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/une.png');?>" width="30px;" height="15px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 150px;" id="une">Belum Erupsi</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/caries.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 150px;" id="border">Caries</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/non_vital.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 150px;" id="non_vital">Gigi Non Vital</button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-3">
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/crash.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" id="crash" >Fractured</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/mahkota_logam.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" id="outline">Mahkota Logam</button>
-                        </div>
-                      </div>
-                      
-                        <div class="main-border">
-                            <div class="row" style="padding-top:10px;">
-                              <div class="col-sm-3">
-                                &nbsp;
-                              </div>
-                              <div class="col-sm-3">
-                                <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_kiri"><---</button>
-                              </div>
-                              <div  class="col-sm-3">
-                                <button class="button split btn-default pull-right" style="width: 75px;"  id="jemb_tengah">----</button>
-                              </div>
-                              <div class="col-sm-3">
-                                <button class="button split btn-default pull-right" style="width: 75px;" id="jemb_kanan">---></button>
-                              </div>
-                            </div>
-                            <div class="sub">
-                                Jembatan
-                            </div>
-                        </div>
-
-                      <div class="row" style="padding-top:20px;">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/non_logam.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" id="cyann">Mahkota Non Logam</button>
-                        </div>
-                      </div>
-                      <button class="button split btn-default" id="panah_kanan">panah kanan</button>
-                      <button class="button split btn-default" id="panah_kiri">panah kiri</button>
-                    </div>
-                    <div class="col-sm-3">
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/old_brown.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" id="old_brown">Tambalan Logam</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/green.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" id="green">Tambalan Sewarna</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/red.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" id="red">Tambalan Emas</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/pink.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 155px;" id="pink">Tambalan Pencegah</button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-3">
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/segitiga.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 165px;" id="segitiga">Perawatan Sal. Akar</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/biru_muda.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 165px;" id="biru_muda">Tambalan Non Logam</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/akar.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 165px;" id="akar">Sisa Akar</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-4" style="padding-left:80px;">
-                          <span><img src="<?php echo base_url('assets/images/silang2.png');?>" width="20px;" height="20px;"></span>
-                        </div>
-                        <div  class="col-sm-8">
-                          <button class="button split btn-default pull-right" style="width: 165px;" id="silang">Gigi Hilang</button>
-                        </div>
-                      </div>
-                      <div class="row">
-                        
-                        <div  class="col-sm-12">
-                        <input id="save" type="button" value="Convert to Image" />
-                         
-                        </div>
                       </div>
                     </div>
                   </div>

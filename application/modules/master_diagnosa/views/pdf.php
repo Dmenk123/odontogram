@@ -146,7 +146,7 @@
         
       </tr>
     </table>
-
+    
     <table class="tbl-header">
       <tr>
         <td align="center" class="head-center">
@@ -154,8 +154,10 @@
         </td>
       </tr>
     </table>
-    
-    <table id="tbl_content" class="table table-bordered table-hover" cellspacing="0" width="100%" border="1">
+    <div align="center">
+      <img src="<?=base_url('upload/odontogram/odontogram.png');?>" width="500" style="z-index:1">
+    </div>
+    <table id="tbl_content" class="table table-bordered table-hover" cellspacing="0" width="100%" border="1" style="margin-top:-70px;z-index:2;">
       <thead>
         <tr>
           <th style="width: 5%; text-align: center;">No</th>
