@@ -1617,6 +1617,44 @@ class Rekam_medik extends CI_Controller {
         return $data;
 	}
 
+	public function save_odontogram()
+	{
+		$base64Image = $this->input->post('image');
+		$id_reg = $this->input->post('id_reg');
+
+		$cek = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
+		$fileName =  $id_reg.'.png';
+		$imageDir =  'upload/odontogram/';
+		$base64Image = trim($base64Image);
+		$base64Image = str_replace('data:image/png;base64,', '', $base64Image);
+		$base64Image = str_replace('data:image/jpg;base64,', '', $base64Image);
+		$base64Image = str_replace('data:image/jpeg;base64,', '', $base64Image);
+		$base64Image = str_replace('data:image/gif;base64,', '', $base64Image);
+		$base64Image = str_replace(' ', '+', $base64Image);
+	
+		$imageData = base64_decode($base64Image);
+		// var_dump($imageData); die();
+		//Set image whole path here 
+		$filePath = $imageDir . $fileName;
+	
+	   	$result = file_put_contents($filePath, $imageData);
+
+		if ($result !== FALSE) {
+			if ($cek) {
+				$this->m_global->update('t_odontogram', ['gambar'=>$fileName], ['id_reg' => $id_reg]);
+			}else{
+				$this->m_global->store(['gambar'=>$fileName, 'id_reg'=> $id_reg], 't_odontogram');
+			}
+			$retval['status'] = true;
+			$retval['pesan'] = 'Berhasil Tersimpan';
+		}else{
+			$retval['status'] = false;
+			$retval['pesan'] = 'gagal tersimpan';
+		}
+
+		echo json_encode($retval);
+	}
+
 
 
 

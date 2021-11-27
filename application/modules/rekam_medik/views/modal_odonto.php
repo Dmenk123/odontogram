@@ -369,7 +369,7 @@ fieldSet
                           <td width="5%">&nbsp;</td>
                           <td width="5%"><span><img src="<?php echo base_url('assets/images/segitiga.png');?>" width="20px;" height="20px;"></span></td>
                           <td><button class="button split btn-default pull-right" style="width: 165px;" id="segitiga">Perawatan Sal. Akar</button></td>
-                          <td width="20%"></td>
+                          <td width="20%" rowspan="2" align="right"><input id="save" type="button" class="btn btn-lg btn-success" value="Simpan" /></td>
                         </tr>
                         <tr>
                           <td><span><img src="<?php echo base_url('assets/images/ano.png');?>" width="30px;" height="15px;"></span></td>
@@ -383,7 +383,7 @@ fieldSet
                           <td width="5%">&nbsp;</td>
                           <td><span><img src="<?php echo base_url('assets/images/biru_muda.png');?>" width="20px;" height="20px;"></span></td>
                           <td><button class="button split btn-default pull-right" style="width: 165px;" id="biru_muda">Tambalan Non Logam</button></td>
-                          <td width="20%"></td>
+                          <!-- <td width="20%"></td> -->
                         </tr>
                         <tr>
                           <td><span><img src="<?php echo base_url('assets/images/une.png');?>" width="30px;" height="15px;"></span></td>
@@ -444,7 +444,7 @@ fieldSet
                           <td width="5%">&nbsp;</td>
                           <td width="20%"></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                           <td width="5%">&nbsp;</td>
                           <td width="5%">&nbsp;</td>
                           <td width="5%">&nbsp;</td>
@@ -455,9 +455,9 @@ fieldSet
                           <td width="5%">&nbsp;</td>
                           <td width="5%">&nbsp;</td>
                             <td >
-                            <input id="save" type="button" class="btn btn-lg btn-success" value="Simpan" />
+                            
                             </td>
-                        </tr>
+                        </tr> -->
                       </tbody>
                     </table>
                   </div>

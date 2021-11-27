@@ -1,35 +1,34 @@
 
 $(document).ready(function(){
 
-	
-    // document.getElementById("btn_convert").addEventListener("click", function() {
-	// 	html2canvas(document.getElementById("html-content-holder")[0],
-	// 		{
-	// 			// allowTaint: true,
-	// 			// useCORS: true,
-    //             width: 2000,
-    //             height: 2000
-	// 		}).then(function (canvas) {
-	// 			var anchorTag = document.createElement("a");
-	// 			document.body.appendChild(anchorTag);
-	// 			document.getElementById("previewImg").appendChild(canvas);
-	// 			anchorTag.download = "filename.jpg";
-	// 			anchorTag.href = canvas.toDataURL();
-	// 			anchorTag.target = '_blank';
-	// 			anchorTag.click();
-	// 		});
-    // });
-
-
     $('#save').click(function() {
         html2canvas($('#imagesave')[0], {
-            width : 1500,
-            height : 700,
+            // width : 1500,
+            // height : 700,
+            // scale:3
         }).then(function(canvas) {
-            var a = document.createElement('a');
-            a.href = canvas.toDataURL("image/png");
-            a.download = 'myfile.png';
-            a.click();
+            // var a = document.createElement('a');
+            var dataURL = canvas.toDataURL("image/png");
+            // a.href = canvas.toDataURL("image/png");
+            // a.download = 'myfile.png';
+            // a.click();
+            $.ajax({
+                url : base_url + 'rekam_medik/save_odontogram',
+                type: 'post',
+                data: {
+                    image: dataURL,
+                    id_reg: id_reg
+                },
+                dataType: 'json',
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Menyimpan Odontogram!', data.pesan, 'success');
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
         });
     });
 
