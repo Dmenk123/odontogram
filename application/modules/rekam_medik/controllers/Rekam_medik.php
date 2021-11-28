@@ -182,6 +182,9 @@ class Rekam_medik extends CI_Controller {
 			case 'diskon':
 				echo json_encode(['menu' => 'diskon']);
 				break;
+			case 'odonto':
+				echo json_encode(['menu' => 'odonto']);
+				break;
 			
 			default:
 				$datanya = null;
@@ -1657,11 +1660,76 @@ class Rekam_medik extends CI_Controller {
 
 	public function save_formulir_odonto()
 	{
-		var_dump('kesini');
+		$id_reg = $this->input->get('id_reg');
+
+		$data = [
+			'sebelas' => $this->input->post('sebelas'),
+			'dua_belas' => $this->input->post('dua_belas'),
+			'tiga_belas' => $this->input->post('tiga_belas'),
+			'empat_belas' => $this->input->post('empat_belas'),
+			'lima_belas' => $this->input->post('lima_belas'),
+			'enam_belas' => $this->input->post('enam_belas'),
+			'tujuh_belas' => $this->input->post('tujuh_belas'),
+			'delapan_belas' => $this->input->post('delapan_belas'),
+			'dua_satu' => $this->input->post('dua_satu'),
+			'dua_dua' => $this->input->post('dua_dua'),
+			'dua_tiga' => $this->input->post('dua_tiga'),
+			'dua_empat' => $this->input->post('dua_empat'),
+			'dua_lima' => $this->input->post('dua_lima'),
+			'dua_enam' => $this->input->post('dua_enam'),
+			'dua_tujuh' => $this->input->post('dua_tujuh'),
+			'dua_delapan' => $this->input->post('dua_delapan'),
+			'tiga_satu' => $this->input->post('tiga_satu'),
+			'tiga_dua' => $this->input->post('tiga_dua'),
+			'tiga_tiga' => $this->input->post('tiga_tiga'),
+			'tiga_empat' => $this->input->post('tiga_empat'),
+			'tiga_lima' => $this->input->post('tiga_lima'),
+			'tiga_enam' => $this->input->post('tiga_enam'),
+			'tiga_tujuh' => $this->input->post('tiga_tujuh'),
+			'tiga_delapan' => $this->input->post('tiga_delapan'),
+			'empat_satu' => $this->input->post('empat_satu'),
+			'empat_dua' => $this->input->post('empat_dua'),
+			'empat_tiga' => $this->input->post('empat_tiga'),
+			'empat_empat' => $this->input->post('empat_empat'),
+			'empat_lima' => $this->input->post('empat_lima'),
+			'empat_enam' => $this->input->post('empat_enam'),
+			'empat_tujuh' => $this->input->post('empat_tujuh'),
+			'empat_delapan' => $this->input->post('empat_delapan'),
+		];
+
+		$cek = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
+		if ($cek) {
+			
+			$this->m_global->update('t_odontogram', $data, ['id_reg' => $id_reg]);
+
+			$old_data = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Berhasil Diupdate';
+			$retval['old_data'] = $old_data;
+		}else{
+			$data['id_reg'] = $id_reg;
+			$this->m_global->store($data, 't_odontogram');
+
+			$old_data = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Berhasil Tersimpan';
+			$retval['old_data'] = $old_data;
+		}
+
+		echo json_encode($retval);
 	}
 
 
+	public function load_formulir()
+	{
+		$id_reg = $this->input->get('id_reg');
+		$old_data = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
+		
+		$data['old_data'] = $old_data;
+		
 
+		echo json_encode($data);
+	}
 
 	/////////////////////////////////
 

@@ -1,6 +1,7 @@
 
 $(document).ready(function(){
 
+
     $('#save').click(function() {
         html2canvas($('#imagesave')[0], {
             // width : 1500,
@@ -205,7 +206,7 @@ function save_formulir()
 {
     var url;
 
-    url = base_url + 'rekam_medik/save_formulir_odonto';
+    url = base_url + 'rekam_medik/save_formulir_odonto?id_reg='+id_reg;
     
     var form = $('#form-odonto')[0];
     var data = new FormData(form);
@@ -234,10 +235,33 @@ function save_formulir()
                 timeout: 600000,
                 success: function (data) {
                     if(data.status) {
-                        swal.fire("Sukses!!", "berhasil menyimpan data", "success");
+                        swal.fire("Sukses!!", data.pesan, "success");
                         // $("#btnSave").prop("disabled", false);
                         // $('#btnSave').text('Simpan');
-                        
+                        $('[name="sebelas"]').val(data.old_data.sebelas);
+                        $('[name="dua_belas"]').val(data.old_data.dua_belas);
+                        $('[name="tiga_belas"]').val(data.old_data.tiga_belas);
+                        $('[name="empat_belas"]').val(data.old_data.empat_belas);
+                        $('[name="lima_belas"]').val(data.old_data.lima_belas);
+                        $('[name="enam_belas"]').val(data.old_data.enam_belas);
+                        $('[name="tujuh_belas"]').val(data.old_data.tujuh_belas);
+                        $('[name="delapan_belas"]').val(data.old_data.delapan_belas);
+                        $('[name="dua_satu"]').val(data.old_data.dua_satu);
+                        $('[name="dua_dua"]').val(data.old_data.dua_dua);
+                        $('[name="dua_tiga"]').val(data.old_data.dua_tiga);
+                        $('[name="dua_empat"]').val(data.old_data.dua_empat);
+                        $('[name="dua_lima"]').val(data.old_data.dua_lima);
+                        $('[name="dua_enam"]').val(data.old_data.dua_enam);
+                        $('[name="dua_tujuh"]').val(data.old_data.dua_tujuh);
+                        $('[name="dua_delapan"]').val(data.old_data.dua_delapan);
+                        $('[name="tiga_satu"]').val(data.old_data.tiga_satu);
+                        $('[name="tiga_dua"]').val(data.old_data.tiga_dua);
+                        $('[name="tiga_tiga"]').val(data.old_data.tiga_tiga);
+                        $('[name="tiga_empat"]').val(data.old_data.tiga_empat);
+                        $('[name="tiga_lima"]').val(data.old_data.tiga_lima);
+                        $('[name="tiga_enam"]').val(data.old_data.tiga_enam);
+                        $('[name="tiga_tujuh"]').val(data.old_data.tiga_tujuh);
+                        $('[name="tiga_delapan"]').val(data.old_data.tiga_delapan);
                      
                     }else {
                         for (var i = 0; i < data.inputerror.length; i++) 
@@ -274,4 +298,44 @@ function save_formulir()
           )
         }
       })
+}
+
+function reloadFormOdonto(){
+    $.ajax({
+        url : base_url + 'rekam_medik/load_formulir?id_reg='+id_reg,
+        type: "POST",
+        dataType: "JSON",
+        success: function(data)
+        {
+            $('[name="sebelas"]').val(data.old_data.sebelas);
+            $('[name="dua_belas"]').val(data.old_data.dua_belas);
+            $('[name="tiga_belas"]').val(data.old_data.tiga_belas);
+            $('[name="empat_belas"]').val(data.old_data.empat_belas);
+            $('[name="lima_belas"]').val(data.old_data.lima_belas);
+            $('[name="enam_belas"]').val(data.old_data.enam_belas);
+            $('[name="tujuh_belas"]').val(data.old_data.tujuh_belas);
+            $('[name="delapan_belas"]').val(data.old_data.delapan_belas);
+            $('[name="dua_satu"]').val(data.old_data.dua_satu);
+            $('[name="dua_dua"]').val(data.old_data.dua_dua);
+            $('[name="dua_tiga"]').val(data.old_data.dua_tiga);
+            $('[name="dua_empat"]').val(data.old_data.dua_empat);
+            $('[name="dua_lima"]').val(data.old_data.dua_lima);
+            $('[name="dua_enam"]').val(data.old_data.dua_enam);
+            $('[name="dua_tujuh"]').val(data.old_data.dua_tujuh);
+            $('[name="dua_delapan"]').val(data.old_data.dua_delapan);
+            $('[name="tiga_satu"]').val(data.old_data.tiga_satu);
+            $('[name="tiga_dua"]').val(data.old_data.tiga_dua);
+            $('[name="tiga_tiga"]').val(data.old_data.tiga_tiga);
+            $('[name="tiga_empat"]').val(data.old_data.tiga_empat);
+            $('[name="tiga_lima"]').val(data.old_data.tiga_lima);
+            $('[name="tiga_enam"]').val(data.old_data.tiga_enam);
+            $('[name="tiga_tujuh"]').val(data.old_data.tiga_tujuh);
+            $('[name="tiga_delapan"]').val(data.old_data.tiga_delapan);
+
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error get data from ajax');
+        }
+    });
 }

@@ -477,12 +477,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">11 [51]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="sebelas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_satu">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[61] 21</span></div>
                             </div>
                           </td>
@@ -491,12 +491,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">12 [52]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_belas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_dua">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[62] 22</span></div>
                             </div>
                           </td>
@@ -505,12 +505,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">13 [53]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_belas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_tiga">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[63] 23</span></div>
                             </div>
                           </td>
@@ -519,12 +519,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">14 [54]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_belas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_empat">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[64] 24</span></div>
                             </div>
                           </td>
@@ -533,12 +533,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">15 [55]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="lima_belas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_lima">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[65] 25</span></div>
                             </div>
                           </td>
@@ -547,12 +547,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">16</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="enam_belas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_enam">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">26</span></div>
                             </div>
                           </td>
@@ -561,12 +561,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">17</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tujuh_belas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_tujuh">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">27</span></div>
                             </div>
                           </td>
@@ -575,12 +575,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">18</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="delapan_belas">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="dua_delapan">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">28</span></div>
                             </div>
                           </td>
@@ -597,12 +597,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">48</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_delapan">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_delapan">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">38</span></div>
                             </div>
                           </td>
@@ -611,12 +611,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">47</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_tujuh">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_tujuh">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">37</span></div>
                             </div>
                           </td>
@@ -625,12 +625,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">46</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_enam">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_enam">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">36</span></div>
                             </div>
                           </td>
@@ -639,12 +639,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">45 [85]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_lima">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_lima">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[75] 35</span></div>
                             </div>
                           </td>
@@ -653,12 +653,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">44 [84]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_empat">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_empat">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[74] 34</span></div>
                             </div>
                           </td>
@@ -667,12 +667,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">43 [83]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_tiga">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_tiga">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[73] 33</span></div>
                             </div>
                           </td>
@@ -681,12 +681,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">42 [82]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_dua">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_dua">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[72] 32</span></div>
                             </div>
                           </td>
@@ -695,12 +695,12 @@ fieldSet
                           <td>
                             <div class="input-group">
                               <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">41 [81]</span></div>
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="empat_satu">
                             </div>
                           </td>
                           <td>
                             <div class="input-group">
-                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1" name="tiga_satu">
                               <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[71] 31</span></div>
                             </div>
                           </td>

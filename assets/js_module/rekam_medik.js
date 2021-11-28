@@ -189,6 +189,8 @@ function cekDanSetValue(txt_div_modal){
             reloadFormTindakanLab();
         }else if(objData.menu == 'diskon'){
             reloadFormDiskon();
+        }else if(objData.menu == 'odonto'){
+            reloadFormOdonto();
         }
     }
     
