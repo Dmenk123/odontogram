@@ -81,12 +81,12 @@ fieldSet
             <div class="tab-content padding-vertical-20">
                 <div class="tab-pane active" id="all" role="tabpanel">
                 <div id="imagesave">
+                  <!-- <br>
                   <br>
                   <br>
                   <br>
                   <br>
-                  <br>
-                  <br>
+                  <br> -->
                   <div class="row" align="center"  style="flex-wrap:wrap; justify-content:center;">
                     <?php 
                       $angka = array(
@@ -471,7 +471,300 @@ fieldSet
                   
                 </div>
                 <div class="tab-pane" id="otorisasi" role="tabpanel">
-                  text
+                  <form id="form-odonto">
+                    <table width="80%" align="center">
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">11 [51]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[61] 21</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">12 [52]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[62] 22</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">13 [53]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[63] 23</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">14 [54]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[64] 24</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">15 [55]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[65] 25</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">16</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">26</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">17</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">27</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">18</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">28</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                           &nbsp;
+                          </td>
+                          <td>
+                            &nbsp;
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">48</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">38</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">47</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">37</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">46</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">36</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">45 [85]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[75] 35</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">44 [84]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[74] 34</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">43 [83]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[73] 33</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">42 [82]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[72] 32</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="input-group">
+                              <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">41 [81]</span></div>
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group">
+                              <input type="text" class="form-control" aria-describedby="basic-addon1">
+                              <div class="input-group-append"><span class="input-group-text" id="basic-addon1" style="width: 100px!important;">[71] 31</span></div>
+                            </div>
+                          </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <div class="kt-portlet__body" style="margin-left:200px;">
+												<div class="kt-section kt-section--first">
+													<div class="kt-section__body">
+														<div class="form-group row">
+															<label class="col-lg-2 col-form-label">Occlusi :</label>
+															<div class="col-lg-6">
+																<input type="email" class="form-control" >
+															</div>
+														</div>
+														<div class="form-group row">
+															<label class="col-lg-2 col-form-label">Torus Palatinus :</label>
+															<div class="col-lg-6">
+																<input type="email" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-2 col-form-label">Torus Mandibularis :</label>
+															<div class="col-lg-6">
+																<input type="email" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-2 col-form-label">Palatum :</label>
+															<div class="col-lg-6">
+																<input type="email" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-2 col-form-label">Diastema :</label>
+															<div class="col-lg-6">
+																<input type="email" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-2 col-form-label">Gigi Anomali :</label>
+															<div class="col-lg-6">
+																<input type="email" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-2 col-form-label">Lain - lain :</label>
+															<div class="col-lg-6">
+																<input type="email" class="form-control" >
+															</div>
+														</div>
+                        </div>
+                        <div >
+													<div class="row">
+														<div class="col-lg-3"></div>
+														<div class="col-lg-6">
+															<button type="button" class="btn btn-success" onclick="save_formulir()" >Submit</button>
+															<button type="reset" class="btn btn-secondary">Cancel</button>
+														</div>
+													</div>
+												</div>
+												</div>
+											</div>
+                  </form>
                 </div>
             </div>
         </div>

@@ -1655,6 +1655,11 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode($retval);
 	}
 
+	public function save_formulir_odonto()
+	{
+		var_dump('kesini');
+	}
+
 
 
 

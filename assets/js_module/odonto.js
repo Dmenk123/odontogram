@@ -198,10 +198,80 @@ $( document ).ready(function() {
                 }
             }
         }
-        
-       
-       
-       
-
 
 });
+
+function save_formulir()
+{
+    var url;
+
+    url = base_url + 'rekam_medik/save_formulir_odonto';
+    
+    var form = $('#form-odonto')[0];
+    var data = new FormData(form);
+    
+    $("#btnSave").prop("disabled", true);
+    $('#btnSave').text('Menyimpan Data'); //change button text
+    swalConfirmDelete.fire({
+        title: 'Perhatian !!',
+        text: "Apakah anda yakin dengan data ini ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: url,
+                data: data,
+                dataType: "JSON",
+                processData: false, // false, it prevent jQuery form transforming the data into a query string
+                contentType: false, 
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.status) {
+                        swal.fire("Sukses!!", "berhasil menyimpan data", "success");
+                        // $("#btnSave").prop("disabled", false);
+                        // $('#btnSave').text('Simpan');
+                        
+                     
+                    }else {
+                        for (var i = 0; i < data.inputerror.length; i++) 
+                        {
+                            if (data.inputerror[i] != 'jabatans') {
+                                $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                                $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                            }else{
+                                $($('#jabatans').data('select2').$container).addClass('has-error');
+                            }
+                        }
+        
+                        $("#btnSave").prop("disabled", false);
+                        $('#btnSave').text('Simpan');
+                    }
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#btnSave").prop("disabled", false);
+                    $('#btnSave').text('Simpan');
+        
+                    reset_modal_form();
+                    $(".modal").modal('hide');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+      })
+}
