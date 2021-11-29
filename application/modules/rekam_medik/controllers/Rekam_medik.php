@@ -242,6 +242,55 @@ class Rekam_medik extends CI_Controller {
 
 		echo json_encode($retval);
 	}
+
+	public function cetak_anamnesa()
+	{
+
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$anamnesa = $this->input->post('txt_anamnesa');
+		
+		$data = [
+			'id_pasien' => $id_psn,
+			'id_pegawai' => $id_peg,
+			'id_reg' => $id_reg,
+			'anamnesa' => $anamnesa,
+		];
+
+		if($this->input->post('id_anamnesa') != '') {
+			###update
+			$data['updated_at'] = $timestamp;
+			$where = ['id' => $this->input->post('id_anamnesa')];
+			$update = $this->t_rekam_medik->update($where, $data, 't_perawatan');
+			$pesan = 'Sukses Mengupdate data Perawatan';
+		}else{
+			###insert
+			$data['id'] = $this->t_rekam_medik->get_max_id_perawatan();
+			$data['tanggal'] = $datenow;
+			$data['created_at'] = $timestamp;
+			
+			$insert = $this->t_rekam_medik->save($data, 't_perawatan');
+			$pesan = 'Sukses Menambah data Perawatan';
+		}
+				
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal memproses Data Perawatan';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = $pesan;
+		}
+
+		echo json_encode($retval);
+	}
 	///////////////////// end anamnesa grup ////////////////////
 
 	///////////////////////////// start diagnosa grup ///////////////////////////////////

@@ -258,6 +258,72 @@ $obj_date = new DateTime();
             
           </div>
         </div>
+
+        <div class="kt-portlet__foot" id="print_area">
+          <div class="row align-items-center">
+            <div class="col-lg-12 row">
+              <div class="col-lg-2">
+                <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <h5 style="color:black!important;">
+                  <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                    <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
+                  </a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Anamnesa</a>
+                </h5>
+              </div>
+
+              <div class="col-lg-2">
+                <a href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <h5 style="color:black!important;">
+                  <a href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                    <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
+                  </a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Diagnosa</a>
+                </h5>
+              </div>
+
+              <div class="col-lg-2">
+                <a href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <h5 style="color:black!important;">
+                  <a href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                    <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
+                  </a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Tindakan</a>
+                </h5>
+              </div>
+
+              <div class="col-lg-2">
+                <a href="<?= base_url('rekam_medik/cetak_obat')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <h5 style="color:black!important;">
+                  <a href="<?= base_url('rekam_medik/cetak_obat')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                    <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
+                  </a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_obat')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Obat</a>
+                </h5>
+              </div>
+
+              <div class="col-lg-2">
+                <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <h5 style="color:black!important;">
+                  <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                    <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
+                  </a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Anamnesa</a>
+                </h5>
+              </div>
+
+              <div class="col-lg-2">
+                <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <h5 style="color:black!important;">
+                  <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                    <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
+                  </a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Anamnesa</a>
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
         
       </div>  
     </form>
