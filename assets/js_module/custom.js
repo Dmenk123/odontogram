@@ -1,6 +1,7 @@
 const hostName = window.location.origin;
 const pecah = window.location.pathname.split('/');
-const base_url = hostName+'/'+pecah[1]+'/'+pecah[2]+'/';
+const base_url = hostName+'/'+pecah[1]+'/';
+
 
 $(window).on('load', function(){
     $('div#CssLoader').addClass('hidden');

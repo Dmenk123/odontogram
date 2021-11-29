@@ -100,6 +100,23 @@ class Reg_pasien extends CI_Controller {
 		echo json_encode($retval);
 	}
 
+	public function get_select_klinik()
+	{
+		$term = $this->input->get('term');
+		$id_jabatan = 1; // jabatan dokter
+		$res_data = $this->m_global->multi_row('*', ['deleted_at' => null, 'nama_klinik like' => '%'.$term.'%'], 'm_klinik', null, 'nama_klinik');
+		if($res_data) {
+			foreach ($res_data as $key => $value) {
+				$row['id'] = $value->id;
+				$row['text'] = $value->nama_klinik.' - '.$value->alamat;
+				$retval[] = $row;
+			}
+		}else{
+			$retval = false;
+		}
+		echo json_encode($retval);
+	}
+
 	public function get_data_form_penjamin()
 	{
 		$enc_id = $this->input->post('id_regnya');
@@ -241,16 +258,23 @@ class Reg_pasien extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.id, reg.id_pasien, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
+		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik";
 		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as psn', 'on'	=> 'reg.id_pasien = psn.id'],
 			['table' => 'm_pegawai as peg', 'on'=> 'reg.id_pegawai = peg.id'],
 			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id'],
-			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id']
+			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id'],
+			['table' => 'm_klinik as kli', 'on' => 'reg.id_klinik = kli.id'],
 		];
 		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
+
+		if($this->session->userdata('id_klinik') == null) {
+			$is_option_klinik = true;
+		}else{
+			$is_option_klinik = false;
+		}
 		
 		if(!$data_reg) {
 			$status = false;
@@ -262,7 +286,9 @@ class Reg_pasien extends CI_Controller {
 			'status' => $status,
 			'data' => $data_reg,
 			'txt_opt_pasien' => '['.$data_reg->no_rm.' - '.$data_reg->nik.'] '.$data_reg->nama_pasien,
-			'txt_opt_dokter' => '['.$data_reg->kode_dokter.'] '.$data_reg->nama_dokter
+			'txt_opt_dokter' => '['.$data_reg->kode_dokter.'] '.$data_reg->nama_dokter,
+			'txt_opt_klinik' =>  $data_reg->nama_klinik.' - '.$data_reg->alamat_klinik,
+			'is_option_klinik' => $is_option_klinik
 		]);
 	}
 
@@ -295,6 +321,7 @@ class Reg_pasien extends CI_Controller {
 		$is_asuransi = ($flag_asuransi) ? 1 : null;
 		$umur = contul(trim($this->input->post('umur_reg')));
 		$id_pemetaan = contul($this->input->post('pemetaan'));
+		$id_klinik = contul($this->input->post('klinik'));
 
 		$this->db->trans_begin();
 		
@@ -306,6 +333,7 @@ class Reg_pasien extends CI_Controller {
 			'is_asuransi' => $is_asuransi,
 			'id_asuransi' => $id_asuransi,
 			'no_asuransi' => $no_asuransi,
+			'id_klinik' => $id_klinik,
 			'umur' => $umur,
 			'id_pemetaan' => $id_pemetaan
 		];
@@ -370,6 +398,7 @@ class Reg_pasien extends CI_Controller {
 			$row[] = DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d/m/Y');
 			$row[] = $val->nik;
 			$row[] = $val->jenkel;
+			$row[] = $val->nama_klinik;
 			$row[] = $val->nama_dokter;
 			$row[] = $val->penjamin;
 			$row[] = $val->nama_asuransi;

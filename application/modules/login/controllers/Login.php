@@ -45,6 +45,7 @@ class Login extends CI_Controller {
 					'id_user' => $result->id,
 					'last_login' => $result->last_login,
 					'id_role' => $result->id_role,
+					'id_klinik' => $result->id_klinik,
 					'logged_in' => true,
 				));
 
@@ -67,11 +68,13 @@ class Login extends CI_Controller {
 			//$this->session->sess_destroy();
 			$this->session->unset_userdata('username');
 			$this->session->unset_userdata('id_user');
-			$this->session->unset_userdata('id_level_user');
+			$this->session->unset_userdata('id_role');
+			$this->session->unset_userdata('last_login');
+			$this->session->unset_userdata('id_klinik');
 			$this->session->set_userdata(array('logged_in' => false));
 		}
 		
-		echo json_encode(['status' => 'success']);
+		return redirect('login');
 	}
 
 	public function lihat_pass($username)

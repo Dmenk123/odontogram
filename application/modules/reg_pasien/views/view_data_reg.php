@@ -69,6 +69,7 @@
                 <th>Tgl Lahir</th>
                 <th>NIK</th>
                 <th>JK</th>
+                <th>Klinik</th>
                 <th>Dokter</th>
                 <th>jenis Penjamin</th>
                 <th>Asuransi</th>

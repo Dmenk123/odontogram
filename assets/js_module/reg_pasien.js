@@ -4,24 +4,12 @@ var table;
 var table2;
 
 $(document).ready(function() {
-
+    let uri = new URL(window.location.href);
     filter_tanggal();
     
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
-    });
-
-    table2 = $('#tabel_asuransi').DataTable({
-        autoWidth: false,
-		responsive: true,
-        searchDelay: 500,
-        processing: true,
-        serverSide: true,
-		ajax: {
-			url  : base_url + "master_asuransi/list_data",
-			type : "POST" 
-		}
     });    
 
     //change menu status
@@ -147,6 +135,36 @@ $(document).ready(function() {
         }
     });
 
+    $(".klinik").select2({
+        // tags: true,
+        //multiple: false,
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
+        ajax: {
+            url: base_url+'reg_pasien/get_select_klinik',
+            dataType: "json",
+            type: "GET",
+            data: function (params) {
+
+                var queryParameters = {
+                    term: params.term
+                }
+                return queryParameters;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            id: item.id,
+                        }
+                    })
+                };
+            }
+        }
+    });
+
     $('.mask_tanggal').mask("00/00/0000", {placeholder: "DD/MM/YYYY"});
 
     $('#jam_reg').timepicker({
@@ -248,8 +266,24 @@ function clear_input_pasien() {
 
 function tambah_data_asuransi() {
     save_method = 'add';
+    datatable_asuransi();
     $('#modal_form_asuransi').modal('show');
     $('#modal_form_asuransi_title').text('Master Asuransi'); 
+}
+
+const datatable_asuransi = () => {
+    table2 = $('#tabel_asuransi').DataTable({
+        autoWidth: false,
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url  : base_url + "master_asuransi/list_data",
+            type : "POST" 
+        }
+    });    
 }
 
 function edit_asuransi(id){
@@ -299,6 +333,14 @@ function get_data_form_edit() {
 
                 var option_dokter = $("<option selected='selected'></option>").val(response.data.id_pegawai).text(response.txt_opt_dokter);
                 $("#dokter").append(option_dokter).trigger('change');
+
+                if(response.is_option_klinik) {
+                    var option_klinik = $("<option selected='selected'></option>").val(response.data.id_klinik).text(response.txt_opt_klinik);
+                    $("select.klinik").append(option_klinik).trigger('change');
+                }else{
+                    $('input.klinik').val(response.data.id_klinik);
+                }
+                
 
                 $('#jenis_penjamin').val(response.data.is_asuransi).change();
                 

@@ -115,6 +115,19 @@ $obj_date = new DateTime();
           </div>
           
           <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+          <?php if($this->session->userdata('id_klinik') == null) { ?>
+            <div class="form-group row form-group-marginless kt-margin-t-20">
+              <label class="col-lg-2 col-form-label">Klinik:</label>
+              <div class=" col-lg-8">
+                <select class="form-control kt-select2 klinik" name="klinik">
+                  <option value="">Silahkan Pilih Klinik</option>
+                </select>
+                <span class="help-block"></span>
+              </div>
+            </div>
+          <?php } else { ?>
+            <input type="hidden" class="form-control" name="klinik" autocomplete="off" value="<?php $this->session->userdata('id_klinik') ?>">
+          <?php } ?>
           <div class="form-group row form-group-marginless kt-margin-t-20">
             <label class="col-lg-2 col-form-label">Dokter:</label>
             <div class=" col-lg-8">

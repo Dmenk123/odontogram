@@ -2,7 +2,7 @@ module.exports = (grunt) => {
     /**
     * Project configuration.
     */
-    grunt.registerTask('kompress-file', 'Minify CSS code and JS code.', () => {
+    grunt.registerTask('compress-file', 'Minify CSS code and JS code.', () => {
 
         /**
         * Load NPM tasks.
