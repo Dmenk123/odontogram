@@ -713,43 +713,131 @@ fieldSet
 														<div class="form-group row">
 															<label class="col-lg-2 col-form-label">Occlusi :</label>
 															<div class="col-lg-6">
-																<input type="email" class="form-control" >
+                                <?php
+                                  $occlusi = ['Normal Bite', 'Cross Bite', 'Deep Bite'];
+                                ?>
+																<select name="occlusi" class="form-control">
+                                  <option value="">Pilih Occlusi</option>
+                                  <?php
+                                    foreach ($occlusi as $value) { ?>
+                                      <option value="<?=$value;?>"><?=$value;?></option>
+                                  <?php }
+                                  ?>
+                                </select>
 															</div>
 														</div>
 														<div class="form-group row">
 															<label class="col-lg-2 col-form-label">Torus Palatinus :</label>
 															<div class="col-lg-6">
-																<input type="email" class="form-control" >
+                                <?php
+                                  $torus_palatinus = ['Tidak Ada', 'Kecil/Sedang', 'Besar', 'Multiple'];
+                                ?>
+																<select name="torus_palatinus" class="form-control">
+                                  <?php
+                                    foreach ($torus_palatinus as $value) { ?>
+                                      <option value="<?=$value;?>"><?=$value;?></option>
+                                  <?php }
+                                  ?>
+                                </select>
 															</div>
 														</div>
                             <div class="form-group row">
 															<label class="col-lg-2 col-form-label">Torus Mandibularis :</label>
 															<div class="col-lg-6">
-																<input type="email" class="form-control" >
+                                <?php
+                                  $torus_mandibularis = ['Tidak Ada', 'Kecil/Sedang', 'Besar', 'Multiple'];
+                                ?>
+															  <select name="torus_mandibularis" class="form-control">
+                                  <?php
+                                    foreach ($torus_mandibularis as $value) { ?>
+                                      <option value="<?=$value;?>"><?=$value;?></option>
+                                  <?php }
+                                  ?>
+                                </select>
 															</div>
 														</div>
                             <div class="form-group row">
 															<label class="col-lg-2 col-form-label">Palatum :</label>
 															<div class="col-lg-6">
-																<input type="email" class="form-control" >
+                                <?php
+                                  $palatum = ['Dalam', 'Sedang', 'Rendah'];
+                                ?>
+																 <select name="palatum" class="form-control">
+                                  <option value="">Pilih Jenis Palatum</option>
+                                  <?php
+                                    foreach ($palatum as $value) { ?>
+                                      <option value="<?=$value;?>"><?=$value;?></option>
+                                  <?php }
+                                  ?>
+                                </select>
 															</div>
 														</div>
                             <div class="form-group row">
 															<label class="col-lg-2 col-form-label">Diastema :</label>
-															<div class="col-lg-6">
-																<input type="email" class="form-control" >
+															<div class="col-lg-3">
+                                <?php
+                                  $diastema = ['Tidak Ada', 'Ada'];
+                                ?>
+																<select name="diastema" class="form-control">
+                                  <?php
+                                    foreach ($diastema as $value) { ?>
+                                      <option value="<?=$value;?>"><?=$value;?></option>
+                                  <?php }
+                                  ?>
+                                </select>
 															</div>
+                              <div class="col-sm-4">
+                                <input type="text" name="keterangan_diastema" class="form-control">
+                              </div>
 														</div>
                             <div class="form-group row">
 															<label class="col-lg-2 col-form-label">Gigi Anomali :</label>
-															<div class="col-lg-6">
-																<input type="email" class="form-control" >
+															<div class="col-lg-3">
+                                <?php
+                                  $anomali = ['Tidak Ada', 'Ada'];
+                                ?>
+																<select name="gigi_anomali" class="form-control">
+                                  <?php
+                                    foreach ($anomali as $value) { ?>
+                                      <option value="<?=$value;?>"><?=$value;?></option>
+                                  <?php }
+                                  ?>
+                                </select>
 															</div>
+                              <div class="col-sm-4">
+                                <input type="text" name="keterangan_gigi_anomali" class="form-control">
+                              </div>
 														</div>
                             <div class="form-group row">
 															<label class="col-lg-2 col-form-label">Lain - lain :</label>
 															<div class="col-lg-6">
-																<input type="email" class="form-control" >
+																<input type="text" name="lain_lain" id="lain_lain" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-1 col-form-label">D :</label>
+															<div class="col-lg-1">
+																<input type="text"  name="d" class="form-control" >
+															</div>
+                              <label class="col-lg-1 col-form-label">M :</label>
+															<div class="col-lg-1">
+																<input type="text"  name="m" class="form-control" >
+															</div>
+                              <label class="col-lg-1 col-form-label">F :</label>
+															<div class="col-lg-1">
+																<input type="text"  name="f" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-2 col-form-label">Jumlah Photo yang diambil :</label>
+															<div class="col-lg-3">
+																<input type="text"  name="jumlah_foto" class="form-control" >
+															</div>
+														</div>
+                            <div class="form-group row">
+															<label class="col-lg-2 col-form-label">Jumlah Rontgen Photo yang diambil :</label>
+															<div class="col-lg-3">
+																<input type="text"  name="jumlah_rontgen" class="form-control" >
 															</div>
 														</div>
                         </div>

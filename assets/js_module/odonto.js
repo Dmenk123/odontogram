@@ -262,6 +262,20 @@ function save_formulir()
                         $('[name="tiga_enam"]').val(data.old_data.tiga_enam);
                         $('[name="tiga_tujuh"]').val(data.old_data.tiga_tujuh);
                         $('[name="tiga_delapan"]').val(data.old_data.tiga_delapan);
+                        $('[name="occlusi"]').val(data.old_data.occlusi);
+                        $('[name="torus_palatinus"]').val(data.old_data.torus_palatinus);
+                        $('[name="torus_mandibularis"]').val(data.old_data.torus_mandibularis);
+                        $('[name="palatum"]').val(data.old_data.palatum);
+                        $('[name="diastema"]').val(data.old_data.diastema);
+                        $('[name="keterangan_diastema"]').val(data.old_data.keterangan_diastema);
+                        $('[name="gigi_anomali"]').val(data.old_data.gigi_anomali);
+                        $('[name="keterangan_gigi_anomali"]').val(data.old_data.keterangan_gigi_anomali);
+                        $('#lain_lain').val(data.old_data.lain_lain);
+                        $('[name="d"]').val(data.old_data.d);
+                        $('[name="m"]').val(data.old_data.m);
+                        $('[name="f"]').val(data.old_data.f);
+                        $('[name="jumlah_foto"]').val(data.old_data.jumlah_foto);
+                        $('[name="jumlah_rontgen"]').val(data.old_data.jumlah_rontgen);
                      
                     }else {
                         for (var i = 0; i < data.inputerror.length; i++) 
@@ -331,6 +345,21 @@ function reloadFormOdonto(){
             $('[name="tiga_enam"]').val(data.old_data.tiga_enam);
             $('[name="tiga_tujuh"]').val(data.old_data.tiga_tujuh);
             $('[name="tiga_delapan"]').val(data.old_data.tiga_delapan);
+            $('[name="occlusi"]').val(data.old_data.occlusi);
+            $('[name="torus_palatinus"]').val(data.old_data.torus_palatinus);
+            $('[name="torus_mandibularis"]').val(data.old_data.torus_mandibularis);
+            $('[name="palatum"]').val(data.old_data.palatum);
+            $('[name="diastema"]').val(data.old_data.diastema);
+            $('[name="keterangan_diastema"]').val(data.old_data.keterangan_diastema);
+            $('[name="gigi_anomali"]').val(data.old_data.gigi_anomali);
+            $('[name="keterangan_gigi_anomali"]').val(data.old_data.keterangan_gigi_anomali);
+            $('[name="lain_lain"]').val(data.old_data.lain_lain);
+            $('[name="d"]').val(data.old_data.d);
+            $('[name="m"]').val(data.old_data.m);
+            $('[name="f"]').val(data.old_data.f);
+            $('[name="jumlah_foto"]').val(data.old_data.jumlah_foto);
+            $('[name="jumlah_rontgen"]').val(data.old_data.jumlah_rontgen);
+
 
         },
         error: function (jqXHR, textStatus, errorThrown)

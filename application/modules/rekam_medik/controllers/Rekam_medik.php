@@ -1695,6 +1695,20 @@ class Rekam_medik extends CI_Controller {
 			'empat_enam' => $this->input->post('empat_enam'),
 			'empat_tujuh' => $this->input->post('empat_tujuh'),
 			'empat_delapan' => $this->input->post('empat_delapan'),
+			'occlusi' => $this->input->post('occlusi'),
+			'torus_palatinus' => $this->input->post('torus_palatinus'),
+			'torus_mandibularis' => $this->input->post('torus_mandibularis'),
+			'palatum' => $this->input->post('palatum'),
+			'diastema' => $this->input->post('diastema'),
+			'keterangan_diastema' => $this->input->post('keterangan_diastema'),
+			'gigi_anomali' => $this->input->post('gigi_anomali'),
+			'keterangan_gigi_anomali' => $this->input->post('keterangan_gigi_anomali'),
+			'lain_lain' => $this->input->post('lain_lain'),
+			'd' => $this->input->post('d'),
+			'm' => $this->input->post('m'),
+			'f' => $this->input->post('f'),
+			'jumlah_rontgen' => $this->input->post('jumlah_rontgen'),
+			'jumlah_foto' => $this->input->post('jumlah_foto'),
 		];
 
 		$cek = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
