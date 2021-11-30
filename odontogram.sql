@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 30/11/2021 01:01:14
+ Date: 01/12/2021 01:59:56
 */
 
 SET NAMES utf8mb4;
@@ -187,7 +187,8 @@ CREATE TABLE `m_klinik`  (
 -- Records of m_klinik
 -- ----------------------------
 INSERT INTO `m_klinik` VALUES (1, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '078121981291', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpeg', '2020-09-07 15:59:09', NULL, '2020-09-26 22:33:56');
-INSERT INTO `m_klinik` VALUES (2, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '12671617182129', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpg', '2020-09-26 22:33:56', NULL, NULL);
+INSERT INTO `m_klinik` VALUES (2, 'KLINIK TONG FANG', 'JALAN RAHASIA DI SURABAYA', 'KEL. RAHASIA', 'KEC. RAHASIA', 'SURABAYA', '60231', 'JAWA TIMUR', '12671617182129', 'tongfangpanjang@gmail.com', '', 'DR. FENG HUO', '12671617182129', 'logo.jpg', '2020-09-26 22:33:56', NULL, '2021-11-30 23:21:35');
+INSERT INTO `m_klinik` VALUES (3, 'SOFINE CABANG PUSAT', 'JL. SIMO JAWAR NO.35D', 'KUPANG KRAJAN', 'SAWAHAN', 'SURABAYA', '60281', 'JAWA TIMUR', '12671617182129', 'as@as.com', '', 'ROY TAMARA', '0822-2823-2675', 'logo.png', '2021-11-30 23:21:35', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for m_laboratorium
@@ -430,7 +431,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2021-11-29 23:21:05', 'user_default.png', '2020-09-06 20:18:00', '2021-11-29 23:21:05', NULL);
+INSERT INTO `m_user` VALUES ('1', 1, NULL, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2021-11-30 22:57:49', 'user_default.png', '2020-09-06 20:18:00', '2021-11-30 22:57:49', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, NULL, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, NULL, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
 
@@ -475,6 +476,7 @@ CREATE TABLE `t_diagnosa_det`  (
 -- Records of t_diagnosa_det
 -- ----------------------------
 INSERT INTO `t_diagnosa_det` VALUES (1, 1, 4, 5, '2021-11-30 00:36:30', NULL, NULL);
+INSERT INTO `t_diagnosa_det` VALUES (2, 1, 2, 2, '2021-11-30 00:36:38', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_honor
@@ -716,7 +718,7 @@ CREATE TABLE `t_perawatan`  (
 -- ----------------------------
 -- Records of t_perawatan
 -- ----------------------------
-INSERT INTO `t_perawatan` VALUES (1, 1, 5, '1', '2021-11-30', '<p>1. Penanganan Standart dengan puyer bintang toedjoe</p>\n', '2021-11-30 00:36:15', NULL, NULL);
+INSERT INTO `t_perawatan` VALUES (1, 1, 5, '1', '2021-11-30', '<p>1. Penanganan Standart dengan puyer bintang toedjoe</p>\n\n<p>2. Kemanusiaan yang adil dan beradap</p>\n\n<p>3. Persatuan Indonesia</p>\n', '2021-11-30 00:36:15', '2021-12-01 01:58:38', NULL);
 
 -- ----------------------------
 -- Table structure for t_registrasi
@@ -747,7 +749,7 @@ CREATE TABLE `t_registrasi`  (
 -- ----------------------------
 -- Records of t_registrasi
 -- ----------------------------
-INSERT INTO `t_registrasi` VALUES (1, 2, '5', '000.000.000.001', '2021-11-29', '23:34:30', '1', '1', '31', '4', '3', '128102819281928', NULL, NULL, NULL, '2021-11-29 23:34:56', '2021-11-30 00:23:40', NULL);
+INSERT INTO `t_registrasi` VALUES (1, 3, '5', '000.000.000.001', '2021-11-29', '23:34:30', '1', '1', '31', '4', '3', '128102819281928', NULL, NULL, NULL, '2021-11-29 23:34:56', '2021-11-30 00:23:40', NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu
