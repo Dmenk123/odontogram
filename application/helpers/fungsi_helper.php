@@ -74,4 +74,17 @@ if (!function_exists('bulan_indo')) {
         return $arr_bulan[$int];
     }
 }
+if (!function_exists('hitung_umur')) {
+    function hitung_umur($tanggal){
+        $birthDate = new DateTime($tanggal);
+        $today = new DateTime("today");
+        if ($birthDate > $today) { 
+            exit("0 tahun 0 bulan 0 hari");
+        }
+        $y = $today->diff($birthDate)->y;
+        $m = $today->diff($birthDate)->m;
+        $d = $today->diff($birthDate)->d;
+        return $y." tahun ".$m." bulan ".$d." hari";
+    }
+}
 ?>

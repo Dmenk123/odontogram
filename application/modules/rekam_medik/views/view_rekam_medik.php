@@ -262,7 +262,7 @@ $obj_date = new DateTime();
         <div class="kt-portlet__foot" id="print_area">
           <div class="row align-items-center">
             <div class="col-lg-12 row">
-              <div class="col-lg-2">
+              <div class="col-lg-2 col-sm-4">
                 <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
                   <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
@@ -272,7 +272,7 @@ $obj_date = new DateTime();
                 </h5>
               </div>
 
-              <div class="col-lg-2">
+              <div class="col-lg-2 col-sm-4">
                 <a href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
                   <a href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
@@ -282,7 +282,7 @@ $obj_date = new DateTime();
                 </h5>
               </div>
 
-              <div class="col-lg-2">
+              <div class="col-lg-2 col-sm-4">
                 <a href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
                   <a href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
@@ -292,7 +292,7 @@ $obj_date = new DateTime();
                 </h5>
               </div>
 
-              <div class="col-lg-2">
+              <div class="col-lg-2 col-sm-4">
                 <a href="<?= base_url('rekam_medik/cetak_obat')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
                   <a href="<?= base_url('rekam_medik/cetak_obat')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
@@ -302,7 +302,7 @@ $obj_date = new DateTime();
                 </h5>
               </div>
 
-              <div class="col-lg-2">
+              <div class="col-lg-2 col-sm-4">
                 <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
                   <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
@@ -312,7 +312,7 @@ $obj_date = new DateTime();
                 </h5>
               </div>
 
-              <div class="col-lg-2">
+              <div class="col-lg-2 col-sm-4">
                 <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
                   <a href="<?= base_url('rekam_medik/cetak_anamnesa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">

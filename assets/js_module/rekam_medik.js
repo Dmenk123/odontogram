@@ -173,7 +173,7 @@ function cekDanSetValue(txt_div_modal){
     });
 
     function setModalFieldValue(objData){
-        console.log(objData);
+        // console.log(objData);
         if(objData.menu == 'anamnesa') {
             $("#form_anamnesa input[name='id_anamnesa']").val(objData.data.id);
             $("#form_anamnesa textarea[name='anamnesa']").val(objData.data.anamnesa);

@@ -13,6 +13,7 @@ class Rekam_medik extends CI_Controller {
 		$this->load->model('m_user');
 		$this->load->model('m_global');
 		$this->load->model('t_rekam_medik');
+		$this->load->library('enkripsi');
 	}
 
 	public function index()
@@ -193,7 +194,7 @@ class Rekam_medik extends CI_Controller {
 		}
 	}
 
-	///////////////////// start anamnesa grup ////////////////////
+	########################### start anamnesa grup ###########################
 	public function simpan_form_anamnesa()
 	{
 
@@ -245,53 +246,47 @@ class Rekam_medik extends CI_Controller {
 
 	public function cetak_anamnesa()
 	{
-
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$datenow = $obj_date->format('Y-m-d');
+		$enc_id = $this->input->get('pid');
+		$id_reg = $this->enkripsi->enc_dec('decrypt', $enc_id);
+
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$where = ['reg.id' => $id_reg];
+		$table = 't_registrasi as reg';
+		$join = [ 
+			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
+			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
+			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
+		];
+				
+		$datareg = $this->m_global->single_row($select, $where, $table, $join);
 		
-		$this->db->trans_begin();
-		$id_psn = $this->input->post('id_psn');
-		$id_reg = $this->input->post('id_reg');
-		$id_peg = $this->input->post('id_peg');
-		$anamnesa = $this->input->post('txt_anamnesa');
+		$datanya = $this->m_global->single_row('*', ['id_reg' => $id_reg], 't_perawatan');
 		
-		$data = [
-			'id_pasien' => $id_psn,
-			'id_pegawai' => $id_peg,
-			'id_reg' => $id_reg,
-			'anamnesa' => $anamnesa,
+		$data_klinik = $this->m_global->single_row('*', ['deleted_at' => null, 'id' => $datareg->id_klinik], 'm_klinik');
+
+		$konten_html = $this->load->view('pdf_anamnesa', ['data_reg'=>$datareg, 'datanya' => $datanya], true);
+		
+		// var_dump($konten_html);exit;
+		$retval = [
+			'data' => $datanya,
+			'data_reg' => $datareg,
+			'data_klinik' => $data_klinik,
+			'content' => $konten_html,
+			'title' => 'Data Anamnesa'
 		];
 
-		if($this->input->post('id_anamnesa') != '') {
-			###update
-			$data['updated_at'] = $timestamp;
-			$where = ['id' => $this->input->post('id_anamnesa')];
-			$update = $this->t_rekam_medik->update($where, $data, 't_perawatan');
-			$pesan = 'Sukses Mengupdate data Perawatan';
-		}else{
-			###insert
-			$data['id'] = $this->t_rekam_medik->get_max_id_perawatan();
-			$data['tanggal'] = $datenow;
-			$data['created_at'] = $timestamp;
-			
-			$insert = $this->t_rekam_medik->save($data, 't_perawatan');
-			$pesan = 'Sukses Menambah data Perawatan';
-		}
-				
-		if ($this->db->trans_status() === FALSE){
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal memproses Data Perawatan';
-		}else{
-			$this->db->trans_commit();
-			$retval['status'] = true;
-			$retval['pesan'] = $pesan;
-		}
-
-		echo json_encode($retval);
+		//$this->load->view('template/pdf', $retval, true);
+		
+		
+		$html = $this->load->view('template/pdf', $retval, true);
+	    $filename = $retval['title'].'_'.time();
+	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
+		
 	}
-	///////////////////// end anamnesa grup ////////////////////
+	########################### end anamnesa grup ###########################
 
 	///////////////////////////// start diagnosa grup ///////////////////////////////////
 	public function simpan_form_diagnosa()
@@ -1058,402 +1053,6 @@ class Rekam_medik extends CI_Controller {
 
 	///////////////////////////////////////////////////////////////////
 
-	public function simpan_data()
-	{
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		
-		if($this->input->post('asuransi') !== null){
-			$flag_asuransi = true;
-			$id_asuransi = $this->input->post('asuransi');
-			$no_asuransi = $this->input->post('no_asuransi');
-		}else{
-			$flag_asuransi = false;
-			$id_asuransi = null;
-			$no_asuransi = null;
-		}
-
-		$arr_valid = $this->rule_validasi($flag_asuransi);
-		
-		if ($arr_valid['status'] == FALSE) {
-			echo json_encode($arr_valid);
-			return;
-		}
-
-		$id_pasien = $this->input->post('nama');
-		$tanggal_reg = contul($this->input->post('tanggal_reg'));
-		$jam_reg = contul($this->input->post('jam_reg'));
-		$id_pegawai = contul($this->input->post('dokter'));
-		$is_asuransi = ($flag_asuransi) ? 1 : null;
-		$umur = contul(trim($this->input->post('umur_reg')));
-		$id_pemetaan = contul($this->input->post('pemetaan'));
-
-		$this->db->trans_begin();
-		
-		$registrasi = [
-			'id_pasien' => $id_pasien,
-			'tanggal_reg' => $obj_date->createFromFormat('d/m/Y', $tanggal_reg)->format('Y-m-d'),
-			'jam_reg' => $jam_reg,
-			'id_pegawai' => $id_pegawai,
-			'is_asuransi' => $is_asuransi,
-			'id_asuransi' => $id_asuransi,
-			'no_asuransi' => $no_asuransi,
-			'umur' => $umur,
-			'id_pemetaan' => $id_pemetaan
-		];
-
-		if($this->input->post('id_reg') != '') {
-			###update
-			$registrasi['updated_at'] = $timestamp;
-			$where = ['id' => $this->input->post('id_reg')];
-			$update = $this->t_registrasi->update($where, $registrasi);
-			$pesan = 'Sukses Mengupdate data Registrasi';
-		}else{
-			###insert
-			$registrasi['id'] = $this->t_registrasi->get_max_id();
-			$registrasi['no_reg'] = $this->t_registrasi->get_kode_reg();
-			$registrasi['created_at'] = $timestamp;
-			$insert = $this->t_registrasi->save($registrasi);
-			$pesan = 'Sukses Menambah data Registrasi';
-		}
-				
-		if ($this->db->trans_status() === FALSE){
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal memproses Data Registrasi';
-		}else{
-			$this->db->trans_commit();
-			$retval['status'] = true;
-			$retval['pesan'] = $pesan;
-		}
-
-		echo json_encode($retval);
-	}
-
-	private function umur_dan_pemetaan($tanggal_lahir, $flag_cari = 'umur')
-	{
-		$tgl_lhr = new DateTime($tanggal_lahir);
-		$skrg  = new DateTime('today');
-		$umur = $tgl_lhr->diff($skrg)->y;
-		
-		if($flag_cari == 'umur') {
-			$retval = $umur;
-		}else{
-			$data = $this->m_global->single_row('*', ['umur_awal <=' => $umur, 'umur_akhir >=' => $umur], 'm_pemetaan');
-			$retval = $data->id;
-		}
-
-		return $retval;
-	}
-
-	public function get_select_pasien()
-	{
-		$term = $this->input->get('term');
-		$data_pasien = $this->m_global->multi_row('*', ['deleted_at' => null, 'is_aktif' => '1', 'nama like' => '%'.$term.'%'], 'm_pasien', null, 'no_rm');
-		if($data_pasien) {
-			foreach ($data_pasien as $key => $value) {
-				$row['id'] = $value->id;
-				$row['text'] = '['.$value->no_rm.' - '.$value->nik.'] '.$value->nama;
-				$row['nik'] = $value->nik;
-				$row['no_rm'] = $value->no_rm;
-				$row['tanggal_lahir'] = $value->tanggal_lahir;
-				$row['tempat_lahir'] = $value->tempat_lahir;
-				$row['umur'] = $this->umur_dan_pemetaan($value->tanggal_lahir, 'umur');
-				$row['pemetaan'] = $this->umur_dan_pemetaan($value->tanggal_lahir, 'pemetaan');
-				$retval[] = $row;
-			}
-		}else{
-			$retval = false;
-		}
-		echo json_encode($retval);
-	}
-
-	public function get_select_dokter()
-	{
-		$term = $this->input->get('term');
-		$id_jabatan = 1; // jabatan dokter
-		$data_pasien = $this->m_global->multi_row('*', ['deleted_at' => null, 'is_aktif' => '1', 'nama like' => '%'.$term.'%', 'id_jabatan' => $id_jabatan], 'm_pegawai', null, 'nama');
-		if($data_pasien) {
-			foreach ($data_pasien as $key => $value) {
-				$row['id'] = $value->id;
-				$row['text'] = '['.$value->kode.'] '.$value->nama;
-				$retval[] = $row;
-			}
-		}else{
-			$retval = false;
-		}
-		echo json_encode($retval);
-	}
-
-	public function get_data_form_penjamin()
-	{
-		$enc_id = $this->input->post('id_regnya');
-		
-		$this->load->library('Enkripsi');
-		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
-
-		$select = "reg.id_asuransi, reg.no_asuransi, asu.nama as nama_asuransi, asu.keterangan";
-		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
-		$table = 't_registrasi as reg';
-		$join = [ 
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id']
-		];
-
-		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
-		
-		$jenis = $this->input->post('jenis_penjamin');
-		// $data_asuransi = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_asuransi', null, 'nama');
-		if($jenis == '1') {
-			$html = '
-				<div class="form-group row form-group-marginless kt-margin-t-20">
-					<label class="col-lg-2 col-form-label">Asuransi:</label>
-					<div class=" col-lg-6">
-					<select class="form-control kt-select2" id="asuransi" name="asuransi">
-						<option value="">Silahkan Pilih Nama Asuransi</option>
-			';
-			if($id != null) {
-				$html .= '<option value="'.$data_reg->id_asuransi.'" selected>'.$data_reg->nama_asuransi.'</option>';
-			}
-
-			$html .= '
-				</select>
-				<span class="help-block"></span>
-				</div>
-				<div class="col-lg-2">
-					<button type="button" class="btn btn-sm btn-success" onclick="tambah_data_asuransi()">
-						<i class="la la-plus"></i> Tambah data Asuransi
-					</button>
-				</div>
-			</div>
-			<div><br /></div>
-			<div class="form-group row form-group-marginless kt-margin-t-20">
-				<label class="col-lg-2 col-form-label">No. Asuransi:</label>
-				<div class=" col-lg-8">
-			';
-			if($id != null) {
-				$html .= '<input type="text" class="form-control" id="no_asuransi" name="no_asuransi" autocomplete="off" value="'.$data_reg->no_asuransi.'">';
-			}else{
-				$html .= '<input type="text" class="form-control" id="no_asuransi" name="no_asuransi" autocomplete="off" value="">';
-			}
-			$html .= '	
-					<span class="help-block"></span>
-					</div>
-				</div>
-			';
-		}else{
-			$html = '';
-		}
-
-		echo json_encode($html);
-	}
-
-	public function add()
-	{
-		$id_user = $this->session->userdata('id_user'); 
-		$data_user = $this->m_user->get_detail_user($id_user);
-		$pemetaan = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_pemetaan', null, 'umur_awal');
-			
-		/**
-		 * data passing ke halaman view content
-		 */
-		$data = array(
-			'title' => 'Tambah data Registrasi',
-			'data_user' => $data_user,
-			'data_pemetaan' => $pemetaan
-		);
-
-		/**
-		 * content data untuk template
-		 * param (css : link css pada direktori assets/css_module)
-		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
-		 * param (js : link js pada direktori assets/js_module)
-		 */
-		$content = [
-			'css' 	=> null,
-			'modal' => 'modal_data_reg',
-			'js'	=> 'reg_pasien.js',
-			'view'	=> 'form_data_reg'
-		];
-
-		$this->template_view->load_view($content, $data);
-	}
-
-	public function edit($enc_id)
-	{
-		if(strlen($enc_id) != 32) {
-			return redirect(base_url($this->uri->segment(1)));
-		}
-		
-		$id_user = $this->session->userdata('id_user'); 
-		$data_user = $this->m_user->get_detail_user($id_user);
-
-		$pemetaan = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_pemetaan', null, 'umur_awal');
-
-		/**
-		 * data passing ke halaman view content
-		 */
-		$data = array(
-			'title' => 'Edit Data Registrasi',
-			'data_user' => $data_user,
-			'data_pemetaan' => $pemetaan
-		);
-		
-
-		/**
-		 * content data untuk template
-		 * param (css : link css pada direktori assets/css_module)
-		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
-		 * param (js : link js pada direktori assets/js_module)
-		 */
-		$content = [
-			'css' 	=> null,
-			'modal' => 'modal_data_reg',
-			'js'	=> 'reg_pasien.js',
-			'view'	=> 'form_data_reg'
-		];
-
-		$this->template_view->load_view($content, $data);
-	}
-
-	public function get_data_form_reg()
-	{
-		$enc_id = $this->input->post('enc_id');
-
-		if(strlen($enc_id) != 32) {
-			$status = false;
-		}
-
-		$this->load->library('Enkripsi');
-		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
-
-		$select = "reg.id, reg.id_pasien, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
-		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
-		$table = 't_registrasi as reg';
-		$join = [ 
-			['table' => 'm_pasien as psn', 'on'	=> 'reg.id_pasien = psn.id'],
-			['table' => 'm_pegawai as peg', 'on'=> 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id'],
-			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id']
-		];
-		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
-		
-		if(!$data_reg) {
-			$status = false;
-		}else{
-			$status = true;
-		}
-
-		echo json_encode([
-			'status' => $status,
-			'data' => $data_reg,
-			'txt_opt_pasien' => '['.$data_reg->no_rm.' - '.$data_reg->nik.'] '.$data_reg->nama_pasien,
-			'txt_opt_dokter' => '['.$data_reg->kode_dokter.'] '.$data_reg->nama_dokter
-		]);
-	}
-
-	
-
-	public function list_data()
-	{
-		$tgl_awal = contul(DateTime::createFromFormat('d/m/Y', $this->input->post('tgl_awal'))->format('Y-m-d'));
-		$tgl_akhir = contul(DateTime::createFromFormat('d/m/Y', $this->input->post('tgl_akhir'))->format('Y-m-d'));
-		
-		$this->load->library('Enkripsi');
-		$list = $this->t_registrasi->get_datatable($tgl_awal, $tgl_akhir);
-
-		// echo "<pre>";
-		// print_r ($list);
-		// echo "</pre>";
-		// exit;
-
-		$data = array();
-		// $no =$_POST['start'];
-		foreach ($list as $val) {
-			// $no++;
-			$row = array();
-			//loop value tabel db
-			// $row[] = $no;
-			$row[] = $val->no_reg;
-			$row[] = $val->nama_pasien;
-			$row[] = DateTime::createFromFormat('Y-m-d', $val->tanggal_reg)->format('d/m/Y');
-			$row[] = $val->jam_reg;
-			$row[] = ($val->is_pulang == '1') ? 'Pulang' : '-';
-			$row[] = ($val->tanggal_pulang) ? DateTime::createFromFormat('Y-m-d', $val->tanggal_pulang)->format('d/m/Y') : '-';
-			$row[] = $val->jam_pulang;
-			$row[] = $val->no_rm;
-			$row[] = $val->tempat_lahir;
-			$row[] = DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d/m/Y');
-			$row[] = $val->nik;
-			$row[] = $val->jenkel;
-			$row[] = $val->nama_dokter;
-			$row[] = $val->penjamin;
-			$row[] = $val->nama_asuransi;
-			$row[] = $val->no_asuransi;
-			$row[] = $val->umur;
-			$row[] = $val->keterangan;
-			
-			$str_aksi = '
-				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
-					<div class="dropdown-menu">
-						<a class="dropdown-item" href="'.base_url('reg_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
-							<i class="la la-pencil"></i> Edit Registrasi
-						</a>
-						<button class="dropdown-item" onclick="delete_reg(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
-							<i class="la la-trash"></i> Hapus
-						</button>
-						<a class="dropdown-item" target="_blank" href="'.base_url('reg_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
-							<i class="la la-print"></i> Cetak Data Ini
-						</a>
-					</div>
-				</div>
-			';
-
-			$row[] = $str_aksi;
-
-			$data[] = $row;
-		}//end loop
-
-		$output = [
-			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->t_registrasi->count_all(),
-			"recordsFiltered" => $this->t_registrasi->count_filtered($tgl_awal, $tgl_akhir),
-			"data" => $data
-		];
-		
-		echo json_encode($output);
-	}	
-
-	/**
-	 * Hanya melakukan softdelete saja
-	 * isi kolom updated_at dengan datetime now()
-	 */
-	public function delete_data()
-	{
-		$this->load->library('Enkripsi');
-		$enc_id = $this->input->post('id');
-		
-		if(strlen($enc_id) != 32) {
-			echo json_encode([
-				'status' => false,
-				'pesan' => 'Data Tidak Valid'
-			]);
-			return;
-		}
-
-		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
-		$del = $this->t_registrasi->softdelete_by_id($id_pasien);
-		if($del) {
-			$retval['status'] = TRUE;
-			$retval['pesan'] = 'Data Pasien Sukses dihapus';
-		}else{
-			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Data Pasien Gagal dihapus';
-		}
-
-		echo json_encode($retval);
-	}
-
 	public function export_excel()
 	{
 		$tgl_awal = $this->input->get('tgl_awal');
@@ -1599,74 +1198,6 @@ class Rekam_medik extends CI_Controller {
 		$html = $this->load->view('pdf', $retval, true);
 	    $filename = 'data_registrasi'.$tgl_awal_fix.'_'.$tgl_akhir_fix.'_'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'legal', 'landscape');
-	}
-
-	private function rule_validasi($is_asuransi = FALSE)
-	{
-		$data = array();
-		$data['error_string'] = array();
-		$data['inputerror'] = array();
-		$data['status'] = TRUE;
-
-		
-		if ($this->input->post('nama') == '') {
-			$data['inputerror'][] = 'nama';
-            $data['error_string'][] = 'Wajib mengisi Nama';
-			$data['status'] = FALSE;
-			$data['is_select2'][] = TRUE;
-		}
-
-		if ($this->input->post('tanggal_reg') == '') {
-			$data['inputerror'][] = 'tanggal_reg';
-			$data['error_string'][] = 'Wajib Mengisi Tanggal';
-			$data['status'] = FALSE;
-			$data['is_select2'][] = FALSE;
-		}
-		
-		if ($this->input->post('jam_reg') == '') {
-			$data['inputerror'][] = 'jam_reg';
-            $data['error_string'][] = 'Wajib Mengisi Pukul';
-			$data['status'] = FALSE;
-			$data['is_select2'][] = FALSE;
-		}
-
-		if ($this->input->post('pemetaan') == '') {
-			$data['inputerror'][] = 'pemetaan';
-            $data['error_string'][] = 'Wajib Mengisi Pemetaan';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('dokter') == '') {
-			$data['inputerror'][] = 'dokter';
-            $data['error_string'][] = 'Wajib Mengisi Dokter';
-			$data['status'] = FALSE;
-			$data['is_select2'][] = TRUE;
-		}
-
-		if ($this->input->post('umur_reg') == '') {
-			$data['inputerror'][] = 'umur_reg';
-            $data['error_string'][] = 'Wajib Mengisi Umur';
-			$data['status'] = FALSE;
-			$data['is_select2'][] = FALSE;
-		}
-
-		if($is_asuransi) {
-			if ($this->input->post('asuransi') == '') {
-				$data['inputerror'][] = 'asuransi';
-				$data['error_string'][] = 'Wajib Mengisi Asuransi';
-				$data['status'] = FALSE;
-				$data['is_select2'][] = TRUE;
-			}
-			
-			if ($this->input->post('no_asuransi') == '') {
-				$data['inputerror'][] = 'no_asuransi';
-				$data['error_string'][] = 'Wajib Mengisi Nomor Asuransi';
-				$data['status'] = FALSE;
-				$data['is_select2'][] = FALSE;
-			}
-		}
-
-        return $data;
 	}
 
 	public function save_odontogram()
