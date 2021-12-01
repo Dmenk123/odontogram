@@ -19,13 +19,18 @@ $(document).ready(function() {
 
     $(document).on('click', '.div_menu', function(){
         var nama_menu = $(this).data('id');
-        
+
         if(id_peg == undefined || id_reg == undefined || id_psn == undefined) {
             Swal.fire('Mohon Pilih Pasien Terlebih Dahulu');
         }else{
-            activeModal =  nama_menu+'_modal';
-            cekDanSetValue(activeModal);
-            $('#'+nama_menu+'_modal').modal('show');
+            if(nama_menu == 'div_pulangkan') {
+                confirmPulangkan(pid);
+            }else{
+                activeModal =  nama_menu+'_modal';
+                cekDanSetValue(activeModal);
+                $('#'+nama_menu+'_modal').modal('show');
+            }
+            
         } 
     });
     
@@ -222,4 +227,56 @@ function reset_form(jqIdForm) {
 function get_uri_segment(segment) {
     var pathArray = window.location.pathname.split( '/' );
     return pathArray[segment];
+}
+
+const confirmPulangkan = (idReg) => {
+    swalConfirm.fire({
+        title: 'Konfirmasi Pulangkan Pasien',
+        text: "Apakah Anda Yakin ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya !',
+        cancelButtonText: 'Tidak',
+        reverseButtons: false
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/pulangkan_pasien',
+                type: "POST",
+                dataType: "JSON",
+                data : {idReg : idReg},
+                success: function(data)
+                {
+                    if(data.status) {
+                        swalConfirm.fire('Berhasil Konfirmasi', data.pesan, 'success').then(() => {
+                            if(cb.value) {
+                                location.reload();
+                            }
+                        });
+                    }else{
+                        swalConfirm.fire('Gagal', data.pesan, 'error').then((cb) => {
+                            if(cb.value) {
+                                console.log(cb);
+                                location.reload();
+                            }
+                        });
+                    }
+                    
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
 }

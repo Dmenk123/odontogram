@@ -157,14 +157,16 @@
     <?php if (isset($footer) && $footer != null) { 
       echo $footer;
     } else { ?>
-      <table class="tbl-footer">
+      <table class="tbl-footer" border='0'>
         <tr>
-          <td align="right" style="padding-top: 5px;padding-right:20px;padding-bottom:50px;">
+          <td style="width: 70%;">&nbsp;</td>
+          <td align="center" style="padding-top: 5px;padding-bottom:60px;">
             <?=$data_klinik->kota.', '.tanggal_indo($data_reg->tanggal_reg);?>
           </td>
         </tr>
         <tr>
-          <td align="right" style="padding-top: 5px;padding-right:20px;">
+          <td>&nbsp;</td>
+          <td align="center" style="padding-top: 5px;">
             <?= $data_reg->nama_dokter; ?>
           </td>
         </tr>

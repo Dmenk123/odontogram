@@ -61,6 +61,22 @@ $obj_date = new DateTime();
             </table>
           </div>
         </div>
+        <?php if($is_pulang){ ?>
+          <div class="kt-portlet__body">
+            <div class="col-12">
+              <div class="alert alert-danger fade show" role="alert">
+                <div class="alert-icon"><i class="flaticon-warning"></i></div>
+                <div class="alert-text">Perhatian !!!. Pasien ini [<?=$datareg->no_reg;?>] telah dipulangkan pada tanggal : <?=tanggal_indo($datareg->tanggal_pulang);?></div>
+                <div class="alert-close">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i class="la la-close"></i></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <?php } ?>
+        
 
         <div class="kt-portlet__body" id="menu_area">
           <div class="col-lg-12 row">
@@ -249,6 +265,32 @@ $obj_date = new DateTime();
                         Lab
                       </h5>
                       <div class="kt-iconbox__content">Laboratorium</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 div_menu" data-id="div_pulangkan" style="cursor:pointer">
+              <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-slower">
+                <div class="kt-portlet__body">
+                  <div class="kt-iconbox__body">
+                    <div class="kt-iconbox__icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                              <rect opacity="0.300000012" x="0" y="0" width="24" height="24"/>
+                              <polygon fill="#000000" fill-rule="nonzero" opacity="0.3" points="7 4.89473684 7 21 5 21 5 3 11 3 11 4.89473684"/>
+                              <path d="M10.1782982,2.24743315 L18.1782982,3.6970464 C18.6540619,3.78325557 19,4.19751166 19,4.68102291 L19,19.3190064 C19,19.8025177 18.6540619,20.2167738 18.1782982,20.3029829 L10.1782982,21.7525962 C9.63486295,21.8510675 9.11449486,21.4903531 9.0160235,20.9469179 C9.00536265,20.8880837 9,20.8284119 9,20.7686197 L9,3.23140966 C9,2.67912491 9.44771525,2.23140966 10,2.23140966 C10.0597922,2.23140966 10.119464,2.2367723 10.1782982,2.24743315 Z M11.9166667,12.9060229 C12.6070226,12.9060229 13.1666667,12.2975724 13.1666667,11.5470105 C13.1666667,10.7964487 12.6070226,10.1879981 11.9166667,10.1879981 C11.2263107,10.1879981 10.6666667,10.7964487 10.6666667,11.5470105 C10.6666667,12.2975724 11.2263107,12.9060229 11.9166667,12.9060229 Z" fill="#000000"/>
+                          </g>
+                      </svg>
+                    </div>
+                    <div class="kt-iconbox__desc">
+                      <h5 class="kt-iconbox__title">
+                        <b>Pulangkan</b>
+                      </h5>
+                      <div class="kt-iconbox__content">
+                        <b>Pulangkan Pasien</b>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -24,9 +24,23 @@ class Rekam_medik extends CI_Controller {
 		/**
 		 * data passing ke halaman view content
 		 */
+
+		$id_reg = $this->input->get('pid');
+		$id_reg = $this->enkripsi->enc_dec('decrypt', $id_reg);
+		$datareg = $this->m_global->single_row('*', ['id' => $id_reg, 'deleted_at' => null], 't_registrasi');
+		
+		if($datareg && $datareg->is_pulang) {
+			$is_pulang = true;
+		}else{
+			$is_pulang = false;
+
+		}
+
 		$data = array(
 			'title' => 'Data Rekam Medik',
-			'data_user' => $data_user
+			'data_user' => $data_user,
+			'is_pulang' => $is_pulang,
+			'datareg' => $datareg
 		);
 
 		/**
@@ -1198,6 +1212,7 @@ class Rekam_medik extends CI_Controller {
 	    $this->lib_dompdf->generate($html, $filename, true, 'legal', 'landscape');
 	}
 
+	############ odonto grup ##############
 	public function save_odontogram()
 	{
 		$base64Image = $this->input->post('image');
@@ -1311,7 +1326,6 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-
 	public function load_formulir()
 	{
 		$id_reg = $this->input->get('id_reg');
@@ -1323,6 +1337,39 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	/////////////////////////////////
+	############ end odonto grup ###########
+
+	############ pulangkan grup ##########
+	public function pulangkan_pasien()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		$id_reg = $this->input->post('idReg');
+		$id_reg = $this->enkripsi->enc_dec('decrypt', $id_reg);
+		$datareg = $this->m_global->single_row('*', ['id' => $id_reg, 'deleted_at' => null], 't_registrasi');
+		if($datareg && $datareg->is_pulang) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Pasien ['.$datareg->no_reg.'] Telah dipulangkan, Aksi Dibatalkan',  
+			]);
+			return;
+		}
+
+		$upd = $this->m_global->update('t_registrasi', ['tgl_pulang' => $datenow, 'is_pulang' => 1, 'updated_at' => $timestamp], ['id' => $id_reg]);
+		if($upd) {
+			echo json_encode([
+				'status' => true,
+				'pesan' => 'Pasien ['.$datareg->no_reg.'] Sukses dipulangkan',  
+			]);
+		}else{
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Terjadi kesalahan, mohon hubungi administrator.',  
+			]);
+		}
+		
+	}
+	########### end pulangkan grup ##########
 
 }
