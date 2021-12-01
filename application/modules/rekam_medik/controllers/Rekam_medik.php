@@ -278,9 +278,7 @@ class Rekam_medik extends CI_Controller {
 			'title' => 'Data Anamnesa'
 		];
 
-		//$this->load->view('template/pdf', $retval, true);
-		
-		
+		//$this->load->view('template/pdf', $retval, true);		
 		$html = $this->load->view('template/pdf', $retval, true);
 	    $filename = $retval['title'].'_'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');

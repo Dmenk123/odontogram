@@ -123,37 +123,53 @@
     .clear {
       clear: both;
     }
-
   </style>
-</head>
 
 <body>
   <div class="container">
-    <?php if(isset($header) && $header != null) { ?>
+    <?php if (isset($header) && $header != null) { ?>
       <?= $header; ?>
-    <?php }else { ?>
+    <?php } else { ?>
       <table class="tbl-outer">
         <tr>
-          
+
           <td align="left" class="outer-left">
-            <img src="<?=base_url('files/img/app_img/').$data_klinik->gambar;?>" height="75" width="90">
+            <img src="<?= base_url('files/img/app_img/') . $data_klinik->gambar; ?>" height="75" width="90">
           </td>
 
           <td align="right" class="outer-left" style="padding-top: 5px; padding-left:10px;">
             <p style="text-align: left; font-size: 14px" class="outer-left">
               <strong><?= $data_klinik->nama_klinik; ?></strong>
             </p>
-            <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat.' '.$data_klinik->kelurahan.' '.$data_klinik->kecamatan; ?></p>
-            <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota.', '.$data_klinik->provinsi.' '.$data_klinik->kode_pos; ?></p>
+            <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat . ' ' . $data_klinik->kelurahan . ' ' . $data_klinik->kecamatan; ?></p>
+            <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota . ', ' . $data_klinik->provinsi . ' ' . $data_klinik->kode_pos; ?></p>
           </td>
-          
+
         </tr>
       </table>
     <?php } ?>
-    
-    <?php if(isset($content) && $content != null) {
+
+    <?php if (isset($content) && $content != null) {
       echo $content;
     } ?>
+
+
+    <?php if (isset($footer) && $footer != null) { 
+      echo $footer;
+    } else { ?>
+      <table class="tbl-footer">
+        <tr>
+          <td align="right" style="padding-top: 5px;padding-right:20px;padding-bottom:50px;">
+            <?=$data_klinik->kota.', '.tanggal_indo($data_reg->tanggal_reg);?>
+          </td>
+        </tr>
+        <tr>
+          <td align="right" style="padding-top: 5px;padding-right:20px;">
+            <?= $data_reg->nama_dokter; ?>
+          </td>
+        </tr>
+      </table>
+    <?php } ?>
   </div>
 </body>
 
