@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 01/12/2021 01:59:56
+ Date: 02/12/2021 00:58:43
 */
 
 SET NAMES utf8mb4;
@@ -259,7 +259,7 @@ CREATE TABLE `m_menu`  (
 -- Records of m_menu
 -- ----------------------------
 INSERT INTO `m_menu` VALUES (1, 0, 'Dashboard', 'Dashboard', 'home', 'flaticon2-architecture-and-city', 1, 1, 1, 0, 0, 0);
-INSERT INTO `m_menu` VALUES (2, 0, 'Setting (Administrator)', 'Setting', NULL, 'flaticon2-gear', 1, 1, 5, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (2, 0, 'Setting (Administrator)', 'Setting', '', 'flaticon2-gear', 1, 1, 100, 0, 0, 0);
 INSERT INTO `m_menu` VALUES (3, 2, 'Setting Menu', 'Setting Menu', 'set_menu', 'flaticon-grid-menu', 1, 2, 2, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (4, 2, 'Setting Role', 'Setting Role', 'set_role', 'flaticon-network', 1, 2, 1, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (5, 2, 'bu thak ndogmu', 'aosasi', 'asas', '', 1, 2, 3, 1, 1, 1);
@@ -283,6 +283,8 @@ INSERT INTO `m_menu` VALUES (24, 9, 'Logistik dan Obat', 'Logistik dan Obat', 'm
 INSERT INTO `m_menu` VALUES (25, 9, 'Laboratorium', 'Laboratorium', 'master_laboratorium', 'flaticon2-contract', 1, 3, 4, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (26, 9, 'Asuransi', 'Asuransi', 'master_asuransi', 'flaticon2-contract', 1, 3, 5, 1, 1, 1);
 INSERT INTO `m_menu` VALUES (27, 10, 'Honor Dokter', 'Honor Dokter', 'honor_dokter', 'flaticon-coins', 1, 3, 5, 1, 1, 1);
+INSERT INTO `m_menu` VALUES (28, 0, 'Transaksi', 'Transaksi', '', 'flaticon-infinity', 1, 1, 5, 0, 0, 0);
+INSERT INTO `m_menu` VALUES (29, 28, 'Pembayaran', 'Pembayaran', 'pembayaran', 'flaticon-coins', 1, 2, 1, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for m_pasien
@@ -431,7 +433,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2021-11-30 22:57:49', 'user_default.png', '2020-09-06 20:18:00', '2021-11-30 22:57:49', NULL);
+INSERT INTO `m_user` VALUES ('1', 1, NULL, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2021-12-01 21:45:48', 'user_default.png', '2020-09-06 20:18:00', '2021-12-01 21:45:48', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, NULL, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, NULL, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
 
@@ -749,7 +751,7 @@ CREATE TABLE `t_registrasi`  (
 -- ----------------------------
 -- Records of t_registrasi
 -- ----------------------------
-INSERT INTO `t_registrasi` VALUES (1, 3, '5', '000.000.000.001', '2021-11-29', '23:34:30', '1', '1', '31', '4', '3', '128102819281928', NULL, NULL, NULL, '2021-11-29 23:34:56', '2021-11-30 00:23:40', NULL);
+INSERT INTO `t_registrasi` VALUES (1, 3, '5', '000.000.000.001', '2021-11-29', '23:34:30', '1', '1', '31', '4', '3', '128102819281928', 1, '2021-12-01', NULL, '2021-11-29 23:34:56', '2021-12-01 23:15:42', NULL);
 
 -- ----------------------------
 -- Table structure for t_role_menu
@@ -770,13 +772,18 @@ CREATE TABLE `t_role_menu`  (
 -- ----------------------------
 -- Records of t_role_menu
 -- ----------------------------
-INSERT INTO `t_role_menu` VALUES (1, 3, 0, 0, 0);
-INSERT INTO `t_role_menu` VALUES (2, 3, 0, 0, 0);
-INSERT INTO `t_role_menu` VALUES (5, 3, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (1, 2, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (17, 2, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (18, 2, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (19, 2, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (1, 3, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (17, 3, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (18, 3, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (19, 3, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (2, 3, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (5, 3, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (28, 3, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (29, 3, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (1, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (6, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (11, 1, 0, 0, 0);
@@ -801,6 +808,8 @@ INSERT INTO `t_role_menu` VALUES (21, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (2, 1, 0, 0, 0);
 INSERT INTO `t_role_menu` VALUES (4, 1, 1, 1, 1);
 INSERT INTO `t_role_menu` VALUES (3, 1, 1, 1, 1);
+INSERT INTO `t_role_menu` VALUES (28, 1, 0, 0, 0);
+INSERT INTO `t_role_menu` VALUES (29, 1, 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for t_tindakan
