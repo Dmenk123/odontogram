@@ -1356,7 +1356,7 @@ class Rekam_medik extends CI_Controller {
 			return;
 		}
 
-		$upd = $this->m_global->update('t_registrasi', ['tgl_pulang' => $datenow, 'is_pulang' => 1, 'updated_at' => $timestamp], ['id' => $id_reg]);
+		$upd = $this->m_global->update('t_registrasi', ['tanggal_pulang' => $datenow, 'is_pulang' => 1, 'updated_at' => $timestamp], ['id' => $id_reg]);
 		if($upd) {
 			echo json_encode([
 				'status' => true,

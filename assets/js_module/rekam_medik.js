@@ -248,7 +248,7 @@ const confirmPulangkan = (idReg) => {
                 success: function(data)
                 {
                     if(data.status) {
-                        swalConfirm.fire('Berhasil Konfirmasi', data.pesan, 'success').then(() => {
+                        swalConfirm.fire('Berhasil Konfirmasi', data.pesan, 'success').then((cb) => {
                             if(cb.value) {
                                 location.reload();
                             }
