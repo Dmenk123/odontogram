@@ -154,9 +154,7 @@
         </td>
       </tr>
     </table>
-    <div align="center">
-      <img src="<?=base_url('upload/odontogram/odontogram.png');?>" width="500" style="z-index:1">
-    </div>
+   
     <table id="tbl_content" class="table table-bordered table-hover" cellspacing="0" width="100%" border="1" style="margin-top:-70px;z-index:2;">
       <thead>
         <tr>
