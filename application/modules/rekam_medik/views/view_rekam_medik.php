@@ -315,22 +315,22 @@ $obj_date = new DateTime();
               </div>
 
               <div class="col-lg-2 col-sm-4">
-                <a href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <a href="<?= base_url('rekam_medik/cetak_odontogram')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
-                  <a href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                  <a href="<?= base_url('rekam_medik/cetak_odontogram')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
                     <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
                   </a>
-                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_diagnosa')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Diagnosa</a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_odontogram')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Odontogram</a>
                 </h5>
               </div>
 
               <div class="col-lg-2 col-sm-4">
-                <a href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
+                <a href="<?= base_url('rekam_medik/cetak_pemeriksaan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank"></a>
                 <h5 style="color:black!important;">
-                  <a href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
+                  <a href="<?= base_url('rekam_medik/cetak_pemeriksaan')?>?pid=<?=$this->input->get('pid');?>" class="widget-body" target="_blank">
                     <img src="<?= base_url('assets/images/pdf.png'); ?>" width="40" height="auto" alt="Anamnesa"> 
                   </a>
-                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_tindakan')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Tindakan</a>
+                  <a target="_blank" href="<?= base_url('rekam_medik/cetak_pemeriksaan')?>?pid=<?=$this->input->get('pid');?>" style="color:black!important;">Pemeriksaan</a>
                 </h5>
               </div>
 
