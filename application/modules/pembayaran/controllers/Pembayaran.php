@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Data_pasien extends CI_Controller {
+class Pembayaran extends CI_Controller {
 	
 	public function __construct()
 	{
