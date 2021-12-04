@@ -78,11 +78,11 @@
             <?php
                 if ($odonto->gambar) { 
             ?>
-                <img src="<?=base_url('upload/odontogram/'.$data_reg->id.'.png');?>" width="990" style="z-index:1">
+                <img src="<?=base_url('upload/odontogram/'.$data_reg->id.'.png');?>" width="950" style="z-index:1">
             <?php
                 }else{
             ?>
-                <img src="<?=base_url('upload/odontogram/example.png');?>" width="990" style="z-index:1">
+                <img src="<?=base_url('upload/odontogram/example.png');?>" width="950" style="z-index:1">
             <?php
                 }
             ?>
