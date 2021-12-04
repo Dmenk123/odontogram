@@ -152,6 +152,9 @@ const pilih_pasien_pulang = (enc_id) => {
         dataType: "json",
         success: function (response) {
             $('#tabel_pasien tbody').html(response.data);
+            $('#header_pembayaran').html(response.html_header);
+            $('#detail_pembayaran').html(response.html_detail);
+            
             id_reg = response.data_id.id_reg;
             id_peg = response.data_id.id_peg;
             id_psn = response.data_id.id_psn;

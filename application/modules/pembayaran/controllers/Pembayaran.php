@@ -165,8 +165,20 @@ class Pembayaran extends CI_Controller {
 		}
 
 		$data_pembayaran = $this->get_detail_pembayaran($id);
+		
+		// echo "<pre>";
+		// print_r ($data_pembayaran);
+		// echo "</pre>";
+		// exit;
+
+		$html_header = '';
 		if($data_pembayaran['header']) {
-			$html .= $this->html_header_pembayaran($data_pembayaran['header']);
+			$html_header .= $this->html_header_pembayaran($data_pembayaran['header']);
+		}
+
+		$html_detail = '';
+		if($data_pembayaran['detail']) {
+			$html_detail .= $this->html_detail_pembayaran($data_pembayaran['detail']);
 		}
 
 		$data_id = [
@@ -178,7 +190,9 @@ class Pembayaran extends CI_Controller {
 		echo json_encode([
 			'data' => $html,
 			'status' => $status,
-			'data_id' => $data_id
+			'data_id' => $data_id,
+			'html_header' => $html_header,
+			'html_detail' => $html_detail,
 		]);
 		
 	}
@@ -204,61 +218,130 @@ class Pembayaran extends CI_Controller {
 
 		$data_header = $this->m_global->multi_row($select,$where,$table, $join);
 		
-		// if($data_header && count($data_header) > 0) {
-		// 	foreach ($data_header as $key => $value) {
-		// 		if($value->id_jenis_trans == '1') {
-		// 			#### LOGISTIK
-		// 			$q = $this->db->query("
-		// 				SELECT a.*, b.qty, b.harga, b.subtotal, c.kode_logistik, c.nama_logistik
-		// 				FROM t_logistik as a 
-		// 				join t_logistik_det b on a.id = b.id_t_logistik and b.deleted_at is null 
-		// 				join m_logistik c on b.id_logistik = c.id_logistik and c.deleted_at is null 
-		// 				WHERE a.deleted_at is null and a.id_reg = $value->id 
-		// 			")->result();
+		$arr_detail_fix = [];
+		if($data_header && count($data_header) > 0) {
+			foreach ($data_header as $key => $value) {
+				if($value->id_jenis_trans == '1') {
+					#### LOGISTIK
+					$q = $this->db->query("
+						SELECT a.*, b.qty, b.harga, b.subtotal, c.kode_logistik, c.nama_logistik
+						FROM t_logistik as a 
+						join t_logistik_det b on a.id = b.id_t_logistik and b.deleted_at is null 
+						join m_logistik c on b.id_logistik = c.id_logistik and c.deleted_at is null 
+						WHERE a.deleted_at is null and a.id_reg = $value->id 
+					")->result();
 
-		// 			// foreach ($q as $k => $v) {
-		// 			// 	$retval[$k][''] = 
-		// 		 	// }
+					foreach ($q as $k => $v) {
+						$arr['jenis'] = 'LOGISTIK';
+						$arr['qty'] = $v->qty;
+						$arr['harga'] = $v->harga;
+						$arr['subtotal'] = $v->subtotal;
+						$arr['nama'] = $v->nama_logistik.' - '.$v->kode_logistik;
+						$arr_detail_fix[] = $arr;
+				 	}
 
-		// 		}elseif($value->id_jenis_trans == '2') {
-		// 			#### TINDAKAN
-		// 			$q = $this->db->query("
-		// 				SELECT a.*, b.qty, b.harga, b.subtotal 
-		// 				FROM t_tindakan as a 
-		// 				join t_tindakan_det b on a.id = b.id_t_logistik and b.deleted_at is null 
-		// 				WHERE a.deleted_at is null and a.id_reg = $value->id 
-		// 			")->result();
-		// 		}elseif($value->id_jenis_trans == '3') {
-		// 			#### LAB
-		// 			$q = $this->db->query("
-		// 				SELECT a.*, b.qty, b.harga, b.keterangan 
-		// 				FROM t_tindakanlab as a 
-		// 				join t_tindakanlab_det b on a.id = b.id_t_tindakanlab and b.deleted_at is null 
-		// 				WHERE a.deleted_at is null and a.id_reg = $value->id 
-		// 			")->result();
-		// 		}
-		// 	}
-		// }
+				}elseif($value->id_jenis_trans == '2') {
+					#### TINDAKAN
+					$q = $this->db->query("
+						SELECT a.*, b.gigi, b.harga, c.kode_tindakan, c.nama_tindakan
+						FROM t_tindakan as a 
+						join t_tindakan_det b on a.id = b.id_t_tindakan and b.deleted_at is null 
+						join m_tindakan c on b.id_tindakan = c.id_tindakan and c.deleted_at is null 
+						WHERE a.deleted_at is null and a.id_reg = $value->id 
+					")->result();
+
+					foreach ($q as $k => $v) {
+						$arr['jenis'] = 'TINDAKAN';
+						$arr['qty'] = null;
+						$arr['harga'] = $v->harga;
+						$arr['subtotal'] = $v->harga;
+						$arr['nama'] = $v->nama_tindakan.' - '.$v->kode_tindakan;
+						$arr_detail_fix[] = $arr;
+				 	}
+					 
+				}elseif($value->id_jenis_trans == '3') {
+					#### LAB
+					$q = $this->db->query("
+						SELECT a.*,  b.harga, b.keterangan, c.kode, c.tindakan_lab
+						FROM t_tindakanlab as a 
+						join t_tindakanlab_det b on a.id = b.id_t_tindakanlab and b.deleted_at is null 
+						join m_laboratorium c on b.id_tindakan_lab = c.id_laboratorium and c.deleted_at is null
+						WHERE a.deleted_at is null and a.id_reg = $value->id 
+					")->result();
+
+					foreach ($q as $k => $v) {
+						$arr['jenis'] = 'TINDAKAN LAB';
+						$arr['qty'] = null;
+						$arr['harga'] = $v->harga;
+						$arr['subtotal'] = $v->harga;
+						$arr['nama'] = $v->tindakan_lab.' - '.$v->kode;
+						$arr_detail_fix[] = $arr;
+				 	}
+				}
+			}
+		}
 		
 		return [
-			'header' => $data_header
+			'header' => $data_header,
+			'detail' => $arr_detail_fix
 		];
 	}
 
 
 	protected function html_header_pembayaran($arrData) {
+		$tot_biaya = 0;
+		
+		foreach ($arrData as $key => $value) {
+			$tot_biaya += $value->total_penerimaan_nett;
+		}
+
 		$html = '
 			<div class="kt-section__title">
 				Data Pembayaran
 			</div>
 			<div class="kt-section__desc">
-				Section description text.
+				Dokter : '.$arrData[0]->nama_dokter.'
+			</div>
+			<div class="kt-section__desc">
+				Asuransi : '.$arrData[0]->nama_asuransi.' - '.$arrData[0]->no_asuransi.'
 			</div>
 			<div class="kt-section__content">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+				<span style="font-size:20px;font-weight:bold;">Total Biaya : Rp. '.number_format($tot_biaya,2,',','.').'</span>
 			</div>
-			<div class="kt-separator kt-separator--space-lg kt-separator--border-dashed"></div>
 		';
+
+		return $html;
+	}
+
+	protected function html_detail_pembayaran($arrData) {
+		$tot_biaya = 0;
+		
+		foreach ($arrData as $key => $value) {
+			$tot_biaya += $value['subtotal'];
+		}
+
+		$html = '
+			<div class="kt-section__title">
+				Detail Pembayaran
+			</div>';
+
+			$anchor = '';
+			foreach ($arrData as $key => $value) {
+				if($anchor != $value['jenis']) {
+					$html .= '<div class="kt-section__desc">
+						Jenis : '.$value['jenis'].'
+					</div>';
+				}
+
+				$html .= '<div class="kt-section__content"><p>
+					Nama : '.$value['nama'].'
+					Total : '.$value['subtotal'].'
+				</p></div>';
+
+				$anchor = $value['jenis'];
+			}
+		
+		return $html;
 	}
 	/////////////////////////////////////////////////////////////
 	public function edit($enc_id)

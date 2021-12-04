@@ -61,24 +61,20 @@
           </div>
         </div>
 
-        <div class="kt-portlet__body" style="margin-top: -40px;">
-          <div class="col-12">
-            <!--begin::Section-->
-            <div class="kt-section" id="detail_pembayaran">
-              <div class="kt-section__title">
-                Data Pembayaran
-              </div>
-              <div class="kt-section__desc">
-                Section description text.
-              </div>
-              <div class="kt-section__content">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </div>
-              <div class="kt-separator kt-separator--space-lg kt-separator--border-dashed"></div>
+        <div class="kt-portlet__body">
+          <div class="col-12 row">
+            <div class="col-5 row">
+              <!--begin::Section-->
+              <div class="kt-section" id="header_pembayaran"></div>
+              <!--end::Section-->
             </div>
-
-            <!--end::Section-->
+            <div class="col-7 row">
+              <!--begin::Section-->
+              <div class="kt-section" id="detail_pembayaran"></div>
+              <!--end::Section-->
+            </div>
           </div>
+          <div class="kt-separator kt-separator--space-lg kt-separator--border-dashed"></div>
         </div>
       
 
