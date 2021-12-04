@@ -1,8 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+use \Carbon\Carbon;
 
 class Pembayaran extends CI_Controller {
 	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -25,7 +27,7 @@ class Pembayaran extends CI_Controller {
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Pengelolaan Data Pasien',
+			'title' => 'Daftar Pembayaran Selesai',
 			'data_user' => $data_user
 		);
 
@@ -37,9 +39,9 @@ class Pembayaran extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_data_pasien',
+			'modal' => 'modal_detail',
 			'js'	=> 'data_pasien.js',
-			'view'	=> 'view_data_pasien'
+			'view'	=> 'view_list_pembayaran'
 		];
 
 		$this->template_view->load_view($content, $data);
@@ -54,7 +56,7 @@ class Pembayaran extends CI_Controller {
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Pengelolaan Data Pasien',
+			'title' => 'Form Pembayaran',
 			'data_user' => $data_user
 		);
 
@@ -66,14 +68,199 @@ class Pembayaran extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => null,
-			'js'	=> 'data_pasien.js',
-			'view'	=> 'form_data_pasien'
+			'modal' => ['rekam_medik/modal_pilih_pasien'],
+			'js'	=> 'pembayaran.js',
+			'view'	=> 'form_pembayaran'
 		];
 
 		$this->template_view->load_view($content, $data);
 	}
 
+	public function cari_pasien_pulang()
+	{
+		$this->load->library('Enkripsi');
+		$tgl_filter_akhir = Carbon::createFromFormat('d/m/Y', $this->input->post('tgl_filter_akhir'))->format('Y-m-d');
+		$tgl_filter_mulai = Carbon::createFromFormat('d/m/Y', $this->input->post('tgl_filter_mulai'))->format('Y-m-d');
+		$pilih_nama = $this->input->post('pilih_nama');
+		$pilih_norm = $this->input->post('pilih_norm');
+		
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien";
+		$where = [
+			'reg.deleted_at' => null,
+			'reg.is_pulang' => '1',
+			'pas.is_aktif' => '1',
+			'pas.nama like' => '%'.$pilih_nama.'%',
+			'pas.no_rm like' => '%'.$pilih_norm.'%',
+			'reg.tanggal_reg >=' => $tgl_filter_mulai,
+			'reg.tanggal_reg <=' => $tgl_filter_akhir
+		];
+		$table = 't_registrasi as reg';
+		$join = [ 
+			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id']
+		];
+				
+		// var_dump($join);exit;
+		$data = $this->m_global->multi_row($select, $where, $table, $join, 'pas.nama asc');
+		$html = '';
+		if($data){
+			$status = true;
+			foreach ($data as $key => $value) {
+				$html .= '<tr>';
+				$html .= '<td>'.$value->no_reg.'</td>';
+				$html .= '<td>'.$value->nama_pasien.'</td>';
+				$html .= '<td>'.Carbon::parse($value->tanggal_reg)->format('d/m/Y').'</td>';
+				$html .= '<td>'.$value->jam_reg.'</td>';
+				$html .= '<td>'.$value->no_rm.'</td>';
+				$html .= '<td>'.Carbon::parse($value->tanggal_pulang.' '.$value->jam_pulang)->format('d/m/Y H:i:s').'</td>';
+				$html .= '<td>'.$value->no_asuransi.'</td>';
+				// $html .= '<td><button type="button" class="button btn-sm btn-success" onclick="pilih_pasien(\''.$this->enkripsi->enc_dec('encrypt', $value->id).'\')"> Pilih</button></td>';
+				$html .= '<td><button type="button" class="button btn-sm btn-success" onclick="submit_pasien_pulang(\''.$this->enkripsi->enc_dec('encrypt', $value->id).'\')"> Pilih</button></td>';
+				$html .= '</tr>';
+			}
+		}else{
+			$status = false;
+			$html .= '';
+		}
+		
+		echo json_encode([
+			'data' => $html,
+			'status' => $status
+		]);
+	}
+
+	public function hasil_pilih_pasien(){
+		$this->load->library('Enkripsi');
+		$enc_id = $this->input->post('enc_id');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		$html_header = '';
+		$html_pembayaran = $this->get_detail_pembayaran($id);
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$where = ['reg.id' => $id];
+		$table = 't_registrasi as reg';
+		$join = [ 
+			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
+			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
+			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
+		];
+				
+		$data = $this->m_global->single_row($select, $where, $table, $join);
+		$html = '';
+		
+		if($data){
+			$status = true;
+			$html .= '<tr>';
+			$html .= '<td>'.$data->no_reg.'</td>';
+			$html .= '<td>'.Carbon::parse($data->tanggal_reg.' '.$data->jam_reg)->format('d/m/Y H:i:s').'</td>';
+			$html .= '<td>'.Carbon::parse($data->tanggal_pulang.' '.$data->jam_pulang)->format('d/m/Y H:i:s').'</td>';
+			$html .= '<td>'.$data->nama_pasien.'</td>';
+			$html .= '<td>'.$data->nama_dokter.'</td>';
+			$html .= '<td>'.$data->no_rm.'</td>';
+			$html .= ($data->is_asuransi) ? '<td>Asuransi</td>' : '<td>Umum</td>';
+			$html .= '<td>'.$data->nama_asuransi.'</td>';
+			$html .= '</tr>';
+			
+		}else{
+			$status = false;
+			$html .= '';
+		}
+
+		$data_pembayaran = $this->get_detail_pembayaran($id);
+		if($data_pembayaran['header']) {
+			$html .= $this->html_header_pembayaran($data_pembayaran['header']);
+		}
+
+		$data_id = [
+			'id_reg' => $data->id,
+			'id_psn' => $data->id_pasien,
+			'id_peg' => $data->id_pegawai,
+		];
+		
+		echo json_encode([
+			'data' => $html,
+			'status' => $status,
+			'data_id' => $data_id
+		]);
+		
+	}
+
+	protected function get_detail_pembayaran($id) {
+		$select = "a.*, peg.nama as nama_dokter, asu.nama as nama_asuransi, b.total_honor_dokter, b.total_penerimaan_nett, b.id_jenis_trans, b.id_trans_flag";
+		$where = ['a.is_pulang' => 1, 'a.deleted_at' => null];
+		$table = 't_registrasi as a';
+		$join = [ 
+			[
+				'table' => 'm_pegawai as peg',
+				'on'	=> 'a.id_pegawai = peg.id'
+			],
+			[
+				'table' => 'm_asuransi asu',
+				'on'	=> 'a.id_asuransi = asu.id'
+			],
+			[
+				'table' => 't_mutasi b',
+				'on'	=> 'a.id = b.id_registrasi and b.deleted_at is null'
+			],
+		];
+
+		$data_header = $this->m_global->multi_row($select,$where,$table, $join);
+		
+		// if($data_header && count($data_header) > 0) {
+		// 	foreach ($data_header as $key => $value) {
+		// 		if($value->id_jenis_trans == '1') {
+		// 			#### LOGISTIK
+		// 			$q = $this->db->query("
+		// 				SELECT a.*, b.qty, b.harga, b.subtotal, c.kode_logistik, c.nama_logistik
+		// 				FROM t_logistik as a 
+		// 				join t_logistik_det b on a.id = b.id_t_logistik and b.deleted_at is null 
+		// 				join m_logistik c on b.id_logistik = c.id_logistik and c.deleted_at is null 
+		// 				WHERE a.deleted_at is null and a.id_reg = $value->id 
+		// 			")->result();
+
+		// 			// foreach ($q as $k => $v) {
+		// 			// 	$retval[$k][''] = 
+		// 		 	// }
+
+		// 		}elseif($value->id_jenis_trans == '2') {
+		// 			#### TINDAKAN
+		// 			$q = $this->db->query("
+		// 				SELECT a.*, b.qty, b.harga, b.subtotal 
+		// 				FROM t_tindakan as a 
+		// 				join t_tindakan_det b on a.id = b.id_t_logistik and b.deleted_at is null 
+		// 				WHERE a.deleted_at is null and a.id_reg = $value->id 
+		// 			")->result();
+		// 		}elseif($value->id_jenis_trans == '3') {
+		// 			#### LAB
+		// 			$q = $this->db->query("
+		// 				SELECT a.*, b.qty, b.harga, b.keterangan 
+		// 				FROM t_tindakanlab as a 
+		// 				join t_tindakanlab_det b on a.id = b.id_t_tindakanlab and b.deleted_at is null 
+		// 				WHERE a.deleted_at is null and a.id_reg = $value->id 
+		// 			")->result();
+		// 		}
+		// 	}
+		// }
+		
+		return [
+			'header' => $data_header
+		];
+	}
+
+
+	protected function html_header_pembayaran($arrData) {
+		$html = '
+			<div class="kt-section__title">
+				Data Pembayaran
+			</div>
+			<div class="kt-section__desc">
+				Section description text.
+			</div>
+			<div class="kt-section__content">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+			</div>
+			<div class="kt-separator kt-separator--space-lg kt-separator--border-dashed"></div>
+		';
+	}
+	/////////////////////////////////////////////////////////////
 	public function edit($enc_id)
 	{
 		if(strlen($enc_id) != 32) {

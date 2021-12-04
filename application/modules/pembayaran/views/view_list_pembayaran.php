@@ -25,7 +25,7 @@
             <div class="kt-portlet__head-actions row">
               <div><?= $this->template_view->getOpsiButton(); ?></div>
               <div>&nbsp;</div>
-              <div><?= $this->template_view->getAddButton(); ?></div>
+              <div><?= $this->template_view->getAddButton(false, false, 'Form Pembayaran'); ?></div>
             </div>
           </div>
         </div>

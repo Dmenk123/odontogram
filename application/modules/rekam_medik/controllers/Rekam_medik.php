@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+use \Carbon\Carbon;
 
 class Rekam_medik extends CI_Controller {
 	
@@ -1401,7 +1402,12 @@ class Rekam_medik extends CI_Controller {
 			return;
 		}
 
-		$upd = $this->m_global->update('t_registrasi', ['tanggal_pulang' => $datenow, 'is_pulang' => 1, 'updated_at' => $timestamp], ['id' => $id_reg]);
+		$upd = $this->m_global->update('t_registrasi', [
+			'tanggal_pulang' => $datenow,
+			'jam_pulang' =>  Carbon::parse($timestamp)->format('H:i:s'),
+			'is_pulang' => 1, 
+			'updated_at' => $timestamp
+		], ['id' => $id_reg]);
 		if($upd) {
 			echo json_encode([
 				'status' => true,

@@ -26,7 +26,63 @@
             </h3>
           </div>
         </div>
+
         <div class="kt-portlet__body">
+          <div class="col-12 row" style="padding-bottom: 20px;">
+            <div class="col-12">
+              <button type="button" class="btn btn-brand" onclick="show_modal_pasien()">Cari Data</button>
+            </div>
+          </div>
+          <div class="col-12 table-responsive">
+            <div class="hidden">
+              <input type="hidden" id="id_reg" name="id_reg">
+              <input type="hidden" id="id_psn" name="id_psn">
+              <input type="hidden" id="id_peg" name="id_peg">
+            </div>
+            <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pasien">
+              <thead>
+                <tr>
+                  <th>No. Reg</th>
+                  <th>Tgl Masuk</th>
+                  <th>Tgl Pulang</th>
+                  <th>Dokter</th>
+                  <th>Nama</th>
+                  <th>No. RM</th>
+                  <th>Jenis Penjamin</th>
+                  <th>Pers. Asuransi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" style="text-align: center;">Data Registrasi Tidak Ditemukan</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="kt-portlet__body" style="margin-top: -40px;">
+          <div class="col-12">
+            <!--begin::Section-->
+            <div class="kt-section" id="detail_pembayaran">
+              <div class="kt-section__title">
+                Data Pembayaran
+              </div>
+              <div class="kt-section__desc">
+                Section description text.
+              </div>
+              <div class="kt-section__content">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </div>
+              <div class="kt-separator kt-separator--space-lg kt-separator--border-dashed"></div>
+            </div>
+
+            <!--end::Section-->
+          </div>
+        </div>
+      
+
+        <!-- <div class="kt-portlet__body">
           <div class="form-group row form-group-marginless kt-margin-t-20">
             <input type="hidden" class="form-control" name="id_pasien" value="">
             <label class="col-lg-1 col-form-label">Nama Pasien:</label>
@@ -114,7 +170,7 @@
               <span class="help-block"></span>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="kt-portlet kt-portlet--mobile">
