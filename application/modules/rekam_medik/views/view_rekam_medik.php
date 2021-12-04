@@ -170,10 +170,10 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        Odonto
+                        Odontogram
                       </h5>
                       <div class="kt-iconbox__content">
-                      Odonto
+                      Odontogram
                       </div>
                     </div>
                   </div>
@@ -190,9 +190,9 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        Kamera
+                          Foto X-ray
                       </h5>
-                      <div class="kt-iconbox__content">Kamera</div>
+                      <div class="kt-iconbox__content">Foto X-ray</div>
                     </div>
                   </div>
                 </div>

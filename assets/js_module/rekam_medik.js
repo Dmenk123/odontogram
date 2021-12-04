@@ -133,6 +133,8 @@ function save(id_form)
                         reloadFormKamera();
                     }else if(id_form == 'form_tindakanlab'){
                         reloadFormTindakanLab();
+                    }else if(id_form == 'form_pasien'){
+                        reloadFormPasien();
                     }else{
                         $('#'+activeModal).modal('hide');
                     }
@@ -196,6 +198,8 @@ function cekDanSetValue(txt_div_modal){
             reloadFormDiskon();
         }else if(objData.menu == 'odonto'){
             reloadFormOdonto();
+        }else if(objData.menu == 'pasien'){
+            reloadFormPasien();
         }
     }
     
