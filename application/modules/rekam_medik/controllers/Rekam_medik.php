@@ -13,6 +13,8 @@ class Rekam_medik extends CI_Controller {
 
 		$this->load->model('m_user');
 		$this->load->model('m_global');
+		$this->load->model('m_pasien');
+		$this->load->model('m_data_medik');
 		$this->load->model('t_rekam_medik');
 		$this->load->library('enkripsi');
 	}
@@ -200,6 +202,20 @@ class Rekam_medik extends CI_Controller {
 				break;
 			case 'odonto':
 				echo json_encode(['menu' => 'odonto']);
+				break;
+			case 'pasien':
+				$select = "pas.*, mdk.*";
+				$where = ['pas.deleted_at' => null, 'pas.id' => $id_psn];
+				$table = 'm_pasien as pas';
+				$join = [ 
+					[
+						'table' => 'm_data_medik as mdk',
+						'on'	=> 'pas.id = mdk.id_pasien'
+					]
+				];
+				$data_pasien = $this->m_global->single_row($select,$where,$table, $join);
+
+				echo json_encode(['menu' => 'pasien', 'data' => $data_pasien]);
 				break;
 			
 			default:
@@ -473,6 +489,34 @@ class Rekam_medik extends CI_Controller {
 
 		echo json_encode([
 			'html' => $html
+		]);
+	}
+
+	public function load_form_pasien()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		
+		$select = "pas.*, mdk.*";
+		$where = ['pas.deleted_at' => null, 'pas.id' => $id_psn];
+		$table = 'm_pasien as pas';
+		$join = [ 
+			[
+				'table' => 'm_data_medik as mdk',
+				'on'	=> 'pas.id = mdk.id_pasien'
+			]
+		];
+		$data_pasien = $this->m_global->single_row($select,$where,$table, $join);
+		if ($data_pasien) {
+			$tgl_lahir = date('d/m/Y', strtotime($data_pasien->tanggal_lahir));
+		}else{
+			$tgl_lahir = '';
+		}
+
+		echo json_encode([
+			'old_data' => $data_pasien,
+			'tgl_lahir' => $tgl_lahir
 		]);
 	}
 
@@ -1422,5 +1466,106 @@ class Rekam_medik extends CI_Controller {
 		
 	}
 	########### end pulangkan grup ##########
+
+	########################### start pasien grup ###########################
+	public function simpan_form_pasien()
+	{
+
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		$id_peg = $this->input->post('id_peg');
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		
+		$nama = contul(trim(strtoupper($this->input->post('nama'))));
+		$nik = contul(trim($this->input->post('nik')));
+		$tempat_lahir = contul(trim($this->input->post('tempat_lahir')));
+		$tanggal_lahir = contul(trim($this->input->post('tanggal_lahir')));
+		$jenkel = contul(trim($this->input->post('jenkel')));
+		$suku = contul(trim($this->input->post('suku')));
+		$pekerjaan = contul(trim($this->input->post('pekerjaan')));
+		$hp = contul(trim($this->input->post('hp')));
+		$telp = contul(trim($this->input->post('telp')));
+		$alamat_rumah = contul(trim($this->input->post('alamat_rumah')));
+		$alamat_kantor = contul(trim($this->input->post('alamat_kantor')));
+
+		$gol_darah = contul(trim($this->input->post('gol_darah')));
+		$tekanan_darah_val = contul(trim($this->input->post('tekanan_darah_val')));
+		$tekanan_darah = $this->input->post('tekanan_darah');
+		$penyakit_jantung = $this->input->post('penyakit_jantung');
+		$diabetes = $this->input->post('diabetes');
+		$haemopilia = $this->input->post('haemopilia');
+		$hepatitis = $this->input->post('hepatitis');
+		$gastring = $this->input->post('gastring');
+		$penyakit_lainnya = $this->input->post('penyakit_lainnya');
+		$alergi_obat = $this->input->post('alergi_obat');
+		$alergi_obat_val = contul(trim($this->input->post('alergi_obat_val')));
+		$alergi_makanan = $this->input->post('alergi_makanan');
+		$alergi_makanan_val = contul(trim($this->input->post('alergi_makanan_val')));
+
+		$this->db->trans_begin();
+		
+		###################### data pasien
+
+		$pasien = [
+			'nama' => $nama,
+			'nik' => $nik,
+			'tempat_lahir' => $tempat_lahir,
+			'tanggal_lahir' => $obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('Y-m-d'),
+			'jenis_kelamin' => $jenkel,
+			'suku' => $suku,
+			'pekerjaan' => $pekerjaan,
+			'hp' => $hp,
+			'telp_rumah' => $telp,
+			'alamat_rumah' => $alamat_rumah,
+			'alamat_kantor' => $alamat_kantor
+		];
+
+	
+		$pasien['updated_at'] = $timestamp;
+		
+		$where = ['id' => $id_psn];
+		$update = $this->m_pasien->update($where, $pasien);
+		
+
+		###################### data medik
+		
+		$medik = [
+			'gol_darah' => $gol_darah,
+			'tekanan_darah' => $tekanan_darah,
+			'tekanan_darah_val' => $tekanan_darah_val,
+			'penyakit_jantung' => $penyakit_jantung,
+			'diabetes' => $diabetes,
+			'haemopilia' => $haemopilia,
+			'hepatitis' => $hepatitis,
+			'gastring' => $gastring,
+			'penyakit_lainnya' => $penyakit_lainnya,
+			'alergi_obat' => $alergi_obat,
+			'alergi_obat_val' => $alergi_obat_val,
+			'alergi_makanan' => $alergi_makanan,
+			'alergi_makanan_val' => $alergi_makanan_val
+		];
+
+	
+		$cek_medik = $this->m_data_medik->get_by_condition(['id_pasien' => $id_psn], true);
+		$medik['updated_at'] = $timestamp;
+
+		$where = ['id' => $cek_medik->id];
+		$update = $this->m_data_medik->update($where, $medik);
+		
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Mengubah Data Pasien';
+		}
+
+		echo json_encode($retval);
+	}
 
 }
