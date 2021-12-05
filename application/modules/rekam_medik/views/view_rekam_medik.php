@@ -235,7 +235,7 @@ $obj_date = new DateTime();
               </div>
             </div>
 
-            <div class="col-lg-3 div_menu" data-id="div_diskon" style="cursor:pointer">
+            <!-- <div class="col-lg-3 div_menu" data-id="div_diskon" style="cursor:pointer">
               <div class="kt-portlet kt-iconbox kt-iconbox--wave">
                 <div class="kt-portlet__body">
                   <div class="kt-iconbox__body">
@@ -251,7 +251,9 @@ $obj_date = new DateTime();
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
+
+            <div class="col-lg-3">&nbsp;</div>
 
             <div class="col-lg-3 div_menu" data-id="div_tindakanlab" style="cursor:pointer">
               <div class="kt-portlet kt-iconbox kt-iconbox--wave">
@@ -271,7 +273,7 @@ $obj_date = new DateTime();
               </div>
             </div>
 
-            <div class="col-lg-6 div_menu" data-id="div_pulangkan" style="cursor:pointer">
+            <div class="col-lg-3 div_menu" data-id="div_pulangkan" style="cursor:pointer">
               <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-slower">
                 <div class="kt-portlet__body">
                   <div class="kt-iconbox__body">
@@ -296,6 +298,8 @@ $obj_date = new DateTime();
                 </div>
               </div>
             </div>
+
+            <div class="col-lg-3">&nbsp;</div>
 
             
           </div>

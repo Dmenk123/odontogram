@@ -54,8 +54,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_tindakan_lab', 'modal_diskon', 'modal_pasien', 'modal_kamera'],
-			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_tindakanlab.js', 't_diskon.js', 't_kamera.js', 't_data_pasien.js'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_tindakan_lab', 'modal_pasien', 'modal_kamera'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_tindakanlab.js', 't_kamera.js', 't_data_pasien.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
