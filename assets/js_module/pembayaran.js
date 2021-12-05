@@ -18,6 +18,15 @@ $(document).ready(function() {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
+
+    $('#jenis_bayar').change(function (e) { 
+      if(this.value == 'kredit') {
+          $('#div_opt_kredit').slideDown();
+      }else{
+        $('#div_opt_kredit').slideUp();
+      }
+    });
+
 	//datatables
 	table = $('#tabel_index').DataTable({
 		responsive: true,
