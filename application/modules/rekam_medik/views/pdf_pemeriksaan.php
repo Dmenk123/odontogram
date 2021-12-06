@@ -75,7 +75,7 @@
             </tbody>
         </table>
         <div align="center">
-            <table id="tbl_content" class="table table-bordered table-hover" style="padding-left:13px;" cellspacing="2" cellpadding="2" width="100%" border="1">
+            <table id="tbl_content" class="table table-bordered table-hover" style="padding-left:13px;line-height:12px;" cellspacing="2" cellpadding="2" width="100%" border="1">
                 <tbody>
                     <tr>
                         <td style="text-align:center" width="10%">11 (51)</td>
@@ -143,7 +143,7 @@
         
         </div>
         <div align="center">
-            <table id="tbl_content" class="table table-bordered table-hover" style="padding-left:13px;" cellspacing="2" cellpadding="2" width="100%" border="1">
+            <table id="tbl_content" class="table table-bordered table-hover" style="padding-left:13px;line-height:12px;" cellspacing="2" cellpadding="2" width="100%" border="1">
                 <tbody>
                     <tr>
                         <td style="text-align:center" width="10%">48</td>
@@ -255,6 +255,12 @@
                 </tr>
                 <tr>
                     <td colspan="3">D : <?php echo (isset($odonto->d) != '') ? $odonto->d : '.... ';?> M : <?php echo $odonto->m ?? '.... ';?> F : <?php echo $odonto->f ?? '.... ';?></td>
+                </tr>
+                <tr>
+                    <td colspan="3">Jumlah Photo yang diambil : <?php echo $odonto->jumlah_foto ?? '........';?> <?php echo $odonto->satuan_jumlah_foto ?? '';?></td>
+                </tr>
+                <tr>
+                    <td colspan="3">Jumlah Rontgen Photo yang diambil : <?php echo $odonto->jumlah_rontgen ?? '........';?> <?php echo $odonto->satuan_jumlah_rontgen ?? '';?></td>
                 </tr>
             </tbody>
         </table>

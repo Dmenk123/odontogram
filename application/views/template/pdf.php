@@ -130,7 +130,7 @@
     <?php if (isset($header) && $header != null) { ?>
       <?= $header; ?>
     <?php } else { ?>
-      <table class="tbl-outer">
+      <table class="tbl-outer" style="margin-top:-40px;">
         <tr>
 
           <td align="left" class="outer-left">
