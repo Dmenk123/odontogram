@@ -6,6 +6,8 @@ let id_reg;
 let pid;
 
 $(document).ready(function() {
+    $('#div_opt_kredit').css('display', 'none');
+
     let uri = new URL(window.location.href);
     pid = uri.searchParams.get("pid");
 
@@ -16,6 +18,15 @@ $(document).ready(function() {
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
+    });
+
+
+    $('#jenis_bayar').change(function (e) { 
+      if(this.value == 'kredit') {
+        $('#div_opt_kredit').slideDown();
+      }else{
+        $('#div_opt_kredit').slideUp();
+      }
     });
 
 	//datatables
@@ -154,7 +165,7 @@ const pilih_pasien_pulang = (enc_id) => {
             $('#tabel_pasien tbody').html(response.data);
             $('#header_pembayaran').html(response.html_header);
             $('#detail_pembayaran').html(response.html_detail);
-            
+            $('#total_biaya_raw').val(response.tot_biaya);
             id_reg = response.data_id.id_reg;
             id_peg = response.data_id.id_peg;
             id_psn = response.data_id.id_psn;
@@ -165,6 +176,49 @@ const pilih_pasien_pulang = (enc_id) => {
 
 const submit_pasien_pulang = (enc_id) => {
     location.href = base_url+'pembayaran/add?pid='+enc_id;
+}
+
+const hitungKembalian = () => {
+    let harga = $('#pembayaran').inputmask('unmaskedvalue');
+    let totalBiaya = $('#total_biaya_raw').val();
+
+    harga = harga.replace(",", ".");
+    hargaFix = parseFloat(harga).toFixed(2);
+    totalBiayaFix = parseFloat(totalBiaya).toFixed(2);
+    
+    let kembalian = hargaFix - totalBiaya;
+    
+    if(Number.isNaN(kembalian)) {
+        kembalianFix = 0;
+    }else{
+        kembalianFix = parseFloat(kembalian).toFixed(2);
+    }
+    
+
+    // console.log(kembalianFix, Number(hargaFix));
+    let kembalianNew = Number(kembalianFix).toFixed(2);
+    
+    $('#kembalian_mem').val(formatMoney(Number(kembalianNew)));
+    $('#span_pembayaran_harga_global').text(formatMoney(Number(hargaFix)));
+    $('#span_kembalian_harga_global').text(formatMoney(Number(kembalianNew)));
+    
+    // set raw value
+    $('#pembayaran_raw').val(hargaFix);
+    $('#kembalian_raw').val(kembalianFix)
+
+    if(kembalianFix < 0) {
+        $('.btnSubmit').attr('disabled', 'disabled');
+    }else{
+        $('.btnSubmit').removeAttr('disabled');
+
+        keyboardJS.bind('ctrl + enter', (e) => {
+            if(active_div == 'reguler') {
+                $('#formPenjualanReg').submit();
+            }else if(active_div == 'member'){
+                $('#formPenjualanMem').submit();
+            }
+        });
+    }
 }
 
 ////////////////////////////////////////////////////

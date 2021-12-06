@@ -57,7 +57,8 @@ class Pembayaran extends CI_Controller {
 		 */
 		$data = array(
 			'title' => 'Form Pembayaran',
-			'data_user' => $data_user
+			'data_user' => $data_user,
+			'data_bank_kredit' => $this->m_global->multi_row('*',['deleted_at' => null], 'm_bank_kredit', null, 'nama')
 		);
 
 		/**
@@ -165,11 +166,16 @@ class Pembayaran extends CI_Controller {
 		}
 
 		$data_pembayaran = $this->get_detail_pembayaran($id);
-		
+
 		// echo "<pre>";
 		// print_r ($data_pembayaran);
 		// echo "</pre>";
 		// exit;
+
+		$tot_biaya = 0;
+		foreach ($data_pembayaran['header'] as $kkkk => $vvvv) {
+			$tot_biaya += $vvvv->total_penerimaan_gross;
+		}
 
 		$html_header = '';
 		if($data_pembayaran['header']) {
@@ -193,12 +199,13 @@ class Pembayaran extends CI_Controller {
 			'data_id' => $data_id,
 			'html_header' => $html_header,
 			'html_detail' => $html_detail,
+			'tot_biaya' => $tot_biaya,
 		]);
 		
 	}
 
 	protected function get_detail_pembayaran($id) {
-		$select = "a.*, peg.nama as nama_dokter, asu.nama as nama_asuransi, b.total_honor_dokter, b.total_penerimaan_nett, b.id_jenis_trans, b.id_trans_flag";
+		$select = "a.*, peg.nama as nama_dokter, asu.nama as nama_asuransi, b.total_honor_dokter, b.total_penerimaan_nett, b.total_penerimaan_gross, b.id_jenis_trans, b.id_trans_flag";
 		$where = ['a.is_pulang' => 1, 'a.deleted_at' => null];
 		$table = 't_registrasi as a';
 		$join = [ 
@@ -290,9 +297,9 @@ class Pembayaran extends CI_Controller {
 
 	protected function html_header_pembayaran($arrData) {
 		$tot_biaya = 0;
-		
+
 		foreach ($arrData as $key => $value) {
-			$tot_biaya += $value->total_penerimaan_nett;
+			$tot_biaya += $value->total_penerimaan_gross;
 		}
 
 		$html = '
@@ -315,32 +322,41 @@ class Pembayaran extends CI_Controller {
 
 	protected function html_detail_pembayaran($arrData) {
 		$tot_biaya = 0;
-		
-		foreach ($arrData as $key => $value) {
-			$tot_biaya += $value['subtotal'];
-		}
 
 		$html = '
-			<div class="kt-section__title">
-				Detail Pembayaran
-			</div>';
+		<div class="kt-section__title">
+			Detail Pembayaran
+		</div>';
 
-			$anchor = '';
+		$html .= '
+			<div class="kt-section__content">
+				<table class="table table-bordered" style="width:100%;">
+					<tr>
+						<th>Jenis</th>
+						<th>Nama</th>
+						<th>Qty</th>
+						<th>Harga</th>
+						<th>Sub Total</th>
+					</tr>
+		';
+
+		if(count($arrData) > 0) {
 			foreach ($arrData as $key => $value) {
-				if($anchor != $value['jenis']) {
-					$html .= '<div class="kt-section__desc">
-						Jenis : '.$value['jenis'].'
-					</div>';
-				}
-
-				$html .= '<div class="kt-section__content"><p>
-					Nama : '.$value['nama'].'
-					Total : '.$value['subtotal'].'
-				</p></div>';
-
-				$anchor = $value['jenis'];
+				$tot_biaya += $value['subtotal'];
+				$html .= '<tr>
+					<td>'.$value['jenis'].'</td>
+					<td>'.$value['nama'].'</td>
+					<td>'.$value['qty'].'</td>
+					<td align="right">'.number_format($value['harga'],0,',','.').'</td>
+					<td align="right">'.number_format($value['subtotal'],0,',','.').'</td>
+				</tr>';
 			}
-		
+
+			$html .= '<tr><td colspan="4">Grand Total</td><td align="right"><b>'.number_format($tot_biaya,0,',','.').'</b></td></tr></table></div>';
+		}else{
+			$html .= '<tr><td colspan="5"><b>Tidak ada Data</b></td></tr></table></div>';
+		}	
+
 		return $html;
 	}
 	/////////////////////////////////////////////////////////////

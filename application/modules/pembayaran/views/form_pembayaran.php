@@ -6,7 +6,7 @@
     <div class="kt-container  kt-container--fluid ">
       <div class="kt-subheader__main">
         <h3 class="kt-subheader__title">
-          <?= $this->template_view->nama('judul').' - '.$title; ?>
+          <?= $this->template_view->nama('judul') . ' - ' . $title; ?>
         </h3>
       </div>
     </div>
@@ -70,217 +70,53 @@
             </div>
             <div class="col-7 row">
               <!--begin::Section-->
-              <div class="kt-section" id="detail_pembayaran"></div>
+              <div class="kt-section col-12" id="detail_pembayaran"></div>
               <!--end::Section-->
             </div>
           </div>
-          <div class="kt-separator kt-separator--space-lg kt-separator--border-dashed"></div>
         </div>
-      
-
-        <!-- <div class="kt-portlet__body">
-          <div class="form-group row form-group-marginless kt-margin-t-20">
-            <input type="hidden" class="form-control" name="id_pasien" value="">
-            <label class="col-lg-1 col-form-label">Nama Pasien:</label>
-            <div class="col-lg-3">
-              <input type="text" class="form-control" name="nama" onkeyup="to_upper(this)" value="<?php if(isset($data_pasien)) {echo $data_pasien->nama;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">NIK:</label>
-            <div class="col-lg-2">
-              <input type="text" class="form-control" name="nik" maxlength="16" value="<?php if(isset($data_pasien)) {echo $data_pasien->nik;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">No RM:</label>
-            <div class="col-lg-2">
-              <input type="text" class="form-control mask_rm" name="no_rm" onkeyup="to_upper(this)" disabled value="<?php if(isset($data_pasien)) {echo $data_pasien->no_rm;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <div class="col-lg-2">
-              <div class="kt-checkbox-list">
-                <label class="kt-checkbox kt-checkbox--tick kt-checkbox--brand">
-                  <input type="checkbox" class="form-control" id="cek_manual"> Manual
-                  <span></span>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row form-group-marginless">
-            <label class="col-lg-1 col-form-label">Tempat Lahir:</label>
-            <div class="col-lg-3">
-              <input type="text" class="form-control" name="tempat_lahir" value="<?php if(isset($data_pasien)) {echo $data_pasien->tempat_lahir;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Tanggal Lahir:</label>
-            <div class="col-lg-3">
-              <input type="text" class="form-control mask_tanggal" name="tanggal_lahir" autocomplete="off" value="<?php if(isset($data_pasien)) {echo DateTime::createFromFormat('Y-m-d', $data_pasien->tanggal_lahir)->format('d/m/Y');} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Jenis Kelamin:</label>
-            <div class="col-lg-3">
-              <select class="form-control required" name="jenkel" id="jenkel">
-              <option value=""> Pilih Jenis Kelamin </option>
-              <option value="L" <?php if(isset($data_pasien) && $data_pasien->jenis_kelamin == 'L') {echo "selected";} ?>> Laki-Laki </option>
-              <option value="P" <?php if(isset($data_pasien) && $data_pasien->jenis_kelamin == 'P') {echo "selected";} ?>> Perempuan </option>
-            </select>
-              <span class="help-block"></span>
-            </div>
-          </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Suku Bangsa:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="suku" value="<?php if(isset($data_pasien)) {echo $data_pasien->suku;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Pekerjaan:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="pekerjaan" value="<?php if(isset($data_pasien)) {echo $data_pasien->pekerjaan;} ?>">
-              <span class="help-block"></span>
-            </div>
-          </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-1 col-form-label">HP/WA:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="hp" value="<?php if(isset($data_pasien)) {echo $data_pasien->hp;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Telp Rumah:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="telp" value="<?php if(isset($data_pasien)) {echo $data_pasien->telp_rumah;} ?>">
-              <span class="help-block"></span>
-            </div>
-          </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Alamat Rumah:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="alamat_rumah" value="<?php if(isset($data_pasien)) {echo $data_pasien->alamat_rumah;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Alamat Kantor:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="alamat_kantor" value="<?php if(isset($data_pasien)) {echo $data_pasien->alamat_kantor;} ?>">
-              <span class="help-block"></span>
-            </div>
-          </div>
-        </div> -->
       </div>
 
       <div class="kt-portlet kt-portlet--mobile">
         <div class="kt-portlet__head kt-portlet__head--lg">
           <div class="kt-portlet__head-label">
             <h3 class="kt-portlet__head-title">
-              Form Data Medik
+              Form Pembayaran (Kasir)
             </h3>
           </div>
         </div>
         <div class="kt-portlet__body">
-          <div class="form-group row form-group-marginless kt-margin-t-20">
-            <label class="col-lg-1 col-form-label">Golongan Darah:</label>
-            <div class="col-lg-3">
-              <input type="text" class="form-control" name="gol_darah">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-2 col-form-label">Tekanan Darah:</label>
-            <div class="col-lg-3">
-              <input type="text" class="form-control" name="tekanan_darah_val" value="<?php if(isset($data_pasien)) {echo $data_pasien->tekanan_darah_val;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <div class="col-lg-3">
-              <select class="form-control required" name="tekanan_darah" id="tekanan_darah">
-                <option value=""> Pilih Kategori </option>
-                <option value="HYPERTENSI" <?php if(isset($data_pasien) && $data_pasien->tekanan_darah == 'HYPERTENSI') {echo "selected";} ?>> Hypertensi </option>
-                <option value="HYPOTENSI" <?php if(isset($data_pasien) && $data_pasien->tekanan_darah == 'HYPOTENSI') {echo "selected";} ?>> Hypotensi </option>
-                <option value="NORMAL" <?php if(isset($data_pasien) && $data_pasien->tekanan_darah == 'NORMAL') {echo "selected";} ?>> Normal </option>
+          <div class="form-group">
+            <label>Jenis Pembayaran : </label>
+            <select class="form-control select2" id="jenis_bayar" name="jenis_bayar" style="width: 100%;">
+              <option value="cash">Cash</option>
+              <option value="kredit">Kredit</option>
+            </select>
+            <span class="help-block"></span>
+          </div>
+          <div id="div_opt_kredit">
+            <div class="form-group">
+              <label>Kredit : </label>
+              <select class="form-control select2" id="opt_kredit" name="opt_kredit" style="width: 100%;">
+                <?php foreach ($data_bank_kredit as $k => $v) {
+                  echo '<option value="' . $v->id . '">' . $v->nama . '</option>';
+                } ?>
               </select>
               <span class="help-block"></span>
             </div>
           </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Penyakit Jantung:</label>
-            <div class="col-lg-3">
-              <select class="form-control required" name="penyakit_jantung" id="penyakit_jantung">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->penyakit_jantung == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->penyakit_jantung == '1') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Diabetes:</label>
-            <div class="col-lg-3">
-              <select class="form-control required" name="diabetes" id="diabetes">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->diabetes == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->diabetes == '0') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Haemopilia:</label>
-            <div class="col-lg-3">
-              <select class="form-control required" name="haemopilia" id="haemopilia">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->haemopilia == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->haemopilia == '1') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
+          <div class="form-group">
+            <label>Pembayaran <span style="font-weight: bold;font-style:italic;"><span> : </label>
+            <input type="hidden" id="total_biaya_raw" name="total_biaya_raw" class="form-control">
+            <input type="text" data-thousands="." data-decimal="," id="pembayaran" name="pembayaran" class="form-control form-control-sm inputmask" onkeyup="hitungKembalian()" value="0">
+            <input type="hidden" id="pembayaran_raw" name="pembayaran_raw" class="form-control form-control-sm input-lg" value="">
+            <span class="help-block"></span>
           </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Hepatitis:</label>
-            <div class="col-lg-3">
-              <select class="form-control required" name="hepatitis" id="hepatitis">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->hepatitis == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->hepatitis == '1') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Gastring:</label>
-            <div class="col-lg-3">
-              <select class="form-control required" name="gastring" id="gastring">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->gastring == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->gastring == '1') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Penyakit Lainnya:</label>
-            <div class="col-lg-3">
-              <select class="form-control required" name="penyakit_lainnya" id="penyakit_lainnya">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->penyakit_lainnya == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->penyakit_lainnya == '0') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
-          </div>
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-2 col-form-label">Alergi Obat-Obatan:</label>
-            <div class="col-lg-4">
-              <select class="form-control required" name="alergi_obat" id="alergi_obat">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->alergi_obat == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->alergi_obat == '1') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
-            <div class="col-lg-6">
-              <input type="text" class="form-control" name="alergi_obat_val" disabled value="<?php if(isset($data_pasien)) {echo $data_pasien->alergi_obat_val;} ?>">
-              <span class="help-block"></span>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-lg-2 col-form-label">Alergi Makanan:</label>
-            <div class="col-lg-4">
-              <select class="form-control required" name="alergi_makanan" id="alergi_makanan">
-                <option value="0" <?php if(isset($data_pasien) && $data_pasien->alergi_makanan == '0') {echo "selected";} ?>> Tidak Ada </option>
-                <option value="1" <?php if(isset($data_pasien) && $data_pasien->alergi_makanan == '1') {echo "selected";} ?>> Ada </option>
-              </select>
-              <span class="help-block"></span>
-            </div>
-            <div class="col-lg-6">
-              <input type="text" class="form-control" name="alergi_makanan_val" disabled value="<?php if(isset($data_pasien)) {echo $data_pasien->alergi_makanan_val;} ?>">
-              <span class="help-block"></span>
-            </div>
+          <div class="form-group">
+            <label>Kembalian:</label>
+            <input type="text" class="form-control" name="kembalian" id="kembalian" disabled>
+            <input type="hidden" id="kembalian_raw" name="kembalian_raw" class="form-control form-control-sm" value="">
+            <span class="help-block"></span>
           </div>
         </div>
         <div class="kt-portlet__foot">
@@ -289,16 +125,13 @@
               <div class="col-lg-5"></div>
               <div class="col-lg-7">
                 <button type="button" class="btn btn-brand" onclick="save()">Simpan</button>
-                <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1))?>">Batal</a>
+                <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1)) ?>">Batal</a>
               </div>
             </div>
           </div>
         </div>
-      </div>      
+      </div>
     </form>
     <!--end::Form-->
   </div>
 </div>
-
-
-
