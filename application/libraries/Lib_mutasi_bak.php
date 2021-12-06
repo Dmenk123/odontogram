@@ -43,10 +43,8 @@ class Lib_mutasi extends CI_Controller {
 
 				## cari honor dokter
 				## return tot_honor
-				// $tot_honor = $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_detail);
-
-				### di replace 0, honor dokter bisa dihitung ketika pembayaran dikasir
-				$tot_honor = 0;
+				$tot_honor = $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_detail);
+				
 
 				## jika transaksi penerimaan/pengeluaran
 				if($flag_transaksi == 1) {
@@ -81,10 +79,7 @@ class Lib_mutasi extends CI_Controller {
 
 			## cari honor dokter
 			## return tot_honor + data lama
-			// $tot_honor += $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_detail);
-
-			### di replace 0, honor dokter bisa dihitung ketika pembayaran dikasir
-			$tot_honor = 0;
+			$tot_honor += $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_detail);
 
 			## jika transaksi penerimaan/pengeluaran
 			if($flag_transaksi == 1) {

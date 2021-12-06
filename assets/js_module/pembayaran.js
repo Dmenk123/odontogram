@@ -194,31 +194,31 @@ const hitungKembalian = () => {
         kembalianFix = parseFloat(kembalian).toFixed(2);
     }
     
-
-    // console.log(kembalianFix, Number(hargaFix));
+    console.log(kembalianFix, Number(hargaFix));
+    
     let kembalianNew = Number(kembalianFix).toFixed(2);
     
-    $('#kembalian_mem').val(formatMoney(Number(kembalianNew)));
-    $('#span_pembayaran_harga_global').text(formatMoney(Number(hargaFix)));
-    $('#span_kembalian_harga_global').text(formatMoney(Number(kembalianNew)));
+    // $('#kembalian_mem').val(formatMoney(Number(kembalianNew)));
+    // $('#span_pembayaran_harga_global').text(formatMoney(Number(hargaFix)));
+    // $('#span_kembalian_harga_global').text(formatMoney(Number(kembalianNew)));
     
-    // set raw value
-    $('#pembayaran_raw').val(hargaFix);
-    $('#kembalian_raw').val(kembalianFix)
+    // // set raw value
+    // $('#pembayaran_raw').val(hargaFix);
+    // $('#kembalian_raw').val(kembalianFix)
 
-    if(kembalianFix < 0) {
-        $('.btnSubmit').attr('disabled', 'disabled');
-    }else{
-        $('.btnSubmit').removeAttr('disabled');
+    // if(kembalianFix < 0) {
+    //     $('.btnSubmit').attr('disabled', 'disabled');
+    // }else{
+    //     $('.btnSubmit').removeAttr('disabled');
 
-        keyboardJS.bind('ctrl + enter', (e) => {
-            if(active_div == 'reguler') {
-                $('#formPenjualanReg').submit();
-            }else if(active_div == 'member'){
-                $('#formPenjualanMem').submit();
-            }
-        });
-    }
+    //     keyboardJS.bind('ctrl + enter', (e) => {
+    //         if(active_div == 'reguler') {
+    //             $('#formPenjualanReg').submit();
+    //         }else if(active_div == 'member'){
+    //             $('#formPenjualanMem').submit();
+    //         }
+    //     });
+    // }
 }
 
 ////////////////////////////////////////////////////

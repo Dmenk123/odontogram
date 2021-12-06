@@ -38,6 +38,7 @@
               <input type="hidden" id="id_reg" name="id_reg">
               <input type="hidden" id="id_psn" name="id_psn">
               <input type="hidden" id="id_peg" name="id_peg">
+              <input type="hidden" id="total_biaya_raw" name="total_biaya_raw">
             </div>
             <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pasien">
               <thead>
@@ -107,7 +108,6 @@
           </div>
           <div class="form-group">
             <label>Pembayaran <span style="font-weight: bold;font-style:italic;"><span> : </label>
-            <input type="hidden" id="total_biaya_raw" name="total_biaya_raw" class="form-control">
             <input type="text" data-thousands="." data-decimal="," id="pembayaran" name="pembayaran" class="form-control form-control-sm inputmask" onkeyup="hitungKembalian()" value="0">
             <input type="hidden" id="pembayaran_raw" name="pembayaran_raw" class="form-control form-control-sm input-lg" value="">
             <span class="help-block"></span>
