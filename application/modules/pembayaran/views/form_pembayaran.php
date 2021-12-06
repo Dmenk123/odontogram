@@ -6,7 +6,7 @@
     <div class="kt-container  kt-container--fluid ">
       <div class="kt-subheader__main">
         <h3 class="kt-subheader__title">
-          <?= $this->template_view->nama('judul').' - '.$title; ?>
+          <?= $this->template_view->nama('judul') . ' - ' . $title; ?>
         </h3>
       </div>
     </div>
@@ -88,33 +88,34 @@
         <div class="kt-portlet__body">
           <div class="form-group">
             <label>Jenis Pembayaran : </label>
-              <select class="form-control select2" id="jenis_bayar" name="jenis_bayar">
-                <option value="cash">Cash</option>
-                <option value="kredit">Kredit</option>
-              </select>
+            <select class="form-control select2" id="jenis_bayar" name="jenis_bayar" style="width: 100%;">
+              <option value="cash">Cash</option>
+              <option value="kredit">Kredit</option>
+            </select>
             <span class="help-block"></span>
           </div>
           <div id="div_opt_kredit">
             <div class="form-group">
               <label>Kredit : </label>
-                <select class="form-control select2" id="opt_kredit" name="opt_kredit">
-                  <?php foreach ($data_bank_kredit as $k => $v) {
-                    echo '<option value="'.$v->id.'">'.$v->nama.'</option>'; 
-                  }?>
-                </select>
+              <select class="form-control select2" id="opt_kredit" name="opt_kredit" style="width: 100%;">
+                <?php foreach ($data_bank_kredit as $k => $v) {
+                  echo '<option value="' . $v->id . '">' . $v->nama . '</option>';
+                } ?>
+              </select>
               <span class="help-block"></span>
             </div>
           </div>
           <div class="form-group">
             <label>Pembayaran <span style="font-weight: bold;font-style:italic;"><span> : </label>
-            <input type="text" data-thousands="." data-decimal="," id="pembayaran" name="pembayaran" class="form-control form-control-sm inputmask" onkeyup="hitungTotalMem()" value="0">
+            <input type="hidden" id="total_biaya_raw" name="total_biaya_raw" class="form-control">
+            <input type="text" data-thousands="." data-decimal="," id="pembayaran" name="pembayaran" class="form-control form-control-sm inputmask" onkeyup="hitungKembalian()" value="0">
             <input type="hidden" id="pembayaran_raw" name="pembayaran_raw" class="form-control form-control-sm input-lg" value="">
             <span class="help-block"></span>
           </div>
           <div class="form-group">
             <label>Kembalian:</label>
-            <input type="text" class="form-control" name="kembalian_mem" id="kembalian_mem" disabled>
-            <input type="hidden" id="kembalian_mem_raw" name="kembalian_mem_raw" class="form-control form-control-sm" value="">
+            <input type="text" class="form-control" name="kembalian" id="kembalian" disabled>
+            <input type="hidden" id="kembalian_raw" name="kembalian_raw" class="form-control form-control-sm" value="">
             <span class="help-block"></span>
           </div>
         </div>
@@ -124,16 +125,13 @@
               <div class="col-lg-5"></div>
               <div class="col-lg-7">
                 <button type="button" class="btn btn-brand" onclick="save()">Simpan</button>
-                <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1))?>">Batal</a>
+                <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1)) ?>">Batal</a>
               </div>
             </div>
           </div>
         </div>
-      </div>      
+      </div>
     </form>
     <!--end::Form-->
   </div>
 </div>
-
-
-

@@ -166,11 +166,16 @@ class Pembayaran extends CI_Controller {
 		}
 
 		$data_pembayaran = $this->get_detail_pembayaran($id);
-		
+
 		// echo "<pre>";
 		// print_r ($data_pembayaran);
 		// echo "</pre>";
 		// exit;
+
+		$tot_biaya = 0;
+		foreach ($data_pembayaran['header'] as $kkkk => $vvvv) {
+			$tot_biaya += $vvvv->total_penerimaan_gross;
+		}
 
 		$html_header = '';
 		if($data_pembayaran['header']) {
@@ -194,6 +199,7 @@ class Pembayaran extends CI_Controller {
 			'data_id' => $data_id,
 			'html_header' => $html_header,
 			'html_detail' => $html_detail,
+			'tot_biaya' => $tot_biaya,
 		]);
 		
 	}
