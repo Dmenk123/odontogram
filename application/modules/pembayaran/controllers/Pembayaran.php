@@ -359,6 +359,156 @@ class Pembayaran extends CI_Controller {
 
 		return $html;
 	}
+
+	public function simpan_data()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$id_pasien = $this->input->post('id_pasien');
+		
+		######### flag pasien baru
+		if($id_pasien != '') {
+			$cek = $this->m_pasien->get_by_id($id_pasien);
+			if($cek) {
+				$flag_data_baru = false;
+			}else{
+				$flag_data_baru = true;
+			}
+		}else{
+			$flag_data_baru = true;
+		}
+		######### end flag pasien baru
+
+		######## flag no_rm otomatis
+		if($this->input->post('no_rm') != ''){
+			$rm_otomatis = false;
+		}else{
+			$rm_otomatis = true;
+		}
+		######## end flag no_rm otomatis
+		$arr_valid = $this->rule_validasi();
+		
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+
+		$nama = contul(trim(strtoupper($this->input->post('nama'))));
+		$nik = contul(trim($this->input->post('nik')));
+		$tempat_lahir = contul(trim($this->input->post('tempat_lahir')));
+		$tanggal_lahir = contul(trim($this->input->post('tanggal_lahir')));
+		$jenkel = contul(trim($this->input->post('jenkel')));
+		$suku = contul(trim($this->input->post('suku')));
+		$pekerjaan = contul(trim($this->input->post('pekerjaan')));
+		$hp = contul(trim($this->input->post('hp')));
+		$telp = contul(trim($this->input->post('telp')));
+		$alamat_rumah = contul(trim($this->input->post('alamat_rumah')));
+		$alamat_kantor = contul(trim($this->input->post('alamat_kantor')));
+
+		$gol_darah = contul(trim($this->input->post('gol_darah')));
+		$tekanan_darah_val = contul(trim($this->input->post('tekanan_darah_val')));
+		$tekanan_darah = $this->input->post('tekanan_darah');
+		$penyakit_jantung = $this->input->post('penyakit_jantung');
+		$diabetes = $this->input->post('diabetes');
+		$haemopilia = $this->input->post('haemopilia');
+		$hepatitis = $this->input->post('hepatitis');
+		$gastring = $this->input->post('gastring');
+		$penyakit_lainnya = $this->input->post('penyakit_lainnya');
+		$alergi_obat = $this->input->post('alergi_obat');
+		$alergi_obat_val = contul(trim($this->input->post('alergi_obat_val')));
+		$alergi_makanan = $this->input->post('alergi_makanan');
+		$alergi_makanan_val = contul(trim($this->input->post('alergi_makanan_val')));
+
+		$this->db->trans_begin();
+		
+		###################### data pasien
+
+		$pasien = [
+			'nama' => $nama,
+			'nik' => $nik,
+			'tempat_lahir' => $tempat_lahir,
+			'tanggal_lahir' => $obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('Y-m-d'),
+			'jenis_kelamin' => $jenkel,
+			'suku' => $suku,
+			'pekerjaan' => $pekerjaan,
+			'hp' => $hp,
+			'telp_rumah' => $telp,
+			'alamat_rumah' => $alamat_rumah,
+			'alamat_kantor' => $alamat_kantor
+		];
+
+		##jika data baru
+		if($flag_data_baru) {
+			$id_pasien = $this->m_pasien->get_max_id_pasien();
+
+			$pasien['id'] = $id_pasien;
+			
+			if($rm_otomatis) {
+				$pasien['no_rm'] = $this->m_pasien->get_kode_rm(substr($nama,0,2));
+			}else{
+				$pasien['no_rm'] = trim($this->input->post('no_rm'));
+			}
+
+			$pasien['created_at'] = $timestamp;
+			$pasien['is_aktif'] = 1;
+
+			$insert = $this->m_pasien->save($pasien);
+		}
+		##jika update data
+		else{
+			$pasien['updated_at'] = $timestamp;
+			
+			$where = ['id' => $id_pasien];
+			$update = $this->m_pasien->update($where, $pasien);
+		}
+
+		###################### data medik
+		
+		$medik = [
+			'gol_darah' => $gol_darah,
+			'tekanan_darah' => $tekanan_darah,
+			'tekanan_darah_val' => $tekanan_darah_val,
+			'penyakit_jantung' => $penyakit_jantung,
+			'diabetes' => $diabetes,
+			'haemopilia' => $haemopilia,
+			'hepatitis' => $hepatitis,
+			'gastring' => $gastring,
+			'penyakit_lainnya' => $penyakit_lainnya,
+			'alergi_obat' => $alergi_obat,
+			'alergi_obat_val' => $alergi_obat_val,
+			'alergi_makanan' => $alergi_makanan,
+			'alergi_makanan_val' => $alergi_makanan_val
+		];
+
+		##jika data baru
+		if($flag_data_baru) {
+			$medik['id'] = $this->m_data_medik->get_max_id_medik();
+			$medik['id_pasien'] = $id_pasien;
+			$medik['created_at'] = $timestamp;
+
+			$insert = $this->m_data_medik->save($medik);
+		}
+		##jika update data
+		else{
+			$cek_medik = $this->m_data_medik->get_by_condition(['id_pasien' => $id_pasien], true);
+			$medik['updated_at'] = $timestamp;
+
+			$where = ['id' => $cek_medik->id];
+			$update = $this->m_data_medik->update($where, $medik);
+		}
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses menambahkan Data Pasien';
+		}
+
+		echo json_encode($retval);
+	}
 	/////////////////////////////////////////////////////////////
 	public function edit($enc_id)
 	{
@@ -517,155 +667,7 @@ class Pembayaran extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	public function simpan_data()
-	{
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		$id_pasien = $this->input->post('id_pasien');
-		
-		######### flag pasien baru
-		if($id_pasien != '') {
-			$cek = $this->m_pasien->get_by_id($id_pasien);
-			if($cek) {
-				$flag_data_baru = false;
-			}else{
-				$flag_data_baru = true;
-			}
-		}else{
-			$flag_data_baru = true;
-		}
-		######### end flag pasien baru
-
-		######## flag no_rm otomatis
-		if($this->input->post('no_rm') != ''){
-			$rm_otomatis = false;
-		}else{
-			$rm_otomatis = true;
-		}
-		######## end flag no_rm otomatis
-		$arr_valid = $this->rule_validasi();
-		
-		if ($arr_valid['status'] == FALSE) {
-			echo json_encode($arr_valid);
-			return;
-		}
-
-		$nama = contul(trim(strtoupper($this->input->post('nama'))));
-		$nik = contul(trim($this->input->post('nik')));
-		$tempat_lahir = contul(trim($this->input->post('tempat_lahir')));
-		$tanggal_lahir = contul(trim($this->input->post('tanggal_lahir')));
-		$jenkel = contul(trim($this->input->post('jenkel')));
-		$suku = contul(trim($this->input->post('suku')));
-		$pekerjaan = contul(trim($this->input->post('pekerjaan')));
-		$hp = contul(trim($this->input->post('hp')));
-		$telp = contul(trim($this->input->post('telp')));
-		$alamat_rumah = contul(trim($this->input->post('alamat_rumah')));
-		$alamat_kantor = contul(trim($this->input->post('alamat_kantor')));
-
-		$gol_darah = contul(trim($this->input->post('gol_darah')));
-		$tekanan_darah_val = contul(trim($this->input->post('tekanan_darah_val')));
-		$tekanan_darah = $this->input->post('tekanan_darah');
-		$penyakit_jantung = $this->input->post('penyakit_jantung');
-		$diabetes = $this->input->post('diabetes');
-		$haemopilia = $this->input->post('haemopilia');
-		$hepatitis = $this->input->post('hepatitis');
-		$gastring = $this->input->post('gastring');
-		$penyakit_lainnya = $this->input->post('penyakit_lainnya');
-		$alergi_obat = $this->input->post('alergi_obat');
-		$alergi_obat_val = contul(trim($this->input->post('alergi_obat_val')));
-		$alergi_makanan = $this->input->post('alergi_makanan');
-		$alergi_makanan_val = contul(trim($this->input->post('alergi_makanan_val')));
-
-		$this->db->trans_begin();
-		
-		###################### data pasien
-
-		$pasien = [
-			'nama' => $nama,
-			'nik' => $nik,
-			'tempat_lahir' => $tempat_lahir,
-			'tanggal_lahir' => $obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('Y-m-d'),
-			'jenis_kelamin' => $jenkel,
-			'suku' => $suku,
-			'pekerjaan' => $pekerjaan,
-			'hp' => $hp,
-			'telp_rumah' => $telp,
-			'alamat_rumah' => $alamat_rumah,
-			'alamat_kantor' => $alamat_kantor
-		];
-
-		##jika data baru
-		if($flag_data_baru) {
-			$id_pasien = $this->m_pasien->get_max_id_pasien();
-
-			$pasien['id'] = $id_pasien;
-			
-			if($rm_otomatis) {
-				$pasien['no_rm'] = $this->m_pasien->get_kode_rm(substr($nama,0,2));
-			}else{
-				$pasien['no_rm'] = trim($this->input->post('no_rm'));
-			}
-
-			$pasien['created_at'] = $timestamp;
-			$pasien['is_aktif'] = 1;
-
-			$insert = $this->m_pasien->save($pasien);
-		}
-		##jika update data
-		else{
-			$pasien['updated_at'] = $timestamp;
-			
-			$where = ['id' => $id_pasien];
-			$update = $this->m_pasien->update($where, $pasien);
-		}
-
-		###################### data medik
-		
-		$medik = [
-			'gol_darah' => $gol_darah,
-			'tekanan_darah' => $tekanan_darah,
-			'tekanan_darah_val' => $tekanan_darah_val,
-			'penyakit_jantung' => $penyakit_jantung,
-			'diabetes' => $diabetes,
-			'haemopilia' => $haemopilia,
-			'hepatitis' => $hepatitis,
-			'gastring' => $gastring,
-			'penyakit_lainnya' => $penyakit_lainnya,
-			'alergi_obat' => $alergi_obat,
-			'alergi_obat_val' => $alergi_obat_val,
-			'alergi_makanan' => $alergi_makanan,
-			'alergi_makanan_val' => $alergi_makanan_val
-		];
-
-		##jika data baru
-		if($flag_data_baru) {
-			$medik['id'] = $this->m_data_medik->get_max_id_medik();
-			$medik['id_pasien'] = $id_pasien;
-			$medik['created_at'] = $timestamp;
-
-			$insert = $this->m_data_medik->save($medik);
-		}
-		##jika update data
-		else{
-			$cek_medik = $this->m_data_medik->get_by_condition(['id_pasien' => $id_pasien], true);
-			$medik['updated_at'] = $timestamp;
-
-			$where = ['id' => $cek_medik->id];
-			$update = $this->m_data_medik->update($where, $medik);
-		}
-		
-		if ($this->db->trans_status() === FALSE){
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
-		}else{
-			$this->db->trans_commit();
-			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan Data Pasien';
-		}
-
-		echo json_encode($retval);
-	}
+	
 
 
 	/**

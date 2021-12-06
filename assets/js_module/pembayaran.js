@@ -7,6 +7,8 @@ let pid;
 
 $(document).ready(function() {
     $('#div_opt_kredit').css('display', 'none');
+    $('#div_opt_diskon_nominal').css('display', 'none');
+    $('#div_opt_diskon_persen').css('display', 'none');
 
     let uri = new URL(window.location.href);
     pid = uri.searchParams.get("pid");
@@ -28,6 +30,25 @@ $(document).ready(function() {
         $('#div_opt_kredit').slideUp();
       }
     });
+
+    $('#jenis_diskon').change(function (e) { 
+        $('#disc_persen').val(0);
+        $('#disc_rp_raw').val(0);
+        $('#disc_rp').val(0);
+
+        if(this.value == 'nominal') {
+            $('#div_opt_diskon_nominal').slideDown();
+            $('#div_opt_diskon_persen').slideUp();
+            
+        }else if(this.value == 'persen'){
+            $('#div_opt_diskon_nominal').slideUp();
+            $('#div_opt_diskon_persen').slideDown();
+            
+        }else if(this.value == 'none'){
+            $('#div_opt_diskon_nominal').slideUp();
+            $('#div_opt_diskon_persen').slideUp();
+        }
+      });
 
 	//datatables
 	table = $('#tabel_index').DataTable({
@@ -166,6 +187,7 @@ const pilih_pasien_pulang = (enc_id) => {
             $('#header_pembayaran').html(response.html_header);
             $('#detail_pembayaran').html(response.html_detail);
             $('#total_biaya_raw').val(response.tot_biaya);
+            $('#biaya').val(response.tot_biaya);
             id_reg = response.data_id.id_reg;
             id_peg = response.data_id.id_peg;
             id_psn = response.data_id.id_psn;
@@ -194,31 +216,34 @@ const hitungKembalian = () => {
         kembalianFix = parseFloat(kembalian).toFixed(2);
     }
     
-    console.log(kembalianFix, Number(hargaFix));
-    
     let kembalianNew = Number(kembalianFix).toFixed(2);
-    
-    // $('#kembalian_mem').val(formatMoney(Number(kembalianNew)));
+    $('#kembalian').val(formatMoney(Number(kembalianNew)));
     // $('#span_pembayaran_harga_global').text(formatMoney(Number(hargaFix)));
     // $('#span_kembalian_harga_global').text(formatMoney(Number(kembalianNew)));
     
-    // // set raw value
+    // set raw value
     // $('#pembayaran_raw').val(hargaFix);
-    // $('#kembalian_raw').val(kembalianFix)
+    $('#kembalian_raw').val(kembalianFix);
 
-    // if(kembalianFix < 0) {
-    //     $('.btnSubmit').attr('disabled', 'disabled');
-    // }else{
-    //     $('.btnSubmit').removeAttr('disabled');
+    if(kembalianFix < 0) {
+        $('.btnSubmit').attr('disabled', 'disabled');
+    }else{
+        $('.btnSubmit').removeAttr('disabled');
+    }
+}
 
-    //     keyboardJS.bind('ctrl + enter', (e) => {
-    //         if(active_div == 'reguler') {
-    //             $('#formPenjualanReg').submit();
-    //         }else if(active_div == 'member'){
-    //             $('#formPenjualanMem').submit();
-    //         }
-    //     });
-    // }
+const setDiscRpRaw = () => {
+    let rp = $('#disc_rp').inputmask('unmaskedvalue');
+    rpFix = parseFloat(rp).toFixed(2);
+    $('#disc_rp_raw').val(rpFix);
+}
+
+const formatMoney = (number) => {
+    var value = number.toLocaleString(
+        'id-ID', 
+        { minimumFractionDigits: 2 }
+    );
+    return value;
 }
 
 ////////////////////////////////////////////////////
@@ -299,7 +324,7 @@ function reload_table()
 
 function save()
 {
-    var form = $('#form_pasien')[0];
+    var form = $('#form_pembayaran')[0];
     var data = new FormData(form);
     
     $("#btnSave").prop("disabled", true);
@@ -307,7 +332,7 @@ function save()
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: base_url + 'data_pasien/simpan_data',
+        url: base_url + 'pembayaran/simpan_data',
         data: data,
         dataType: "JSON",
         processData: false,
