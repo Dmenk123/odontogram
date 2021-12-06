@@ -57,7 +57,46 @@ function to_upper(objek) {
     objek.value = _a.toUpperCase();
 }
 
+const jamSistem = () => {
+    if (detik!=0 && detik%60==0) { menit++; detik=0; }
+    second = Number(detik);
+    if (menit!=0 && menit%60==0) { jam++; menit=0; }
+    minute = Number(menit);
+    if (jam!=0 && jam%24==0) { jam=0; }
+    hour = Number(jam);
+    if (detik<10) { second='0'+detik; }
+    if (menit<10){ minute='0'+menit; }
+    if (jam<10){ hour='0'+jam; }
+    waktu = hour+':'+minute+':'+second;
+    //  console.log(waktu);
+    // $('.jamServer').text("<?=$obj_date->format('d-m-Y');?>"+' '+waktu);
+    
+    detik++;
+}
+
+const reInitInputMask = () => {
+    $(".inputmask").inputmask({
+        prefix: "",
+        groupSeparator: ".",
+        radixPoint: ",",
+        alias: "currency",
+        placeholder: "0",
+        autoGroup: true,
+        digits: 2,
+        digitsOptional: false,
+        clearMaskOnLostFocus: false,
+        inputmode: "numeric",
+        onBeforeMask: function (value, opts) {
+            return value;
+        },
+    });
+}
+
+
+
 $(document).ready(function () {
+    // setInterval(jamSistem, 1000);
+    
     toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -79,6 +118,22 @@ $(document).ready(function () {
     moment.locale('id');
 
     $('.mask_money').mask('000.000.000.000.000', {reverse: true});
+
+    $(".inputmask").inputmask({
+        prefix: "",
+        groupSeparator: ".",
+        radixPoint: ",",
+        alias: "currency",
+        placeholder: "0",
+        autoGroup: true,
+        digits: 2,
+        digitsOptional: false,
+        clearMaskOnLostFocus: false,
+        inputmode: "numeric",
+        onBeforeMask: function (value, opts) {
+            return value;
+        },
+    });
 
     $('.select2').select2({
         allowClear: true,

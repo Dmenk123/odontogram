@@ -94,7 +94,7 @@
               </select>
             <span class="help-block"></span>
           </div>
-          <div id="div_opt_kredit" style="display: none;">
+          <div id="div_opt_kredit">
             <div class="form-group">
               <label>Kredit : </label>
                 <select class="form-control select2" id="opt_kredit" name="opt_kredit">

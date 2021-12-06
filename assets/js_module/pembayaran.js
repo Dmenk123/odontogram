@@ -6,6 +6,8 @@ let id_reg;
 let pid;
 
 $(document).ready(function() {
+    $('#div_opt_kredit').css('display', 'none');
+    
     let uri = new URL(window.location.href);
     pid = uri.searchParams.get("pid");
 
@@ -21,7 +23,7 @@ $(document).ready(function() {
 
     $('#jenis_bayar').change(function (e) { 
       if(this.value == 'kredit') {
-          $('#div_opt_kredit').slideDown();
+        $('#div_opt_kredit').slideDown();
       }else{
         $('#div_opt_kredit').slideUp();
       }
