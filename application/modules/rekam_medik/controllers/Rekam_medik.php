@@ -1366,7 +1366,7 @@ class Rekam_medik extends CI_Controller {
 		$data_klinik = $this->m_global->single_row('*', ['deleted_at' => null, 'id' => $datareg->id_klinik], 'm_klinik');
 
 		$konten_html = $this->load->view('pdf_pemeriksaan', ['data_reg'=>$datareg, 'datanya' => $datanya, 'odonto' => $odonto], true);
-		$footer = '&nbsp;';
+		$footer = $this->load->view('pdf_footer_pemeriksaan', [''], true);
 		// var_dump($konten_html);exit;
 		$retval = [
 			'data' => $datanya,
