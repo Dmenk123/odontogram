@@ -4,6 +4,7 @@ let id_peg;
 let id_psn;
 let id_reg;
 let pid;
+let biaya_raw_global;
 
 $(document).ready(function() {
     $('#div_opt_kredit').css('display', 'none');
@@ -35,6 +36,9 @@ $(document).ready(function() {
         $('#disc_persen').val(0);
         $('#disc_rp_raw').val(0);
         $('#disc_rp').val(0);
+        $('#disc_nilai_raw').val(0);
+        $('#total_biaya_nett_raw').val(biaya_raw_global);
+        $('#biaya').val(formatMoney(Number(biaya_raw_global)));
 
         if(this.value == 'nominal') {
             $('#div_opt_diskon_nominal').slideDown();
@@ -48,103 +52,182 @@ $(document).ready(function() {
             $('#div_opt_diskon_nominal').slideUp();
             $('#div_opt_diskon_persen').slideUp();
         }
+    });
+
+    $('#form_pembayaran').submit(function (e) { 
+        e.preventDefault();
+        
+    });
+
+    $('#form_pembayaran').submit(function(e){
+      e.preventDefault();
+      $("#btnSave").prop("disabled", true);
+      $('#btnSave').text('Menyimpan Data ....');
+
+      var form = $('#form_pembayaran')[0];
+      var reg = new FormData(form);
+
+      swalConfirm.fire({
+        title: 'Perhatian',
+        text: "Apakah Anda ingin Membayar Transaksi ini ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya !',
+        cancelButtonText: 'Tidak !',
+        reverseButtons: false
+      }).then((result) => {
+        if (result.value) {
+          $.ajax({
+              type: "POST",
+              enctype: 'multipart/form-data',
+              url: base_url + 'pembayaran/simpan_data',
+              data: reg,
+              dataType: "JSON",
+              processData: false, // false, it prevent jQuery form transforming the data into a query string
+              contentType: false, 
+              cache: false,
+              timeout: 600000,
+              success: function (data) {
+                  if(data.status) {
+                    swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success');
+                    $('#regForm')[0].reset();
+                    window.location.href = base_url +'retur_masuk';
+                  }else {
+                    for (var i = 0; i < data.inputerror.length; i++) 
+                    {
+                        if (data.inputerror[i] != 'pegawai') {
+                            $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                            $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                        }else{
+                            //ikut style global
+                            $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                        }
+                    }
+
+                    $("#btnSave").prop("disabled", false);
+                    $('#btnSave').text('Simpan');
+                  }
+              },
+              error: function (e) {
+                  console.log("ERROR : ", e);
+                  createAlert('Opps!','Terjadi Kesalahan','Coba Lagi nanti','danger',true,false,'pageMessages');
+                  $("#btnSave").prop("disabled", false);
+                  $('#btnSave').text('Simpan');
+              }
+          });
+        }else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          );
+
+          $("#btnSave").prop("disabled", false);
+          $('#btnSave').text('Simpan');
+        }
       });
 
-	//datatables
-	table = $('#tabel_index').DataTable({
-		responsive: true,
-        searchDelay: 500,
-        processing: true,
-        serverSide: true,
-		ajax: {
-			url  : base_url + "data_pasien/list_data",
-			type : "POST" 
-		},
-
-		//set column definition initialisation properties
-		columnDefs: [
-			{
-				targets: [-1], //last column
-				orderable: false, //set not orderable
-			},
-		],
+      
     });
+
+	//datatables
+	// table = $('#tabel_index').DataTable({
+	// 	responsive: true,
+    //     searchDelay: 500,
+    //     processing: true,
+    //     serverSide: true,
+	// 	ajax: {
+	// 		url  : base_url + "data_pasien/list_data",
+	// 		type : "POST" 
+	// 	},
+
+	// 	//set column definition initialisation properties
+	// 	columnDefs: [
+	// 		{
+	// 			targets: [-1], //last column
+	// 			orderable: false, //set not orderable
+	// 		},
+	// 	],
+    // });
     
 
     //change menu status
-    $(document).on('click', '.btn_edit_status', function(){
-        var id = $(this).attr('id');
-        var status = $(this).val();
-        swalConfirm.fire({
-            title: 'Ubah Status Data Pasien ?',
-            text: "Apakah Anda Yakin ?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Ubah Status!',
-            cancelButtonText: 'Tidak, Batalkan!',
-            reverseButtons: true
-          }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    url : base_url + 'data_pasien/edit_status_aktif',
-                    type: "POST",
-                    dataType: "JSON",
-                    data : {status : status, id : id},
-                    success: function(data)
-                    {
-                        swalConfirm.fire('Berhasil Ubah Status Pasien!', data.pesan, 'success');
-                        table.ajax.reload();
-                    },
-                    error: function (jqXHR, textStatus, errorThrown)
-                    {
-                        Swal.fire('Terjadi Kesalahan');
-                    }
-                });
-            } else if (
-              /* Read more about handling dismissals below */
-              result.dismiss === Swal.DismissReason.cancel
-            ) {
-              swalConfirm.fire(
-                'Dibatalkan',
-                'Aksi Dibatalakan',
-                'error'
-              )
-            }
-        });
-    });
+    // $(document).on('click', '.btn_edit_status', function(){
+    //     var id = $(this).attr('id');
+    //     var status = $(this).val();
+    //     swalConfirm.fire({
+    //         title: 'Ubah Status Data Pasien ?',
+    //         text: "Apakah Anda Yakin ?",
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonText: 'Ya, Ubah Status!',
+    //         cancelButtonText: 'Tidak, Batalkan!',
+    //         reverseButtons: true
+    //       }).then((result) => {
+    //         if (result.value) {
+    //             $.ajax({
+    //                 url : base_url + 'data_pasien/edit_status_aktif',
+    //                 type: "POST",
+    //                 dataType: "JSON",
+    //                 data : {status : status, id : id},
+    //                 success: function(data)
+    //                 {
+    //                     swalConfirm.fire('Berhasil Ubah Status Pasien!', data.pesan, 'success');
+    //                     table.ajax.reload();
+    //                 },
+    //                 error: function (jqXHR, textStatus, errorThrown)
+    //                 {
+    //                     Swal.fire('Terjadi Kesalahan');
+    //                 }
+    //             });
+    //         } else if (
+    //           /* Read more about handling dismissals below */
+    //           result.dismiss === Swal.DismissReason.cancel
+    //         ) {
+    //           swalConfirm.fire(
+    //             'Dibatalkan',
+    //             'Aksi Dibatalakan',
+    //             'error'
+    //           )
+    //         }
+    //     });
+    // });
 
     $(".modal").on("hidden.bs.modal", function(){
         reset_modal_form_import();
     });
 
-    $('#alergi_obat').change(function (e) { 
-        e.preventDefault();
-        if($(this).val() == '1') {
-            $('[name="alergi_obat_val"]').attr('disabled', false).val('');
-        }else{
-            $('[name="alergi_obat_val"]').attr('disabled', true).val('');
-        }
-    });
+    // $('#alergi_obat').change(function (e) { 
+    //     e.preventDefault();
+    //     if($(this).val() == '1') {
+    //         $('[name="alergi_obat_val"]').attr('disabled', false).val('');
+    //     }else{
+    //         $('[name="alergi_obat_val"]').attr('disabled', true).val('');
+    //     }
+    // });
 
-    $('#alergi_makanan').change(function (e) { 
-        e.preventDefault();
-        if($(this).val() == '1') {
-            $('[name="alergi_makanan_val"]').attr('disabled', false).val('');
-        }else{
-            $('[name="alergi_makanan_val"]').attr('disabled', true).val('');
-        }
-    });
+    // $('#alergi_makanan').change(function (e) { 
+    //     e.preventDefault();
+    //     if($(this).val() == '1') {
+    //         $('[name="alergi_makanan_val"]').attr('disabled', false).val('');
+    //     }else{
+    //         $('[name="alergi_makanan_val"]').attr('disabled', true).val('');
+    //     }
+    // });
 
-    $("#cek_manual").change(function() {
-        if(this.checked) {
-            $('[name="no_rm"]').attr('disabled', false).val('');
-        }else{
-            $('[name="no_rm"]').attr('disabled', true).val('');
-        }
-    });
+    // $("#cek_manual").change(function() {
+    //     if(this.checked) {
+    //         $('[name="no_rm"]').attr('disabled', false).val('');
+    //     }else{
+    //         $('[name="no_rm"]').attr('disabled', true).val('');
+    //     }
+    // });
 
-    $('.mask_tanggal').mask("00/00/0000", {placeholder: "DD/MM/YYYY"});
-    $('.mask_rm').mask("AA.00.00");
+    // $('.mask_tanggal').mask("00/00/0000", {placeholder: "DD/MM/YYYY"});
+    // $('.mask_rm').mask("AA.00.00");
 });	
 
 const show_modal_pasien = () => {
@@ -183,14 +266,22 @@ const pilih_pasien_pulang = (enc_id) => {
         data: {enc_id:enc_id},
         dataType: "json",
         success: function (response) {
+            //set html
             $('#tabel_pasien tbody').html(response.data);
             $('#header_pembayaran').html(response.html_header);
             $('#detail_pembayaran').html(response.html_detail);
+            //set value
+            $('#id_reg').val(response.data_id.id_reg);
+            $('#id_psn').val(response.data_id.id_psn);
+            $('#id_peg').val(response.data_id.id_peg);
             $('#total_biaya_raw').val(response.tot_biaya);
+            $('#total_biaya_nett_raw').val(response.tot_biaya);
             $('#biaya').val(response.tot_biaya);
+            // set state
             id_reg = response.data_id.id_reg;
             id_peg = response.data_id.id_peg;
             id_psn = response.data_id.id_psn;
+            biaya_raw_global = response.tot_biaya;
             // $('#modal_pilih_pasien').modal('hide');
         }
     });
@@ -202,7 +293,7 @@ const submit_pasien_pulang = (enc_id) => {
 
 const hitungKembalian = () => {
     let harga = $('#pembayaran').inputmask('unmaskedvalue');
-    let totalBiaya = $('#total_biaya_raw').val();
+    let totalBiaya = $('#total_biaya_nett_raw').val();
 
     harga = harga.replace(",", ".");
     hargaFix = parseFloat(harga).toFixed(2);
@@ -234,8 +325,26 @@ const hitungKembalian = () => {
 
 const setDiscRpRaw = () => {
     let rp = $('#disc_rp').inputmask('unmaskedvalue');
-    rpFix = parseFloat(rp).toFixed(2);
+    let rpFix = parseFloat(rp).toFixed(2);
     $('#disc_rp_raw').val(rpFix);
+    $('#disc_nilai_raw').val(rpFix);
+
+    let totalBiaya = $('#total_biaya_raw').val();
+    let totalBiayaFix = totalBiaya - rpFix;
+    
+    // set value
+    $('#total_biaya_nett_raw').val(totalBiayaFix);
+    $('#biaya').val(formatMoney(Number(totalBiayaFix)));
+}
+
+const setDiscPersenRaw = (discVal) => {
+    let totalBiaya = $('#total_biaya_raw').val();
+    let diskon = totalBiaya * discVal / 100;
+    $('#disc_nilai_raw').val(parseFloat(diskon).toFixed(2));
+    let totalBiayaFix = totalBiaya - diskon;
+
+    $('#total_biaya_nett_raw').val(totalBiayaFix);
+    $('#biaya').val(formatMoney(Number(totalBiayaFix)));
 }
 
 const formatMoney = (number) => {
@@ -320,53 +429,6 @@ function detail_pasien(id) {
 function reload_table()
 {
     table.ajax.reload(null,false); //reload datatable ajax 
-}
-
-function save()
-{
-    var form = $('#form_pembayaran')[0];
-    var data = new FormData(form);
-    
-    $("#btnSave").prop("disabled", true);
-    $('#btnSave').text('Menyimpan Data'); //change button text
-    $.ajax({
-        type: "POST",
-        enctype: 'multipart/form-data',
-        url: base_url + 'pembayaran/simpan_data',
-        data: data,
-        dataType: "JSON",
-        processData: false,
-        contentType: false, 
-        cache: false,
-        timeout: 600000,
-        success: function (data) {
-            if(data.status) {
-                swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');                
-                window.location.href = base_url+"reg_pasien/add";
-            }else {
-                for (var i = 0; i < data.inputerror.length; i++) 
-                {
-                    if (data.inputerror[i] != 'pegawai') {
-                        $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
-                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
-                    }else{
-                        //ikut style global
-                        $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
-                    }
-                }
-
-                $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');
-            }
-        },
-        error: function (e) {
-            console.log("ERROR : ", e);
-            $("#btnSave").prop("disabled", false);
-            $('#btnSave').text('Simpan');
-        }
-    });
 }
 
 function delete_pasien(id){

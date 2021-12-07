@@ -4,7 +4,6 @@ use \Carbon\Carbon;
 
 class Pembayaran extends CI_Controller {
 	
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -362,30 +361,35 @@ class Pembayaran extends CI_Controller {
 
 	public function simpan_data()
 	{
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		$id_pasien = $this->input->post('id_pasien');
+		$timestamp = Carbon::now()->format('Y-m-d H:i:s');
+		$id_pasien = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$total_biaya_raw = $this->input->post('total_biaya_raw');
+		$total_biaya_nett_raw = $this->input->post('total_biaya_nett_raw');
+		$jenis_bayar = $this->input->post('jenis_bayar');
+		$opt_kredit = $this->input->post('opt_kredit');
+		$jenis_diskon = $this->input->post('jenis_diskon');
+		$disc_rp = $this->input->post('disc_rp');
+		$disc_rp_raw = $this->input->post('disc_rp_raw');
+		$disc_nilai_raw = $this->input->post('disc_nilai_raw');
+		$disc_persen = $this->input->post('disc_persen');
+		$pembayaran = $this->input->post('pembayaran');
+		$pembayaran_raw = $this->input->post('pembayaran_raw');
+		$kembalian_raw = $this->input->post('kembalian_raw');
 		
-		######### flag pasien baru
-		if($id_pasien != '') {
-			$cek = $this->m_pasien->get_by_id($id_pasien);
-			if($cek) {
-				$flag_data_baru = false;
-			}else{
-				$flag_data_baru = true;
-			}
-		}else{
-			$flag_data_baru = true;
-		}
-		######### end flag pasien baru
-
-		######## flag no_rm otomatis
-		if($this->input->post('no_rm') != ''){
-			$rm_otomatis = false;
-		}else{
-			$rm_otomatis = true;
-		}
-		######## end flag no_rm otomatis
+		// total_biaya_raw: 515000
+		// total_biaya_nett_raw: 465000
+		// jenis_bayar: cash
+		// opt_kredit: 2
+		// jenis_diskon: nominal
+		// disc_rp: 50.000,00
+		// disc_rp_raw: 50000.00
+		// disc_persen: 0
+		// pembayaran: 470.000,00
+		// pembayaran_raw: 
+		// kembalian_raw: 5000.00
+		
 		$arr_valid = $this->rule_validasi();
 		
 		if ($arr_valid['status'] == FALSE) {
@@ -393,49 +397,19 @@ class Pembayaran extends CI_Controller {
 			return;
 		}
 
-		$nama = contul(trim(strtoupper($this->input->post('nama'))));
-		$nik = contul(trim($this->input->post('nik')));
-		$tempat_lahir = contul(trim($this->input->post('tempat_lahir')));
-		$tanggal_lahir = contul(trim($this->input->post('tanggal_lahir')));
-		$jenkel = contul(trim($this->input->post('jenkel')));
-		$suku = contul(trim($this->input->post('suku')));
-		$pekerjaan = contul(trim($this->input->post('pekerjaan')));
-		$hp = contul(trim($this->input->post('hp')));
-		$telp = contul(trim($this->input->post('telp')));
-		$alamat_rumah = contul(trim($this->input->post('alamat_rumah')));
-		$alamat_kantor = contul(trim($this->input->post('alamat_kantor')));
-
-		$gol_darah = contul(trim($this->input->post('gol_darah')));
-		$tekanan_darah_val = contul(trim($this->input->post('tekanan_darah_val')));
-		$tekanan_darah = $this->input->post('tekanan_darah');
-		$penyakit_jantung = $this->input->post('penyakit_jantung');
-		$diabetes = $this->input->post('diabetes');
-		$haemopilia = $this->input->post('haemopilia');
-		$hepatitis = $this->input->post('hepatitis');
-		$gastring = $this->input->post('gastring');
-		$penyakit_lainnya = $this->input->post('penyakit_lainnya');
-		$alergi_obat = $this->input->post('alergi_obat');
-		$alergi_obat_val = contul(trim($this->input->post('alergi_obat_val')));
-		$alergi_makanan = $this->input->post('alergi_makanan');
-		$alergi_makanan_val = contul(trim($this->input->post('alergi_makanan_val')));
-
 		$this->db->trans_begin();
 		
-		###################### data pasien
-
-		$pasien = [
-			'nama' => $nama,
-			'nik' => $nik,
-			'tempat_lahir' => $tempat_lahir,
-			'tanggal_lahir' => $obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('Y-m-d'),
-			'jenis_kelamin' => $jenkel,
-			'suku' => $suku,
-			'pekerjaan' => $pekerjaan,
-			'hp' => $hp,
-			'telp_rumah' => $telp,
-			'alamat_rumah' => $alamat_rumah,
-			'alamat_kantor' => $alamat_kantor
-		];
+		$arr_pembayaran['id_reg'] = $id_reg;
+		$arr_pembayaran['tanggal'] = Carbon::now()->format('Y-m-d');
+		$arr_pembayaran['id_user'] = $this->session->userdata('id_user');
+		$arr_pembayaran['disc_persen'] = $disc_persen;
+		$arr_pembayaran['disc_rp'] = $disc_rp_raw;
+		$arr_pembayaran['disc_nilai'] = $disc_nilai_raw;
+		$arr_pembayaran['total_bruto'] = $pekerjaan;
+		$arr_pembayaran['total_nett'] = $hp;
+		$arr_pembayaran['is_cash'] = $telp;
+		$arr_pembayaran['reff_trans_kredit'] = $alamat_rumah;
+		$arr_pembayaran['created_at'] = $alamat_kantor;
 
 		##jika data baru
 		if($flag_data_baru) {
@@ -509,6 +483,54 @@ class Pembayaran extends CI_Controller {
 
 		echo json_encode($retval);
 	}
+
+	private function rule_validasi($is_update = false)
+	{
+		$data = array();
+		$data['error_string'] = array();
+		$data['inputerror'] = array();
+		$data['status'] = TRUE;
+
+
+		if ($this->input->post('jenis_bayar') == '') {
+			$data['inputerror'][] = 'jenis_bayar';
+			$data['error_string'][] = 'Wajib mengisi Jenis bayar';
+			$data['status'] = FALSE;
+		}
+
+		if($this->input->post('jenis_bayar') == 'kredit') {
+			if ($this->input->post('opt_kredit') == '') {
+				$data['inputerror'][] = 'opt_kredit';
+				$data['error_string'][] = 'Wajib Mengisi Bank';
+				$data['status'] = FALSE;
+			}
+		}
+
+		if ($this->input->post('jenis_diskon') == 'nominal') {
+			if ($this->input->post('disc_rp') == '') {
+				$data['inputerror'][] = 'disc_rp';
+				$data['error_string'][] = 'Wajib Mengisi Diskon Nominal';
+				$data['status'] = FALSE;
+			}
+		}
+
+		if ($this->input->post('jenis_diskon') == 'persen') {
+			if ($this->input->post('disc_persen') == '') {
+				$data['inputerror'][] = 'disc_persen';
+				$data['error_string'][] = 'Wajib Mengisi Diskon Persen';
+				$data['status'] = FALSE;
+			}
+		}
+		
+		if ($this->input->post('pembayaran') == '') {
+			$data['inputerror'][] = 'pembayaran';
+			$data['error_string'][] = 'Wajib Mengisi Pembayaran';
+			$data['status'] = FALSE;
+		}
+
+		return $data;
+	}
+
 	/////////////////////////////////////////////////////////////
 	public function edit($enc_id)
 	{
@@ -1062,89 +1084,4 @@ class Pembayaran extends CI_Controller {
 	}
 
 	// ===============================================
-	private function rule_validasi($is_update=false, $skip_pass=false)
-	{
-		$data = array();
-		$data['error_string'] = array();
-		$data['inputerror'] = array();
-		$data['status'] = TRUE;
-
-		
-		if ($this->input->post('nama') == '') {
-			$data['inputerror'][] = 'nama';
-            $data['error_string'][] = 'Wajib mengisi Nama';
-            $data['status'] = FALSE;
-		}
-
-		// if ($this->input->post('no_rm') == '') {
-		// 	$data['inputerror'][] = 'no_rm';
-		// 	$data['error_string'][] = 'Wajib mengisi NO RM';
-		// 	$data['status'] = FALSE;
-		// }
-
-		if ($this->input->post('nik') == '') {
-			$data['inputerror'][] = 'nik';
-			$data['error_string'][] = 'Wajib Mengisi NIK';
-			$data['status'] = FALSE;
-		}
-		
-		if ($this->input->post('tempat_lahir') == '') {
-			$data['inputerror'][] = 'tempat_lahir';
-            $data['error_string'][] = 'Wajib Mengisi Tempat Lahir';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('tanggal_lahir') == '') {
-			$data['inputerror'][] = 'tanggal_lahir';
-            $data['error_string'][] = 'Wajib Mengisi Tanggal Lahir';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('jenkel') == '') {
-			$data['inputerror'][] = 'jenkel';
-            $data['error_string'][] = 'Wajib Mengisi Jenis Kelamin';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('suku') == '') {
-			$data['inputerror'][] = 'suku';
-            $data['error_string'][] = 'Wajib Mengisi Suku Bangsa';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('pekerjaan') == '') {
-			$data['inputerror'][] = 'pekerjaan';
-            $data['error_string'][] = 'Wajib Mengisi Pekerjaan';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('hp') == '') {
-			$data['inputerror'][] = 'hp';
-            $data['error_string'][] = 'Wajib Mengisi HP/WA';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('alamat_rumah') == '') {
-			$data['inputerror'][] = 'alamat_rumah';
-            $data['error_string'][] = 'Wajib Mengisi Alamat Rumah';
-            $data['status'] = FALSE;
-		}
-
-		#### data medik
-
-		if ($this->input->post('tekanan_darah_val') == '') {
-			$data['inputerror'][] = 'tekanan_darah_val';
-            $data['error_string'][] = 'Wajib Mengisi Tekanan Darah';
-            $data['status'] = FALSE;
-		}
-
-		if ($this->input->post('tekanan_darah') == '') {
-			$data['inputerror'][] = 'tekanan_darah';
-            $data['error_string'][] = 'Wajib Memilih Kategori';
-            $data['status'] = FALSE;
-		}
-
-
-        return $data;
-	}
-}
+	

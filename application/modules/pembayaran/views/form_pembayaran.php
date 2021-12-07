@@ -39,6 +39,8 @@
               <input type="hidden" id="id_psn" name="id_psn">
               <input type="hidden" id="id_peg" name="id_peg">
               <input type="hidden" id="total_biaya_raw" name="total_biaya_raw">
+              <input type="hidden" id="total_biaya_nett_raw" name="total_biaya_nett_raw" class="form-control form-control-sm input-lg" value="">
+              <input type="hidden" id="disc_nilai_raw" name="disc_nilai_raw" value="0">
             </div>
             <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pasien">
               <thead>
@@ -130,7 +132,7 @@
           <div id="div_opt_diskon_persen">
             <div class="form-group">
               <label>Diskon Persen : </label>
-              <input type="number" id="disc_persen" name="disc_persen" class="form-control" value="0">
+              <input type="number" id="disc_persen" name="disc_persen" class="form-control" value="0" onkeyup="setDiscPersenRaw(this.value)">
               <span class="help-block"></span>
             </div>
           </div>
@@ -158,7 +160,7 @@
             <div class="row">
               <div class="col-lg-5"></div>
               <div class="col-lg-7">
-                <button type="button" class="btn btn-brand btnSubmit" onclick="save()" disabled>Submit</button>
+                <button type="submit" class="btn btn-brand btnSubmit" disabled>Submit</button>
                 <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1)) ?>">Batal</a>
               </div>
             </div>
