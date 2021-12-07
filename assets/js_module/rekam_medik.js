@@ -200,6 +200,10 @@ function cekDanSetValue(txt_div_modal){
             reloadFormOdonto();
         }else if(objData.menu == 'pasien'){
             reloadFormPasien();
+        }else if(objData.menu == 'riwayat'){
+            reloadFormDiagnosaRiwayat();
+            reloadFormTindakanRiwayat();
+            reloadFormTindakanLabRiwayat();
         }
     }
     

@@ -16,18 +16,54 @@
                         <a class="nav-link" href="javascript: void(0);"  data-toggle="tab" data-target="#otorisasi2" role="tab">Tindakan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript: void(0);"  data-toggle="tab" data-target="#otorisasi3" role="tab">Obat</a>
+                        <a class="nav-link" href="javascript: void(0);"  data-toggle="tab" data-target="#otorisasi3" role="tab">Tindakan Lab</a>
                     </li>
                 </ul>
                 <div class="tab-content padding-vertical-20">
                     <div class="tab-pane active" id="all2" role="tabpanel">
-                        tes
+                        <table class="table table-striped- table-bordered table-hover" id="tabel_modal_diagnosa_pasien">
+                            <thead>
+                              <tr>
+                                <th>Gigi</th>
+                                <th>Kode</th>
+                                <th>Nama Diagnosa</th>
+                                <th>Tanggal Kunjungan</th>
+                                <th>Klinik</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="tab-pane" id="otorisasi2" role="tabpanel">
-                        coba
+                        <table class="table table-striped- table-bordered table-hover" id="tabel_modal_tindakan_pasien">
+                            <thead>
+                              <tr>
+                                <th>Gigi</th>
+                                <th>Kode</th>
+                                <th>Nama Tindakan</th>
+                                <th>Keterangan</th>
+                                <th>Tanggal Kunjungan</th>
+                                <th>Klinik</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="tab-pane" id="otorisasi3" role="tabpanel">
-                        lala
+                       <table class="table table-striped- table-bordered table-hover" id="tabel_modal_tindakan_lab_pasien">
+                            <thead>
+                              <tr>
+                                <th>Kode</th>
+                                <th>Nama Tindakan Lab</th>
+                                <th>Keterangan</th>
+                                <th>Tanggal Kunjungan</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
         </div>

@@ -203,6 +203,9 @@ class Rekam_medik extends CI_Controller {
 			case 'odonto':
 				echo json_encode(['menu' => 'odonto']);
 				break;
+			case 'riwayat':
+				echo json_encode(['menu' => 'riwayat']);
+				break;
 			case 'pasien':
 				$select = "pas.*, mdk.*";
 				$where = ['pas.deleted_at' => null, 'pas.id' => $id_psn];
@@ -1610,5 +1613,141 @@ class Rekam_medik extends CI_Controller {
 
 		echo json_encode($retval);
 	}
+
+	###################### data riwayat pasien ######################
+
+	public function riwayat_diagnosa()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+
+		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, md.kode_diagnosa, md.nama_diagnosa, dt.created_at, k.nama_klinik, k.alamat";
+		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
+		$table = 't_diagnosa as d';
+		$join = [ 
+			['table' => 't_diagnosa_det as dt', 'on' => 'd.id = dt.id_t_diagnosa'],
+			['table' => 'm_diagnosa as md', 'on' => 'dt.id_diagnosa = md.id_diagnosa'],
+			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
+			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik']
+		];
+
+		$order_by = "d.id_reg DESC";
+
+		$data_table = $this->m_global->multi_row($select, $where, $table, $join, $order_by);
+
+		// echo $this->db->last_query(); die();
+		
+		// var_dump($data_table); die();
+		$data = [];
+		if ($data_table) {
+			foreach ($data_table as $key => $value) {
+			
+
+				$data[$key][] = $value->gigi;
+				$data[$key][] = $value->kode_diagnosa;
+				$data[$key][] = $value->nama_diagnosa;
+				$data[$key][] = tanggal_indo($value->created_at);
+				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
+				
+			}
+		}
+        
+		
+		// $this->output->enable_profiler(TRUE);
+
+        echo json_encode([
+            'data' => $data
+        ]);
+	} 
+
+	public function riwayat_tindakan()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+
+		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan, dt.created_at, k.nama_klinik, k.alamat";
+		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
+		$table = 't_tindakan as d';
+		$join = [ 
+			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
+			['table' => 'm_tindakan as mt', 'on' => 'dt.id_tindakan = mt.id_tindakan'],
+			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
+			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik']
+		];
+
+		$order_by = "d.id_reg DESC";
+
+		$data_table = $this->m_global->multi_row($select, $where, $table, $join, $order_by);
+
+		// echo $this->db->last_query(); die();
+		
+		// var_dump($data_table); die();
+		$data = [];
+		if ($data_table) {
+			foreach ($data_table as $key => $value) {
+			
+
+				$data[$key][] = $value->gigi;
+				$data[$key][] = $value->kode_tindakan;
+				$data[$key][] = $value->nama_tindakan;
+				$data[$key][] = $value->keterangan;
+				$data[$key][] = tanggal_indo($value->created_at);
+				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
+				
+			}
+		}
+        
+		
+		// $this->output->enable_profiler(TRUE);
+
+        echo json_encode([
+            'data' => $data
+        ]);
+	} 
+
+	public function riwayat_tindakan_lab()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+
+		$select = "d.*, dt.id as id_tindakanlab_det, dt.id_tindakan_lab, dt.harga, dt.keterangan, ml.kode, ml.tindakan_lab, dt.created_at";
+		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
+		$table = 't_tindakanlab as d';
+		$join = [ 
+			['table' => 't_tindakanlab_det as dt', 'on' => 'd.id = dt.id_t_tindakanlab'],
+			['table' => 'm_laboratorium as ml', 'on' => 'dt.id_tindakan_lab = ml.id_laboratorium']
+		];
+
+
+		$order_by = "d.id_reg DESC";
+
+		$data_table = $this->m_global->multi_row($select, $where, $table, $join, $order_by);
+
+		// echo $this->db->last_query(); die();
+		
+		// var_dump($data_table); die();
+		$data = [];
+		if ($data_table) {
+			foreach ($data_table as $key => $value) {
+			
+
+				$data[$key][] = $value->kode;
+				$data[$key][] = $value->tindakan_lab;
+				$data[$key][] = $value->keterangan;
+				$data[$key][] = tanggal_indo($value->created_at);
+				
+			}
+		}
+        
+		
+		// $this->output->enable_profiler(TRUE);
+
+        echo json_encode([
+            'data' => $data
+        ]);
+	} 
 
 }
