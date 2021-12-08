@@ -11,7 +11,7 @@
  Target Server Version : 100413
  File Encoding         : 65001
 
- Date: 07/12/2021 02:47:45
+ Date: 08/12/2021 07:08:18
 */
 
 SET NAMES utf8mb4;
@@ -178,6 +178,7 @@ INSERT INTO `m_jenis_trans` VALUES (2, 'tindakan');
 INSERT INTO `m_jenis_trans` VALUES (3, 'lab');
 INSERT INTO `m_jenis_trans` VALUES (4, 'visite');
 INSERT INTO `m_jenis_trans` VALUES (5, 'diskon global');
+INSERT INTO `m_jenis_trans` VALUES (6, 'honor dokter');
 
 -- ----------------------------
 -- Table structure for m_klinik
@@ -455,7 +456,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES ('1', 1, NULL, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2021-12-06 21:37:10', 'user_default.png', '2020-09-06 20:18:00', '2021-12-06 21:37:10', NULL);
+INSERT INTO `m_user` VALUES ('1', 1, NULL, '1', 'USR-00001', 'admin', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2021-12-08 00:59:23', 'user_default.png', '2020-09-06 20:18:00', '2021-12-08 00:59:23', NULL);
 INSERT INTO `m_user` VALUES ('2', 2, NULL, '2', 'USR-00002', 'cek', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, '2020-09-14 00:37:31', 'user_default.png', '2020-09-06 20:18:00', '2020-09-14 00:37:31', NULL);
 INSERT INTO `m_user` VALUES ('3', 1, NULL, '2', 'USR-00003', 'sugiono', 'SnIvSVV6c2UwdWhKS1ZKMDluUlp4dz09', 1, NULL, 'sugiono-1599399152.jpg', '2020-09-06 20:18:00', '2020-09-06 20:32:32', NULL);
 
@@ -649,7 +650,7 @@ CREATE TABLE `t_mutasi`  (
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_mutasi
@@ -657,6 +658,8 @@ CREATE TABLE `t_mutasi`  (
 INSERT INTO `t_mutasi` VALUES (1, '2021-12-06', 1, 2, 1, '1', 1, 0.00, 400000.00, 400000.00, 0.00, '2021-12-06 22:33:59', '2021-12-06 22:40:18', NULL);
 INSERT INTO `t_mutasi` VALUES (2, '2021-12-06', 1, 1, 2, '1', 1, 0.00, 15000.00, 15000.00, 0.00, '2021-12-06 22:34:20', NULL, NULL);
 INSERT INTO `t_mutasi` VALUES (3, '2021-12-06', 1, 3, 1, '1', 1, 0.00, 100000.00, 100000.00, 0.00, '2021-12-06 22:35:47', NULL, NULL);
+INSERT INTO `t_mutasi` VALUES (4, '2021-12-08', 1, 5, 1, '1', 2, 0.00, 0.00, 0.00, 20000.00, '2021-12-08 01:12:38', NULL, NULL);
+INSERT INTO `t_mutasi` VALUES (5, '2021-12-08', 1, 6, 1, '1', 2, 0.00, 0.00, 0.00, 750000.00, '2021-12-08 01:12:38', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_mutasi_det
@@ -753,24 +756,29 @@ INSERT INTO `t_odontogram` VALUES (1, '1.png', 1, NULL, NULL, NULL, NULL, NULL, 
 -- ----------------------------
 DROP TABLE IF EXISTS `t_pembayaran`;
 CREATE TABLE `t_pembayaran`  (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_reg` int(11) NULL DEFAULT NULL,
   `tanggal` date NULL DEFAULT NULL,
   `id_user` int(11) NULL DEFAULT NULL,
   `disc_persen` float NULL DEFAULT NULL,
-  `disc` float(20, 2) NULL DEFAULT NULL,
+  `disc_rp` float(20, 2) NULL DEFAULT NULL,
+  `disc_nilai` float(20, 2) NULL DEFAULT NULL,
   `total_bruto` float(20, 2) NULL DEFAULT NULL,
   `total_nett` float(20, 2) NULL DEFAULT NULL,
   `is_cash` int(1) NULL DEFAULT NULL COMMENT '1: tunai',
   `reff_trans_kredit` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'kode refferensi jika transaksi non tunai (debit, transfer, etc)',
   `updated_at` datetime(0) NULL DEFAULT NULL,
   `deleted_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
+  `rupiah_bayar` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `rupiah_kembali` float(20, 2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_pembayaran
 -- ----------------------------
+INSERT INTO `t_pembayaran` VALUES (1, 1, '2021-12-08', 1, 0, 20000.00, 20000.00, 515000.00, 495000.00, 1, NULL, NULL, NULL, '2021-12-08 01:12:38', '500000.00', 5000.00);
 
 -- ----------------------------
 -- Table structure for t_perawatan

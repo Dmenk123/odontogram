@@ -15,6 +15,7 @@ class Pembayaran extends CI_Controller {
 		$this->load->model('m_global');
 		$this->load->model('m_pasien');
 		$this->load->model('m_data_medik');
+		$this->load->model('t_pembayaran');
 	}
 
 	public function index()
@@ -205,7 +206,7 @@ class Pembayaran extends CI_Controller {
 
 	protected function get_detail_pembayaran($id) {
 		$select = "a.*, peg.nama as nama_dokter, asu.nama as nama_asuransi, b.total_honor_dokter, b.total_penerimaan_nett, b.total_penerimaan_gross, b.id_jenis_trans, b.id_trans_flag";
-		$where = ['a.is_pulang' => 1, 'a.deleted_at' => null];
+		$where = ['a.is_pulang' => 1, 'a.deleted_at' => null, 'a.id' => $id];
 		$table = 't_registrasi as a';
 		$join = [ 
 			[
@@ -399,86 +400,66 @@ class Pembayaran extends CI_Controller {
 
 		$this->db->trans_begin();
 		
+		$id = $this->m_global->get_max_id('id', 't_pembayaran');
+		$arr_pembayaran['id'] = $id;
 		$arr_pembayaran['id_reg'] = $id_reg;
 		$arr_pembayaran['tanggal'] = Carbon::now()->format('Y-m-d');
 		$arr_pembayaran['id_user'] = $this->session->userdata('id_user');
 		$arr_pembayaran['disc_persen'] = $disc_persen;
 		$arr_pembayaran['disc_rp'] = $disc_rp_raw;
 		$arr_pembayaran['disc_nilai'] = $disc_nilai_raw;
-		$arr_pembayaran['total_bruto'] = $pekerjaan;
-		$arr_pembayaran['total_nett'] = $hp;
-		$arr_pembayaran['is_cash'] = $telp;
-		$arr_pembayaran['reff_trans_kredit'] = $alamat_rumah;
-		$arr_pembayaran['created_at'] = $alamat_kantor;
+		$arr_pembayaran['total_bruto'] = $total_biaya_raw;
+		$arr_pembayaran['total_nett'] = $total_biaya_nett_raw;
 
-		##jika data baru
-		if($flag_data_baru) {
-			$id_pasien = $this->m_pasien->get_max_id_pasien();
-
-			$pasien['id'] = $id_pasien;
-			
-			if($rm_otomatis) {
-				$pasien['no_rm'] = $this->m_pasien->get_kode_rm(substr($nama,0,2));
-			}else{
-				$pasien['no_rm'] = trim($this->input->post('no_rm'));
-			}
-
-			$pasien['created_at'] = $timestamp;
-			$pasien['is_aktif'] = 1;
-
-			$insert = $this->m_pasien->save($pasien);
-		}
-		##jika update data
-		else{
-			$pasien['updated_at'] = $timestamp;
-			
-			$where = ['id' => $id_pasien];
-			$update = $this->m_pasien->update($where, $pasien);
-		}
-
-		###################### data medik
+		$arr_pembayaran['rupiah_bayar'] = $pembayaran_raw;
+		$arr_pembayaran['rupiah_kembali'] = $kembalian_raw;
 		
-		$medik = [
-			'gol_darah' => $gol_darah,
-			'tekanan_darah' => $tekanan_darah,
-			'tekanan_darah_val' => $tekanan_darah_val,
-			'penyakit_jantung' => $penyakit_jantung,
-			'diabetes' => $diabetes,
-			'haemopilia' => $haemopilia,
-			'hepatitis' => $hepatitis,
-			'gastring' => $gastring,
-			'penyakit_lainnya' => $penyakit_lainnya,
-			'alergi_obat' => $alergi_obat,
-			'alergi_obat_val' => $alergi_obat_val,
-			'alergi_makanan' => $alergi_makanan,
-			'alergi_makanan_val' => $alergi_makanan_val
-		];
-
-		##jika data baru
-		if($flag_data_baru) {
-			$medik['id'] = $this->m_data_medik->get_max_id_medik();
-			$medik['id_pasien'] = $id_pasien;
-			$medik['created_at'] = $timestamp;
-
-			$insert = $this->m_data_medik->save($medik);
+		if($jenis_bayar == 'cash') {
+			$arr_pembayaran['is_cash'] = 1;
+			$arr_pembayaran['reff_trans_kredit'] = null;
+		}else{
+			$arr_pembayaran['is_cash'] = null;
+			$arr_pembayaran['reff_trans_kredit'] = $opt_kredit;
 		}
-		##jika update data
-		else{
-			$cek_medik = $this->m_data_medik->get_by_condition(['id_pasien' => $id_pasien], true);
-			$medik['updated_at'] = $timestamp;
+		
+		$arr_pembayaran['created_at'] = $timestamp;
 
-			$where = ['id' => $cek_medik->id];
-			$update = $this->m_data_medik->update($where, $medik);
+		$insert = $this->t_pembayaran->save($arr_pembayaran);
+
+		// isi mutasi
+		/**
+		 * param 1 = id_registrasi
+		 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+		 * param 3 data tabel transaksi (parent tabel)
+		 * param 4 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+		*/
+
+		#### mutasi diskon
+		$mutasi_diskon = $this->lib_mutasi->simpan_mutasi_lain($id_reg, '5', $arr_pembayaran, '2');
+
+		if($mutasi_diskon == false) {
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan Data Pembayaran';
+		}
+
+		#### mutasi honor dokter
+		$mutasi_honor = $this->lib_mutasi->simpan_mutasi_lain($id_reg, '6', $arr_pembayaran, '2');
+		
+		if($mutasi_honor == false) {
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan Data Pembayaran';
 		}
 		
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
+			$retval['pesan'] = 'Gagal menambahkan Data Pembayaran';
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan Data Pasien';
+			$retval['pesan'] = 'Sukses menambahkan Data Pembayaran';
 		}
 
 		echo json_encode($retval);
@@ -1085,3 +1066,4 @@ class Pembayaran extends CI_Controller {
 
 	// ===============================================
 	
+}

@@ -132,7 +132,7 @@
           <div id="div_opt_diskon_persen">
             <div class="form-group">
               <label>Diskon Persen : </label>
-              <input type="number" id="disc_persen" name="disc_persen" class="form-control" value="0" onkeyup="setDiscPersenRaw(this.value)">
+              <input type="text" id="disc_persen" name="disc_persen" class="form-control numberinput" value="0" onkeyup="setDiscPersenRaw(this.value)">
               <span class="help-block"></span>
             </div>
           </div>

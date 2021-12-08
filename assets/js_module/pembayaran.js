@@ -313,7 +313,7 @@ const hitungKembalian = () => {
     // $('#span_kembalian_harga_global').text(formatMoney(Number(kembalianNew)));
     
     // set raw value
-    // $('#pembayaran_raw').val(hargaFix);
+    $('#pembayaran_raw').val(hargaFix);
     $('#kembalian_raw').val(kembalianFix);
 
     if(kembalianFix < 0) {

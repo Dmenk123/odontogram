@@ -224,6 +224,162 @@ class Lib_mutasi extends CI_Controller {
 		return $tot_honor;
 	}
 
+	/**
+	 * DIPAKE UNTUK HONOR DAN DISKON PADA MUTASI
+	 * param 1 = id_registrasi
+	 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+	 * param 3 data tabel transaksi (parent tabel)
+	 * param 4 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+	*/
+	function simpan_mutasi_lain($id_reg, $id_jenis_trans, $data_header, $flag_transaksi) {
+		try {
+			$obj_date = new DateTime();
+			$timestamp = $obj_date->format('Y-m-d H:i:s');
+			$datenow = $obj_date->format('Y-m-d');
+			$id_trans_flag = $data_header['id'];
+			$data = $this->_ci->t_mutasi->cek_data_mutasi($id_reg, $id_jenis_trans, $id_trans_flag);
+			$datareg =  $this->_ci->m_global->single_row('*',['id' => $id_reg, 'deleted_at' => null], 't_registrasi');
+
+			if(!$data){	
+				###insert
+				$id_mutasi = $this->_ci->m_global->get_max_id('id', 't_mutasi');
+				$data['id'] = $id_mutasi;
+				$data['tanggal'] = $datenow;
+				$data['id_registrasi'] = $id_reg;
+				$data['id_jenis_trans'] = $id_jenis_trans;
+				$data['id_trans_flag'] = $id_trans_flag;
+				$data['id_user'] = $this->_ci->session->userdata('id_user');
+				$data['flag_transaksi'] = $flag_transaksi;			
+				$data['created_at'] = $timestamp;
+							
+				$insert = $this->_ci->m_global->save($data, 't_mutasi');
+
+				if($insert) {
+					## jika transaksi penerimaan/pengeluaran
+					if($flag_transaksi == 1) {
+						$data_upd['total_penerimaan_gross'] = $data_header['total_bruto'];
+						$data_upd['total_penerimaan_nett'] = $data_header['total_nett'];
+					}else{
+						## jika jenis transaksi diskon
+						if($id_jenis_trans == 5) {
+							$data_upd['total_pengeluaran'] = $data_header['disc_nilai'];	
+						}
+						## jika jenis transaksi honor dokter
+						elseif($id_jenis_trans == 6) {
+							### get detail pembayaran
+							$arr_pembayaran = $this->get_detail_pembayaran($data_header['id_reg']);
+							$arr_pembayaran_det = $arr_pembayaran['detail'];
+							
+							$honor = $this->_ci->m_global->single_row('*',['id_dokter' => $datareg->id_pegawai, 'deleted_at' => null], 't_honor');
+							
+							## declare variabel
+							$sum_tindakan_lab = 0;
+							$sum_tindakan = 0;
+							$sum_tindakan_potong = 0;
+							$honor_dokter = 0;
+							$flag_tindakan_potong_lab = false;
+							$arr_tindakan = [];
+							$arr_tindakan_potong = [];
+							$arr_lab = [];
+							
+							foreach ($arr_pembayaran_det as $k => $v) {
+								if($v['jenis'] == 'LOGISTIK') {
+									continue;
+								}
+								elseif($v['jenis'] == 'TINDAKAN LAB'){
+									$arr_lab[] = $v;
+								}
+								elseif($v['jenis'] == 'TINDAKAN'){
+									
+									if($v['is_potong_lab_honor_dokter'] == '1') {
+										$flag_tindakan_potong_lab = true;
+										$arr_tindakan_potong[] = $v;
+									}else{
+										$arr_tindakan[] = $v;
+									}
+								}
+							}
+
+							if(count($arr_lab) > 0) {
+								$sum_tindakan_lab += array_sum(array_column($arr_lab, 'subtotal'));
+							}
+							
+							if($flag_tindakan_potong_lab == false) {
+								#### jika dalam array potong tindakan tidak ada yg potong lab maka jumlahkan array dan dipotong persen honor dokter
+								$sum_tindakan += array_sum(array_column($arr_tindakan, 'subtotal'));
+
+								$honor_dokter += $sum_tindakan / $honor->tindakan_persen * 100;
+
+							}else{
+								$sum_tindakan_potong += array_sum(array_column($arr_tindakan_potong, 'subtotal'));
+
+								$honor_dokter += $sum_tindakan_potong - $sum_tindakan_lab;
+								
+								if(count($arr_tindakan) > 0) {
+									$sum_tindakan += array_sum(array_column($arr_tindakan, 'subtotal'));
+									$honor_dokter += $sum_tindakan;
+								}
+
+								## replace
+								$honor_dokter = $honor_dokter / $honor->tindakan_persen * 100;
+								
+							}
+
+							
+							$data_upd['total_pengeluaran'] = $honor_dokter;
+						}
+						
+					}
+
+					$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $id_mutasi]);
+					if($upd){
+						####### FINAL RETURN
+						$retval = true;
+					}else{
+						####### FINAL RETURN
+						$retval = false;
+					}
+				}else{
+					####### FINAL RETURN
+					$retval = false;
+				}
+			}
+			else{
+				###update
+				$tot_honor = (float)$data[0]->total_honor_dokter;
+				
+				## jika transaksi penerimaan/pengeluaran
+				if($flag_transaksi == 1) {
+					$gross_total = (float)$data[0]->total_penerimaan_gross;
+					$nett_total = (float)$data[0]->total_penerimaan_nett;
+
+					$data_upd['total_penerimaan_gross'] = $gross_total;
+					$data_upd['total_penerimaan_nett'] = $nett_total;
+				}else{
+					if($id_jenis_trans == 5) {
+						$data_upd['total_pengeluaran'] = (float)$data[0]->total_pengeluaran;	
+					}
+				}
+
+				$data_upd['updated_at'] = $timestamp;
+				$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data[0]->id]);
+				
+				if($upd){
+					####### FINAL RETURN
+					$retval = true;
+				}else{
+					####### FINAL RETURN
+					$retval = false;
+				}
+			}
+
+			return $retval;
+		} catch (\Throwable $th) {
+			//throw $th;
+			return false;
+		}
+	}
+
 
 	/**
 	 * param 1 = id_registrasi
@@ -313,5 +469,101 @@ class Lib_mutasi extends CI_Controller {
 		$dataNewId = $queryNewId->row();
 		
 		return $dataNewId->newid;
+	}
+
+	function get_detail_pembayaran($id_reg) {
+		$select = "a.*, peg.nama as nama_dokter, asu.nama as nama_asuransi, b.total_honor_dokter, b.total_penerimaan_nett, b.total_penerimaan_gross, b.id_jenis_trans, b.id_trans_flag";
+		$where = ['a.is_pulang' => 1, 'a.deleted_at' => null, 'a.id' => $id_reg];
+		$table = 't_registrasi as a';
+		$join = [ 
+			[
+				'table' => 'm_pegawai as peg',
+				'on'	=> 'a.id_pegawai = peg.id'
+			],
+			[
+				'table' => 'm_asuransi asu',
+				'on'	=> 'a.id_asuransi = asu.id'
+			],
+			[
+				'table' => 't_mutasi b',
+				'on'	=> 'a.id = b.id_registrasi and b.deleted_at is null'
+			],
+		];
+
+		$data_header =  $this->_ci->m_global->multi_row($select,$where,$table, $join);
+		
+		$arr_detail_fix = [];
+		if($data_header && count($data_header) > 0) {
+			foreach ($data_header as $key => $value) {
+				if($value->id_jenis_trans == '1') {
+					#### LOGISTIK
+					$q = $this->_ci->db->query("
+						SELECT a.*, b.qty, b.harga, b.subtotal, c.kode_logistik, c.nama_logistik
+						FROM t_logistik as a 
+						join t_logistik_det b on a.id = b.id_t_logistik and b.deleted_at is null 
+						join m_logistik c on b.id_logistik = c.id_logistik and c.deleted_at is null 
+						WHERE a.deleted_at is null and a.id_reg = $value->id 
+					")->result();
+
+					foreach ($q as $k => $v) {
+						$arr['jenis'] = 'LOGISTIK';
+						$arr['qty'] = $v->qty;
+						$arr['harga'] = $v->harga;
+						$arr['subtotal'] = $v->subtotal;
+						$arr['nama'] = $v->nama_logistik;
+						$arr['kode'] = $v->kode_logistik;
+						$arr['is_potong_lab_honor_dokter'] = null;
+						$arr_detail_fix[] = $arr;
+				 	}
+
+				}elseif($value->id_jenis_trans == '2') {
+					#### TINDAKAN
+					$q = $this->_ci->db->query("
+						SELECT a.*, b.gigi, b.harga, c.kode_tindakan, c.nama_tindakan, c.is_potong_lab_honor_dokter
+						FROM t_tindakan as a 
+						join t_tindakan_det b on a.id = b.id_t_tindakan and b.deleted_at is null 
+						join m_tindakan c on b.id_tindakan = c.id_tindakan and c.deleted_at is null 
+						WHERE a.deleted_at is null and a.id_reg = $value->id 
+					")->result();
+
+					foreach ($q as $k => $v) {
+						$arr['jenis'] = 'TINDAKAN';
+						$arr['qty'] = null;
+						$arr['harga'] = $v->harga;
+						$arr['subtotal'] = $v->harga;
+						$arr['nama'] = $v->nama_tindakan;
+						$arr['kode'] = $v->kode_tindakan;
+						$arr['is_potong_lab_honor_dokter'] = $v->is_potong_lab_honor_dokter;
+						$arr_detail_fix[] = $arr;
+				 	}
+					 
+				}elseif($value->id_jenis_trans == '3') {
+					#### LAB
+					$q = $this->_ci->db->query("
+						SELECT a.*,  b.harga, b.keterangan, c.kode, c.tindakan_lab
+						FROM t_tindakanlab as a 
+						join t_tindakanlab_det b on a.id = b.id_t_tindakanlab and b.deleted_at is null 
+						join m_laboratorium c on b.id_tindakan_lab = c.id_laboratorium and c.deleted_at is null
+						WHERE a.deleted_at is null and a.id_reg = $value->id 
+					")->result();
+
+					foreach ($q as $k => $v) {
+						$arr['jenis'] = 'TINDAKAN LAB';
+						$arr['qty'] = null;
+						$arr['harga'] = $v->harga;
+						$arr['subtotal'] = $v->harga;
+						$arr['nama'] = $v->tindakan_lab;
+						$arr['kode'] = $v->kode;
+						$arr['is_potong_lab_honor_dokter'] = null;
+						$arr_detail_fix[] = $arr;
+				 	}
+				}
+			}
+		}
+		
+		return [
+			'header' => $data_header,
+			'detail' => $arr_detail_fix
+		];
 	}
 }
