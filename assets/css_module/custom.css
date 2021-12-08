@@ -111,3 +111,7 @@ animation: load6 1.7s infinite ease, round 1.7s infinite ease;
     display: none !important;
     visibility: hidden !important;
 }
+
+.text-right {
+    text-align: right;
+}

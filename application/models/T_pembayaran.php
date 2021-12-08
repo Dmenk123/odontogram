@@ -3,98 +3,126 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class T_pembayaran extends CI_Model
 {
 	var $table = 't_pembayaran';
-	// var $column_search = ['m_pegawai.nama','t_honor.honor_visite','t_honor.tindakan_persen','t_honor.tindakan_lab_persen','t_honor.obat_persen'];
-	
-	// var $column_order = ['m_pegawai.nama','t_honor.honor_visite','t_honor.tindakan_persen','t_honor.tindakan_lab_persen','t_honor.obat_persen',null];
+	var $column_search = [
+		'c.nama_klinik',
+		'b.no_reg',
+		'b.tanggal_reg',
+		'd.username',
+		'jenis_bayar',
+		'a.disc_persen',
+		'a.disc_rp',
+		'a.total_bruto',
+		'a.total_nett'
+	];
 
-	// var $order = ['m_pegawai.nama' => 'asc']; 
+	var $column_order = [
+		'c.nama_klinik',
+		'b.no_reg',
+		'b.tanggal_reg',
+		'd.username',
+		'jenis_bayar',
+		'a.disc_persen',
+		'a.disc_rp',
+		'a.total_bruto',
+		'a.total_nett',
+		null
+	];
 
-	// public function __construct()
-	// {
-	// 	parent::__construct();
-	// 	//alternative load library from config
-	// 	$this->load->database();
-	// }
+	var $order = ['b.no_reg' => 'asc', 'a.tanggal_reg' => 'asc'];
 
-	// private function _get_datatables_query($term='')
-	// {
-	// 	$this->db->select("t_honor.*, m_pegawai.nama as nama_dokter");
-	// 	$this->db->from($this->table);
-	// 	$this->db->join('m_pegawai', 't_honor.id_dokter = m_pegawai.id', 'left');
-	// 	$this->db->where('t_honor.deleted_at is null');
+	public function __construct()
+	{
+		parent::__construct();
+		//alternative load library from config
+		$this->load->database();
+	}
+
+	private function _get_datatables_query($term='', $id_klinik = null)
+	{
+		$this->db->select("a.*, b.no_reg, b.tanggal_reg, c.nama_klinik, CASE WHEN a.is_cash = 1 THEN 'Cash' ELSE 'Kredit' END as jenis_bayar, d.username");
+		$this->db->from($this->table.' a');
+		$this->db->join('t_registrasi b', 'a.id_reg = b.id', 'left');
+		$this->db->join('m_klinik c', 'b.id_klinik = c.id', 'left');
+		$this->db->join('m_user d', 'a.id_user = d.id', 'left');
+		$this->db->where('a.deleted_at is null');
+
+		if($id_klinik != null) {
+			$this->db->where('b.id_klinik', $id_klinik);
+		}
 				
-	// 	$i = 0;
+		$i = 0;
 
-	// 	// loop column 
-	// 	foreach ($this->column_search as $item) 
-	// 	{
-	// 		// if datatable send POST for search
-	// 		if($_POST['search']['value']) 
-	// 		{
-	// 			// first loop
-	// 			if($i===0) 
-	// 			{
-	// 				// open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-	// 				$this->db->group_start();
-	// 				$this->db->like($item, $_POST['search']['value']);
-	// 			}
-	// 			else
-	// 			{
-	// 				if($item == 'penjamin') {
-	// 					/**
-	// 					 * param both untuk wildcard pada awal dan akhir kata
-	// 					 * param false untuk disable escaping (karena pake subquery)
-	// 					 */
-	// 					$this->db->or_like('(CASE WHEN reg.is_asuransi = 1 THEN \'Aktif\' ELSE \'Non Aktif\' END)', $_POST['search']['value'],'both',false);
-	// 				}elseif($item == 'jenkel'){
-	// 					$this->db->or_like('(CASE WHEN psn.jenis_kelamin = \'L\' THEN \'Laki-Laki\' ELSE \'Perempuan\' END)', $_POST['search']['value'],'both',false);
-	// 				}
-	// 				else{
-	// 					$this->db->or_like($item, $_POST['search']['value']);
-	// 				}
-	// 			}
-	// 			//last loop
-	// 			if(count($this->column_search) - 1 == $i) 
-	// 				$this->db->group_end(); //close bracket
-	// 		}
-	// 		$i++;
-	// 	}
+		// loop column 
+		foreach ($this->column_search as $item) 
+		{
+			// if datatable send POST for search
+			if($_POST['search']['value']) 
+			{
+				// first loop
+				if($i===0) 
+				{
+					// open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					if($item == 'jenis_bayar') {
+						/**
+						 * param both untuk wildcard pada awal dan akhir kata
+						 * param false untuk disable escaping (karena pake subquery)
+						 */
+						$this->db->or_like('(CASE WHEN a.is_cash = 1 THEN \'Cash\' ELSE \'Kredit\' END)', $_POST['search']['value'],'both',false);
+					}
+					/* elseif($item == 'jenkel'){
+						$this->db->or_like('(CASE WHEN psn.jenis_kelamin = \'L\' THEN \'Laki-Laki\' ELSE \'Perempuan\' END)', $_POST['search']['value'],'both',false);
+					} */
+					else{
+						$this->db->or_like($item, $_POST['search']['value']);
+					}
+				}
+				//last loop
+				if(count($this->column_search) - 1 == $i) 
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
 
-	// 	if(isset($_POST['order'])) // here order processing
-	// 	{
-	// 		$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-	// 	} 
-	// 	if(isset($_POST['order']) && $_POST['order']['0']['column'] != '0') 
-	// 	{
-	// 		$order = $this->order;
-    //         $this->db->order_by(key($order), $order[key($order)]);
-	// 	}
+		if(isset($_POST['order'])) // here order processing
+		{
+			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} 
+		if(isset($_POST['order']) && $_POST['order']['0']['column'] != '0') 
+		{
+			$order = $this->order;
+            $this->db->order_by(key($order), $order[key($order)]);
+		}
 
-	// }
+	}
 
-	// function get_datatable()
-	// {
-	// 	$term = $_REQUEST['search']['value'];
-	// 	$this->_get_datatables_query($term);
-	// 	if($_REQUEST['length'] != -1)
-	// 	$this->db->limit($_REQUEST['length'], $_REQUEST['start']);
+	function get_datatables($id_klinik)
+	{
+		$term = $_REQUEST['search']['value'];
+		$this->_get_datatables_query($term, $id_klinik);
+		if($_REQUEST['length'] != -1)
+		$this->db->limit($_REQUEST['length'], $_REQUEST['start']);
 
-	// 	$query = $this->db->get();
-	// 	return $query->result();
-	// }
+		$query = $this->db->get();
+		return $query->result();
+	}
 
-	// function count_filtered()
-	// {
-	// 	$this->_get_datatables_query($term='');
-	// 	$query = $this->db->get();
-	// 	return $query->num_rows();
-	// }
+	function count_filtered($id_klinik)
+	{
+		$this->_get_datatables_query('', $id_klinik);
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
 
-	// public function count_all()
-	// {
-	// 	$this->db->from($this->table);
-	// 	return $this->db->count_all_results();
-	// }
+	public function count_all($id_klinik)
+	{
+		$this->_get_datatables_query('', $id_klinik);
+		return $this->db->count_all_results();
+	}
 
 	public function get_detail($id)
 	{
@@ -147,6 +175,19 @@ class T_pembayaran extends CI_Model
 		$where = ['id' => $id];
 		$data = ['deleted_at' => $timestamp];
 		return $this->db->update($this->table, $data, $where);
+	}
+
+	public function get_detail_pembayaran($id)
+	{
+		$this->db->select("a.*, b.no_reg, b.tanggal_reg, c.nama_klinik, CASE WHEN a.is_cash = 1 THEN 'Cash' ELSE 'Kredit' END as jenis_bayar, d.username");
+		$this->db->from($this->table . ' a');
+		$this->db->join('t_registrasi b', 'a.id_reg = b.id', 'left');
+		$this->db->join('m_klinik c', 'b.id_klinik = c.id', 'left');
+		$this->db->join('m_user d', 'a.id_user = d.id', 'left');
+		$this->db->where('a.deleted_at is null');
+		$this->db->where('a.id', $id);
+		$q = $this->db->get();
+		return $q->row();
 	}
 
 	function get_kode_reg(){

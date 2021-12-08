@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 07/12/2021 15:51:43
+ Date: 08/12/2021 15:15:54
 */
 
 SET NAMES utf8mb4;
@@ -36,11 +36,15 @@ CREATE TABLE `t_pembayaran`  (
   `updated_at` datetime NULL DEFAULT NULL,
   `deleted_at` datetime NULL DEFAULT NULL,
   `created_at` datetime NULL DEFAULT NULL,
+  `rupiah_bayar` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `rupiah_kembali` float(20, 2) NULL DEFAULT NULL,
+  `is_locked` int(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_pembayaran
 -- ----------------------------
+INSERT INTO `t_pembayaran` VALUES (1, 1, '2021-12-08', 1, 0, 50000.00, 50000.00, 515000.00, 465000.00, 1, NULL, NULL, NULL, '2021-12-08 14:01:33', '470000.00', 5000.00, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

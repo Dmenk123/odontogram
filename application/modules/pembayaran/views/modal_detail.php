@@ -1,5 +1,5 @@
 <div class="modal fade modal_detail" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_detail">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal_title_det"></h5>
@@ -11,28 +11,29 @@
           <table class="table table-responsive table-borderless">
             <tbody>
               <tr>
-                <th style="width: 150px;">No. RM</th>
+                <th style="width: 150px;">Klinik</th>
                 <td style="width: 10px;"> : </td>
-                <td><span id="no_rm_det"></span></td>
+                <td><span id="klinik_det"></span></td>
               </tr>
               <tr>
-                <th>NIK</th>
+                <th>No. Registrasi</th>
                 <td> : </td>
-                <td><span id="nik_det"></span></td>
+                <td><span id="no_reg_det"></span></td>
               </tr>
               <tr>
-                <th>Nama Pasien</th>
+                <th>Tgl Registrasi</th>
                 <td> : </td>
-                <td><span id="pasien_det"></span></td>
+                <td><span id="tgl_reg_det"></span></td>
               </tr>
               <tr> 
-                <th>Tempat / Tanggal Lahir</th>
+                <th>User</th>
                 <td> : </td>
-                <td><span id="ttl_det"></span></td>
+                <td><span id="user_det"></span></td>
               </tr>
             </tbody>
           </table>
         </div>
+
         <div class="col-md-6">
           <table class="table table-responsive table-borderless">
             <tbody>
@@ -59,6 +60,7 @@
             </tbody>
           </table>
         </div>
+        
         <div class="col-md-12">
           <table class="table table-responsive table-borderless">
             <tbody>

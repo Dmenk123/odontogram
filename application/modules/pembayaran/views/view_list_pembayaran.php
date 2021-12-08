@@ -6,7 +6,7 @@
     <div class="kt-container  kt-container--fluid ">
       <div class="kt-subheader__main">
         <h3 class="kt-subheader__title">
-          <?= $this->template_view->nama('judul').' - '.$title; ?>
+          <?= $this->template_view->nama('judul') . ' - ' . $title; ?>
         </h3>
       </div>
     </div>
@@ -15,7 +15,7 @@
 
   <!-- begin:: Content -->
   <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
-    
+
     <div class="kt-portlet kt-portlet--mobile">
       <div class="kt-portlet__head kt-portlet__head--lg">
         <div class="kt-portlet__head-label">
@@ -36,13 +36,15 @@
         <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_index">
           <thead>
             <tr>
-              <th>No RM</th>
-              <th>Nama</th>
-              <th>NIK</th>
-              <th>Jenis Kelamin</th>
-              <th>Alamat Rumah</th>
-              <th>Telp/HP</th>
-              <th>Status</th>
+              <th>Klinik</th>
+              <th>No. Reg</th>
+              <th>Tgl Reg</th>
+              <th>User</th>
+              <th>Jenis Trans</th>
+              <th>Disc (%)</th>
+              <th>Disc (Rp)</th>
+              <th>Total (Gross)</th>
+              <th>Total (Nett)</th>
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>
@@ -52,8 +54,5 @@
       </div>
     </div>
   </div>
-  
+
 </div>
-
-
-

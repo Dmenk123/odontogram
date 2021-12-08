@@ -3,7 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use \Carbon\Carbon;
 
 class Pembayaran extends CI_Controller {
-	
+	protected $id_klinik = null;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -16,6 +17,8 @@ class Pembayaran extends CI_Controller {
 		$this->load->model('m_pasien');
 		$this->load->model('m_data_medik');
 		$this->load->model('t_pembayaran');
+
+		$this->id_klinik = $this->session->userdata('id_klinik');
 	}
 
 	public function index()
@@ -40,11 +43,71 @@ class Pembayaran extends CI_Controller {
 		$content = [
 			'css' 	=> null,
 			'modal' => 'modal_detail',
-			'js'	=> 'data_pasien.js',
+			'js'	=> 'pembayaran.js',
 			'view'	=> 'view_list_pembayaran'
 		];
 
 		$this->template_view->load_view($content, $data);
+	}
+
+	public function list_data()
+	{
+		$this->load->library('Enkripsi');
+		$list = $this->t_pembayaran->get_datatables($this->id_klinik);
+		
+		$data = array();
+		// $no =$_POST['start'];
+		foreach ($list as $val) {
+			$row = array();
+			//loop value tabel db
+			$row[] = $val->nama_klinik;
+			$row[] = $val->no_reg;
+			$row[] = Carbon::parse($val->tanggal)->format('d-m-Y');
+			$row[] = $val->username;
+			$row[] = $val->jenis_bayar;
+			$row[] = $val->disc_persen;
+			$row[] = '<div><span style="text-align:right;">'.number_format($val->disc_rp,0,',','.').'</span></div>';
+			$row[] = '<div><span style="text-align:right;">'.number_format($val->total_bruto,0,',','.').'</span></div>';
+			$row[] = '<div><span style="text-align:right;">'.number_format($val->total_nett,0,',','.').'</span></div>';
+
+			$str_aksi = '
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-item" onclick="detail_trans(\'' . $this->enkripsi->enc_dec('encrypt', $val->id) . '\')">
+							<i class="la la-search"></i> Detail pembayaran
+						</button>
+			';
+
+			if ($val->is_locked == null) {
+				$str_aksi .= '
+				<a class="dropdown-item" href="' . base_url('pembayaran/edit/') . $this->enkripsi->enc_dec('encrypt', $val->id) . '"">
+					<i class="la la-pencil"></i> Edit pembayaran
+				</a>';
+			}
+
+			$str_aksi .= '
+				<button class="dropdown-item" onclick="delete_trans(\'' . $this->enkripsi->enc_dec('encrypt', $val->id) . '\')">
+					<i class="la la-trash"></i> Hapus
+				</button>
+				<a class="dropdown-item" target="_blank" href="' . base_url('pembayaran/cetak_data_individu/') . $this->enkripsi->enc_dec('encrypt', $val->id) . '">
+					<i class="la la-print"></i> Cetak Transaksi Ini
+				</a>
+			';
+
+			$str_aksi .= '</div></div>';
+			$row[] = $str_aksi;
+			$data[] = $row;
+		} //end loop
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->t_pembayaran->count_all($this->id_klinik),
+			"recordsFiltered" => $this->t_pembayaran->count_filtered($this->id_klinik),
+			"data" => $data
+		];
+
+		echo json_encode($output);
 	}
 
 	public function add()
@@ -93,15 +156,18 @@ class Pembayaran extends CI_Controller {
 			'pas.nama like' => '%'.$pilih_nama.'%',
 			'pas.no_rm like' => '%'.$pilih_norm.'%',
 			'reg.tanggal_reg >=' => $tgl_filter_mulai,
-			'reg.tanggal_reg <=' => $tgl_filter_akhir
+			'reg.tanggal_reg <=' => $tgl_filter_akhir,
+			'byr.is_locked' => null
 		];
 		$table = 't_registrasi as reg';
 		$join = [ 
-			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id']
+			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
+			['table' => 't_pembayaran as byr', 'on' => 'reg.id = byr.id_reg']
 		];
 				
 		// var_dump($join);exit;
 		$data = $this->m_global->multi_row($select, $where, $table, $join, 'pas.nama asc');
+		
 		$html = '';
 		if($data){
 			$status = true;
@@ -131,6 +197,18 @@ class Pembayaran extends CI_Controller {
 
 	public function hasil_pilih_pasien(){
 		$this->load->library('Enkripsi');
+		if($this->input->post('enc_id') == '') {
+			echo json_encode([
+				'data' => null,
+				'status' => false,
+				'data_id' => null,
+				'html_header' => null,
+				'html_detail' => null,
+				'tot_biaya' => null,
+			]);
+			return;
+		}
+
 		$enc_id = $this->input->post('enc_id');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 		$html_header = '';
@@ -294,7 +372,6 @@ class Pembayaran extends CI_Controller {
 		];
 	}
 
-
 	protected function html_header_pembayaran($arrData) {
 		$tot_biaya = 0;
 
@@ -410,7 +487,7 @@ class Pembayaran extends CI_Controller {
 		$arr_pembayaran['disc_nilai'] = $disc_nilai_raw;
 		$arr_pembayaran['total_bruto'] = $total_biaya_raw;
 		$arr_pembayaran['total_nett'] = $total_biaya_nett_raw;
-
+		$arr_pembayaran['is_locked'] = 1;
 		$arr_pembayaran['rupiah_bayar'] = $pembayaran_raw;
 		$arr_pembayaran['rupiah_kembali'] = $kembalian_raw;
 		
@@ -463,6 +540,38 @@ class Pembayaran extends CI_Controller {
 		}
 
 		echo json_encode($retval);
+	}
+
+	public function detail_pembayaran()
+	{
+		$enc_id = $this->input->post('enc_id');
+
+		if (strlen($enc_id) != 32) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Data Tidak Valid'
+			]);
+			return;
+		}
+
+		$this->load->library('Enkripsi');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		$data_bayar = $this->t_pembayaran->get_detail_pembayaran($id);
+
+		if (!$data_bayar) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Data Pasien Tidak Ditemukan'
+			]);
+			return;
+		}
+
+		$data = array(
+			'status' => true,
+			'old_data' => $data_bayar
+		);
+
+		echo json_encode($data);
 	}
 
 	private function rule_validasi($is_update = false)
@@ -565,113 +674,7 @@ class Pembayaran extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
-	public function detail_pasien()
-	{
-		$enc_id = $this->input->post('id');
-		
-		if(strlen($enc_id) != 32) {
-			echo json_encode([
-				'status' => false,
-				'pesan' => 'Data Tidak Valid'
-			]);
-			return;
-		}
-
-		$this->load->library('Enkripsi');
-		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
-
-		$select = "pas.*, mdk.*, CASE WHEN pas.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
-		$where = ['pas.deleted_at' => null, 'pas.id' => $id_pasien];
-		$table = 'm_pasien as pas';
-		$join = [ 
-			[
-				'table' => 'm_data_medik as mdk',
-				'on'	=> 'pas.id = mdk.id_pasien'
-			]
-		];
-		$data_pasien = $this->m_global->single_row($select,$where,$table, $join);
-		
-		if(!$data_pasien) {
-			echo json_encode([
-				'status' => false,
-				'pesan' => 'Data Pasien Tidak Ditemukan'
-			]);
-			return;
-		}
-
-		$data = array(
-			'status' => true,
-			'old_data' => $data_pasien
-		);
-
-		echo json_encode($data);
-	}
-
-	public function list_data()
-	{
-		$this->load->library('Enkripsi');
-		$list = $this->m_pasien->get_datatable_pasien();
-		$data = array();
-		// $no =$_POST['start'];
-		foreach ($list as $val) {
-			// $no++;
-			$row = array();
-			//loop value tabel db
-			// $row[] = $no;
-			$row[] = $val->no_rm;
-			$row[] = $val->nama;
-			$row[] = $val->nik;
-			$row[] = ($val->jenis_kelamin == 'L') ? '<span style="color:blue;">Laki-Laki</span>' : '<span style="color:magenta;">Perempuan</span>';
-			$row[] = $val->alamat_rumah;
-			$row[] = $val->hp;
-			$row[] = ($val->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
-			
-			$str_aksi = '
-				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
-					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="detail_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
-							<i class="la la-search"></i> Detail Pasien
-						</button>
-						<a class="dropdown-item" href="'.base_url('data_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
-							<i class="la la-pencil"></i> Edit Pasien
-						</a>
-						<button class="dropdown-item" onclick="delete_pasien(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
-							<i class="la la-trash"></i> Hapus
-						</button>
-						<a class="dropdown-item" target="_blank" href="'.base_url('data_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
-							<i class="la la-print"></i> Cetak Pasien Ini
-						</a>
-			';
-
-			if ($val->is_aktif == 1) {
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="aktif"><i class="la la-check">
-				</i> Aktif</button>';
-			}else{
-				$str_aksi .=
-				'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$this->enkripsi->enc_dec('encrypt', $val->id).'" value="nonaktif"><i class="la la-close">
-				</i> Non Aktif</button>';
-			}	
-
-			$str_aksi .= '</div></div>';
-			$row[] = $str_aksi;
-
-			$data[] = $row;
-		}//end loop
-
-		$output = [
-			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->m_pasien->count_all(),
-			"recordsFiltered" => $this->m_pasien->count_filtered(),
-			"data" => $data
-		];
-		
-		echo json_encode($output);
-	}
-
 	
-
 
 	/**
 	 * Hanya melakukan softdelete saja

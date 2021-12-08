@@ -90,8 +90,10 @@ $(document).ready(function() {
               success: function (data) {
                   if(data.status) {
                     swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success');
-                    $('#regForm')[0].reset();
-                    window.location.href = base_url +'retur_masuk';
+                    setTimeout(function(){ 
+                        $('#form_pembayaran')[0].reset();
+                        window.location.href = base_url +'pembayaran';
+                    }, 2000);
                   }else {
                     for (var i = 0; i < data.inputerror.length; i++) 
                     {
@@ -134,24 +136,35 @@ $(document).ready(function() {
     });
 
 	//datatables
-	// table = $('#tabel_index').DataTable({
-	// 	responsive: true,
-    //     searchDelay: 500,
-    //     processing: true,
-    //     serverSide: true,
-	// 	ajax: {
-	// 		url  : base_url + "data_pasien/list_data",
-	// 		type : "POST" 
-	// 	},
+	table = $('#tabel_index').DataTable({
+		responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: true,
+		ajax: {
+			url  : base_url + "pembayaran/list_data",
+			type : "POST" 
+		},
+        language: {
+            decimal: ",",
+            thousands: "."
+        },
+        columnDefs: [
+            { targets: 6, className: 'text-right' },
+            { targets: 7, className: 'text-right' },
+            { targets: 8, className: 'text-right' },
+            // { visible: false, searchable: false, targets: 4 },
+            // { visible: false, searchable: false, targets: 5 },
+        ],
 
-	// 	//set column definition initialisation properties
-	// 	columnDefs: [
-	// 		{
-	// 			targets: [-1], //last column
-	// 			orderable: false, //set not orderable
-	// 		},
-	// 	],
-    // });
+		//set column definition initialisation properties
+		columnDefs: [
+			{
+				targets: [-1], //last column
+				orderable: false, //set not orderable
+			},
+		],
+    });
     
 
     //change menu status
@@ -355,17 +368,15 @@ const formatMoney = (number) => {
     return value;
 }
 
-////////////////////////////////////////////////////
-
-function detail_pasien(id) {
+const detail_trans = (enc_id) => {
     $.ajax({
-        url : base_url + 'data_pasien/detail_pasien',
+        url : base_url + 'pembayaran/detail_pembayaran',
         type: "POST",
         dataType: "JSON",
-        data : {id:id},
+        data : {enc_id:enc_id},
         success: function(data)
         {
-            $('#no_rm_det').text(data.old_data.no_rm);
+            /* $('#no_rm_det').text(data.old_data.no_rm);
             $('#nik_det').text(data.old_data.nik);
             $('#pasien_det').text(data.old_data.nama);
             $('#ttl_det').text(function () {
@@ -415,7 +426,7 @@ function detail_pasien(id) {
                 }else{
                     return strAlergiMakan;
                 }
-            });
+            }); */
             $('#modal_detail').modal('show');
 	        $('#modal_title_det').text('Detail Pasien'); 
         },
@@ -425,6 +436,9 @@ function detail_pasien(id) {
         }
     });
 }
+////////////////////////////////////////////////////
+
+
 
 function reload_table()
 {

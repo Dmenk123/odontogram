@@ -321,11 +321,10 @@ class Lib_mutasi extends CI_Controller {
 								}
 
 								## replace
-								$honor_dokter = $honor_dokter / $honor->tindakan_persen * 100;
+								$honor_dokter = $honor_dokter * $honor->tindakan_persen / 100;
 								
 							}
 
-							
 							$data_upd['total_pengeluaran'] = $honor_dokter;
 						}
 						
@@ -346,8 +345,6 @@ class Lib_mutasi extends CI_Controller {
 			}
 			else{
 				###update
-				$tot_honor = (float)$data[0]->total_honor_dokter;
-				
 				## jika transaksi penerimaan/pengeluaran
 				if($flag_transaksi == 1) {
 					$gross_total = (float)$data[0]->total_penerimaan_gross;
@@ -356,8 +353,68 @@ class Lib_mutasi extends CI_Controller {
 					$data_upd['total_penerimaan_gross'] = $gross_total;
 					$data_upd['total_penerimaan_nett'] = $nett_total;
 				}else{
+					## jika jenis transaksi diskon
 					if($id_jenis_trans == 5) {
-						$data_upd['total_pengeluaran'] = (float)$data[0]->total_pengeluaran;	
+						$data_upd['total_pengeluaran'] = $data_header['disc_nilai'];
+					} ## jika jenis transaksi honor dokter
+					elseif ($id_jenis_trans == 6) {
+						### get detail pembayaran
+						$arr_pembayaran = $this->get_detail_pembayaran($data_header['id_reg']);
+						$arr_pembayaran_det = $arr_pembayaran['detail'];
+
+						$honor = $this->_ci->m_global->single_row('*', ['id_dokter' => $datareg->id_pegawai, 'deleted_at' => null], 't_honor');
+
+						## declare variabel
+						$sum_tindakan_lab = 0;
+						$sum_tindakan = 0;
+						$sum_tindakan_potong = 0;
+						$honor_dokter = 0;
+						$flag_tindakan_potong_lab = false;
+						$arr_tindakan = [];
+						$arr_tindakan_potong = [];
+						$arr_lab = [];
+
+						foreach ($arr_pembayaran_det as $k => $v) {
+							if ($v['jenis'] == 'LOGISTIK') {
+								continue;
+							} elseif ($v['jenis'] == 'TINDAKAN LAB') {
+								$arr_lab[] = $v;
+							} elseif ($v['jenis'] == 'TINDAKAN') {
+
+								if ($v['is_potong_lab_honor_dokter'] == '1') {
+									$flag_tindakan_potong_lab = true;
+									$arr_tindakan_potong[] = $v;
+								} else {
+									$arr_tindakan[] = $v;
+								}
+							}
+						}
+
+						if (count($arr_lab) > 0) {
+							$sum_tindakan_lab += array_sum(array_column($arr_lab, 'subtotal'));
+						}
+
+						if ($flag_tindakan_potong_lab == false) {
+							#### jika dalam array potong tindakan tidak ada yg potong lab maka jumlahkan array dan dipotong persen honor dokter
+							$sum_tindakan += array_sum(array_column($arr_tindakan, 'subtotal'));
+
+							$honor_dokter += $sum_tindakan / $honor->tindakan_persen * 100;
+						} else {
+							$sum_tindakan_potong += array_sum(array_column($arr_tindakan_potong, 'subtotal'));
+
+							$honor_dokter += $sum_tindakan_potong - $sum_tindakan_lab;
+
+							if (count($arr_tindakan) > 0
+							) {
+								$sum_tindakan += array_sum(array_column($arr_tindakan, 'subtotal'));
+								$honor_dokter += $sum_tindakan;
+							}
+
+							## replace
+							$honor_dokter = $honor_dokter * $honor->tindakan_persen / 100;
+						}
+
+						$data_upd['total_pengeluaran'] = $honor_dokter;
 					}
 				}
 

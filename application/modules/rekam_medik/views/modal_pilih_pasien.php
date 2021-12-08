@@ -8,21 +8,22 @@
       </div>
       <div class="modal-body">
         <form id="form_cari_pasien" name="form_cari_pasien">
-          <div class="col-md-12">
+          <div class="col-12">
             <div class="row" style="padding-bottom: 20px;">
-              <div class="col-md-5 row">
+              <div class="col-5 row">
                 <label class="col-form-label col-lg-2">Mulai</label>
                 <div class="col-lg-9">
-                  <input type="text" class="form-control kt_datepicker" id="tgl_filter_mulai" name="tgl_filter_mulai" readonly placeholder="Tanggal Awal" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->modify('-10 day')->format('d/m/Y'); ?>"/>
+                  <input type="text" class="form-control kt_datepicker" id="tgl_filter_mulai" name="tgl_filter_mulai" readonly placeholder="Tanggal Awal" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->modify('-10 day')->format('d/m/Y'); ?>" />
                 </div>
               </div>
-              <div class="col-md-5 row">
+              <div class="col-5 row">
                 <label class="col-form-label col-lg-2">Hingga</label>
                 <div class="col-lg-9">
-                  <input type="text" class="form-control kt_datepicker" id="tgl_filter_akhir" name="tgl_filter_akhir" readonly placeholder="Tanggal Akhir" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->format('d/m/Y'); ?>"/>
+                  <input type="text" class="form-control kt_datepicker" id="tgl_filter_akhir" name="tgl_filter_akhir" readonly placeholder="Tanggal Akhir" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->format('d/m/Y'); ?>" />
                 </div>
               </div>
-              <div class="col-md-2 row">
+              <div class="col-2 row">
+                <label class="col-form-label col-lg-2">&nbsp;</label>
                 <div>
                   <button type="button" class="btn btn-brand" onclick="cari_pasien()">Cari</button>
                 </div>
@@ -46,7 +47,7 @@
             </div>
           </div>
         </form>
-        <hr> 
+        <hr>
         <div class="col-md-12 table-responsive">
           <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_pilih_pasien" style="width:100%">
             <thead>
