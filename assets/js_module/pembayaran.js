@@ -89,11 +89,11 @@ $(document).ready(function() {
               timeout: 600000,
               success: function (data) {
                   if(data.status) {
-                    swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success');
-                    setTimeout(function(){ 
-                        $('#form_pembayaran')[0].reset();
-                        window.location.href = base_url +'pembayaran';
-                    }, 2000);
+                    swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success').then((cb) => {
+                        if(cb.value) {
+                            window.location.href = base_url +'pembayaran';
+                        }
+                    });
                   }else {
                     for (var i = 0; i < data.inputerror.length; i++) 
                     {

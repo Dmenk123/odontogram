@@ -288,3 +288,54 @@ const confirmPulangkan = (idReg) => {
         }
     });
 }
+
+const batalkanPulang = () => {
+    swalConfirm.fire({
+        title: 'Konfirmasi Batal Pulangkan Pasien',
+        text: "Apakah Anda Yakin ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya !',
+        cancelButtonText: 'Tidak',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/batal_pulangkan_pasien',
+                type: "POST",
+                dataType: "JSON",
+                data : {id_reg : id_reg},
+                success: function(data)
+                {
+                    if(data.status) {
+                        swalConfirm.fire('Berhasil Konfirmasi', data.pesan, 'success').then((cb) => {
+                            if(cb.value) {
+                                location.reload();
+                            }
+                        });
+                    }else{
+                        swalConfirm.fire('Gagal', data.pesan, 'error').then((cb) => {
+                            if(cb.value) {
+                                console.log(cb);
+                                location.reload();
+                            }
+                        });
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}

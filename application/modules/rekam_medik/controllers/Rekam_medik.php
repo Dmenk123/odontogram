@@ -39,6 +39,12 @@ class Rekam_medik extends CI_Controller {
 
 		}
 
+		### cek apakah sudah dibayar, redirect jika sudah dibayar
+		$data_bayar = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'deleted_at' => null], 't_pembayaran');
+		if($data_bayar) {
+			return redirect('rekam_medik');
+		}
+
 		$data = array(
 			'title' => 'Data Rekam Medik',
 			'data_user' => $data_user,
@@ -70,18 +76,20 @@ class Rekam_medik extends CI_Controller {
 		$pilih_nama = $this->input->post('pilih_nama');
 		$pilih_norm = $this->input->post('pilih_norm');
 		
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien";
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, byr.id as id_pembayaran";
 		$where = [
 			'reg.deleted_at' => null,
 			'pas.is_aktif' => '1',
 			'pas.nama like' => '%'.$pilih_nama.'%',
 			'pas.no_rm like' => '%'.$pilih_norm.'%',
 			'reg.tanggal_reg >=' => $tgl_filter_mulai,
-			'reg.tanggal_reg <=' => $tgl_filter_akhir
+			'reg.tanggal_reg <=' => $tgl_filter_akhir,
+			'byr.'
 		];
 		$table = 't_registrasi as reg';
 		$join = [ 
-			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id']
+			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
+			['table' => 't_pembayaran as byr', 'on' => 'reg.id = byr.id_reg'],
 		];
 				
 		// var_dump($join);exit;
@@ -90,6 +98,10 @@ class Rekam_medik extends CI_Controller {
 		if($data){
 			$status = true;
 			foreach ($data as $key => $value) {
+				### skip jika sudah ada transaksi di pembayaran
+				if($value->id_pembayaran !== null) {
+					continue;
+				}
 				$html .= '<tr>';
 				$html .= '<td>'.$value->no_reg.'</td>';
 				$html .= '<td>'.$value->nama_pasien.'</td>';
@@ -1483,6 +1495,17 @@ class Rekam_medik extends CI_Controller {
 		$datenow = $obj_date->format('Y-m-d');
 		$id_reg = $this->input->post('idReg');
 		$id_reg = $this->enkripsi->enc_dec('decrypt', $id_reg);
+
+		### cek apakah sudah dibayar, redirect jika sudah dibayar
+		$data_bayar = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'deleted_at' => null], 't_pembayaran');
+		if($data_bayar) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Pasien ini sudah bayar, tidak bisa dipulangkan',  
+			]);
+			return;
+		}
+
 		$datareg = $this->m_global->single_row('*', ['id' => $id_reg, 'deleted_at' => null], 't_registrasi');
 		if($datareg && $datareg->is_pulang) {
 			echo json_encode([
@@ -1502,6 +1525,53 @@ class Rekam_medik extends CI_Controller {
 			echo json_encode([
 				'status' => true,
 				'pesan' => 'Pasien ['.$datareg->no_reg.'] Sukses dipulangkan',  
+			]);
+		}else{
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Terjadi kesalahan, mohon hubungi administrator.',  
+			]);
+		}
+		
+	}
+
+	public function batal_pulangkan_pasien()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		$id_reg = $this->input->post('id_reg');
+
+		### cek apakah sudah dibayar, redirect jika sudah dibayar
+		$data_bayar = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'deleted_at' => null], 't_pembayaran');
+		if($data_bayar) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Pasien ini sudah bayar, tidak bisa dilakukan pembatalan',  
+			]);
+			return;
+		}
+
+		$datareg = $this->m_global->single_row('*', ['id' => $id_reg, 'deleted_at' => null], 't_registrasi');
+		
+		if($datareg && $datareg->is_pulang == null) {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Pasien ['.$datareg->no_reg.'] Belum Dipulangkan, Aksi Dibatalkan',  
+			]);
+			return;
+		}
+
+		$upd = $this->m_global->update('t_registrasi', [
+			'tanggal_pulang' => null,
+			'jam_pulang' =>  null,
+			'is_pulang' => null, 
+			'updated_at' => $timestamp
+		], ['id' => $id_reg]);
+		if($upd) {
+			echo json_encode([
+				'status' => true,
+				'pesan' => 'Pasien ['.$datareg->no_reg.'] Sukses dilakukan Pembatalan',  
 			]);
 		}else{
 			echo json_encode([

@@ -83,13 +83,14 @@ class Pembayaran extends CI_Controller {
 				$str_aksi .= '
 				<a class="dropdown-item" href="' . base_url('pembayaran/edit/') . $this->enkripsi->enc_dec('encrypt', $val->id) . '"">
 					<i class="la la-pencil"></i> Edit pembayaran
-				</a>';
-			}
-
-			$str_aksi .= '
+				</a>
 				<button class="dropdown-item" onclick="delete_trans(\'' . $this->enkripsi->enc_dec('encrypt', $val->id) . '\')">
 					<i class="la la-trash"></i> Hapus
 				</button>
+				';
+			}
+
+			$str_aksi .= '
 				<a class="dropdown-item" target="_blank" href="' . base_url('pembayaran/cetak_data_individu/') . $this->enkripsi->enc_dec('encrypt', $val->id) . '">
 					<i class="la la-print"></i> Cetak Transaksi Ini
 				</a>
@@ -455,18 +456,6 @@ class Pembayaran extends CI_Controller {
 		$pembayaran = $this->input->post('pembayaran');
 		$pembayaran_raw = $this->input->post('pembayaran_raw');
 		$kembalian_raw = $this->input->post('kembalian_raw');
-		
-		// total_biaya_raw: 515000
-		// total_biaya_nett_raw: 465000
-		// jenis_bayar: cash
-		// opt_kredit: 2
-		// jenis_diskon: nominal
-		// disc_rp: 50.000,00
-		// disc_rp_raw: 50000.00
-		// disc_persen: 0
-		// pembayaran: 470.000,00
-		// pembayaran_raw: 
-		// kembalian_raw: 5000.00
 		
 		$arr_valid = $this->rule_validasi();
 		
