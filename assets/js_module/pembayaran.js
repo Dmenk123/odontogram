@@ -376,57 +376,17 @@ const detail_trans = (enc_id) => {
         data : {enc_id:enc_id},
         success: function(data)
         {
-            /* $('#no_rm_det').text(data.old_data.no_rm);
-            $('#nik_det').text(data.old_data.nik);
+            $('#klinik_det').text(data.old_data.nama_klinik);
+            $('#no_reg_det').text(data.old_data.no_reg);
+            $('#tgl_reg_det').text(moment(data.old_data.tanggal, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('#user_det').text(data.old_data.username);
+
             $('#pasien_det').text(data.old_data.nama);
-            $('#ttl_det').text(function () {
-                let tgl =  data.old_data.tanggal_lahir;
-                return data.old_data.tempat_lahir+' / '+tgl.split("-").reverse().join("-");
-            });
-            $('#jenkel_det').text(data.old_data.jenkel);
-            $('#alamat_rmh_det').text(data.old_data.alamat_rumah);
-            $('#alamat_ktr_det').text(data.old_data.alamat_kantor);
-            $('#suku_det').text(data.old_data.suku);
-            $('#pekerjaan_det').text(data.old_data.pekerjaan);
-            $('#hp_det').text(data.old_data.hp);
-            $('#telp_det').text(data.old_data.telp_rumah);
+            $('#rm_det').text(data.old_data.no_rm);
+            $('#jenis_det').text(data.old_data.jenis_bayar);
+            $('#kredit_det').text(data.old_data.nama_kredit);
 
-            $('#goldarah_det').text(data.old_data.gol_darah);
-            $('#tekanandarah_det').text(data.old_data.tekanan_darah+' ('+data.old_data.tekanan_darah_val+')');
-            $('#jantung_det').text(handle_boolean(data.old_data.penyakit_jantung));
-            $('#diabetes_det').text(handle_boolean(data.old_data.diabetes));
-            $('#hepatitis_det').text(handle_boolean(data.old_data.hepatitis));
-            $('#haemopilia_det').text(handle_boolean(data.old_data.haemopilia));
-            $('#gastring_det').text(handle_boolean(data.old_data.gastring));
-            $('#penyakitlain_det').text(handle_boolean(data.old_data.penyakit_lainnya));
-            $('#alergiobat_det').text(function () {
-                let strAlergiObat;
-                if(data.old_data.alergi_obat == '1'){
-                    strAlergiObat = 'Ya';
-                }else{
-                    strAlergiObat = 'Tidak';
-                }
-
-                if(data.old_data.alergi_obat_val){
-                    return strAlergiObat+', '+data.old_data.alergi_obat_val;
-                }else{
-                    return strAlergiObat;
-                }
-            });
-            $('#alergimakan_det').text(function () {
-                let strAlergiMakan;
-                if(data.old_data.alergi_makanan == '1'){
-                    strAlergiMakan = 'Ya';
-                }else{
-                    strAlergiMakan = 'Tidak';
-                }
-
-                if(data.old_data.alergi_makanan_val){
-                    return strAlergiMakan+', '+data.old_data.alergi_makanan_val;
-                }else{
-                    return strAlergiMakan;
-                }
-            }); */
+            $('tbody#rincian_det').html(data.html_rinci);
             $('#modal_detail').modal('show');
 	        $('#modal_title_det').text('Detail Pasien'); 
         },

@@ -557,6 +557,38 @@ class Pembayaran extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 		$data_bayar = $this->t_pembayaran->get_detail_pembayaran($id);
+		$data_bayar_det = $this->get_detail_pembayaran($data_bayar->id_reg);
+		
+		// echo "<pre>";
+		// print_r ($data_bayar);
+		// echo "</pre>";
+		// exit;
+
+		$html_rinci = '';
+		$subtotal = 0;  
+		foreach ($data_bayar_det['detail'] as $key => $value) {
+			$subtotal += $value['subtotal'];
+			$html_rinci .= "<tr>
+				<td>".$value['jenis']."</td>
+				<td>".$value['nama']."</td>
+				<td align='right'>".$value['harga']."</td>
+				<td align='right'>".$value['qty']."</td>
+				<td align='right'>".$value['subtotal']."</td>
+			</tr>";
+		}
+
+		$html_rinci .= "<tr>
+			<td colspan='4' align='center'>Total (Gross)</td>
+			<td align='right'>".number_format($subtotal,0,',','.')."</td>
+		</tr>
+		<tr>
+			<td colspan='4' align='center'>Total Diskon</td>
+			<td align='right'>".number_format($data_bayar->disc_nilai,0,',','.')."</td>
+		</tr>
+		<tr>
+			<td colspan='4' align='center'>Total (Nett)</td>
+			<td align='right'>".number_format($data_bayar->total_nett,0,',','.')."</td>
+		</tr>";
 
 		if (!$data_bayar) {
 			echo json_encode([
@@ -568,7 +600,8 @@ class Pembayaran extends CI_Controller {
 
 		$data = array(
 			'status' => true,
-			'old_data' => $data_bayar
+			'old_data' => $data_bayar,
+			'html_rinci' => $html_rinci
 		);
 
 		echo json_encode($data);

@@ -1,5 +1,5 @@
 <div class="modal fade modal_detail" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_detail">
-  <div class="modal-dialog modal-xl" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal_title_det"></h5>
@@ -11,7 +11,7 @@
           <table class="table table-responsive table-borderless">
             <tbody>
               <tr>
-                <th style="width: 150px;">Klinik</th>
+                <th style="width: 130px;">Klinik</th>
                 <td style="width: 10px;"> : </td>
                 <td><span id="klinik_det"></span></td>
               </tr>
@@ -37,113 +37,43 @@
         <div class="col-md-6">
           <table class="table table-responsive table-borderless">
             <tbody>
-              <tr>
-                <th style="width: 150px;">Suku Bangsa</th>
+              <tr> 
+                <th style="width: 130px;">Nama Pasien</th>
                 <td style="width: 10px;"> : </td>
-                <td><span id="suku_det"></span></td>
+                <td><span id="pasien_det"></span></td>
               </tr>
               <tr> 
-                <th>Jenis Kelamin</th>
+                <th>No. RM</th>
                 <td> : </td>
-                <td><span id="jenkel_det"></span></td>
+                <td><span id="rm_det"></span></td>
               </tr>
               <tr>
-                <th>Pekerjaan</th>
+                <th>Jenis Bayar</th>
                 <td> : </td>
-                <td><span id="pekerjaan_det"></span></td>
+                <td><span id="jenis_det"></span></td>
               </tr>
-              <tr>
-                <th>No. HP/WA</th>
+              <tr> 
+                <th>Nama Kredit</th>
                 <td> : </td>
-                <td><span id="hp_det"></span></td>
+                <td><span id="kredit_det"></span></td>
               </tr>
             </tbody>
           </table>
         </div>
         
-        <div class="col-md-12">
-          <table class="table table-responsive table-borderless">
-            <tbody>
+        <div class="modal-header col-md-12"><h5 class="modal-title">Rincian</h5></div>
+        <div class="col-12">
+          <table class="table table-bordered">
+            <thead>
               <tr>
-                <th style="width: 150px;">Alamat Rumah</th>
-                <td style="width: 10px;"> : </td>
-                <td><span id="alamat_rmh_det"></span></td>
+                <th>Jenis</th>
+                <th>Nama</th>
+                <th>Harga</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
               </tr>
-              <tr> 
-                <th>Alamat Kantor</th>
-                <td> : </td>
-                <td><span id="alamat_ktr_det"></span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-header col-md-12"><h5 class="modal-title">Data Medik</h5></div>
-        <div class="col-md-6">
-          <table class="table table-responsive table-borderless">
-            <tbody>
-              <tr>
-                <th style="width: 150px;">Golongan Darah</th>
-                <td style="width: 10px;"> : </td>
-                <td><span id="goldarah_det"></span></td>
-              </tr>
-              <tr>
-                <th>Tekanan Darah</th>
-                <td> : </td>
-                <td><span id="tekanandarah_det"></span></td>
-              </tr>
-              <tr>
-                <th>Penyakit Jantung</th>
-                <td> : </td>
-                <td><span id="jantung_det"></span></td>
-              </tr>
-              <tr> 
-                <th>Diabetes</th>
-                <td> : </td>
-                <td><span id="diabetes_det"></span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-6">
-          <table class="table table-responsive table-borderless">
-            <tbody>
-              <tr>
-                <th style="width: 150px;">Hepatitis</th>
-                <td style="width: 10px;"> : </td>
-                <td><span id="hepatitis_det"></span></td>
-              </tr>
-              <tr> 
-                <th>Haemopilia</th>
-                <td> : </td>
-                <td><span id="haemopilia_det"></span></td>
-              </tr>
-              <tr>
-                <th>Gastring</th>
-                <td> : </td>
-                <td><span id="gastring_det"></span></td>
-              </tr>
-              <tr>
-                <th>Penyakit Lainnya</th>
-                <td> : </td>
-                <td><span id="penyakitlain_det"></span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-12">
-          <table class="table table-responsive table-borderless">
-            <tbody>
-              <tr>
-                <th style="width: 150px;">Alergi Obat-Obatan</th>
-                <td style="width: 10px;"> : </td>
-                <td><span id="alergiobat_det"></span></td>
-              </tr>
-              <tr> 
-                <th>Alergi Makanan</th>
-                <td> : </td>
-                <td><span id="alergimakan_det"></span></td>
-              </tr>
-            </tbody>
+            </thead>
+            <tbody id="rincian_det"></tbody>
           </table>
         </div>
       </div>

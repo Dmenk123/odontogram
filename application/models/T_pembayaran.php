@@ -179,11 +179,13 @@ class T_pembayaran extends CI_Model
 
 	public function get_detail_pembayaran($id)
 	{
-		$this->db->select("a.*, b.no_reg, b.tanggal_reg, c.nama_klinik, CASE WHEN a.is_cash = 1 THEN 'Cash' ELSE 'Kredit' END as jenis_bayar, d.username");
+		$this->db->select("a.*, b.no_reg, b.tanggal_reg, c.nama_klinik, CASE WHEN a.is_cash = 1 THEN 'Cash' ELSE 'Kredit' END as jenis_bayar, d.username, e.no_rm, e.nama, f.nama as nama_kredit");
 		$this->db->from($this->table . ' a');
 		$this->db->join('t_registrasi b', 'a.id_reg = b.id', 'left');
 		$this->db->join('m_klinik c', 'b.id_klinik = c.id', 'left');
 		$this->db->join('m_user d', 'a.id_user = d.id', 'left');
+		$this->db->join('m_pasien e', 'b.id_pasien = e.id', 'left');
+		$this->db->join('m_bank_kredit f', 'a.reff_trans_kredit = f.id', 'left');
 		$this->db->where('a.deleted_at is null');
 		$this->db->where('a.id', $id);
 		$q = $this->db->get();
