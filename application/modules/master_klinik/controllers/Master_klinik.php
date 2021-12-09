@@ -15,26 +15,96 @@ class Master_klinik extends CI_Controller {
 
 	public function index()
 	{
-		$id_user = $this->session->userdata('id_user'); 
+		$id_user = $this->session->userdata('id_user');
 		$data_user = $this->m_user->get_detail_user($id_user);
-		$data_klinik = $this->m_global->single_row("*", "deleted_at is null", "m_klinik", NULL, "nama_klinik asc");
+		
+		/**
+		 * data passing ke halaman view content
+		 */
+		$data = array(
+			'title' => 'Pengelolaan Data Klinik',
+			'data_user' => $data_user,
+		);
 
-		if($data_klinik) {
-			$url_foto = base_url('files/img/app_img/').$data_klinik->gambar;
-		}else{
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => null,
+			'js'	=> 'master_klinik.js',
+			'view'	=> 'view_list'
+		];
+
+		$this->template_view->load_view($content, $data);
+	}
+
+	public function list_data_klinik()
+	{
+		$this->load->library('Enkripsi');
+		$listData = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_klinik', NULL, 'nama_klinik asc');
+		$datas = [];
+		$i = 1;
+		foreach ($listData as $key => $value) {
+			$datas[$key][] = $i++;
+			$datas[$key][] = $value->nama_klinik;
+			$datas[$key][] = $value->alamat;
+			$datas[$key][] = $value->kelurahan;
+			$datas[$key][] = $value->kecamatan;
+			$datas[$key][] = $value->kota;
+			$datas[$key][] = $value->kode_pos;
+			$datas[$key][] = $value->provinsi;
+			$datas[$key][] = $value->telp;
+			$str_aksi = '
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="'.base_url('master_klinik/edit_klinik/').$this->enkripsi->enc_dec('encrypt', $value->id).'">
+							<i class="la la-pencil"></i> Edit Klinik
+						</a>
+						<button class="dropdown-item" onclick="delete_transaksi(\'' . $value->id . '\')">
+							<i class="la la-trash"></i> Hapus
+						</button>
+					</div>
+				</div>
+			';
+			$datas[$key][] =  $str_aksi;
+		}
+
+		$data = [
+			'data' => $datas
+		];
+
+		echo json_encode($data);
+	}
+
+	public function edit_klinik($id)
+	{
+		$this->load->library('Enkripsi');
+		$id = $this->enkripsi->enc_dec('decrypt', $id);
+		$id_user = $this->session->userdata('id_user');
+		$data_user = $this->m_user->get_detail_user($id_user);
+		$data_klinik = $this->m_global->single_row("*", ['deleted_at' => null, 'id' => $id], "m_klinik", NULL, "nama_klinik asc");
+
+		if ($data_klinik) {
+			$url_foto = base_url('files/img/app_img/') . $data_klinik->gambar;
+		} else {
 			$url_foto = base_url('files/img/app_img/logo_default.png');
 		}
 
 		$foto = base64_encode(file_get_contents($url_foto));
-		$foto_encoded = 'data:image/jpeg;base64,'.$foto; 
-		
+		$foto_encoded = 'data:image/jpeg;base64,' . $foto;
+
 		/**
 		 * data passing ke halaman view content
 		 */
 		$data = array(
 			'title' => 'Profil Klinik',
 			'data_user' => $data_user,
-			'data_klinik'=> $data_klinik,
+			'data_klinik' => $data_klinik,
 			'foto_encoded' => $foto_encoded
 		);
 

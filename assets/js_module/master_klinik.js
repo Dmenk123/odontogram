@@ -12,6 +12,27 @@ $(document).ready(function() {
         readURL(this);
     });
 
+    table = $('#tabel_klinik').DataTable({
+        // dom: 'Bfrtip',
+        responsive: true,
+        processing: true,
+        serverside: true,
+        ajax: {
+            url  : base_url + "master_klinik/list_data_klinik",
+            type : "POST", 
+        },
+        language: {
+            decimal: ",",
+            thousands: "."
+        },
+        // columnDefs: [
+        //     { targets: 8, className: 'text-right' },
+        //     { targets: 9, className: 'text-right' },
+        //     { visible: false, searchable: false, targets: 10 },
+        //     { visible: false, searchable: false, targets: 11 },
+        // ]
+    });
+
 });	
 
 function reload_table()

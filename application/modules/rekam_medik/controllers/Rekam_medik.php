@@ -803,10 +803,10 @@ class Rekam_medik extends CI_Controller {
 		
 		//cek sudah ada data / tidak
 		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
-		
+	
 		if(!$data){
 			###insert
-			$id = $this->m_global->get_max_id('id', 't_tindakan');
+			$id = $this->m_global->get_max_id('id', 't_logistik');
 			$data = [
 				'id' => $id,
 				'id_pasien' => $id_psn,
