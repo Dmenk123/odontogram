@@ -76,7 +76,7 @@
         </table>
         <div align="center" style="margin-top:20px;">
             <?php
-                if ($odonto->gambar) { 
+                if (isset($odonto->gambar)) { 
             ?>
                 <img src="<?=base_url('upload/odontogram/'.$data_reg->id.'.png');?>" width="950" style="z-index:1">
             <?php

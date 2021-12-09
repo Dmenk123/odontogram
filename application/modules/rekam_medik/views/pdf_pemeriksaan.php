@@ -130,7 +130,7 @@
         </div>
         <div align="center" style="margin-top:20px;">
             <?php
-                if ($odonto->gambar) { 
+                if(isset($odonto->gambar)) { 
             ?>
                 <img src="<?=base_url('upload/odontogram/'.$data_reg->id.'.png');?>" width="750" style="z-index:1">
             <?php
@@ -223,12 +223,15 @@
                     <td>:</td>
                     <td>
                         <?php 
-                            $value = $odonto->diastema ?? '';
-                            if ($odonto->diastema != 'Tidak Ada') {
-                                $value .= ' ('.$odonto->keterangan_diastema.')';
-                            }else{
-                                $value .= ' ('.$odonto->keterangan_diastema.')';
+                            $value = $odonto->diastema ?? NULL;
+                            if ($value) {
+                                if ($odonto->diastema != 'Tidak Ada') {
+                                    $value .= ' ('.$odonto->keterangan_diastema.')';
+                                }else{
+                                    $value .= ' ('.$odonto->keterangan_diastema.')';
+                                }
                             }
+                           
                             echo $value;
                         ?>
                     </td>
@@ -238,12 +241,15 @@
                     <td>:</td>
                     <td>
                         <?php 
-                            $value = $odonto->gigi_anomali ?? '';
-                            if ($odonto->gigi_anomali != 'Tidak Ada') {
-                                $value .= ' ('.$odonto->keterangan_gigi_anomali.')';
-                            }else{
-                                $value .= ' ('.$odonto->keterangan_gigi_anomali.')';
+                            $value = $odonto->gigi_anomali ?? NULL;
+                            if ($value) {
+                                if ($odonto->gigi_anomali != 'Tidak Ada') {
+                                    $value .= ' ('.$odonto->keterangan_gigi_anomali.')';
+                                }else{
+                                    $value .= ' ('.$odonto->keterangan_gigi_anomali.')';
+                                }
                             }
+                            
                             echo $value;
                         ?>
                     </td>

@@ -147,4 +147,31 @@ class T_rekam_medik extends CI_Model
 			return $query->result();
 		}
 	}
+
+	public function getDiagnosaDet($id_reg)
+	{
+		$this->db->select('tdd.*, md.kode_diagnosa, md.nama_diagnosa');
+		$this->db->from("t_diagnosa_det tdd");
+		$this->db->join("t_diagnosa td", "td.id = tdd.id_t_diagnosa", "left");
+		$this->db->join("t_registrasi tr", "tr.id = td.id_reg", "left");
+		$this->db->join("m_diagnosa md", "md.id_diagnosa = tdd.id_diagnosa", "left");
+		$this->db->where('tdd.deleted_at is null');
+		$this->db->where('tr.id', $id_reg);
+		$query = $this->db->get();
+		return $query;
+
+	}
+
+	public function getTindakanDet($id_reg)
+	{
+		$this->db->select('ttd.*, mt.kode_tindakan, mt.nama_tindakan');
+		$this->db->from("t_tindakan_det ttd");
+		$this->db->join("t_tindakan tt", "tt.id = ttd.id_t_tindakan", "left");
+		$this->db->join("t_registrasi tr", "tr.id = tt.id_reg", "left");
+		$this->db->join("m_tindakan mt", "mt.id_tindakan = ttd.id_tindakan", "left");
+		$this->db->where('ttd.deleted_at is null');
+		$this->db->where('tr.id', $id_reg);
+		$query = $this->db->get();
+		return $query;
+	}
 }
