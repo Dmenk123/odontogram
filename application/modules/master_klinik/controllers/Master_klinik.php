@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Master_klinik extends CI_Controller {
 	
+	const KUOTA_KLINIK = 10;
 	public function __construct()
 	{
 		parent::__construct();
@@ -11,6 +12,7 @@ class Master_klinik extends CI_Controller {
 		}
 
 		$this->load->model(['m_klinik', 'm_user', 'm_global']);
+		// var_dump($this->m_klinik->get_jumlah_klinik());exit;
 	}
 
 	public function index()
@@ -81,6 +83,35 @@ class Master_klinik extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function add()
+	{
+		$id_user = $this->session->userdata('id_user');
+		$data_user = $this->m_user->get_detail_user($id_user);
+
+		/**
+		 * data passing ke halaman view content
+		 */
+		$data = array(
+			'title' => 'Pengelolaan Data Klinik',
+			'data_user' => $data_user,
+		);
+
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => null,
+			'js'	=> 'master_klinik.js',
+			'view'	=> 'view_master_klinik'
+		];
+
+		$this->template_view->load_view($content, $data);
+	}
+
 	public function edit_klinik($id)
 	{
 		$this->load->library('Enkripsi');
@@ -124,12 +155,110 @@ class Master_klinik extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
-	public function simpan_data()
+	public function add_data()
+	{
+		## cek 
+		$jml_klinik = $this->m_klinik->get_jumlah_klinik();
+		if($jml_klinik >= self::KUOTA_KLINIK) {
+			$retval['status'] = false;
+			$retval['pesan'] = 'Jumlah Klinik anda melebihi kuota ('.self::KUOTA_KLINIK.') Mohon Upgrade Layanan Anda';
+			echo json_encode($retval);
+			return;
+		} 
+		
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$arr_valid = $this->rule_validasi();
+
+		$nama = trim(strtoupper($this->input->post('nama')));
+		$alamat = trim(strtoupper($this->input->post('alamat')));
+		$kelurahan = trim(strtoupper($this->input->post('kelurahan')));
+		$kecamatan = trim(strtoupper($this->input->post('kecamatan')));
+		$kota = trim(strtoupper($this->input->post('kota')));
+		$provinsi = trim(strtoupper($this->input->post('provinsi')));
+		$kodepos = trim($this->input->post('kodepos'));
+		$website = trim($this->input->post('website'));
+		$dokter = trim(strtoupper($this->input->post('dokter')));
+		$sip = trim($this->input->post('sip'));
+		$telp = trim($this->input->post('telp'));
+		$email = trim($this->input->post('email'));
+		$namafileseo = $this->seoUrl('logo');
+
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+
+		$this->db->trans_begin();
+
+		$file_mimes = ['image/png', 'image/x-citrix-png', 'image/x-png', 'image/x-citrix-jpeg', 'image/jpeg', 'image/pjpeg'];
+
+		if (isset($_FILES['foto']['name']) && in_array($_FILES['foto']['type'], $file_mimes)) {
+			$this->konfigurasi_upload_img($namafileseo);
+			//get detail extension
+			$pathDet = $_FILES['foto']['name'];
+			$extDet = pathinfo($pathDet, PATHINFO_EXTENSION);
+
+			if ($this->file_obj->do_upload('foto')) {
+				$gbrBukti = $this->file_obj->data();
+				$nama_file_foto = $gbrBukti['file_name'];
+				$this->konfigurasi_image_resize($nama_file_foto);
+				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
+				$this->image_lib->clear();
+				## replace nama file + ext
+				$namafileseo = $this->seoUrl('logo') . '.' . $extDet;
+			} else {
+				$error = array('error' => $this->file_obj->display_errors());
+				var_dump($error);
+				exit;
+			}
+		} else {
+			$namafileseo = false;
+		}
+
+		$data_profil = [
+			'id' => $this->m_klinik->get_max_id_klinik(),
+			'nama_klinik' => $nama,
+			'alamat' => $alamat,
+			'kelurahan' => $kelurahan,
+			'kecamatan' => $kecamatan,
+			'kota' => $kota,
+			'kode_pos' => $kodepos,
+			'provinsi' => $provinsi,
+			'telp' => $telp,
+			'email' => $email,
+			'website' => $website,
+			'nama_dokter' => $dokter,
+			'sip' => $sip,
+			'created_at' => $timestamp,
+		];
+
+		if ($namafileseo != false) {
+			$data_profil['gambar'] = $namafileseo;
+		}
+
+		$insert = $this->m_klinik->save($data_profil);
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Profil klinik';
+		} else {
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Menambah Profil klinik';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function update_data()
 	{
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$arr_valid = $this->rule_validasi();
 		
+		$id = $this->input->get('id');
 		$nama = trim(strtoupper($this->input->post('nama')));
 		$alamat = trim(strtoupper($this->input->post('alamat')));
 		$kelurahan = trim(strtoupper($this->input->post('kelurahan')));
@@ -177,7 +306,6 @@ class Master_klinik extends CI_Controller {
 		}
 
 		$data_profil = [
-			'id' => $this->m_klinik->get_max_id_klinik(),
 			'nama_klinik' => $nama,
 			'alamat' => $alamat,
 			'kelurahan' => $kelurahan,
@@ -190,30 +318,23 @@ class Master_klinik extends CI_Controller {
 			'website' => $website,
 			'nama_dokter' => $dokter,
 			'sip' => $sip,
-			'created_at' => $timestamp,
+			'updated_at' => $timestamp,
 		];
 
 		if($namafileseo != false) {
 			$data_profil['gambar'] = $namafileseo; 
 		}
 
-		## get last data and set deleted at with timestamp
-		$last_data = $this->m_klinik->get_by_condition('deleted_at is null', true);
-		
-		if($last_data) {
-			$this->m_klinik->update(['id' => $last_data->id], ['deleted_at' => $timestamp]);
-		}
-
-		$insert = $this->m_klinik->save($data_profil);
+		$update = $this->m_klinik->update(['id' => $id], $data_profil);
 		
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal Menyimpan Profil klinik';
+			$retval['pesan'] = 'Gagal Update Profil klinik';
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses Menyimpan Profil klinik';
+			$retval['pesan'] = 'Sukses Update Profil klinik';
 		}
 
 		echo json_encode($retval);

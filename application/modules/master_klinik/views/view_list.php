@@ -32,7 +32,7 @@
               &nbsp;
               <?= $this->template_view->getOpsiButton(); ?>
               &nbsp;
-              <?= $this->template_view->getAddButton(true, 'add_klinik'); ?>
+              <?= $this->template_view->getAddButton(); ?>
             </div>
           </div>
         </div>

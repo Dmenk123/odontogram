@@ -40,8 +40,14 @@ function reload_table()
     table.ajax.reload(null,false); //reload datatable ajax 
 }
 
-function save()
+function save(id = null)
 {
+    if(id == null) {
+        var url = base_url + 'master_klinik/add_data';
+    }else{
+        var url = base_url + 'master_klinik/update_data?id='+id;
+    }
+
     var form = $('#form_profile')[0];
     var data = new FormData(form);
     $("#btnSave").prop("disabled", true);
@@ -49,7 +55,7 @@ function save()
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: base_url + 'master_klinik/simpan_data',
+        url: url,
         data: data,
         dataType: "JSON",
         processData: false, // false, it prevent jQuery form transforming the data into a query string
@@ -58,8 +64,11 @@ function save()
         timeout: 600000,
         success: function (data) {
             if(data.status) {
-                swal.fire("Sukses!!", "Update data profik klinik Berhasil", "success");
-                location.reload();
+                swalConfirm.fire('Berhasil !', data.pesan, 'success').then((cb) => {
+                    if(cb.value) {
+                        window.location.href = base_url + 'master_klinik';
+                    }
+                });
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {

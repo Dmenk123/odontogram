@@ -63,4 +63,13 @@ class M_klinik extends CI_Model
 		} 
 	}
 
+	public function get_jumlah_klinik()
+	{
+		$this->db->select('*');
+		$this->db->from('m_klinik');
+		$this->db->where('deleted_at', null);
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
 }
