@@ -21,7 +21,7 @@ class Master_user extends CI_Controller {
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
 		$data_peg = $this->m_global->multi_row("*", "is_aktif = '1' and deleted_at is null", "m_pegawai", NULL, "nama asc");
-			
+		$data_klinik = $this->m_global->multi_row("*", "deleted_at is null", "m_klinik", NULL, "nama_klinik asc");
 		/**
 		 * data passing ke halaman view content
 		 */
@@ -29,7 +29,8 @@ class Master_user extends CI_Controller {
 			'title' => 'Pengelolaan Data User',
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
-			'data_peg'	=> $data_peg
+			'data_peg'	=> $data_peg,
+			'data_klinik' => $data_klinik
 		);
 
 		/**

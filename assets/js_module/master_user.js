@@ -333,3 +333,5 @@ function readURL(input) {
         $('#preview_img').attr('src', '');
     }
 }
+
+// const 

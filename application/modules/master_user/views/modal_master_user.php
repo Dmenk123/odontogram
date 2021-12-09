@@ -68,7 +68,7 @@
           </div>
           <div class="form-group">
             <label for="lbl_role" class="form-control-label">Role User:</label>
-            <select class="form-control required" name="role" id="role">
+            <select class="form-control required" name="role" id="role" onchange="showKlinik(this.value)">
               <option value=""> Pilih Role User </option>
               <?php
               foreach ($data_role as $val) { ?>
@@ -79,6 +79,22 @@
             </select>
             <span class="help-block"></span>
           </div>
+
+          <div id="slide-option" class="hidden">
+            <div class="form-group">
+              <label for="lbl_status" class="form-control-label">Klinik : </label>
+              <select class="form-control required" name="klinik" id="klinik">
+                <option value="">Pilih Klinik </option>
+                <?php foreach ($data_klinik as $v) { ?>
+                  <option value="<?php echo $v->id; ?>">
+                      <?php echo $v->nama_klinik; ?>    
+                  </option>
+                <?php } ?>
+              </select>
+              <span class="help-block"></span>
+            </div>
+          </div>
+
           <div class="form-group">
             <label for="lbl_status" class="form-control-label">Status User:</label>
             <select class="form-control required" name="status" id="status">
@@ -87,6 +103,7 @@
             </select>
             <span class="help-block"></span>
           </div>
+
         </form>
       </div>
       <div class="modal-footer">

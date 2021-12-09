@@ -96,9 +96,9 @@ function save(id = null)
     });
 }
 
-function delete_user(id){
+function delete_transaksi(id){
     swalConfirmDelete.fire({
-        title: 'Hapus Data User ?',
+        title: 'Hapus Data ?',
         text: "Data Akan dihapus permanen ?",
         type: 'warning',
         showCancelButton: true,
@@ -108,13 +108,17 @@ function delete_user(id){
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'master_user/delete_user',
+                url : base_url + 'master_klinik/delete_data',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
                 success: function(data)
                 {
-                    swalConfirm.fire('Berhasil Hapus User!', data.pesan, 'success');
+                    swalConfirm.fire('Berhasil Hapus Klinik!', data.pesan, 'success').then((cb) => {
+                        if(cb.value) {
+                            window.location.href = base_url + 'master_klinik';
+                        }
+                    });
                     table.ajax.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown)

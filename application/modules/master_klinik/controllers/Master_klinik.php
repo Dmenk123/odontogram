@@ -67,7 +67,7 @@ class Master_klinik extends CI_Controller {
 						<a class="dropdown-item" href="'.base_url('master_klinik/edit_klinik/').$this->enkripsi->enc_dec('encrypt', $value->id).'">
 							<i class="la la-pencil"></i> Edit Klinik
 						</a>
-						<button class="dropdown-item" onclick="delete_transaksi(\'' . $value->id . '\')">
+						<button class="dropdown-item" onclick="delete_transaksi(\'' .$this->enkripsi->enc_dec('encrypt', $value->id). '\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
 					</div>
@@ -335,6 +335,24 @@ class Master_klinik extends CI_Controller {
 			$this->db->trans_commit();
 			$retval['status'] = true;
 			$retval['pesan'] = 'Sukses Update Profil klinik';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function delete_data()
+	{
+		$this->load->library('Enkripsi');
+		$enc_id = $this->input->post('id');
+		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		$del = $this->m_klinik->softdelete_by_id($id);
+		
+		if($del) {
+			$retval['status'] = TRUE;
+			$retval['pesan'] = 'Data Master dihapus';
+		}else{
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Data Master gagal dihapus';
 		}
 
 		echo json_encode($retval);

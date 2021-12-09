@@ -204,7 +204,7 @@
                         <?php }else{ ?>
                           <button id="btnSave" type="button" class="btn btn-success" onclick="save()">Simpan</button>&nbsp;
                         <?php } ?>
-                        <button type="reset" class="btn btn-secondary">Cancel</button>
+                        <a type="button" class="btn btn-secondary" href="<?=base_url($this->uri->segment(1));?>">Batal</a>
                       </div>
                     </div>
                   </div>
