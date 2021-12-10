@@ -13,6 +13,8 @@ class Master_user extends CI_Controller {
 		$this->load->model('m_user');
 		$this->load->model('m_global');
 		$this->load->model('set_role/m_set_role', 'm_role');
+		$this->load->library('Enkripsi');
+		
 	}
 
 	public function index()
@@ -21,7 +23,6 @@ class Master_user extends CI_Controller {
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
 		$data_peg = $this->m_global->multi_row("*", "is_aktif = '1' and deleted_at is null", "m_pegawai", NULL, "nama asc");
-		$data_klinik = $this->m_global->multi_row("*", "deleted_at is null", "m_klinik", NULL, "nama_klinik asc");
 		/**
 		 * data passing ke halaman view content
 		 */
@@ -30,7 +31,6 @@ class Master_user extends CI_Controller {
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
 			'data_peg'	=> $data_peg,
-			'data_klinik' => $data_klinik
 		);
 
 		/**
@@ -70,17 +70,26 @@ class Master_user extends CI_Controller {
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="detail_user(\''.$user->id.'\')">
+			';
+
+			if($user->is_all_klinik == null) {
+				$str_aksi .= '<a class="dropdown-item" href="'.base_url('master_user/akses_klinik/').$this->enkripsi->enc_dec('encrypt', $user->id).'">
+					<i class="la la-gear"></i> Akses Klinik
+				</a>';
+			}
+
+			$str_aksi .= '
+						<button class="dropdown-item" onclick="detail_user(\'' . $user->id . '\')">
 							<i class="la la-search"></i> Detail User
 						</button>
-						<button class="dropdown-item" onclick="edit_user(\''.$user->id.'\')">
+						<button class="dropdown-item" onclick="edit_user(\'' . $user->id . '\')">
 							<i class="la la-pencil"></i> Edit User
 						</button>
-						<button class="dropdown-item" onclick="delete_user(\''.$user->id.'\')">
+						<button class="dropdown-item" onclick="delete_user(\'' . $user->id . '\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
 			';
-
+			
 			if ($user->status == 1) {
 				$str_aksi .=
 				'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$user->id.'" value="aktif"><i class="la la-check">
@@ -135,6 +144,12 @@ class Master_user extends CI_Controller {
 		if(!$oldData){
 			return redirect($this->uri->segment(1));
 		}
+
+		
+		/* echo "<pre>";
+		print_r ($oldData);
+		echo "</pre>";
+		exit; */
 
 		$url_foto = base_url('files/img/user_img/').$oldData->foto;
 		$foto = base64_encode(file_get_contents($url_foto));  
@@ -396,6 +411,38 @@ class Master_user extends CI_Controller {
 		}
 
 		echo json_encode($data);
+	}
+
+	public function akses_klinik($id)
+	{
+		$id = $this->enkripsi->enc_dec('decrypt', $id);
+		$id_user = $id;
+		$data_user = $this->m_user->get_detail_user($id_user);
+		$data_klinik = $this->m_global->single_row("*", ['deleted_at' => null], "m_klinik", NULL, "nama_klinik asc");
+
+		/**
+		 * data passing ke halaman view content
+		 */
+		$data = array(
+			'title' => 'Akses User Klinik',
+			'data_user' => $data_user,
+			'data_klinik' => $data_klinik,
+		);
+
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => null,
+			'js'	=> 'master_user.js',
+			'view'	=> 'view_akses_klinik'
+		];
+
+		$this->template_view->load_view($content, $data);
 	}
 
 	public function template_excel()

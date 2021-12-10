@@ -131,10 +131,16 @@ function detail_user(id) {
         data : {id:id},
         success: function(data)
         {
-            $('#username_det').text(data.old_data.id);
-            $('#pegawai_det').text(data.old_data.username);
-            $('#role_det').text(data.old_data.id_role);
-            $('#status_det').text(data.old_data.status);
+            $('#username_det').text(data.old_data.username);
+            $('#pegawai_det').text(data.old_data.nama_pegawai);
+            $('#role_det').text(data.old_data.nama_role);
+            $('#status_det').text(() => {
+                if(data.old_data.status == '1') {
+                    return 'Aktif';
+                }else{
+                    return 'Non Aktif';
+                }
+            });
             $('#preview_img_det').attr('src', 'data:image/jpeg;base64,'+data.foto_encoded);
             $('#modal_user_detail').modal('show');
 	        $('#modal_title_det').text('Detail User'); 

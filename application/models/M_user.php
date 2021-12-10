@@ -27,7 +27,8 @@ class M_user extends CI_Model
 	{
 		$this->db->select('
 			m_user.*,
-			m_role.nama as nama_role
+			m_role.nama as nama_role,
+			m_role.is_all_klinik
 		');
 
 		$this->db->from('m_user');

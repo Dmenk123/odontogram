@@ -79,22 +79,7 @@
             </select>
             <span class="help-block"></span>
           </div>
-
-          <div id="slide-option" class="hidden">
-            <div class="form-group">
-              <label for="lbl_status" class="form-control-label">Klinik : </label>
-              <select class="form-control required" name="klinik" id="klinik">
-                <option value="">Pilih Klinik </option>
-                <?php foreach ($data_klinik as $v) { ?>
-                  <option value="<?php echo $v->id; ?>">
-                      <?php echo $v->nama_klinik; ?>    
-                  </option>
-                <?php } ?>
-              </select>
-              <span class="help-block"></span>
-            </div>
-          </div>
-
+          
           <div class="form-group">
             <label for="lbl_status" class="form-control-label">Status User:</label>
             <select class="form-control required" name="status" id="status">
