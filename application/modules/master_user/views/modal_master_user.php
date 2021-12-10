@@ -79,7 +79,7 @@
             </select>
             <span class="help-block"></span>
           </div>
-          
+
           <div class="form-group">
             <label for="lbl_status" class="form-control-label">Status User:</label>
             <select class="form-control required" name="status" id="status">
@@ -88,8 +88,8 @@
             </select>
             <span class="help-block"></span>
           </div>
-
         </form>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>

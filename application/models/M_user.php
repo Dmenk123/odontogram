@@ -97,9 +97,21 @@ class M_user extends CI_Model
 
 	public function get_detail_user($id_user)
 	{
-		$this->db->select('*');
+		$this->db->select('
+			m_user.*,
+			m_role.nama as nama_role,
+			m_role.is_all_klinik,
+			m_pegawai.kode as kode_pegawai,
+			m_pegawai.nama as nama_pegawai,
+			m_jabatan.nama as nama_jabatan
+		');
+
 		$this->db->from('m_user');
-		$this->db->where('id', $id_user);
+		$this->db->join('m_role', 'm_user.id_role = m_role.id', 'left');
+		$this->db->join('m_pegawai', 'm_user.id_pegawai = m_pegawai.id', 'left');
+		$this->db->join('m_jabatan', 'm_pegawai.id_jabatan = m_jabatan.id', 'left');
+		$this->db->where('m_user.id', $id_user);
+		$this->db->where('m_user.deleted_at is null');
 
         $query = $this->db->get();
 

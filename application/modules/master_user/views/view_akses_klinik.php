@@ -25,41 +25,23 @@
 
         <!--begin::Widget -->
         <div class="kt-widget kt-widget--user-profile-1">
-          <div class="kt-widget__head">
-            <div class="kt-widget__media">
-              <?php if(isset($foto_encoded)) { ?>
-                <img src="<?= $foto_encoded; ?>" alt="image">
-              <?php } ?>
-            </div>
-            <div class="kt-widget__content">
-              <div class="kt-widget__section">
-                <a href="#" class="kt-widget__username">
-                  <?php if(isset($data_klinik)) {echo $data_klinik->nama_klinik; }?>
-                  <i class="flaticon2-correct kt-font-success"></i>
-                </a>
-                <span class="kt-widget__subtitle">
-                  <?php if(isset($data_klinik)) {echo $data_klinik->alamat.' , '.$data_klinik->kota.' '.$data_klinik->provinsi.' , '.$data_klinik->kode_pos; } ?>
-                </span>
-              </div>
-            </div>
-          </div>
           <div class="kt-widget__body">
             <div class="kt-widget__content">
               <div class="kt-widget__info">
-                <span class="kt-widget__label">Dokter : </span>
-                <a href="#" class="kt-widget__data"><?php if(isset($data_klinik)){echo $data_klinik->nama_dokter;}?></a>
+                <span class="kt-widget__label">Pegawai : </span>
+                <a href="#" class="kt-widget__data"><?php if(isset($data_user)){echo $data_user->kode_user.' - '.$data_user->nama_pegawai;}?></a>
               </div>
               <div class="kt-widget__info">
-                <span class="kt-widget__label">SIP : </span>
-                <a href="#" class="kt-widget__data"><?php if(isset($data_klinik)){echo $data_klinik->sip;}?></a>
+                <span class="kt-widget__label">Jabatan : </span>
+                <a href="#" class="kt-widget__data"><?php if(isset($data_user)){echo $data_user->nama_jabatan;}?></a>
               </div>
               <div class="kt-widget__info">
-                <span class="kt-widget__label">Telp : </span>
-                <a href="#" class="kt-widget__data"><?php if(isset($data_klinik)) {echo $data_klinik->telp;} ?></a>
+                <span class="kt-widget__label">Role User : </span>
+                <a href="#" class="kt-widget__data"><?php if(isset($data_user)) {echo $data_user->nama_role;} ?></a>
               </div>
               <div class="kt-widget__info">
-                <span class="kt-widget__label">Email :</span>
-                <span class="kt-widget__data"><?php if(isset($data_klinik)) {echo $data_klinik->email;}?></span>
+                <span class="kt-widget__label">Username :</span>
+                <span class="kt-widget__data"><?php if(isset($data_user)) {echo $data_user->username;}?></span>
               </div>
             </div>
           </div>
@@ -74,33 +56,24 @@
             <div class="kt-portlet">
               <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                  <h3 class="kt-portlet__head-title">Profil Klinik <small><?php if(isset($foto_encoded)) {echo "Update"; }else{echo "Tambah"; }?> Profil Klinik pada Form dibawah ini</small></h3>
+                  <h3 class="kt-portlet__head-title">Akses User Klinik <small><?php if(isset($foto_encoded)) {echo "Update"; }else{echo "Tambah"; }?> Berikut merupakan form ceklist Akses Klinik</small></h3>
                 </div>
               </div>
-              <form class="kt-form" id="form_profile">
+              
+              <form class="kt-form" id="form_user_klinik">
                 <div class="kt-portlet__body">
                   <div class="kt-section kt-section--first">
                     <div class="kt-section__body">
                       <div class="form-group row">
-                        <label class="col-3 col-form-label">Checkboxes</label>
+                        <label class="col-3 col-form-label">Pilih Akses</label>
                         <div class="col-9">
                           <div class="kt-checkbox-list">
-                            <label class="kt-checkbox">
-                              <input type="checkbox"> Option 1
-                              <span></span>
-                            </label>
-                            <label class="kt-checkbox">
-                              <input type="checkbox"> Option 2
-                              <span></span>
-                            </label>
-                            <label class="kt-checkbox">
-                              <input type="checkbox" checked="checked"> Checked
-                              <span></span>
-                            </label>
-                            <label class="kt-checkbox kt-checkbox--disabled">
-                              <input type="checkbox" disabled=""> Disabled
-                              <span></span>
-                            </label>
+                            <?php foreach ($data_klinik as $key => $value) { ?>
+                              <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
+                                <input type="checkbox" name="id_klinik[]" value="<?=$value->id;?>"> <?=$value->nama_klinik;?>
+                                <span></span>
+                              </label>
+                            <?php } ?>
                           </div>
                         </div>
                       </div>
@@ -114,11 +87,7 @@
                       <div class="col-lg-3 col-xl-3">
                       </div>
                       <div class="col-lg-9 col-xl-9">
-                        <?php if(isset($data_klinik)) { ?>
-                          <button id="btnSave" type="button" class="btn btn-success" onclick="save('<?=$data_klinik->id;?>')">Simpan</button>&nbsp;
-                        <?php }else{ ?>
-                          <button id="btnSave" type="button" class="btn btn-success" onclick="save()">Simpan</button>&nbsp;
-                        <?php } ?>
+                        <button id="btnSave" type="button" class="btn btn-success" onclick="saveUserKlinik(<?=$data_user->id;?>)">Simpan</button>&nbsp;
                         <a type="button" class="btn btn-secondary" href="<?=base_url($this->uri->segment(1));?>">Batal</a>
                       </div>
                     </div>

@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 class Master_klinik extends CI_Controller {
 	
 	const KUOTA_KLINIK = 10;

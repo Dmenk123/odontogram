@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+use \Carbon\Carbon;
 class Master_user extends CI_Controller {
 	
 	public function __construct()
@@ -418,14 +418,19 @@ class Master_user extends CI_Controller {
 		$id = $this->enkripsi->enc_dec('decrypt', $id);
 		$id_user = $id;
 		$data_user = $this->m_user->get_detail_user($id_user);
-		$data_klinik = $this->m_global->single_row("*", ['deleted_at' => null], "m_klinik", NULL, "nama_klinik asc");
+		$data_klinik = $this->m_global->multi_row("*", ['deleted_at' => null], "m_klinik", NULL, "nama_klinik asc");
+		
+		/* echo "<pre>";
+		print_r ($data_klinik);
+		echo "</pre>";
+		exit; */
 
 		/**
 		 * data passing ke halaman view content
 		 */
 		$data = array(
 			'title' => 'Akses User Klinik',
-			'data_user' => $data_user,
+			'data_user' => $data_user[0],
 			'data_klinik' => $data_klinik,
 		);
 
@@ -443,6 +448,20 @@ class Master_user extends CI_Controller {
 		];
 
 		$this->template_view->load_view($content, $data);
+	}
+
+	public function set_user_klinik()
+	{
+		$id_user = $this->input->get('id');
+		$data = $this->m_global->multi_row('*', ['id_user' => $id_user], 't_user_klinik');
+		if(count($data) > 0) {
+			### delete existing
+			$this->m_global->delete($array_where = NULL, $table = NULL);
+		}
+		
+		foreach ($this->input->post('id_klinik') as $key => $value) {
+			$ins = $this->m_global->store(['id_user' => $id_user, 'id_klinik' => $value, 'created_at' => Carbon::now()->format('Y-m-d H:i:s')], 't_user_klinik');
+		}
 	}
 
 	public function template_excel()
