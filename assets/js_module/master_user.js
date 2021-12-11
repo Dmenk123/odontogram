@@ -242,14 +242,11 @@ function saveUserKlinik(id)
         timeout: 600000,
         success: function (data) {
             if(data.status) {
-                swal.fire("Sukses!!", "Aksi Berhasil", "success");
-                $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');
-                
-                reset_modal_form();
-                $(".modal").modal('hide');
-                
-                reload_table();
+                swalConfirm.fire('Sukses !', 'Berhasil Seting Akses Data', 'success').then((cb) => {
+                    if(cb.value) {
+                        window.location.href = base_url +'master_user';
+                    }
+                });
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {

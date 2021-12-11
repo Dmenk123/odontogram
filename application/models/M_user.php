@@ -162,11 +162,13 @@ class M_user extends CI_Model
 
 	//dibutuhkan di contoller login untuk ambil data user
 	function login($data){
-		return $this->db->select('*')
-			->where('username',$data['data_user'])
-			->where('password',$data['data_password'])
-			->where('status', 1 )
-			->get($this->table)->row();
+		return $this->db->select('m_user.*, m_role.is_all_klinik, t_user_klinik.id_klinik')
+			->join('t_user_klinik', 'm_user.id = t_user_klinik.id_user','left')
+			->join('m_role', 'm_user.id_role = m_role.id','left')
+			->where('m_user.username',$data['data_user'])
+			->where('m_user.password',$data['data_password'])
+			->where('m_user.status', 1 )
+			->get($this->table)->result();
 	}
 
 	//dibutuhkan di contoller login untuk set last login
@@ -228,6 +230,18 @@ class M_user extends CI_Model
 		}else{
 			return false;
 		}
+	}
+
+	public function get_data_user_by_id($id)
+	{
+		return $this->db->select('m_user.*, m_role.is_all_klinik, t_user_klinik.id_klinik, m_pegawai.nama as nama_pegawai, m_klinik.gambar as gambar_klinik, m_klinik.nama_klinik')
+			->join('t_user_klinik', 'm_user.id = t_user_klinik.id_user','left')
+			->join('m_role', 'm_user.id_role = m_role.id','left')
+			->join('m_pegawai', 'm_user.id_pegawai = m_pegawai.id','left')
+			->join('m_klinik', 't_user_klinik.id_klinik = m_klinik.id','left')
+			->where('m_user.id',$id)
+			->where('m_user.status', 1 )
+			->get($this->table)->result();
 	}
 
 	public function trun_master_user()

@@ -44,7 +44,7 @@
               <input type="text" class="form-control mask_rm" name="no_rm" onkeyup="to_upper(this)" disabled value="<?php if(isset($data_pasien)) {echo $data_pasien->no_rm;} ?>">
               <span class="help-block"></span>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-2 hidden">
               <div class="kt-checkbox-list">
                 <label class="kt-checkbox kt-checkbox--tick kt-checkbox--brand">
                   <input type="checkbox" class="form-control" id="cek_manual"> Manual

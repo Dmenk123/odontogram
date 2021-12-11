@@ -288,10 +288,10 @@ $obj_date = new DateTime();
                     </div>
                     <div class="kt-iconbox__desc">
                       <h5 class="kt-iconbox__title">
-                        Pulangkan
+                        Selesai
                       </h5>
                       <div class="kt-iconbox__content">
-                        <span style="font-size: 12px;">Pulangkan Pasien</span>
+                        <span style="font-size: 12px;">Selesai</span>
                       </div>
                     </div>
                   </div>

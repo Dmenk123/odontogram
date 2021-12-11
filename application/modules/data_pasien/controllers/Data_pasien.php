@@ -1,13 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use Carbon\Carbon;
+
 class Data_pasien extends CI_Controller {
 	
 	public function __construct()
 	{
 		parent::__construct();
-		if($this->session->userdata('logged_in') === false) {
+		if($this->session->userdata('logged_in') === null) {
 			return redirect('login');
+			exit;
 		}
 
 		$this->load->model('m_user');
@@ -315,7 +318,11 @@ class Data_pasien extends CI_Controller {
 			$pasien['id'] = $id_pasien;
 			
 			if($rm_otomatis) {
-				$pasien['no_rm'] = $this->m_pasien->get_kode_rm(substr($nama,0,2));
+				$pasien['no_rm'] = $this->m_pasien->get_kode_rm(
+					substr($nama,0,2), 
+					$obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('Y'),
+					$obj_date->createFromFormat('d/m/Y', $tanggal_lahir)->format('m')
+				);
 			}else{
 				$pasien['no_rm'] = trim($this->input->post('no_rm'));
 			}

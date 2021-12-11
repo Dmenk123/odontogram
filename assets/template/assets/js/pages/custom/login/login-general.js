@@ -98,7 +98,21 @@ var KTLoginGeneral = function() {
                 dataType: 'JSON',
                 success: function(response, status, xhr, $form) {
                     if(response.status) {
-                        window.location.replace(base_url+'home');
+                        if(response.is_klinik_choice) {
+                            window.location.replace(base_url+'login');
+
+                            let url = base_url+'login/middle_login';
+                            let form = $('<form action="' + url + '" method="post">' +
+                                '<input type="text" name="uid" value="' + response.uid + '" />' +
+                                '</form>'
+                            );
+
+                            $('body').append(form);
+                            form.submit();
+                            return;
+                        }else{
+                            window.location.replace(base_url+'home');
+                        }
                     }else{
                         setTimeout(function() {
                             btn.removeClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').attr('disabled', false);
@@ -223,7 +237,74 @@ var KTLoginGeneral = function() {
     };
 }();
 
+const swalConfirm = Swal.mixin({
+    customClass: {
+        confirmButton: 'btn btn-md btn-primary',
+        cancelButton: 'btn btn-md btn-danger'
+    },
+    buttonsStyling: false
+});
+
+const hostName = window.location.origin;
+const pecah = window.location.pathname.split('/');
+const baseurl = hostName+'/'+pecah[1]+'/';
+
 // Class Initialization
 jQuery(document).ready(function() {
     KTLoginGeneral.init();
+
+    $(document).on('click', '.div_menu', function(){
+        var kid = $(this).data('id');
+        var uid = $(this).data('uid');
+        var nm = $(this).data('nama');
+
+        swalConfirm.fire({
+            title: 'Perhatian',
+            text: "Login pada klinik "+nm+" ini",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya !',
+            cancelButtonText: 'Tidak !',
+            reverseButtons: false
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: baseurl + 'login/confirm_middle_login',
+                    data: {kid:kid, uid:uid},
+                    dataType: "JSON",
+                    success: function (data) {
+                        if(data.status) {
+                            swalConfirm.fire('Sukses !', 'Berhasil Login', 'success').then((cb) => {
+                                if(cb.value) {
+                                    window.location.href = baseurl + 'home';
+                                }
+                            });
+                        }else {
+                            swalConfirm.fire('Gagal !', 'Gagal Login', 'error').then((cb) => {
+                                if(cb.value) {
+                                    window.location.href = baseurl + 'login';
+                                }
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        console.log("ERROR : ", e);
+                    }
+                });
+            }else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalConfirm.fire(
+                'Dibatalkan',
+                'Aksi Dibatalakan',
+                'error'
+                );
+
+                $("#btnSave").prop("disabled", false);
+                $('#btnSave').text('Simpan');
+            }
+        });
+    });
 });

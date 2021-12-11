@@ -70,7 +70,13 @@
                           <div class="kt-checkbox-list">
                             <?php foreach ($data_klinik as $key => $value) { ?>
                               <label class="kt-checkbox kt-checkbox--bold kt-checkbox--success">
-                                <input type="checkbox" name="id_klinik[]" value="<?=$value->id;?>"> <?=$value->nama_klinik;?>
+                                <input type="checkbox" name="id_klinik[]" value="<?=$value->id;?>" 
+                                  <?php foreach ($data_akses_klinik as $k => $v) {
+                                    if($value->id == $v->id_klinik) {
+                                      echo "checked";
+                                    }
+                                  }?>
+                                > <?=$value->nama_klinik;?>
                                 <span></span>
                               </label>
                             <?php } ?>

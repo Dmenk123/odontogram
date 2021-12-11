@@ -419,6 +419,7 @@ class Master_user extends CI_Controller {
 		$id_user = $id;
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_klinik = $this->m_global->multi_row("*", ['deleted_at' => null], "m_klinik", NULL, "nama_klinik asc");
+		$data_akses_klinik = $this->m_global->multi_row("*", ['deleted_at' => null, 'id_user' => $id_user], "t_user_klinik", NULL, "id asc");
 		
 		/* echo "<pre>";
 		print_r ($data_klinik);
@@ -432,7 +433,14 @@ class Master_user extends CI_Controller {
 			'title' => 'Akses User Klinik',
 			'data_user' => $data_user[0],
 			'data_klinik' => $data_klinik,
+			'data_akses_klinik' => $data_akses_klinik
 		);
+
+		
+		// echo "<pre>";
+		// print_r ($data);
+		// echo "</pre>";
+		// exit;
 
 		/**
 		 * content data untuk template
@@ -456,12 +464,14 @@ class Master_user extends CI_Controller {
 		$data = $this->m_global->multi_row('*', ['id_user' => $id_user], 't_user_klinik');
 		if(count($data) > 0) {
 			### delete existing
-			$this->m_global->delete($array_where = NULL, $table = NULL);
+			$this->m_global->delete(['id_user' => $id_user], 't_user_klinik');
 		}
 		
 		foreach ($this->input->post('id_klinik') as $key => $value) {
 			$ins = $this->m_global->store(['id_user' => $id_user, 'id_klinik' => $value, 'created_at' => Carbon::now()->format('Y-m-d H:i:s')], 't_user_klinik');
 		}
+
+		echo json_encode(['status' => true]);
 	}
 
 	public function template_excel()

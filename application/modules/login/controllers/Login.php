@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use Carbon\Carbon;
+
 class Login extends CI_Controller {
 
 	
@@ -8,23 +10,97 @@ class Login extends CI_Controller {
 	{
 		parent::__construct();
 		//Do your magic here
+		$this->load->library('Enkripsi');
+		
 	}
 	
 
 	public function index()
 	{	
-		if ($this->session->userdata('username') !== null) {
-			redirect('home');
+		if ($this->session->userdata('logged_in') !== null) {
+			return redirect('home');
 		}
 
 		$this->load->view('view_login');
 	}
 
-	public function proses()
+	public function middle_login()
 	{
 		$this->load->model('m_user');
-		$this->load->library('Enkripsi');
 		
+		if(!$this->input->post('uid')) {
+			return redirect('login');
+		}
+
+		if ($this->session->userdata('logged_in') !== null) {
+			return redirect('home');
+		}
+
+		$id = $this->input->post('uid');
+		$id_user = $this->enkripsi->enc_dec('decrypt', $id);
+		$result = $this->m_user->get_data_user_by_id($id_user);
+
+		if(!$result){
+			return redirect('login');
+		}else{
+		
+			$data = array(
+				'title' => 'Login',
+				'data' => $result,
+				'greet' => $this->greet()
+			);
+	
+			$this->load->view('view_middle_login', $data);
+			
+		}
+	}
+
+	public function confirm_middle_login()
+	{
+		$this->load->model('m_user');
+		$id_user = $this->enkripsi->enc_dec('decrypt', $this->input->post('uid'));
+		
+		$id_klinik = $this->enkripsi->enc_dec('decrypt', $this->input->post('kid'));
+		$data_klinik = $this->m_global->single_row("*", ['deleted_at' => null, 'id' => $id_klinik], "m_klinik");
+		if(!$data_klinik) {
+			echo json_encode([
+				'status' => false,
+				'url' => 'dashboard'
+			]);
+			return;
+		}
+
+		### user administrator
+		$this->m_user->set_lastlogin($id_user);
+
+		$data_user = $this->m_global->single_row("*", ['deleted_at' => null, 'id' => $id_user], "m_user");
+		if(!$data_user) {
+			echo json_encode([
+				'status' => false,
+			]);
+			return;
+		}
+
+		$this->session->set_userdata(
+			array(
+				'username' => $data_user->username,
+				'id_user' => $data_user->id,
+				'last_login' => $data_user->last_login,
+				'id_role' => $data_user->id_role,
+				'id_klinik' => $data_klinik->id,
+				'logged_in' => true,
+			)
+		);
+
+		echo json_encode([
+			'status' => true,
+		]);
+		
+	}
+
+	public function proses()
+	{
+		$this->load->model('m_user');		
 		$pass_string = $this->input->post('password');
 		$hasil_password = $this->enkripsi->enc_dec('encrypt', $pass_string);
 		// $this->register_user($this->input->post('username'), $hasil_password);
@@ -35,26 +111,39 @@ class Login extends CI_Controller {
 		);
 		
 		$result = $this->m_user->login($data_input);
-
-		if ($result) {
-			$this->m_user->set_lastlogin($result->id);
-			// unset($data['id_user']);
-			$this->session->set_userdata(
-				array(
-					'username' => $result->username,
-					'id_user' => $result->id,
-					'last_login' => $result->last_login,
-					'id_role' => $result->id_role,
-					'id_klinik' => $result->id_klinik,
-					'logged_in' => true,
-				));
+		
+		if(count($result) > 0) {
+			if($result[0]->is_all_klinik == '1') {
+				### user administrator
+				$this->m_user->set_lastlogin($result[0]->id);
+				$this->session->set_userdata(
+					array(
+						'username' => $result[0]->username,
+						'id_user' => $result[0]->id,
+						'last_login' => $result[0]->last_login,
+						'id_role' => $result[0]->id_role,
+						'id_klinik' => null,
+						'logged_in' => true,
+					)
+				);
 
 				echo json_encode([
-					'status' => true
+					'status' => true,
+					'is_klinik_choice' => false,
 				]);
+			}else{
+				### user dokter
+				echo json_encode([
+					'status' => true,
+					'is_klinik_choice' => true,
+					'uid' => $this->enkripsi->enc_dec('encrypt', $result[0]->id),
+				]);
+			}
+			
 		}else{
 			echo json_encode([
-				'status' => false
+				'status' => false,
+				'is_klinik_choice' => false,
 			]);
 			// $this->session->set_flashdata('message', 'Kombinasi Username & Password Salah, Mohon di cek ulang');
 			// redirect('login');
@@ -79,7 +168,6 @@ class Login extends CI_Controller {
 
 	public function lihat_pass($username)
 	{
-		$this->load->library('Enkripsi');
 		$data = $this->db->query("select password from tbl_user where username = '$username'")->row();
 		$str_dec = $this->enkripsi->decrypt($data->password);
 		echo $str_dec;
@@ -97,5 +185,17 @@ class Login extends CI_Controller {
 		];
 		$this->db->insert('m_user', $data);
 		
+	}
+
+	protected function greet()
+	{
+		$hour = Carbon::now()->format('H');
+		if ((int)$hour < 12) {
+			return 'Selamat Pagi';
+		}
+		if ((int)$hour < 17) {
+			return 'Selamat Siang';
+		}
+		return 'Selamat Malam';
 	}
 }

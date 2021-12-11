@@ -120,7 +120,7 @@ class Master_klinik extends CI_Controller {
 		$data_klinik = $this->m_global->single_row("*", ['deleted_at' => null, 'id' => $id], "m_klinik", NULL, "nama_klinik asc");
 
 		if ($data_klinik) {
-			$url_foto = base_url('files/img/app_img/') . $data_klinik->gambar;
+			$url_foto = base_url('files/img/klinik_img/') . $data_klinik->gambar;
 		} else {
 			$url_foto = base_url('files/img/app_img/logo_default.png');
 		}
@@ -181,7 +181,7 @@ class Master_klinik extends CI_Controller {
 		$sip = trim($this->input->post('sip'));
 		$telp = trim($this->input->post('telp'));
 		$email = trim($this->input->post('email'));
-		$namafileseo = $this->seoUrl('logo');
+		$namafileseo = $this->seoUrl($nama.time());
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -205,7 +205,7 @@ class Master_klinik extends CI_Controller {
 				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
 				$this->image_lib->clear();
 				## replace nama file + ext
-				$namafileseo = $this->seoUrl('logo') . '.' . $extDet;
+				$namafileseo =  $this->seoUrl($nama.time()) . '.' . $extDet;
 			} else {
 				$error = array('error' => $this->file_obj->display_errors());
 				var_dump($error);
@@ -270,7 +270,7 @@ class Master_klinik extends CI_Controller {
 		$sip = trim($this->input->post('sip'));
 		$telp = trim($this->input->post('telp'));
 		$email = trim($this->input->post('email'));
-		$namafileseo = $this->seoUrl('logo');
+		$namafileseo =  $this->seoUrl($nama.time());
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -295,7 +295,7 @@ class Master_klinik extends CI_Controller {
 				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
 				$this->image_lib->clear();
 				## replace nama file + ext
-				$namafileseo = $this->seoUrl('logo').'.'.$extDet;
+				$namafileseo =  $this->seoUrl($nama.time()).'.'.$extDet;
 			} else {
 				$error = array('error' => $this->file_obj->display_errors());
 				var_dump($error);exit;
@@ -432,7 +432,7 @@ class Master_klinik extends CI_Controller {
 	private function konfigurasi_upload_img($nmfile)
 	{ 
 		//konfigurasi upload img display
-		$config['upload_path'] = './files/img/app_img/';
+		$config['upload_path'] = './files/img/klinik_img/';
 		$config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
 		$config['overwrite'] = TRUE;
 		$config['max_size'] = '4000';//in KB (4MB)
@@ -448,10 +448,10 @@ class Master_klinik extends CI_Controller {
 	{
 		//konfigurasi image lib
 	    $config['image_library'] = 'gd2';
-	    $config['source_image'] = './files/img/app_img/'.$filename;
+	    $config['source_image'] = './files/img/klinik_img/'.$filename;
 	    $config['create_thumb'] = FALSE;
 	    $config['maintain_ratio'] = FALSE;
-	    $config['new_image'] = './files/img/app_img/'.$filename;
+	    $config['new_image'] = './files/img/klinik_img/'.$filename;
 	    $config['overwrite'] = TRUE;
 	    $config['width'] = 450; //resize
 	    $config['height'] = 500; //resize
@@ -464,11 +464,11 @@ class Master_klinik extends CI_Controller {
 	{
 		//konfigurasi image lib
 	    $config2['image_library'] = 'gd2';
-	    $config2['source_image'] = './files/img/app_img/'.$filename;
+	    $config2['source_image'] = './files/img/klinik_img/'.$filename;
 	    $config2['create_thumb'] = TRUE;
 	 	$config2['thumb_marker'] = '_thumb';
 	    $config2['maintain_ratio'] = FALSE;
-	    $config2['new_image'] = './files/img/app_img/thumbs/'.$filename;
+	    $config2['new_image'] = './files/img/klinik_img/thumbs/'.$filename;
 	    $config2['overwrite'] = TRUE;
 	    $config2['quality'] = '60%';
 	 	$config2['width'] = 45;

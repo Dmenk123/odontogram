@@ -15,7 +15,7 @@
                     <div class="kt-footer  kt-grid__item kt-grid kt-grid--desktop kt-grid--ver-desktop" id="kt_footer">
                         <div class="kt-container  kt-container--fluid ">
                             <div class="kt-footer__copyright">
-                                2021&nbsp;&copy;&nbsp;Nama Klinik
+                                2021&nbsp;&copy;&nbsp;Sofine Dental Care
                             </div>
                             <div class="kt-footer__menu">
                                 Supported by : Melek Aplikasi
@@ -53,7 +53,7 @@
         <script src="<?= base_url('assets/'); ?>plugins/inputmask/dist/jquery.inputmask.min.js" type="text/javascript"></script>
         <!-- <script src="<?= base_url('assets/template/'); ?>assets/js/html2canvas.min.js" type="text/javascript"></script> -->
         <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"></script>
-        <script src="<?= base_url('build/'); ?>js/custom.js" type="text/javascript"></script>>
+        <script src="<?= base_url('build/'); ?>js/custom.js" type="text/javascript"></script>
         <!--end::Global Theme Bundle -->
         
         <!-- begin::Global Config(global config for global JS sciprts) -->
