@@ -17,7 +17,7 @@ class Login extends CI_Controller {
 
 	public function index()
 	{	
-		if ($this->session->userdata('logged_in') !== null) {
+		if ($this->session->userdata('logged_in') !== false) {
 			return redirect('home');
 		}
 
@@ -32,7 +32,7 @@ class Login extends CI_Controller {
 			return redirect('login');
 		}
 
-		if ($this->session->userdata('logged_in') !== null) {
+		if ($this->session->userdata('logged_in') !== false) {
 			return redirect('home');
 		}
 
