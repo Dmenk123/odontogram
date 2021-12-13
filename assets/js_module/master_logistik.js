@@ -187,7 +187,7 @@ function save()
                         reset_modal_form();
                         $(".modal").modal('hide');
                         
-                        reload_table();
+                        location.reload();
                     }else {
                         for (var i = 0; i < data.inputerror.length; i++) 
                         {
