@@ -11,7 +11,7 @@
           <div class="col-md-12">
             <div class="kt-portlet__body">
               <div class="form-group">
-                <input type="hidden" class="form-control" id="id_tindakan" name="id_tindakan" value="">           
+                <input type="hidden" class="form-control" id="id_tindakan" name="id_tindakan" value="">
                 <div class="col-12 row">
                   <label class="col-12 col-form-label">Tindakan :</label>
                 </div>
@@ -33,24 +33,25 @@
                 </div>
                 <div class="col-12 row">
                   <div class="col-2">
-                    <input type="number" class="form-control" id="tdk_gigi" name="tdk_gigi" value="">   
+                    <input type="number" class="form-control" name="tdk_gigi_num" value="" id="input_tdk_gigi_num">
+                    <input type="text" class="form-control" name="tdk_gigi_txt" value="all" id="input_tdk_gigi_txt" style="display: none;" readonly>
                     <span class="help-block"></span>
                   </div>
                   <div class="col-2">
-                    <input type="text" class="form-control" id="tdk_kode" name="tdk_kode" value="" readonly>   
+                    <input type="text" class="form-control" id="tdk_kode" name="tdk_kode" value="" readonly>
                     <span class="help-block"></span>
                   </div>
                   <div class="col-4">
-                    <input type="text" class="form-control" id="tdk_tindakan" name="tdk_tindakan" value="" readonly>   
+                    <input type="text" class="form-control" id="tdk_tindakan" name="tdk_tindakan" value="" readonly>
                     <span class="help-block"></span>
                   </div>
                   <div class="col-2">
-                    <input type="text" class="form-control" id="tdk_harga" name="tdk_harga" value="" readonly>
+                    <input type="text" data-thousands="." data-decimal="," id="tdk_harga" name="tdk_harga" class="form-control inputmask" onkeyup="setHargaRaw()" value="0">
                     <input type="hidden" class="form-control" id="tdk_harga_raw" name="tdk_harga_raw" value="">
                     <span class="help-block"></span>
                   </div>
                   <div class="col-2">
-                    <input type="text" class="form-control" id="tdk_ket" name="tdk_ket" value="">   
+                    <input type="text" class="form-control" id="tdk_ket" name="tdk_ket" value="">
                     <span class="help-block"></span>
                   </div>
                 </div>
@@ -59,7 +60,7 @@
                   <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_tindakan')">Tambahkan</button>
                 </div>
                 <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-               
+
                 <div class=" col-lg-12 col-sm-12">
                   <h3>Tabel tindakan Pasien</h3>
                   <table class="table table-striped- table-bordered table-hover" id="tabel_modal_tindakan">
@@ -78,7 +79,7 @@
                   </table>
                 </div>
               </div>
-              
+
             </div>
           </div>
         </form>

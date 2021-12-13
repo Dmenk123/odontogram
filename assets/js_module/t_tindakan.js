@@ -26,7 +26,8 @@ $(document).ready(function() {
                             kode: item.kode,
                             nama: item.nama,
                             harga: item.harga,
-                            harga_raw: item.harga_raw
+                            harga_raw: item.harga_raw,
+                            is_all_gigi: item.is_all_gigi
                         }
                     })
                 };
@@ -35,8 +36,18 @@ $(document).ready(function() {
     });
 
     $('#tindakan').on('select2:selecting', function(e) {
+        $('#input_tdk_gigi_num').val('');
+        $('#input_tdk_gigi_txt').val('');
+
         let data = e.params.args.data;
-        
+        if(data.is_all_gigi) {
+            $('#input_tdk_gigi_num').slideUp();
+            $('#input_tdk_gigi_txt').slideDown().val('all');
+        }else{
+            $('#input_tdk_gigi_num').slideDown();
+            $('#input_tdk_gigi_txt').slideUp().val('');
+        }
+
         $("#form_tindakan input[name='tdk_kode']").val(data.kode);
         $("#form_tindakan input[name='tdk_tindakan']").val(data.nama);
         $("#form_tindakan input[name='tdk_harga']").val(data.harga);
@@ -46,6 +57,7 @@ $(document).ready(function() {
 });
 
 function reloadFormTindakan(){
+    resetFormTindakan();
     $('#CssLoader').removeClass('hidden');
     $.ajax({
         type: "post",
@@ -101,5 +113,26 @@ function hapus_tindakan_det(id) {
           )
         }
     });
+}
+
+const resetFormTindakan = () => {
+    $('#tindakan').val('').trigger('change');
+    $("#form_tindakan input[name='tdk_gigi_num']").val('');
+    $("#form_tindakan input[name='tdk_gigi_txt']").val('');
+    $("#form_tindakan input[name='tdk_kode']").val('');
+    $("#form_tindakan input[name='tdk_tindakan']").val('');
+    $("#form_tindakan input[name='tdk_harga']").val('');
+    $("#form_tindakan input[name='tdk_harga_raw']").val('');
+    $("#form_tindakan input[name='tdk_ket']").val('');
+}
+
+const setHargaRaw = () => {
+    let rp = $('#tdk_harga').inputmask('unmaskedvalue');
+    let rpFix = parseFloat(rp).toFixed(2);
+    $('#tdk_harga_raw').val(rpFix);
+
+    // set value
+    // $('#total_biaya_nett_raw').val(totalBiayaFix);
+    // $('#biaya').val(formatMoney(Number(totalBiayaFix)));
 }
 

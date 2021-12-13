@@ -475,6 +475,7 @@ class Master_tindakan extends CI_Controller {
 				$row['text'] = $value->kode_tindakan.' - '.$value->nama_tindakan;
 				$row['kode'] = $value->kode_tindakan;
 				$row['nama'] = $value->nama_tindakan;
+				$row['is_all_gigi'] = $value->is_all_gigi;
 				$row['harga'] = number_format($value->harga,0,',','.');
 				$row['harga_raw'] = $value->harga;
 

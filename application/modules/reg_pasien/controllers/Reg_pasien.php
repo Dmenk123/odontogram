@@ -291,7 +291,7 @@ class Reg_pasien extends CI_Controller {
 		if($this->input->post('asuransi') !== null){
 			$flag_asuransi = true;
 			$nama_asuransi = $this->input->post('asuransi');
-			$no_asuransi = $this->input->post('no_asuransi');
+			$no_asuransi = contul($this->input->post('no_asuransi'));
 		}else{
 			$flag_asuransi = false;
 			$nama_asuransi = null;
@@ -312,8 +312,13 @@ class Reg_pasien extends CI_Controller {
 		$is_asuransi = ($flag_asuransi) ? 1 : null;
 		$umur = contul(trim($this->input->post('umur_reg')));
 		$id_pemetaan = contul($this->input->post('pemetaan'));
-		$id_klinik = contul($this->input->post('klinik'));
-
+		
+		if($this->session->userdata('id_klinik') != null) {
+			$id_klinik = $this->session->userdata('id_klinik');
+		}else{
+			$id_klinik = contul($this->input->post('klinik'));
+		}
+		
 		$this->db->trans_begin();
 		
 		$registrasi = [
@@ -663,12 +668,12 @@ class Reg_pasien extends CI_Controller {
 				$data['is_select2'][] = FALSE;
 			}
 			
-			if ($this->input->post('no_asuransi') == '') {
+			/* if ($this->input->post('no_asuransi') == '') {
 				$data['inputerror'][] = 'no_asuransi';
 				$data['error_string'][] = 'Wajib Mengisi Nomor Asuransi';
 				$data['status'] = FALSE;
 				$data['is_select2'][] = FALSE;
-			}
+			} */
 		}
 
         return $data;

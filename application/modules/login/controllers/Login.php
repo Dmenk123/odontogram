@@ -58,9 +58,10 @@ class Login extends CI_Controller {
 	{
 		$this->load->model('m_user');
 		$id_user = $this->enkripsi->enc_dec('decrypt', $this->input->post('uid'));
-		
 		$id_klinik = $this->enkripsi->enc_dec('decrypt', $this->input->post('kid'));
+
 		$data_klinik = $this->m_global->single_row("*", ['deleted_at' => null, 'id' => $id_klinik], "m_klinik");
+		
 		if(!$data_klinik) {
 			echo json_encode([
 				'status' => false,
@@ -69,10 +70,9 @@ class Login extends CI_Controller {
 			return;
 		}
 
-		### user administrator
 		$this->m_user->set_lastlogin($id_user);
-
 		$data_user = $this->m_global->single_row("*", ['deleted_at' => null, 'id' => $id_user], "m_user");
+		
 		if(!$data_user) {
 			echo json_encode([
 				'status' => false,
@@ -87,7 +87,7 @@ class Login extends CI_Controller {
 				'last_login' => $data_user->last_login,
 				'id_role' => $data_user->id_role,
 				'id_klinik' => $data_klinik->id,
-				'logged_in' => null,
+				'logged_in' => true,
 			)
 		);
 
@@ -159,7 +159,7 @@ class Login extends CI_Controller {
 			$this->session->unset_userdata('id_role');
 			$this->session->unset_userdata('last_login');
 			$this->session->unset_userdata('id_klinik');
-			$this->session->set_userdata(array('logged_in' => false));
+			$this->session->set_userdata(array('logged_in' => null));
 		}
 		
 		return redirect('login');

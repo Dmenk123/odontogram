@@ -129,13 +129,12 @@ class Rekam_medik extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$enc_id = $this->input->post('enc_id');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, peg.nama as nama_dokter, reg.nama_asuransi";
 		$where = ['reg.id' => $id];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
 			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
 		];
 				
 		$data = $this->m_global->single_row($select, $where, $table, $join);
@@ -625,7 +624,15 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		$id_tindakan = $this->input->post('tindakan');
 		$ket = $this->input->post('tdk_ket');
-		$gigi = $this->input->post('tdk_gigi');
+		
+		if($this->input->post('tdk_gigi_num') != '') {
+			$gigi = $this->input->post('tdk_gigi_num');
+		}
+
+		if ($this->input->post('tdk_gigi_txt') != '') {
+			$gigi = $this->input->post('tdk_gigi_txt');
+		}
+		
 		$harga = $this->input->post('tdk_harga_raw');
 		
 		//cek sudah ada data / tidak
@@ -721,7 +728,7 @@ class Rekam_medik extends CI_Controller {
 					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_tindakan.'</td><td>'.$value->nama_tindakan.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakan_det(\''.$value->id_tindakan_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				}				
 			}
-			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($harga,2,',','.').'</strong></td></tr>';
+			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($harga,0,',','.').'</strong></td></tr>';
 		}
 
 		echo json_encode([
