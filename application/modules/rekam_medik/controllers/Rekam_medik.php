@@ -3,12 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use \Carbon\Carbon;
 
 class Rekam_medik extends CI_Controller {
-	
+	protected $prop_id_klinik = null;
+
 	public function __construct()
 	{
 		parent::__construct();
 		if($this->session->userdata('logged_in') === null) {
 			return redirect('login');
+		}
+
+		if($this->session->userdata('id_klinik') !== null) {
+			$this->prop_id_klinik = $this->session->userdata('id_klinik');
 		}
 
 		$this->load->model('m_user');
@@ -84,7 +89,8 @@ class Rekam_medik extends CI_Controller {
 			'pas.no_rm like' => '%'.$pilih_norm.'%',
 			'reg.tanggal_reg >=' => $tgl_filter_mulai,
 			'reg.tanggal_reg <=' => $tgl_filter_akhir,
-			'byr.'
+			'byr.is_locked' => null,
+			'reg.id_klinik' => $this->prop_id_klinik
 		];
 		$table = 't_registrasi as reg';
 		$join = [ 
@@ -607,101 +613,128 @@ class Rekam_medik extends CI_Controller {
 	///////////////////// start tindakan grup ////////////////////
 	public function simpan_form_tindakan()
 	{
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
-		$datenow = $obj_date->format('Y-m-d');
-		if($this->input->post('tindakan') == '') {
-			echo json_encode([
-				'status'=> true,
-				'pesan' => 'wajib memilih tindakan'
-			]);
-			return;
-		}
-
 		$this->db->trans_begin();
-		$id_psn = $this->input->post('id_psn');
-		$id_reg = $this->input->post('id_reg');
-		$id_peg = $this->input->post('id_peg');
-		$id_tindakan = $this->input->post('tindakan');
-		$ket = $this->input->post('tdk_ket');
-		
-		if($this->input->post('tdk_gigi_num') != '') {
-			$gigi = $this->input->post('tdk_gigi_num');
-		}
 
-		if ($this->input->post('tdk_gigi_txt') != '') {
-			$gigi = $this->input->post('tdk_gigi_txt');
-		}
-		
-		$harga = $this->input->post('tdk_harga_raw');
-		
-		//cek sudah ada data / tidak
-		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
-		
-		if(!$data){
-			###insert
-			$id = $this->m_global->get_max_id('id', 't_tindakan');
-			$data = [
-				'id' => $id,
-				'id_pasien' => $id_psn,
-				'id_pegawai' => $id_peg,
-				'id_reg' => $id_reg,
-				'id_user_adm' => $this->session->userdata('id_user'),
-				'tanggal' => $datenow,
-				'created_at' => $timestamp
-			];
-						
-			$insert = $this->t_rekam_medik->save($data, 't_tindakan');
+		try {
+			$obj_date = new DateTime();
+			$timestamp = $obj_date->format('Y-m-d H:i:s');
+			$datenow = $obj_date->format('Y-m-d');
+			if($this->input->post('tindakan') == '') {
+				echo json_encode([
+					'status'=> true,
+					'pesan' => 'wajib memilih tindakan'
+				]);
+				return;
+			}
 
-		}else{
-			$data = [
-				'id' => $data->id,
-				'id_pasien' => $data->id_pasien,
-				'id_pegawai' => $data->id_pegawai,
-				'id_reg' => $data->id_reg,
-				'id_user_adm' => $data->id_user_adm,
-				'tanggal' => $data->tanggal,
-				'created_at' => $data->created_at
-			];
-		}
+			$id_psn = $this->input->post('id_psn');
+			$id_reg = $this->input->post('id_reg');
+			$id_peg = $this->input->post('id_peg');
+			$id_tindakan = $this->input->post('tindakan');
+			$ket = $this->input->post('tdk_ket');
+			
+			if($this->input->post('tdk_gigi_num') != '') {
+				$gigi = $this->input->post('tdk_gigi_num');
+			}
 
-		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
-		$id_det = $this->m_global->get_max_id('id', 't_tindakan_det');
-		$data_det = [
-			'id' => $id_det,
-			'id_t_tindakan' => $cek_tindakan->id,
-			'id_tindakan' => $id_tindakan,
-			'gigi' => $gigi,
-			'harga' => (float)$harga,
-			'keterangan' => $ket,
-			'created_at' => $timestamp
-		];
+			if ($this->input->post('tdk_gigi_txt') != '') {
+				$gigi = $this->input->post('tdk_gigi_txt');
+			}
+			
+			$harga = $this->input->post('tdk_harga_raw');
+			
+			//cek sudah ada data / tidak
+			$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+			
+			if(!$data){
+				###insert
+				$id = $this->m_global->get_max_id('id', 't_tindakan');
+				$data = [
+					'id' => $id,
+					'id_pasien' => $id_psn,
+					'id_pegawai' => $id_peg,
+					'id_reg' => $id_reg,
+					'id_user_adm' => $this->session->userdata('id_user'),
+					'tanggal' => $datenow,
+					'created_at' => $timestamp
+				];
+							
+				$insert = $this->t_rekam_medik->save($data, 't_tindakan');
 
-		$data_det_kirim[] = $data_det;
+			}else{
+				$data = [
+					'id' => $data->id,
+					'id_pasien' => $data->id_pasien,
+					'id_pegawai' => $data->id_pegawai,
+					'id_reg' => $data->id_reg,
+					'id_user_adm' => $data->id_user_adm,
+					'tanggal' => $data->tanggal,
+					'created_at' => $data->created_at
+				];
+			}
 
-		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
+			$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
+			$cek_diskon = $this->m_global->single_row('*', ['deleted_at' => null], 't_diskon');
+			
+			if($cek_diskon) {
+				$diskon_nilai = (float)$harga * $cek_diskon->persentase / 100;
+				$diskon_persen = $cek_diskon->persentase;
+				$harga_bruto = (float)$harga;
+				$harga_nett = (float)$harga - $diskon_nilai;
+			}else{
+				$diskon_nilai = 0;
+				$diskon_persen = $cek_diskon->persentase;
+				$harga_bruto = (float)$harga;
+				$harga_nett = (float)$harga - $diskon_nilai;
+			}
 
-		// isi mutasi
-		/**
-		 * param 1 = id_registrasi
-		 * param 2 kode jenis transaksi (lihat m_jenis_trans)
-		 * param 3 data tabel transaksi (parent tabel)
-		 * param 4 data tabel detail transaksi (child tabel)
-		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
-		*/
-		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '2', $data, $data_det_kirim, '1');
+			$id_det = $this->m_global->get_max_id('id', 't_tindakan_det');
 
-		if ($this->db->trans_status() === FALSE){
+			$data_det['id'] = $id_det;
+			$data_det['id_t_tindakan'] = $cek_tindakan->id;
+			$data_det['id_tindakan'] = $id_tindakan;
+			$data_det['gigi'] = $gigi;
+			$data_det['harga'] = (float)$harga_nett;
+			$data_det['diskon_persen'] = $diskon_persen;
+			$data_det['diskon_nilai'] = (float)$diskon_nilai;
+			$data_det['harga_bruto'] = (float)$harga_bruto;
+			$data_det['keterangan'] = $ket;
+			$data_det['created_at'] = $timestamp;
+
+			$data_det_kirim[] = $data_det;
+
+			$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
+
+			// isi mutasi
+			/**
+			 * param 1 = id_registrasi
+			 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+			 * param 3 data tabel transaksi (parent tabel)
+			 * param 4 data tabel detail transaksi (child tabel)
+			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+			*/
+			$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '2', $data, $data_det_kirim, '1');
+
+			if ($this->db->trans_status() === FALSE){
+				$this->db->trans_rollback();
+				$retval['status'] = false;
+				$retval['pesan'] = 'Gagal Menambah Data';
+			}else{
+				$this->db->trans_commit();
+				$retval['status'] = true;
+				$retval['pesan'] = 'Sukses Menambah Data';
+			}
+
+			echo json_encode($retval);
+		} catch (\Throwable $th) {
 			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal Menambah Data';
-		}else{
-			$this->db->trans_commit();
-			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses Menambah Data';
+			
+			echo "<pre>";
+			print_r ($th);
+			echo "</pre>";
+			
 		}
-
-		echo json_encode($retval);
+		
 	}
 
 	public function load_form_tindakan()
