@@ -11,13 +11,12 @@ class Login extends CI_Controller {
 		parent::__construct();
 		//Do your magic here
 		$this->load->library('Enkripsi');
-		
 	}
 	
 
 	public function index()
 	{	
-		if ($this->session->userdata('logged_in') !== false) {
+		if ($this->session->userdata('logged_in') !== null) {
 			return redirect('home');
 		}
 
@@ -32,7 +31,7 @@ class Login extends CI_Controller {
 			return redirect('login');
 		}
 
-		if ($this->session->userdata('logged_in') !== false) {
+		if ($this->session->userdata('logged_in') !== null) {
 			return redirect('home');
 		}
 
@@ -88,7 +87,7 @@ class Login extends CI_Controller {
 				'last_login' => $data_user->last_login,
 				'id_role' => $data_user->id_role,
 				'id_klinik' => $data_klinik->id,
-				'logged_in' => true,
+				'logged_in' => null,
 			)
 		);
 

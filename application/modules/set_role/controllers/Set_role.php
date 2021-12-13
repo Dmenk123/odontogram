@@ -10,7 +10,7 @@ class Set_role extends CI_Controller {
 		$this->load->model('m_user');
 		$this->load->model('m_set_role','m_role');
 
-		if($this->session->userdata('logged_in') === false) {
+		if($this->session->userdata('logged_in') === null) {
 			return redirect('login');
 		}
 	}
