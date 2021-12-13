@@ -20,7 +20,7 @@ class Master_logistik extends CI_Controller {
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_jabatan = $this->m_global->multi_row('*', 'deleted_at is null', 'm_jabatan', null, 'nama');
-		$jenis = $this->m_global->getSelectedData('m_jenis_logistik', null)->result_array();
+		$jenis = $this->m_global->getSelectedData('m_jenis_logistik', ['deleted_at' => null])->result_array();
 				
 		/**
 		 * data passing ke halaman view content
@@ -61,8 +61,8 @@ class Master_logistik extends CI_Controller {
 			$row[] = $no;
 			$row[] = $log->kode_logistik;
 			$row[] = $log->nama_logistik;
-			$row[] = $log->harga_beli;
-			$row[] = $log->harga_jual;
+			// $row[] = $log->harga_beli;
+			// $row[] = $log->harga_jual;
 			$row[] = $log->stok;
 			$row[] = $log->jenis;
 			// $aktif_txt = ($diag->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
@@ -97,7 +97,7 @@ class Master_logistik extends CI_Controller {
 
 	public function list_jenis_logistik()
 	{
-		$list = $this->m_global->getSelectedData('m_jenis_logistik', NULL)->result_array();
+		$list = $this->m_global->getSelectedData('m_jenis_logistik', ['deleted_at' => null])->result_array();
 		
 		$data = array();
 		$no =$_POST['start'];
@@ -114,39 +114,12 @@ class Master_logistik extends CI_Controller {
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<button class="dropdown-item" onclick="edit_logistik(\''.$key['id_jenis_logistik'].'\')">
-							<i class="la la-pencil"></i> Edit Logistik
-						</button>
-						<button class="dropdown-item" onclick="delete_logistik(\''.$key['id_jenis_logistik'].'\')">
+						<button class="dropdown-item" onclick="delete_jenis_logistik(\''.$key['id_jenis_logistik'].'\')">
 							<i class="la la-trash"></i> Hapus
 						</button>
 			';
 
-			// if ($peg->is_aktif == 1) {
-			// 	$str_aksi .=
-			// 	'<button class="dropdown-item btn_edit_status" title="aktif" id="'.$diag->id_diagnosa.'" value="aktif"><i class="la la-check">
-			// 	</i> Aktif</button>';
-			// }else{
-			// 	$str_aksi .=
-			// 	'<button class="dropdown-item btn_edit_status" title="nonaktif" id="'.$diag->id_diagnosa.'" value="nonaktif"><i class="la la-close">
-			// 	</i> Non Aktif</button>';
-			// }	
-
-			// $str_aksi .= '</div></div>';
-		
-
 			$row[] = $str_aksi;
-
-			// if ($peg->is_aktif == 1) {
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-success btn_edit_status" href="javascript:void(0)" title="aktif" id="'.$peg->id.'" value="aktif">Aktif</i></button>';
-			// }else{
-			// 	$row[] =
-			// 	'<button class="btn btn-sm btn-warning" title="Edit" href="javascript:void(0)" onclick="edit_pegawai(\''.$peg->id.'\')">Edit</button>
-			// 	 <button class="btn btn-sm btn-danger btn_edit_status" href="javascript:void(0)" title="nonaktif" id="'.$peg->id.'" value="nonaktif">Non Aktif</button>';
-			// }
-
 			$data[] = $row;
 
 		}//end loop
@@ -184,7 +157,6 @@ class Master_logistik extends CI_Controller {
 
 	public function add_data_logistik()
 	{
-	
 		$this->load->library('Enkripsi');
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
@@ -192,8 +164,8 @@ class Master_logistik extends CI_Controller {
 		
 		$nama 		= trim($this->input->post('nama'));
 		$kode 		= trim($this->input->post('kode'));
-		$harga_beli = trim($this->input->post('harga_beli'));
-		$harga_jual = trim($this->input->post('harga_jual'));
+		// $harga_beli = trim($this->input->post('harga_beli'));
+		// $harga_jual = trim($this->input->post('harga_jual'));
 		$stok 		= trim($this->input->post('stok'));
 		$jenis 		= trim($this->input->post('jenis'));
 
@@ -208,8 +180,8 @@ class Master_logistik extends CI_Controller {
 		$data = [
 			'kode_logistik' => $kode,
 			'nama_logistik' => $nama,
-			'harga_beli' 	=> $harga_beli,
-			'harga_jual' 	=> $harga_jual,
+			'harga_beli' 	=> 0,
+			'harga_jual' 	=> 0,
 			'stok'			=> $stok,
 			'id_jenis_logistik' => $jenis,
 			'created_at' => $timestamp
@@ -239,12 +211,6 @@ class Master_logistik extends CI_Controller {
 		// $arr_valid = $this->rule_validasi();
 		
 		$nama 		= trim($this->input->post('nama_jenis'));
-
-		// if ($arr_valid['status'] == FALSE) {
-		// 	echo json_encode($arr_valid);
-		// 	return;
-		// }
-
 
 		$this->db->trans_begin();
 		
@@ -327,10 +293,25 @@ class Master_logistik extends CI_Controller {
 		$del = $this->m_logistik->softdelete_by_id($id);
 		if($del) {
 			$retval['status'] = TRUE;
-			$retval['pesan'] = 'Data Master Diagnosa Berhasil dihapus';
+			$retval['pesan'] = 'Data Master Logistik Berhasil dihapus';
 		}else{
 			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Data Master Diagnosa Gagal dihapus';
+			$retval['pesan'] = 'Data Master Logistik Gagal dihapus';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function delete_jenis_logistik()
+	{
+		$id = $this->input->post('id');
+		$del = $this->m_global->softdelete(['id_jenis_logistik' => $id], 'm_jenis_logistik');
+		if ($del) {
+			$retval['status'] = TRUE;
+			$retval['pesan'] = 'Data Master Jenis Logistik Berhasil dihapus';
+		} else {
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Data Master Jenis Logistik Gagal dihapus';
 		}
 
 		echo json_encode($retval);
@@ -639,7 +620,7 @@ class Master_logistik extends CI_Controller {
             $data['status'] = FALSE;
 		}
 
-		if ($this->input->post('harga_beli') == '') {
+		/* if ($this->input->post('harga_beli') == '') {
 			$data['inputerror'][] = 'harga_beli';
             $data['error_string'][] = 'Wajib mengisi Harga Beli';
             $data['status'] = FALSE;
@@ -649,7 +630,7 @@ class Master_logistik extends CI_Controller {
 			$data['inputerror'][] = 'harga_jual';
             $data['error_string'][] = 'Wajib mengisi Harga Jual';
             $data['status'] = FALSE;
-		}
+		} */
 
 		if ($this->input->post('stok') == '') {
 			$data['inputerror'][] = 'stok';

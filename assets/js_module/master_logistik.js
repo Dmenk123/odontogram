@@ -120,8 +120,8 @@ function edit_logistik(id)
             $('[name="id_logistik"]').val(data.old_data.id_logistik);
             $('[name="kode"]').val(data.old_data.kode_logistik);
             $('[name="nama"]').val(data.old_data.nama_logistik);
-            $('[name="harga_beli"]').val(data.old_data.harga_beli);
-            $('[name="harga_jual"]').val(data.old_data.harga_jual);
+            // $('[name="harga_beli"]').val(data.old_data.harga_beli);
+            // $('[name="harga_jual"]').val(data.old_data.harga_jual);
             $('[name="stok"]').val(data.old_data.stok);
             $('[name="jenis"]').val(data.old_data.id_jenis_logistik);
             $('#modal_pegawai_form').modal('show');
@@ -274,7 +274,7 @@ function save_jenis()
                         reset_modal_form();
                         $(".modal").modal('hide');
                         
-                        reload_table();
+                         location.reload();
                     }else {
                         for (var i = 0; i < data.inputerror.length; i++) 
                         {
@@ -326,6 +326,45 @@ function delete_logistik(id){
         if (result.value) {
             $.ajax({
                 url : base_url + 'master_logistik/delete_logistik',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus data logistik!', data.pesan, 'success');
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}
+
+function delete_jenis_logistik(id){
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Jenis ?',
+        text: "Data Akan dihapus permanen ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'master_logistik/delete_jenis_logistik',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},
