@@ -49,7 +49,7 @@
 	        <div class="row mt-5 register-container">
 	            <div class="col-md-5 isometric_box">
 	                <div class="isometric py-5">
-	                    <img src="https://bosswalfa.surabaya.go.id/assets/images/bg_login.png" width="100%" />
+	                    <img src="<?= base_url('assets/images/bg_login.png'); ?>" width="100%" />
 	                </div>
 	            </div>
 	            <div class="col-md-7">
