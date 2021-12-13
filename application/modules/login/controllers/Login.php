@@ -21,7 +21,7 @@ class Login extends CI_Controller {
 			return redirect('home');
 		}
 
-		$this->load->view('view_login');
+		$this->load->view('view_login2');
 	}
 
 	public function middle_login()
