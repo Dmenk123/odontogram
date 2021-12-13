@@ -9,7 +9,7 @@ class Home extends CI_Controller {
 		$this->load->model('dashboard/m_dashboard');
 		$this->load->model('m_user');
 
-		if($this->session->userdata('logged_in') === false) {
+		if($this->session->userdata('logged_in') === null) {
 			return redirect('login');
 		}
 	}

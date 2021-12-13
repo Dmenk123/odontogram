@@ -11,7 +11,7 @@ class Set_menu extends CI_Controller {
 		$this->load->model('m_set_menu','m_menu');
 
 		
-		if($this->session->userdata('logged_in') === false) {
+		if($this->session->userdata('logged_in') === null) {
 			return redirect('login');
 		}
 		

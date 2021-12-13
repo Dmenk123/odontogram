@@ -6,7 +6,7 @@ class Reg_pasien extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		if($this->session->userdata('logged_in') === false) {
+		if($this->session->userdata('logged_in') === null) {
 			return redirect('login');
 		}
 
@@ -124,12 +124,10 @@ class Reg_pasien extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.id_asuransi, reg.no_asuransi, asu.nama as nama_asuransi, asu.keterangan";
+		$select = "reg.nama_asuransi, reg.no_asuransi";
 		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
 		$table = 't_registrasi as reg';
-		$join = [ 
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id']
-		];
+		$join = null;
 
 		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
 		
@@ -139,25 +137,19 @@ class Reg_pasien extends CI_Controller {
 			$html = '
 				<div class="form-group row form-group-marginless kt-margin-t-20">
 					<label class="col-lg-2 col-form-label">Asuransi:</label>
-					<div class=" col-lg-6">
-					<select class="form-control kt-select2" id="asuransi" name="asuransi">
-						<option value="">Silahkan Pilih Nama Asuransi</option>
-			';
-			if($id != null) {
-				$html .= '<option value="'.$data_reg->id_asuransi.'" selected>'.$data_reg->nama_asuransi.'</option>';
-			}
+					<div class=" col-lg-8">';
 
-			$html .= '
-				</select>
-				<span class="help-block"></span>
+					if($id != null) {
+						$html .= '<input type="text" class="form-control" id="asuransi" name="asuransi" autocomplete="off" value="'.$data_reg->asuransi.'">';
+					}else{
+						$html .= '<input type="text" class="form-control" id="asuransi" name="asuransi" autocomplete="off" value="">';
+					}
+				
+					$html .= '<span class="help-block"></span>
+					</div>
 				</div>
-				<div class="col-lg-2">
-					<button type="button" class="btn btn-sm btn-success" onclick="tambah_data_asuransi()">
-						Tambah data Asuransi
-					</button>
-				</div>
-			</div>
-			<div><br /></div>
+
+				<div><br /></div>
 			<div class="form-group row form-group-marginless kt-margin-t-20">
 				<label class="col-lg-2 col-form-label">No. Asuransi:</label>
 				<div class=" col-lg-8">
@@ -258,13 +250,12 @@ class Reg_pasien extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.id_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, asu.nama as nama_asuransi, asu.keterangan, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik";
+		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik";
 		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as psn', 'on'	=> 'reg.id_pasien = psn.id'],
 			['table' => 'm_pegawai as peg', 'on'=> 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id'],
 			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id'],
 			['table' => 'm_klinik as kli', 'on' => 'reg.id_klinik = kli.id'],
 		];
@@ -299,11 +290,11 @@ class Reg_pasien extends CI_Controller {
 		
 		if($this->input->post('asuransi') !== null){
 			$flag_asuransi = true;
-			$id_asuransi = $this->input->post('asuransi');
-			$no_asuransi = $this->input->post('no_asuransi');
+			$nama_asuransi = $this->input->post('asuransi');
+			$no_asuransi = contul($this->input->post('no_asuransi'));
 		}else{
 			$flag_asuransi = false;
-			$id_asuransi = null;
+			$nama_asuransi = null;
 			$no_asuransi = null;
 		}
 
@@ -321,8 +312,13 @@ class Reg_pasien extends CI_Controller {
 		$is_asuransi = ($flag_asuransi) ? 1 : null;
 		$umur = contul(trim($this->input->post('umur_reg')));
 		$id_pemetaan = contul($this->input->post('pemetaan'));
-		$id_klinik = contul($this->input->post('klinik'));
-
+		
+		if($this->session->userdata('id_klinik') != null) {
+			$id_klinik = $this->session->userdata('id_klinik');
+		}else{
+			$id_klinik = contul($this->input->post('klinik'));
+		}
+		
 		$this->db->trans_begin();
 		
 		$registrasi = [
@@ -331,7 +327,7 @@ class Reg_pasien extends CI_Controller {
 			'jam_reg' => $jam_reg,
 			'id_pegawai' => $id_pegawai,
 			'is_asuransi' => $is_asuransi,
-			'id_asuransi' => $id_asuransi,
+			'nama_asuransi' => $nama_asuransi,
 			'no_asuransi' => $no_asuransi,
 			'id_klinik' => $id_klinik,
 			'umur' => $umur,
@@ -669,15 +665,15 @@ class Reg_pasien extends CI_Controller {
 				$data['inputerror'][] = 'asuransi';
 				$data['error_string'][] = 'Wajib Mengisi Asuransi';
 				$data['status'] = FALSE;
-				$data['is_select2'][] = TRUE;
+				$data['is_select2'][] = FALSE;
 			}
 			
-			if ($this->input->post('no_asuransi') == '') {
+			/* if ($this->input->post('no_asuransi') == '') {
 				$data['inputerror'][] = 'no_asuransi';
 				$data['error_string'][] = 'Wajib Mengisi Nomor Asuransi';
 				$data['status'] = FALSE;
 				$data['is_select2'][] = FALSE;
-			}
+			} */
 		}
 
         return $data;

@@ -1,4 +1,3 @@
-
 <div class="modal fade modal_add_form" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_pegawai_form">
   <div class="modal-dialog modal-xs" role="document">
     <div class="modal-content">
@@ -20,7 +19,7 @@
             <input type="text" class="form-control" id="nama" name="nama">
             <span class="help-block"></span>
           </div>
-          <div class="form-group">
+         <!--  <div class="form-group">
             <label for="lbl_telp1" class="form-control-label">Harga Beli:</label>
             <input type="number" class="form-control" id="harga_beli" name="harga_beli">
             <span class="help-block"></span>
@@ -29,7 +28,7 @@
             <label for="lbl_telp1" class="form-control-label">Harga Jual:</label>
             <input type="number" class="form-control" id="harga_jual" name="harga_jual">
             <span class="help-block"></span>
-          </div>
+          </div> -->
           <div class="form-group">
             <label for="lbl_telp1" class="form-control-label">Stok:</label>
             <input type="number" class="form-control" id="stok" name="stok">

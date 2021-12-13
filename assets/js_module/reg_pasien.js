@@ -187,7 +187,7 @@ $(document).ready(function() {
             dataType: "json",
             success: function (response) {
                 $('#div-append-form').html(response);
-                trigger_select_asuransi();
+                // trigger_select_asuransi();
             }
         });
     });   
@@ -225,37 +225,37 @@ function filter_tanggal(){
     });
 }
 
-function trigger_select_asuransi(){
-    $("#asuransi").select2({
-        // tags: true,
-        //multiple: false,
-        tokenSeparators: [',', ' '],
-        minimumInputLength: 0,
-        minimumResultsForSearch: 5,
-        ajax: {
-            url: base_url+'master_asuransi/get_select_asuransi',
-            dataType: "json",
-            type: "GET",
-            data: function (params) {
+// function trigger_select_asuransi(){
+//     $("#asuransi").select2({
+//         // tags: true,
+//         //multiple: false,
+//         tokenSeparators: [',', ' '],
+//         minimumInputLength: 0,
+//         minimumResultsForSearch: 5,
+//         ajax: {
+//             url: base_url+'master_asuransi/get_select_asuransi',
+//             dataType: "json",
+//             type: "GET",
+//             data: function (params) {
 
-                var queryParameters = {
-                    term: params.term
-                }
-                return queryParameters;
-            },
-            processResults: function (data) {
-                return {
-                    results: $.map(data, function (item) {
-                        return {
-                            text: item.text,
-                            id: item.id,
-                        }
-                    })
-                };
-            }
-        }
-    });
-}
+//                 var queryParameters = {
+//                     term: params.term
+//                 }
+//                 return queryParameters;
+//             },
+//             processResults: function (data) {
+//                 return {
+//                     results: $.map(data, function (item) {
+//                         return {
+//                             text: item.text,
+//                             id: item.id,
+//                         }
+//                     })
+//                 };
+//             }
+//         }
+//     });
+// }
 
 function clear_input_pasien() {
     $('#nik').val('');

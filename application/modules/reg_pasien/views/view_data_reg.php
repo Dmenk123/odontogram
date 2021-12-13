@@ -42,16 +42,20 @@
               <input type="text" class="form-control kt_datepicker" id="tgl_filter_akhir" readonly placeholder="Tanggal Akhir" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->format('d/m/Y'); ?>"/>
             </div>
           </div>
-          <div class="col-md-3 row">
-            <div class="kt-section">
-              <div class="kt-section__content">
-                <button type="button" class="btn btn-primary btn-sm" onclick="filter_tanggal()">Cari</button>
-                <button type="button" class="btn btn-sm btn-success" onclick="ekspor_excel()">Eksport Excel</button>
-                <button type="button" class="btn btn-sm btn-warning" onclick="cetak_data()">Cetak Data</button>
+          <div class="col-md-6 row">
+            <label class="col-form-label col-lg-2">&nbsp;</label>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="btn-group btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="filter_tanggal()">Cari</button>
+                  <button type="button" class="btn btn-sm btn-success" onclick="ekspor_excel()">Eksport Excel</button>
+                  <button type="button" class="btn btn-sm btn-warning" onclick="cetak_data()">Cetak Data</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
         <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
           <!--begin: Datatable -->
           <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_index">
