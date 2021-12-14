@@ -73,7 +73,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="div_diagnosa_modal_title">foto</h5>
+        <h5 class="modal-title" id="div_diagnosa_modal_title">Foto X-ray</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         </button>
       </div>
@@ -112,12 +112,12 @@
         <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
                
         <div class=" col-lg-12 col-sm-12">
-          <h3>Tabel Foto Pasien</h3>
+          <h3>Data Foto X-ray</h3>
           <table class="table table-striped- table-bordered table-hover" id="tabel_modal_kamera">
             <thead>
               <tr>
                 <th>No</th>
-                <th>Foto</th>
+                <th>Gambar</th>
                 <th>Keterangan</th>
                 <th style="width: 10%;">Aksi</th>
               </tr>

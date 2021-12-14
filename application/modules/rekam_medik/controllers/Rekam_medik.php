@@ -621,7 +621,7 @@ class Rekam_medik extends CI_Controller {
 			$datenow = $obj_date->format('Y-m-d');
 			if($this->input->post('tindakan') == '') {
 				echo json_encode([
-					'status'=> true,
+					'status'=> false,
 					'pesan' => 'wajib memilih tindakan'
 				]);
 				return;
@@ -990,7 +990,7 @@ class Rekam_medik extends CI_Controller {
 					$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				}				
 			}
-			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($grand_total,2,',','.').'</strong></td></tr>';
+			// $html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($grand_total,2,',','.').'</strong></td></tr>';
 		}
 
 		echo json_encode([
