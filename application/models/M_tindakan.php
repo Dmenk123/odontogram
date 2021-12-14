@@ -10,6 +10,7 @@ class M_tindakan extends CI_Model
 		'kode_tindakan',
 		'nama_tindakan',
 		'harga',
+		'disc_persen',
 		null
 	];
 

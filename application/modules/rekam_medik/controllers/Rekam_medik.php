@@ -673,20 +673,19 @@ class Rekam_medik extends CI_Controller {
 				];
 			}
 
-			$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan');
-			$cek_diskon = $this->m_global->single_row('*', ['deleted_at' => null], 't_diskon');
-			
-			if($cek_diskon) {
-				$diskon_nilai = (float)$harga * $cek_diskon->persentase / 100;
-				$diskon_persen = $cek_diskon->persentase;
-				$harga_bruto = (float)$harga;
-				$harga_nett = (float)$harga - $diskon_nilai;
-			}else{
-				$diskon_nilai = 0;
-				$diskon_persen = $cek_diskon->persentase;
-				$harga_bruto = (float)$harga;
-				$harga_nett = (float)$harga - $diskon_nilai;
-			}
+			$cek_tindakan = $this->m_global->single_row(
+				't_tindakan.id, m_tindakan.disc_persen', 
+				['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 
+				't_tindakan',
+				[
+					['table' => 'm_tindakan', 'on' => 't_tindakan.id_tindakan = m_tindakan.id_tindakan']
+				]
+			);
+						
+			$diskon_nilai = (float)$harga * $cek_tindakan->disc_persen / 100;
+			$diskon_persen = $cek_tindakan->disc_persen;
+			$harga_bruto = (float)$harga;
+			$harga_nett = (float)$harga - $diskon_nilai;
 
 			$id_det = $this->m_global->get_max_id('id', 't_tindakan_det');
 

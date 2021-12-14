@@ -25,6 +25,11 @@
             <input type="number" class="form-control" id="harga" name="harga">
             <span class="help-block"></span>
           </div>
+          <div class="form-group">
+            <label for="lbl_telp1" class="form-control-label">Diskon (%):</label>
+            <input type="text" class="form-control numberinput" id="diskon" name="diskon" value="0">
+            <span class="help-block"></span>
+          </div>
         </form>
       </div>
       <div class="modal-footer">

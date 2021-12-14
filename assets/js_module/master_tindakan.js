@@ -102,6 +102,7 @@ function edit_tindakan(id)
             $('[name="kode"]').val(data.old_data.kode_tindakan);
             $('[name="nama"]').val(data.old_data.nama_tindakan);
             $('[name="harga"]').val(data.old_data.harga);
+            $('[name="diskon"]').val(data.old_data.disc_persen);
             $('#modal_pegawai_form').modal('show');
 	        $('#modal_title').text('Edit Data Tindakan'); 
 
@@ -125,10 +126,10 @@ function save()
 
     if(save_method == 'add') {
         url = base_url + 'master_tindakan/add_data_tindakan';
-        txtAksi = 'Tambah Diagnosa';
+        txtAksi = 'Tambah Tindakan';
     }else{
         url = base_url + 'master_tindakan/update_data_tindakan';
-        txtAksi = 'Edit Diagnosa';
+        txtAksi = 'Edit Tindakan';
     }
     
     var form = $('#form-pegawai')[0];
@@ -136,14 +137,14 @@ function save()
     
     $("#btnSave").prop("disabled", true);
     $('#btnSave').text('Menyimpan Data'); //change button text
-    swalConfirmDelete.fire({
+    swalConfirm.fire({
         title: 'Perhatian !!',
         text: "Apakah anda yakin menambah data ini ?",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya',
         cancelButtonText: 'Tidak',
-        reverseButtons: true
+        reverseButtons: false
       }).then((result) => {
         if (result.value) {
             $.ajax({

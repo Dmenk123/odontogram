@@ -60,6 +60,7 @@ class Master_tindakan extends CI_Controller {
 			$row[] = $tin->kode_tindakan;
 			$row[] = $tin->nama_tindakan;
 			$row[] = $tin->harga;
+			$row[] = $tin->disc_persen;
 			// $aktif_txt = ($diag->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
 			// $row[] = $aktif_txt;			
 			
@@ -123,6 +124,7 @@ class Master_tindakan extends CI_Controller {
 		$nama_tindakan = trim($this->input->post('nama'));
 		$kode_tindakan = trim($this->input->post('kode'));
 		$harga 		   = trim($this->input->post('harga'));
+		$diskon 	   = $this->input->post('diskon');
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -136,6 +138,7 @@ class Master_tindakan extends CI_Controller {
 			'kode_tindakan' => $kode_tindakan,
 			'nama_tindakan' => $nama_tindakan,
 			'harga'         => $harga,
+			'disc_persen'   => $diskon,
 			'created_at' 	=> $timestamp
 		];
 		
@@ -170,6 +173,7 @@ class Master_tindakan extends CI_Controller {
 		$nama  = trim($this->input->post('nama'));
 		$kode  = trim($this->input->post('kode'));
 		$harga = trim($this->input->post('harga'));
+		$diskon = $this->input->post('diskon');
 
 		$this->db->trans_begin();
 		
@@ -177,6 +181,7 @@ class Master_tindakan extends CI_Controller {
 			'nama_tindakan' => $nama,
 			'kode_tindakan' => $kode,
 			'harga'         => $harga,
+			'disc_persen'   => $diskon,
 			'updated_at'    => $timestamp,
 		];
 
@@ -510,6 +515,12 @@ class Master_tindakan extends CI_Controller {
 		if ($this->input->post('harga') == '') {
 			$data['inputerror'][] = 'harga';
             $data['error_string'][] = 'Wajib mengisi Harga';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('diskon') == '') {
+			$data['inputerror'][] = 'diskon';
+            $data['error_string'][] = 'Wajib mengisi Diskon';
             $data['status'] = FALSE;
 		}
 

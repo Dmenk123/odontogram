@@ -47,6 +47,7 @@
               <th>Kode</th>
               <th>Nama Diagnosa</th>
               <th>Harga</th>
+              <th style="width: 10%;">Diskon (%)</th>
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>
