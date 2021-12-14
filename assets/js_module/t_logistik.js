@@ -59,6 +59,69 @@ function reloadFormLogistik(){
     });
 }
 
+function simpanHeader()
+{
+    $("#btnSaveHeader").prop("disabled", true);
+    $('#btnSaveHeader').text('Menyimpan Data ....');
+
+    var form = $('#form_logistik')[0];
+    var reg = new FormData(form);
+
+    swalConfirm.fire({
+        title: 'Perhatian',
+        text: "Apakah Anda ingin Menyimpan Keterangan Resep ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya !',
+        cancelButtonText: 'Tidak !',
+        reverseButtons: false
+    }).then((result) => {
+        if (result.value) {
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: base_url + 'rekam_medik/simpan_keterangan_resep',
+            data: reg,
+            dataType: "JSON",
+            processData: false, // false, it prevent jQuery form transforming the data into a query string
+            contentType: false, 
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                if(data.status) {
+                    swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success').then((cb) => {
+                        if(cb.value) {
+                            reloadFormLogistik();
+                        }
+                    });
+                }
+
+                $("#btnSaveHeader").prop("disabled", false);
+                $('#btnSaveHeader').text('Simpan');
+                
+            },
+            error: function (e) {
+                console.log("ERROR : ", e);
+                createAlert('Opps!','Terjadi Kesalahan','Coba Lagi nanti','danger',true,false,'pageMessages');
+                $("#btnSaveHeader").prop("disabled", false);
+                $('#btnSaveHeader').text('Simpan');
+            }
+        });
+        }else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalConfirm.fire(
+                'Dibatalkan',
+                'Aksi Dibatalakan',
+                'error'
+            );
+
+            $("#btnSaveHeader").prop("disabled", false);
+            $('#btnSaveHeader').text('Simpan');
+        }
+    });
+}
 
 function hapus_logistik_det(id) {
     swalConfirmDelete.fire({

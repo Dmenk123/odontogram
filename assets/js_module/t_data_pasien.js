@@ -44,18 +44,8 @@ function reloadFormPasien(){
         dataType: "json",
         success: function (response) {
            $('#CssLoader').addClass('hidden');
-           $('[name="nik"]').val(response.old_data.nik);
            $('[name="nama"]').val(response.old_data.nama);
            $('[name="no_rm"]').val(response.old_data.no_rm);
-           $('[name="tempat_lahir"]').val(response.old_data.tempat_lahir);
-           $('[name="tanggal_lahir"]').val(response.tgl_lahir);
-           $('[name="jenkel"]').val(response.old_data.jenis_kelamin);
-           $('[name="suku"]').val(response.old_data.suku);
-           $('[name="pekerjaan"]').val(response.old_data.pekerjaan);
-           $('[name="hp"]').val(response.old_data.hp);
-           $('[name="telp"]').val(response.old_data.telp_rumah);
-           $('[name="alamat_rumah"]').val(response.old_data.alamat_rumah);
-           $('[name="alamat_kantor"]').val(response.old_data.alamat_kantor);
            $('[name="gol_darah"]').val(response.old_data.gol_darah);
            $('[name="tekanan_darah_val"]').val(response.old_data.tekanan_darah_val);
            $('[name="tekanan_darah"]').val(response.old_data.tekanan_darah);

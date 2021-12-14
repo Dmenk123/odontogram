@@ -42,7 +42,9 @@
                       <tr>
                         <th>Nama</th>
                         <th>Qty</th>
+                        <th>Harga</th>
                         <th>Jenis</th>
+                        <th>Subtotal</th>
                         <th style="width: 10%;">Aksi</th>
                       </tr>
                     </thead>
@@ -64,7 +66,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" id="btnSaveHeader" class="btn btn-primary" onclick="simpanHeader()">Simpan Keterangan</button>
+        <button type="button" class="btn btn-primary" onclick="save('form_logistik')">Tambahkan</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
       </div>
     </div>

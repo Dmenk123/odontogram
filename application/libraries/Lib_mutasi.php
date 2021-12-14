@@ -468,6 +468,59 @@ class Lib_mutasi extends CI_Controller {
 
 			## cari honor dokter
 			## return tot_honor + data lama
+			// $tot_honor -= $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_transaksi);
+			$tot_honor = 0;
+			// var_dump($tot_honor);exit;
+
+			## jika transaksi penerimaan/pengeluaran
+			if($flag_transaksi == 1) {
+				$data_upd['total_penerimaan_gross'] = $gross_total;
+				$data_upd['total_honor_dokter'] = $tot_honor;
+				$data_upd['total_penerimaan_nett'] = (float)$gross_total - (float)$tot_honor;
+			}else{
+				$data_upd['total_pengeluaran'] = $gross_total;	
+			}
+
+			$data_upd['updated_at'] = $timestamp;
+			$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $data[0]->id]);
+			
+			if($upd){
+				####### FINAL RETURN
+				$retval = true;
+			}else{
+				####### FINAL RETURN
+				$retval = false;
+			}
+		}
+
+		return $retval;
+	}
+
+
+	function delete_mutasi_bak($id_reg, $id_jenis_trans, $data_transaksi, $id_trans_flag, $flag_transaksi) {
+		
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		$data = $this->_ci->t_mutasi->cek_data_mutasi($id_reg, $id_jenis_trans, $id_trans_flag);
+		
+		if(!$data){	
+			####### FINAL RETURN
+			$retval = false;
+		}
+		else{
+			$data_header['id_pegawai'] = $data_transaksi[0]['id_pegawai'];
+			
+			//set variabel dengan data lama yg nantinya akan ditambahkan
+			$tot_honor = (float)$data[0]->total_honor_dokter;
+			$gross_total = (float)$data[0]->total_penerimaan_gross;
+						
+			//insert detail
+			## return gross total penjumlahan dari data detail yg di delete + data lama
+			$gross_total -= $this->delete_data_det($data[0]->id, $data_transaksi[0]['id'], $data[0]->id_jenis_trans, $data_transaksi);
+
+			## cari honor dokter
+			## return tot_honor + data lama
 			$tot_honor -= $this->cari_honor_dokter($id_jenis_trans, $data_header, $data_transaksi);
 			// var_dump($tot_honor);exit;
 

@@ -838,7 +838,6 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		$logistik = $this->input->post('logistik');
 		$qty_obat = $this->input->post('qty_obat');
-		$ket_resep = $this->input->post('ket_resep');
 		$harga_jual_raw = $this->input->post('harga_jual_raw');
 		
 		//cek sudah ada data / tidak
@@ -855,7 +854,6 @@ class Rekam_medik extends CI_Controller {
 				'id_user_adm' => $this->session->userdata('id_user'),
 				'tanggal' => $datenow,
 				'created_at' => $timestamp,
-				'keterangan_resep' => $ket_resep
 			];
 						
 			$insert = $this->t_rekam_medik->save($data, 't_logistik');
@@ -868,7 +866,6 @@ class Rekam_medik extends CI_Controller {
 				'id_user_adm' => $this->session->userdata('id_user'),
 				'tanggal' => $datenow,
 				'created_at' => $timestamp,
-				'keterangan_resep' => $ket_resep
 			];
 		}
 
@@ -896,7 +893,63 @@ class Rekam_medik extends CI_Controller {
 		 * param 4 data tabel detail transaksi (child tabel)
 		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
 		*/
-		$mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '1', $data, $data_det_kirim, '1');
+		## $mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '1', $data, $data_det_kirim, '1');
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Data';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Menambah Data';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function simpan_keterangan_resep()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$ket_resep = $this->input->post('ket_resep');
+		
+		//cek sudah ada data / tidak
+		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
+	
+		if(!$data){
+			###insert
+			$id = $this->m_global->get_max_id('id', 't_logistik');
+			$data = [
+				'id' => $id,
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'created_at' => $timestamp,
+				'keterangan_resep' => $ket_resep
+			];
+						
+			$insert = $this->t_rekam_medik->save($data, 't_logistik');
+		}else{
+			$data = [
+				'id' => $data->id,
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'updated_at' => $timestamp,
+				'keterangan_resep' => $ket_resep
+			];
+		}
 		
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -924,17 +977,18 @@ class Rekam_medik extends CI_Controller {
 		$join = [ 
 			['table' => 't_logistik_det as tld', 'on' => 'tl.id = tld.id_t_logistik'],
 			['table' => 'm_logistik as ml', 'on' => 'tld.id_logistik = ml.id_logistik'],
-			['table' => 'm_jenis_logistik as mjl', 'on' => 'ml.id_jenis_logistik = mjl.jenis'],
+			['table' => 'm_jenis_logistik as mjl', 'on' => 'ml.id_jenis_logistik = mjl.id_jenis_logistik'],
 		];
 
 		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		
 		$html = '';
 		$grand_total = 0;
 		if($data){
 			foreach ($data as $key => $value) {
 				if($value->kode_logistik){
 					$grand_total += (float)$value->subtotal;
-					$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->jenis_logistik.'</td><td>'.number_format($value->subtotal,0,',','.').'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				}				
 			}
 			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($grand_total,2,',','.').'</strong></td></tr>';
@@ -977,7 +1031,7 @@ class Rekam_medik extends CI_Controller {
 			 * param 4 id_trans_flag (id_parent_tabel_transaksi)
 			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
 			*/
-			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '1', $data_kirim, $id_trans_flag, '1');
+			## $mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '1', $data_kirim, $id_trans_flag, '1');
 
 			if ($this->db->trans_status() === FALSE){
 				$this->db->trans_rollback();
