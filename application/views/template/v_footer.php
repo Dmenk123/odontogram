@@ -50,10 +50,19 @@
         <script src="<?= base_url('assets/'); ?>plugins/ckeditor/adapters/jquery.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/jquery-mask/jquery.mask.min.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/moment/moment.min.js" type="text/javascript"></script>
+        <script src="<?= base_url('assets/template/'); ?>assets/plugins/custom/fullcalendar/fullcalendar.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/inputmask/dist/jquery.inputmask.min.js" type="text/javascript"></script>
         <!-- <script src="<?= base_url('assets/template/'); ?>assets/js/html2canvas.min.js" type="text/javascript"></script> -->
         <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"></script>
         <script src="<?= base_url('build/'); ?>js/custom.js" type="text/javascript"></script>
+
+        	<!--begin::Page Vendors(used by this page) -->
+		
+        <!-- <script src="<?= base_url('assets/template/'); ?>assets/plugins/custom/fullcalendar/moment.js" type="text/javascript"></script> -->
+        <!--end::Page Vendors -->
+
+        <!--begin::Page Scripts(used by this page) -->
+        <!-- <script src="<?= base_url('assets/template/'); ?>assets/js/pages/components/calendar/basic.js" type="text/javascript"></script> -->
         <!--end::Global Theme Bundle -->
         
         <!-- begin::Global Config(global config for global JS sciprts) -->
