@@ -92,7 +92,13 @@ const reInitInputMask = () => {
     });
 }
 
-
+const formatMoney = (number) => {
+    var value = number.toLocaleString(
+        'id-ID', 
+        { minimumFractionDigits: 0 }
+    );
+    return value;
+}
 
 $(document).ready(function () {
     // setInterval(jamSistem, 1000);

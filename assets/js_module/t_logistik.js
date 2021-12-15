@@ -63,10 +63,7 @@ function simpanHeader()
 {
     $("#btnSaveHeader").prop("disabled", true);
     $('#btnSaveHeader').text('Menyimpan Data ....');
-
-    var form = $('#form_logistik')[0];
-    var reg = new FormData(form);
-
+    let keteranganResep = $('#ket_resep').val();
     swalConfirm.fire({
         title: 'Perhatian',
         text: "Apakah Anda ingin Menyimpan Keterangan Resep ?",
@@ -81,12 +78,13 @@ function simpanHeader()
             type: "POST",
             enctype: 'multipart/form-data',
             url: base_url + 'rekam_medik/simpan_keterangan_resep',
-            data: reg,
+            data: {
+                id_peg: id_peg,
+                id_psn: id_psn,
+                id_reg: id_reg,
+                keteranganResep: keteranganResep
+            },
             dataType: "JSON",
-            processData: false, // false, it prevent jQuery form transforming the data into a query string
-            contentType: false, 
-            cache: false,
-            timeout: 600000,
             success: function (data) {
                 if(data.status) {
                     swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success').then((cb) => {

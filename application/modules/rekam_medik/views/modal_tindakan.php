@@ -27,9 +27,8 @@
                 <div class="col-12 row">
                   <label class="col-2 col-form-label">Gigi :</label>
                   <label class="col-2 col-form-label">Kode :</label>
-                  <label class="col-4 col-form-label">Tindakan :</label>
-                  <label class="col-2 col-form-label">Harga :</label>
-                  <label class="col-2 col-form-label">Keterangan :</label>
+                  <label class="col-3 col-form-label">Tindakan :</label>
+                  <label class="col-5 col-form-label">Keterangan :</label>
                 </div>
                 <div class="col-12 row">
                   <div class="col-2">
@@ -41,26 +40,46 @@
                     <input type="text" class="form-control" id="tdk_kode" name="tdk_kode" value="" readonly>
                     <span class="help-block"></span>
                   </div>
-                  <div class="col-4">
+                  <div class="col-3">
                     <input type="text" class="form-control" id="tdk_tindakan" name="tdk_tindakan" value="" readonly>
                     <span class="help-block"></span>
                   </div>
-                  <div class="col-2">
-                    <input type="text" data-thousands="." data-decimal="," id="tdk_harga" name="tdk_harga" class="form-control inputmask" onkeyup="setHargaRaw()" value="0">
-                    <input type="hidden" class="form-control" id="tdk_harga_raw" name="tdk_harga_raw" value="">
-                    <span class="help-block"></span>
-                  </div>
-                  <div class="col-2">
+                  <div class="col-5">
                     <input type="text" class="form-control" id="tdk_ket" name="tdk_ket" value="">
                     <span class="help-block"></span>
                   </div>
                 </div>
-                <br>
+              </div>
+              <div class="form-group">
+                <div class="col-12 row">
+                  <label class="col-4 col-form-label">Harga (Gross):</label>
+                  <label class="col-4 col-form-label">Diskon (%):</label>
+                  <label class="col-4 col-form-label">Nett :</label>
+                </div>
+                <div class="col-12 row">
+                  <div class="col-4">
+                    <input type="text" data-thousands="." data-decimal="," id="tdk_harga" name="tdk_harga" class="form-control inputmask" onkeyup="setHargaRaw()" value="0">
+                    <input type="hidden" class="form-control" id="tdk_harga_raw" name="tdk_harga_raw" value="">
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-4">
+                    <input type="text" class="form-control" id="tdk_diskon" name="tdk_diskon" value="" disabled>
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-4">
+                    <input type="text" id="tdk_nett" name="tdk_nett" class="form-control" value="0" style="text-align: right;" disabled>
+                    <input type="hidden" class="form-control" id="tdk_nett_raw" name="tdk_nett_raw" value="">
+                    <span class="help-block"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
                 <div class="col-12">
                   <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_tindakan')">Tambahkan</button>
                 </div>
-                <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-
+              </div>
+              <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+              <div class="form-group">
                 <div class=" col-lg-12 col-sm-12">
                   <h3>Tabel tindakan Pasien</h3>
                   <table class="table table-striped- table-bordered table-hover" id="tabel_modal_tindakan">
@@ -69,7 +88,7 @@
                         <th>Gigi</th>
                         <th>Kode</th>
                         <th>Nama tindakan</th>
-                        <th>Harga</th>
+                        <th>Harga (Nett)</th>
                         <th>Keterangan</th>
                         <th style="width: 10%;">Aksi</th>
                       </tr>

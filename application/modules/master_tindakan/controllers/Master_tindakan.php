@@ -483,6 +483,9 @@ class Master_tindakan extends CI_Controller {
 				$row['is_all_gigi'] = $value->is_all_gigi;
 				$row['harga'] = number_format($value->harga,0,',','.');
 				$row['harga_raw'] = $value->harga;
+				$row['disc_persen'] = $value->disc_persen;
+				$row['harga_nett'] = number_format($value->harga - ($value->harga * $value->disc_persen / 100));
+				$row['harga_nett_raw'] = $value->harga - ($value->harga * $value->disc_persen / 100);
 
 				$retval[] = $row;
 			}

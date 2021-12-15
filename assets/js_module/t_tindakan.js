@@ -27,7 +27,10 @@ $(document).ready(function() {
                             nama: item.nama,
                             harga: item.harga,
                             harga_raw: item.harga_raw,
-                            is_all_gigi: item.is_all_gigi
+                            is_all_gigi: item.is_all_gigi,
+                            disc_persen: item.disc_persen,
+                            harga_nett: item.harga_nett,
+                            harga_nett_raw: item.harga_nett_raw,
                         }
                     })
                 };
@@ -52,6 +55,9 @@ $(document).ready(function() {
         $("#form_tindakan input[name='tdk_tindakan']").val(data.nama);
         $("#form_tindakan input[name='tdk_harga']").val(data.harga);
         $("#form_tindakan input[name='tdk_harga_raw']").val(data.harga_raw);
+        $("#form_tindakan input[name='tdk_diskon']").val(data.disc_persen);
+        $("#form_tindakan input[name='tdk_nett']").val(data.harga_nett);
+        $("#form_tindakan input[name='tdk_nett_raw']").val(data.harga_nett_raw);
     });
     
 });
@@ -124,15 +130,23 @@ const resetFormTindakan = () => {
     $("#form_tindakan input[name='tdk_harga']").val('');
     $("#form_tindakan input[name='tdk_harga_raw']").val('');
     $("#form_tindakan input[name='tdk_ket']").val('');
+    $("#form_tindakan input[name='tdk_diskon']").val('');
+    $("#form_tindakan input[name='tdk_nett']").val('');
+    $("#form_tindakan input[name='tdk_nett_raw']").val('');
 }
 
 const setHargaRaw = () => {
+    let diskon = $('#tdk_diskon').val();
     let rp = $('#tdk_harga').inputmask('unmaskedvalue');
-    let rpFix = parseFloat(rp).toFixed(2);
-    $('#tdk_harga_raw').val(rpFix);
+    
+    let rpGrossRaw = parseFloat(rp).toFixed(2);
+    let rpNettRaw = parseFloat((()=>{
+        return rp - (rp * diskon / 100);
+    })()).toFixed(2);
 
     // set value
-    // $('#total_biaya_nett_raw').val(totalBiayaFix);
-    // $('#biaya').val(formatMoney(Number(totalBiayaFix)));
+    $('#tdk_harga_raw').val(rpGrossRaw);
+    $('#tdk_nett_raw').val(rpNettRaw);
+    $('#tdk_nett').val(formatMoney(Number(rpNettRaw)));
 }
 

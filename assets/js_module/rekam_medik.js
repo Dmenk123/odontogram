@@ -204,6 +204,7 @@ function cekDanSetValue(txt_div_modal){
             reloadFormDiagnosaRiwayat();
             reloadFormTindakanRiwayat();
             reloadFormTindakanLabRiwayat();
+            reloadFormLogisitikRiwayat();
         }
     }
     

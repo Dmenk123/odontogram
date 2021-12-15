@@ -673,17 +673,11 @@ class Rekam_medik extends CI_Controller {
 				];
 			}
 
-			$cek_tindakan = $this->m_global->single_row(
-				't_tindakan.id, m_tindakan.disc_persen', 
-				['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 
-				't_tindakan',
-				[
-					['table' => 'm_tindakan', 'on' => 't_tindakan.id_tindakan = m_tindakan.id_tindakan']
-				]
-			);
+			$cek_tindakan = $this->m_global->single_row('t_tindakan.id, m_tindakan.disc_persen',['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakan',[['table' => 'm_tindakan', 'on' => 't_tindakan.id = m_tindakan.id_tindakan']]);
+			$cek_m_tindakan = $this->m_global->single_row('*', ['id_tindakan' => $id_tindakan], 'm_tindakan');
 						
-			$diskon_nilai = (float)$harga * $cek_tindakan->disc_persen / 100;
-			$diskon_persen = $cek_tindakan->disc_persen;
+			$diskon_nilai = (float)$harga * $cek_m_tindakan->disc_persen / 100;
+			$diskon_persen = $cek_m_tindakan->disc_persen;
 			$harga_bruto = (float)$harga;
 			$harga_nett = (float)$harga - $diskon_nilai;
 
@@ -917,12 +911,12 @@ class Rekam_medik extends CI_Controller {
 		$id_psn = $this->input->post('id_psn');
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
-		$ket_resep = $this->input->post('ket_resep');
+		$ket_resep = $this->input->post('keteranganResep');
 		
 		//cek sudah ada data / tidak
-		$data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
+		$datacek = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
 	
-		if(!$data){
+		if(!$datacek){
 			###insert
 			$id = $this->m_global->get_max_id('id', 't_logistik');
 			$data = [
@@ -939,7 +933,6 @@ class Rekam_medik extends CI_Controller {
 			$insert = $this->t_rekam_medik->save($data, 't_logistik');
 		}else{
 			$data = [
-				'id' => $data->id,
 				'id_pasien' => $id_psn,
 				'id_pegawai' => $id_peg,
 				'id_reg' => $id_reg,
@@ -948,6 +941,8 @@ class Rekam_medik extends CI_Controller {
 				'updated_at' => $timestamp,
 				'keterangan_resep' => $ket_resep
 			];
+
+			$update =  $this->t_rekam_medik->update(['id' => $datacek->id], $data, 't_logistik');
 		}
 		
 		if ($this->db->trans_status() === FALSE){
@@ -1785,14 +1780,15 @@ class Rekam_medik extends CI_Controller {
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 
-		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, md.kode_diagnosa, md.nama_diagnosa, dt.created_at, k.nama_klinik, k.alamat";
+		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, md.kode_diagnosa, md.nama_diagnosa, dt.created_at, k.nama_klinik, k.alamat, peg.nama as nama_dokter";
 		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
 		$table = 't_diagnosa as d';
 		$join = [ 
 			['table' => 't_diagnosa_det as dt', 'on' => 'd.id = dt.id_t_diagnosa'],
 			['table' => 'm_diagnosa as md', 'on' => 'dt.id_diagnosa = md.id_diagnosa'],
 			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
-			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik']
+			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
+			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
 		];
 
 		$order_by = "d.id_reg DESC";
@@ -1812,7 +1808,7 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->nama_diagnosa;
 				$data[$key][] = tanggal_indo($value->created_at);
 				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
-				
+				$data[$key][] = $value->nama_dokter;
 			}
 		}
         
@@ -1830,14 +1826,15 @@ class Rekam_medik extends CI_Controller {
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 
-		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan, dt.created_at, k.nama_klinik, k.alamat";
+		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga as harga_nett, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan, dt.created_at, k.nama_klinik, k.alamat, peg.nama as nama_dokter";
 		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
 		$table = 't_tindakan as d';
 		$join = [ 
 			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
 			['table' => 'm_tindakan as mt', 'on' => 'dt.id_tindakan = mt.id_tindakan'],
 			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
-			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik']
+			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
+			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
 		];
 
 		$order_by = "d.id_reg DESC";
@@ -1855,10 +1852,11 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->gigi;
 				$data[$key][] = $value->kode_tindakan;
 				$data[$key][] = $value->nama_tindakan;
+				$data[$key][] = number_format($value->harga_nett, 0, ',', '.');
 				$data[$key][] = $value->keterangan;
 				$data[$key][] = tanggal_indo($value->created_at);
 				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
-				
+				$data[$key][] = $value->nama_dokter;
 			}
 		}
         
@@ -1876,12 +1874,15 @@ class Rekam_medik extends CI_Controller {
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 
-		$select = "d.*, dt.id as id_tindakanlab_det, dt.id_tindakan_lab, dt.harga, dt.keterangan, ml.kode, ml.tindakan_lab, dt.created_at";
+		$select = "d.*, dt.id as id_tindakanlab_det, dt.id_tindakan_lab, dt.harga, dt.keterangan, ml.kode, ml.tindakan_lab, dt.created_at, k.nama_klinik, peg.nama as nama_dokter";
 		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
 		$table = 't_tindakanlab as d';
 		$join = [ 
 			['table' => 't_tindakanlab_det as dt', 'on' => 'd.id = dt.id_t_tindakanlab'],
-			['table' => 'm_laboratorium as ml', 'on' => 'dt.id_tindakan_lab = ml.id_laboratorium']
+			['table' => 'm_laboratorium as ml', 'on' => 'dt.id_tindakan_lab = ml.id_laboratorium'],
+			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
+			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
+			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
 		];
 
 
@@ -1901,7 +1902,8 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->tindakan_lab;
 				$data[$key][] = $value->keterangan;
 				$data[$key][] = tanggal_indo($value->created_at);
-				
+				$data[$key][] = $value->nama_klinik;
+				$data[$key][] = $value->nama_dokter;
 			}
 		}
         
@@ -1911,6 +1913,53 @@ class Rekam_medik extends CI_Controller {
         echo json_encode([
             'data' => $data
         ]);
+	}
+
+	public function riwayat_logistik()
+	{
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+
+		$select = "d.*, dt.id as id_t_logistik_det, dt.id_logistik, dt.qty, ml.kode_logistik, ml.nama_logistik, dt.created_at, k.nama_klinik, peg.nama as nama_dokter";
+		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
+		$table = 't_logistik as d';
+		$join = [
+			['table' => 't_logistik_det as dt', 'on' => 'd.id = dt.id_t_logistik'],
+			['table' => 'm_logistik as ml', 'on' => 'dt.id_logistik = ml.id_logistik'],
+			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
+			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
+			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
+		];
+
+
+		$order_by = "d.id_reg DESC";
+
+		$data_table = $this->m_global->multi_row($select, $where, $table, $join, $order_by);
+
+		// echo $this->db->last_query(); die();
+
+		// var_dump($data_table); die();
+		$data = [];
+		if ($data_table) {
+			foreach ($data_table as $key => $value) {
+
+
+				$data[$key][] = $value->kode_logistik;
+				$data[$key][] = $value->nama_logistik;
+				$data[$key][] = $value->keterangan_resep;
+				$data[$key][] = tanggal_indo($value->created_at);
+				$data[$key][] = $value->nama_klinik;
+				$data[$key][] = $value->nama_dokter;
+			}
+		}
+
+
+		// $this->output->enable_profiler(TRUE);
+
+		echo json_encode([
+			'data' => $data
+		]);
 	} 
 
 	############ cetak perawatan ##############

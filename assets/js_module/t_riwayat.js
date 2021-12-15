@@ -54,10 +54,7 @@ function reloadFormTindakanRiwayat(){
 
         //set column definition initialisation properties
         columnDefs: [
-            {
-                targets: [-1], //last column
-                orderable: false, //set not orderable
-            },
+            { targets: 3, className: 'text-right' },
         ],
     });
 }
@@ -90,3 +87,33 @@ function reloadFormTindakanLabRiwayat(){
         ],
     });
 }
+
+function reloadFormLogisitikRiwayat(){
+    $('#CssLoader').removeClass('hidden');
+    $('#CssLoader').addClass('hidden');
+    table = $('#tabel_modal_logistik_pasien').DataTable({
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: false,
+        bDestroy: true,
+        ajax: {
+            url  : base_url + "rekam_medik/riwayat_logistik",
+            type : "POST",
+            data : {
+                id_peg: id_peg,
+                id_psn: id_psn,
+                id_reg: id_reg
+            },
+        },
+
+        //set column definition initialisation properties
+        columnDefs: [
+            {
+                targets: [-1], //last column
+                orderable: false, //set not orderable
+            },
+        ],
+    });
+}
+
