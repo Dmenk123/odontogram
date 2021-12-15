@@ -57,7 +57,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="7" style="text-align: center;">Data Registrasi Tidak Ditemukan</td>
+                  <td colspan="8" style="text-align: center;">Data Registrasi Tidak Ditemukan</td>
                 </tr>
               </tbody>
             </table>

@@ -214,13 +214,12 @@ class Pembayaran extends CI_Controller {
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 		$html_header = '';
 		$html_pembayaran = $this->get_detail_pembayaran($id);
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, peg.nama as nama_dokter";
 		$where = ['reg.id' => $id];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
 			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
 		];
 				
 		$data = $this->m_global->single_row($select, $where, $table, $join);
@@ -284,17 +283,13 @@ class Pembayaran extends CI_Controller {
 	}
 
 	protected function get_detail_pembayaran($id) {
-		$select = "a.*, peg.nama as nama_dokter, asu.nama as nama_asuransi, b.total_honor_dokter, b.total_penerimaan_nett, b.total_penerimaan_gross, b.id_jenis_trans, b.id_trans_flag";
+		$select = "a.*, peg.nama as nama_dokter, b.total_honor_dokter, b.total_penerimaan_nett, b.total_penerimaan_gross, b.id_jenis_trans, b.id_trans_flag";
 		$where = ['a.is_pulang' => 1, 'a.deleted_at' => null, 'a.id' => $id];
 		$table = 't_registrasi as a';
 		$join = [ 
 			[
 				'table' => 'm_pegawai as peg',
 				'on'	=> 'a.id_pegawai = peg.id'
-			],
-			[
-				'table' => 'm_asuransi asu',
-				'on'	=> 'a.id_asuransi = asu.id'
 			],
 			[
 				'table' => 't_mutasi b',
@@ -329,7 +324,7 @@ class Pembayaran extends CI_Controller {
 				}elseif($value->id_jenis_trans == '2') {
 					#### TINDAKAN
 					$q = $this->db->query("
-						SELECT a.*, b.gigi, b.harga, c.kode_tindakan, c.nama_tindakan
+						SELECT a.*, b.gigi, b.harga, b.diskon_persen, b.diskon_nilai, b.harga_bruto, c.kode_tindakan, c.nama_tindakan
 						FROM t_tindakan as a 
 						join t_tindakan_det b on a.id = b.id_t_tindakan and b.deleted_at is null 
 						join m_tindakan c on b.id_tindakan = c.id_tindakan and c.deleted_at is null 
@@ -339,9 +334,12 @@ class Pembayaran extends CI_Controller {
 					foreach ($q as $k => $v) {
 						$arr['jenis'] = 'TINDAKAN';
 						$arr['qty'] = null;
-						$arr['harga'] = $v->harga;
+						$arr['harga'] = $v->harga_bruto;
+						$arr['diskon_persen'] = $v->diskon_persen;
+						$arr['diskon_nilai'] = $v->diskon_nilai;
 						$arr['subtotal'] = $v->harga;
 						$arr['nama'] = $v->nama_tindakan.' - '.$v->kode_tindakan;
+						$arr['gigi'] = $v->gigi;
 						$arr_detail_fix[] = $arr;
 				 	}
 					 
@@ -360,7 +358,10 @@ class Pembayaran extends CI_Controller {
 						$arr['qty'] = null;
 						$arr['harga'] = $v->harga;
 						$arr['subtotal'] = $v->harga;
-						$arr['nama'] = $v->tindakan_lab.' - '.$v->kode;
+						$arr['nama'] = '(Lab) '.$v->tindakan_lab.' - '.$v->kode;
+						$arr['diskon_persen'] = 0;
+						$arr['diskon_nilai'] = 0;
+						$arr['gigi'] = '-';
 						$arr_detail_fix[] = $arr;
 				 	}
 				}
@@ -410,10 +411,10 @@ class Pembayaran extends CI_Controller {
 			<div class="kt-section__content">
 				<table class="table table-bordered" style="width:100%;">
 					<tr>
-						<th>Jenis</th>
-						<th>Nama</th>
-						<th>Qty</th>
+						<th>Tindakan</th>
+						<th>Gigi</th>
 						<th>Harga</th>
+						<th>Diskon</th>
 						<th>Sub Total</th>
 					</tr>
 		';
@@ -422,10 +423,10 @@ class Pembayaran extends CI_Controller {
 			foreach ($arrData as $key => $value) {
 				$tot_biaya += $value['subtotal'];
 				$html .= '<tr>
-					<td>'.$value['jenis'].'</td>
 					<td>'.$value['nama'].'</td>
-					<td>'.$value['qty'].'</td>
+					<td>'.$value['gigi'].'</td>
 					<td align="right">'.number_format($value['harga'],0,',','.').'</td>
+					<td align="right">'.number_format($value['diskon_nilai'],0,',','.').'</td>
 					<td align="right">'.number_format($value['subtotal'],0,',','.').'</td>
 				</tr>';
 			}
@@ -491,7 +492,7 @@ class Pembayaran extends CI_Controller {
 		$arr_pembayaran['created_at'] = $timestamp;
 
 		$insert = $this->t_pembayaran->save($arr_pembayaran);
-
+		
 		// isi mutasi
 		/**
 		 * param 1 = id_registrasi
@@ -502,7 +503,7 @@ class Pembayaran extends CI_Controller {
 
 		#### mutasi diskon
 		$mutasi_diskon = $this->lib_mutasi->simpan_mutasi_lain($id_reg, '5', $arr_pembayaran, '2');
-
+		
 		if($mutasi_diskon == false) {
 			$this->db->trans_rollback();
 			$retval['status'] = false;

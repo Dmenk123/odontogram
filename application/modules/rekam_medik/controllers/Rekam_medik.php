@@ -989,7 +989,8 @@ class Rekam_medik extends CI_Controller {
 		}
 
 		echo json_encode([
-			'html' => $html
+			'html' => $html,
+			'ket_resep' => $data[0]->keterangan_resep
 		]);
 	}
 

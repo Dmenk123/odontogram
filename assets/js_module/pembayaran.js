@@ -167,80 +167,9 @@ $(document).ready(function() {
     });
     
 
-    //change menu status
-    // $(document).on('click', '.btn_edit_status', function(){
-    //     var id = $(this).attr('id');
-    //     var status = $(this).val();
-    //     swalConfirm.fire({
-    //         title: 'Ubah Status Data Pasien ?',
-    //         text: "Apakah Anda Yakin ?",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonText: 'Ya, Ubah Status!',
-    //         cancelButtonText: 'Tidak, Batalkan!',
-    //         reverseButtons: true
-    //       }).then((result) => {
-    //         if (result.value) {
-    //             $.ajax({
-    //                 url : base_url + 'data_pasien/edit_status_aktif',
-    //                 type: "POST",
-    //                 dataType: "JSON",
-    //                 data : {status : status, id : id},
-    //                 success: function(data)
-    //                 {
-    //                     swalConfirm.fire('Berhasil Ubah Status Pasien!', data.pesan, 'success');
-    //                     table.ajax.reload();
-    //                 },
-    //                 error: function (jqXHR, textStatus, errorThrown)
-    //                 {
-    //                     Swal.fire('Terjadi Kesalahan');
-    //                 }
-    //             });
-    //         } else if (
-    //           /* Read more about handling dismissals below */
-    //           result.dismiss === Swal.DismissReason.cancel
-    //         ) {
-    //           swalConfirm.fire(
-    //             'Dibatalkan',
-    //             'Aksi Dibatalakan',
-    //             'error'
-    //           )
-    //         }
-    //     });
-    // });
-
     $(".modal").on("hidden.bs.modal", function(){
         reset_modal_form_import();
     });
-
-    // $('#alergi_obat').change(function (e) { 
-    //     e.preventDefault();
-    //     if($(this).val() == '1') {
-    //         $('[name="alergi_obat_val"]').attr('disabled', false).val('');
-    //     }else{
-    //         $('[name="alergi_obat_val"]').attr('disabled', true).val('');
-    //     }
-    // });
-
-    // $('#alergi_makanan').change(function (e) { 
-    //     e.preventDefault();
-    //     if($(this).val() == '1') {
-    //         $('[name="alergi_makanan_val"]').attr('disabled', false).val('');
-    //     }else{
-    //         $('[name="alergi_makanan_val"]').attr('disabled', true).val('');
-    //     }
-    // });
-
-    // $("#cek_manual").change(function() {
-    //     if(this.checked) {
-    //         $('[name="no_rm"]').attr('disabled', false).val('');
-    //     }else{
-    //         $('[name="no_rm"]').attr('disabled', true).val('');
-    //     }
-    // });
-
-    // $('.mask_tanggal').mask("00/00/0000", {placeholder: "DD/MM/YYYY"});
-    // $('.mask_rm').mask("AA.00.00");
 });	
 
 const show_modal_pasien = () => {
@@ -358,14 +287,6 @@ const setDiscPersenRaw = (discVal) => {
 
     $('#total_biaya_nett_raw').val(totalBiayaFix);
     $('#biaya').val(formatMoney(Number(totalBiayaFix)));
-}
-
-const formatMoney = (number) => {
-    var value = number.toLocaleString(
-        'id-ID', 
-        { minimumFractionDigits: 2 }
-    );
-    return value;
 }
 
 const detail_trans = (enc_id) => {

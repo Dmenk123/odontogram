@@ -253,8 +253,9 @@ class Lib_mutasi extends CI_Controller {
 				$data['created_at'] = $timestamp;
 							
 				$insert = $this->_ci->m_global->save($data, 't_mutasi');
-
+				
 				if($insert) {
+					$this->_ci->db->trans_commit();
 					## jika transaksi penerimaan/pengeluaran
 					if($flag_transaksi == 1) {
 						$data_upd['total_penerimaan_gross'] = $data_header['total_bruto'];
@@ -331,7 +332,9 @@ class Lib_mutasi extends CI_Controller {
 					}
 
 					$upd = $this->_ci->m_global->update('t_mutasi', $data_upd, ['id' => $id_mutasi]);
+					
 					if($upd){
+						$this->_ci->db->trans_commit();
 						####### FINAL RETURN
 						$retval = true;
 					}else{
@@ -429,10 +432,8 @@ class Lib_mutasi extends CI_Controller {
 					$retval = false;
 				}
 			}
-
 			return $retval;
 		} catch (\Throwable $th) {
-			//throw $th;
 			return false;
 		}
 	}
@@ -582,17 +583,13 @@ class Lib_mutasi extends CI_Controller {
 	}
 
 	function get_detail_pembayaran($id_reg) {
-		$select = "a.*, peg.nama as nama_dokter, asu.nama as nama_asuransi, b.total_honor_dokter, b.total_penerimaan_nett, b.total_penerimaan_gross, b.id_jenis_trans, b.id_trans_flag";
+		$select = "a.*, peg.nama as nama_dokter, b.total_honor_dokter, b.total_penerimaan_nett, b.total_penerimaan_gross, b.id_jenis_trans, b.id_trans_flag";
 		$where = ['a.is_pulang' => 1, 'a.deleted_at' => null, 'a.id' => $id_reg];
 		$table = 't_registrasi as a';
 		$join = [ 
 			[
 				'table' => 'm_pegawai as peg',
 				'on'	=> 'a.id_pegawai = peg.id'
-			],
-			[
-				'table' => 'm_asuransi asu',
-				'on'	=> 'a.id_asuransi = asu.id'
 			],
 			[
 				'table' => 't_mutasi b',

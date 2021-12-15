@@ -53,6 +53,7 @@ function reloadFormLogistik(){
         },
         dataType: "json",
         success: function (response) {
+           $('#ket_resep').val(response.ket_resep);
            $('#CssLoader').addClass('hidden');
            $('#tabel_modal_logistik tbody').html(response.html);
         }

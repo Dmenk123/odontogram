@@ -240,7 +240,7 @@ function get_uri_segment(segment) {
 
 const confirmPulangkan = (idReg) => {
     swalConfirm.fire({
-        title: 'Konfirmasi Pulangkan Pasien',
+        title: 'Konfirmasi Selesai',
         text: "Apakah Anda Yakin ?",
         type: 'warning',
         showCancelButton: true,
