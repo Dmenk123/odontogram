@@ -172,7 +172,8 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode([
 			'data' => $html,
 			'status' => $status,
-			'data_id' => $data_id
+			'data_id' => $data_id,
+			'is_pulang' => $data->is_pulang
 		]);
 		
 	}
@@ -1597,7 +1598,7 @@ class Rekam_medik extends CI_Controller {
 		if($data_bayar) {
 			echo json_encode([
 				'status' => false,
-				'pesan' => 'Pasien ini sudah bayar, tidak bisa dipulangkan',  
+				'pesan' => 'Pasien ini sudah bayar. Aksi Gagal',  
 			]);
 			return;
 		}
@@ -1606,7 +1607,7 @@ class Rekam_medik extends CI_Controller {
 		if($datareg && $datareg->is_pulang) {
 			echo json_encode([
 				'status' => false,
-				'pesan' => 'Pasien ['.$datareg->no_reg.'] Telah dipulangkan, Aksi Dibatalkan',  
+				'pesan' => 'Pasien ['.$datareg->no_reg.'] telah selesai dilakukan perekaman medis, Aksi Dibatalkan',  
 			]);
 			return;
 		}
@@ -1620,7 +1621,7 @@ class Rekam_medik extends CI_Controller {
 		if($upd) {
 			echo json_encode([
 				'status' => true,
-				'pesan' => 'Pasien ['.$datareg->no_reg.'] Sukses dipulangkan',  
+				'pesan' => 'Pasien ['.$datareg->no_reg.'] telah selesai proses Rekam Medik',  
 			]);
 		}else{
 			echo json_encode([

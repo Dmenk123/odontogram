@@ -3,6 +3,7 @@ let id_psn;
 let id_reg;
 let pid;
 let activeModal;
+let stateSelesai = false;
 
 $(document).ready(function() {
     let uri = new URL(window.location.href);
@@ -11,6 +12,7 @@ $(document).ready(function() {
     if(pid != '' || pid != undefined) {
         pilih_pasien(pid);
     }
+    
     
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
@@ -82,12 +84,26 @@ function pilih_pasien(enc_id){
             id_peg = response.data_id.id_peg;
             id_psn = response.data_id.id_psn;
             // $('#modal_pilih_pasien').modal('hide');
+            if(response.is_pulang) {
+                stateSelesai = true;
+            }
         }
     });
 }
 
 function save(id_form)
 {
+    if(stateSelesai == true) {
+        swalConfirm.fire('Gagal Menyimpan !', 'Pasien sudah dalam proses pembayaran, Batalkan terlebih dahulu', 'error').then((cb) => {
+            if(cb.value) {
+                location.reload();
+                return;
+            }
+        });
+        
+        return;
+    }
+    
     let str1 = '#';
     let id_element = str1.concat(id_form);
     var form = $(id_element)[0];
