@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_tindakan extends CI_Model
 {
 	var $table = 'm_tindakan';
-	var $column_search = ['kode_tindakan','nama_tindakan','harga'];
+	var $column_search = ['kode_tindakan','nama_tindakan','harga','disc_persen'];
 	
 	var $column_order = [
 		null, 

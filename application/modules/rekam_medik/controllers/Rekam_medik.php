@@ -303,13 +303,12 @@ class Rekam_medik extends CI_Controller {
 		$enc_id = $this->input->get('pid');
 		$id_reg = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, peg.nama as nama_dokter";
 		$where = ['reg.id' => $id_reg];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
 			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
 		];
 				
 		$datareg = $this->m_global->single_row($select, $where, $table, $join);
@@ -990,7 +989,7 @@ class Rekam_medik extends CI_Controller {
 
 		echo json_encode([
 			'html' => $html,
-			'ket_resep' => $data[0]->keterangan_resep
+			'ket_resep' => ($data) ? $data[0]->keterangan_resep : ''
 		]);
 	}
 
@@ -1096,14 +1095,23 @@ class Rekam_medik extends CI_Controller {
 		}
 
 		$cek_tindakan = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_tindakanlab');
+		$cek_m_lab = $this->m_global->single_row('*', ['id_laboratorium' => $id_tindakanlab], 'm_laboratorium');
+
+		$diskon_nilai = (float)$harga * $cek_m_lab->disc_persen / 100;
+		$diskon_persen = $cek_m_lab->disc_persen;
+		$harga_bruto = (float)$harga;
+		$harga_nett = (float)$harga - $diskon_nilai;
 
 		$id_det = $this->m_global->get_max_id('id', 't_tindakanlab_det');
 		$data_det = [
 			'id' => $id_det,
 			'id_t_tindakanlab' => $cek_tindakan->id,
 			'id_tindakan_lab' => $id_tindakanlab,
-			'harga' => (float)$harga,
+			'harga' => (float)$harga_nett,
 			'keterangan' => $ket,
+			'diskon_persen' => $diskon_persen,
+			'diskon_nilai' => (float)$diskon_nilai,
+			'harga_bruto' => (float)$harga_bruto,
 			'created_at' => $timestamp
 		];
 
@@ -1411,13 +1419,12 @@ class Rekam_medik extends CI_Controller {
 		$enc_id = $this->input->get('pid');
 		$id_reg = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, pas.nik, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, pas.nik, peg.nama as nama_dokter";
 		$where = ['reg.id' => $id_reg];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
 			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
 		];
 				
 		$datareg = $this->m_global->single_row($select, $where, $table, $join);

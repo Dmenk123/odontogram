@@ -102,6 +102,7 @@ function edit_laboratorium(id)
             $('[name="kode"]').val(data.old_data.kode);
             $('[name="tindakan_lab"]').val(data.old_data.tindakan_lab);
             $('[name="harga"]').val(data.old_data.harga);
+            $('[name="diskon"]').val(data.old_data.disc_persen);
             $('#modal_pegawai_form').modal('show');
 	        $('#modal_title').text('Edit Data laboratorium'); 
 

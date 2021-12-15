@@ -3,13 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_laboratorium extends CI_Model
 {
 	var $table = 'm_laboratorium';
-	var $column_search = ['kode','tindakan_lab','harga'];
+	var $column_search = ['kode','tindakan_lab','harga','disc_persen'];
 	
 	var $column_order = [
 		null, 
 		'kode',
 		'tindakan_lab',
 		'harga',
+		'disc_persen',
 		null
 	];
 

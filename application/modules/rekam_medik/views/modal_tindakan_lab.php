@@ -26,34 +26,53 @@
                 <br>
                 <div class="col-12 row">
                   <label class="col-2 col-form-label">Kode :</label>
-                  <label class="col-4 col-form-label">Tindakan Lab:</label>
-                  <label class="col-2 col-form-label">Harga :</label>
-                  <label class="col-2 col-form-label">Keterangan :</label>
+                  <label class="col-5 col-form-label">Tindakan Lab:</label>
+                  <label class="col-5 col-form-label">Keterangan :</label>
                 </div>
                 <div class="col-12 row">
                   <div class="col-2">
                     <input type="text" class="form-control" id="tdklab_kode" name="tdklab_kode" value="" readonly>   
                     <span class="help-block"></span>
                   </div>
-                  <div class="col-4">
+                  <div class="col-5">
                     <input type="text" class="form-control" id="tdklab_tindakan" name="tdklab_tindakan" value="" readonly>   
                     <span class="help-block"></span>
                   </div>
-                  <div class="col-2">
-                    <input type="text" class="form-control" id="tdklab_harga" name="tdklab_harga" value="" readonly>
-                    <input type="hidden" class="form-control" id="tdklab_harga_raw" name="tdklab_harga_raw" value="">
-                    <span class="help-block"></span>
-                  </div>
-                  <div class="col-4">
+                  <div class="col-5">
                     <input type="text" class="form-control" id="tdklab_ket" name="tdklab_ket" value="">   
                     <span class="help-block"></span>
                   </div>
                 </div>
-                <br>
+              </div>
+              <div class="form-group">
+                <div class="col-12 row">
+                  <label class="col-4 col-form-label">Harga (Gross):</label>
+                  <label class="col-4 col-form-label">Diskon (%):</label>
+                  <label class="col-4 col-form-label">Nett :</label>
+                </div>
+                <div class="col-12 row">
+                  <div class="col-4">
+                    <input type="text" data-thousands="." data-decimal="," id="tdklab_harga" name="tdklab_harga" class="form-control inputmask" onkeyup="setHargaLabRaw()" value="0">
+                    <input type="hidden" class="form-control" id="tdklab_harga_raw" name="tdklab_harga_raw" value="">
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-4">
+                    <input type="text" class="form-control" id="tdklab_diskon" name="tdklab_diskon" value="" disabled>
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-4">
+                    <input type="text" id="tdklab_nett" name="tdklab_nett" class="form-control" value="0" style="text-align: right;" disabled>
+                    <input type="hidden" class="form-control" id="tdklab_nett_raw" name="tdklab_nett_raw" value="">
+                    <span class="help-block"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
                 <div class="col-12">
                   <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_tindakanlab')">Tambahkan</button>
                 </div>
-
+              </div>
+              <div class="form-group">
                 <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
                
                 <div class=" col-lg-12 col-sm-12">
