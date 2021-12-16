@@ -99,10 +99,19 @@ function edit_tindakan(id)
         success: function(data)
         {
             $('[name="id_tindakan"]').val(data.old_data.id_tindakan);
-            $('[name="kode"]').val(data.old_data.kode_tindakan);
+            // $('[name="kode"]').val(data.old_data.kode_tindakan);
             $('[name="nama"]').val(data.old_data.nama_tindakan);
             $('[name="harga"]').val(data.old_data.harga);
             $('[name="diskon"]').val(data.old_data.disc_persen);
+
+            if(data.old_data.is_potong_lab_honor_dokter == '1') {
+                $('[name="is_potong_lab_honor"]').prop('checked', true);
+            }
+
+            if(data.old_data.is_all_gigi == '1') {
+                $('[name="is_all_gigi"]').prop('checked', true);
+            }
+           
             $('#modal_pegawai_form').modal('show');
 	        $('#modal_title').text('Edit Data Tindakan'); 
 

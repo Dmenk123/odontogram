@@ -198,6 +198,10 @@ $(document).ready(function() {
 });
 
 function filter_tanggal(){
+    if ( $.fn.DataTable.isDataTable('#tabel_index') ) {
+        $('#tabel_index').DataTable().clear().destroy();
+    }
+
     var tgl_awal = $('#tgl_filter_mulai').val();
     var tgl_akhir = $('#tgl_filter_akhir').val();
 

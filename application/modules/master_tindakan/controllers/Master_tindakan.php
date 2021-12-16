@@ -115,16 +115,16 @@ class Master_tindakan extends CI_Controller {
 
 	public function add_data_tindakan()
 	{
-	
 		$this->load->library('Enkripsi');
 		$obj_date = new DateTime();
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$arr_valid = $this->rule_validasi();
-		
 		$nama_tindakan = trim($this->input->post('nama'));
-		$kode_tindakan = trim($this->input->post('kode'));
+		$kode_tindakan = $this->m_tindakan->get_kode_tindakan();
 		$harga 		   = trim($this->input->post('harga'));
 		$diskon 	   = $this->input->post('diskon');
+		$is_all_gigi   = ($this->input->post('is_all_gigi') == '1') ? 1 : null;
+		$is_potong_lab_honor   = ($this->input->post('is_potong_lab_honor') == '1') ? 1 : null;
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -139,6 +139,8 @@ class Master_tindakan extends CI_Controller {
 			'nama_tindakan' => $nama_tindakan,
 			'harga'         => $harga,
 			'disc_persen'   => $diskon,
+			'is_all_gigi'	=> $is_all_gigi,
+			'is_potong_lab_honor_dokter' => $is_potong_lab_honor,
 			'created_at' 	=> $timestamp
 		];
 		
@@ -171,18 +173,20 @@ class Master_tindakan extends CI_Controller {
 		}
 
 		$nama  = trim($this->input->post('nama'));
-		$kode  = trim($this->input->post('kode'));
 		$harga = trim($this->input->post('harga'));
 		$diskon = $this->input->post('diskon');
+		$is_all_gigi   = ($this->input->post('is_all_gigi') == '1') ? 1 : null;
+		$is_potong_lab_honor   = ($this->input->post('is_potong_lab_honor') == '1') ? 1 : null;
 
 		$this->db->trans_begin();
 		
 		$data = [
 			'nama_tindakan' => $nama,
-			'kode_tindakan' => $kode,
 			'harga'         => $harga,
 			'disc_persen'   => $diskon,
 			'updated_at'    => $timestamp,
+			'is_all_gigi'	=> $is_all_gigi,
+			'is_potong_lab_honor_dokter' => $is_potong_lab_honor,
 		];
 
 		$where = ['id_tindakan' => $this->input->post('id_tindakan')];
@@ -503,11 +507,11 @@ class Master_tindakan extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if ($this->input->post('kode') == '') {
-			$data['inputerror'][] = 'kode';
-            $data['error_string'][] = 'Wajib mengisi Kode Tindakan';
-            $data['status'] = FALSE;
-		}
+		// if ($this->input->post('kode') == '') {
+		// 	$data['inputerror'][] = 'kode';
+        //     $data['error_string'][] = 'Wajib mengisi Kode Tindakan';
+        //     $data['status'] = FALSE;
+		// }
 
 		if ($this->input->post('nama') == '') {
 			$data['inputerror'][] = 'nama';
