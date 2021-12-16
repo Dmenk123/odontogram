@@ -318,6 +318,7 @@ class Pembayaran extends CI_Controller {
 						$arr['harga'] = $v->harga;
 						$arr['subtotal'] = $v->subtotal;
 						$arr['nama'] = $v->nama_logistik.' - '.$v->kode_logistik;
+						$arr['nama_aja'] = $v->nama_logistik;
 						$arr_detail_fix[] = $arr;
 				 	}
 
@@ -339,6 +340,7 @@ class Pembayaran extends CI_Controller {
 						$arr['diskon_nilai'] = $v->diskon_nilai;
 						$arr['subtotal'] = $v->harga;
 						$arr['nama'] = $v->nama_tindakan.' - '.$v->kode_tindakan;
+						$arr['nama_aja'] = $v->nama_tindakan;
 						$arr['gigi'] = $v->gigi;
 						$arr_detail_fix[] = $arr;
 				 	}
@@ -359,6 +361,7 @@ class Pembayaran extends CI_Controller {
 						$arr['harga'] = $v->harga;
 						$arr['subtotal'] = $v->harga;
 						$arr['nama'] = '(Lab) '.$v->tindakan_lab.' - '.$v->kode;
+						$arr['nama_aja'] = '(Lab) '.$v->tindakan_lab;
 						$arr['diskon_persen'] = 0;
 						$arr['diskon_nilai'] = 0;
 						$arr['gigi'] = '-';
@@ -480,6 +483,7 @@ class Pembayaran extends CI_Controller {
 		$arr_pembayaran['is_locked'] = 1;
 		$arr_pembayaran['rupiah_bayar'] = $pembayaran_raw;
 		$arr_pembayaran['rupiah_kembali'] = $kembalian_raw;
+		$arr_pembayaran['kode'] = $this->t_pembayaran->get_kode_bayar();
 		
 		if($jenis_bayar == 'cash') {
 			$arr_pembayaran['is_cash'] = 1;
@@ -527,6 +531,8 @@ class Pembayaran extends CI_Controller {
 			$this->db->trans_commit();
 			$retval['status'] = true;
 			$retval['pesan'] = 'Sukses menambahkan Data Pembayaran';
+			$retval['html_button'] = $this->get_div_button($id);
+			$retval['id_trans'] = $id;
 		}
 
 		echo json_encode($retval);
@@ -642,6 +648,232 @@ class Pembayaran extends CI_Controller {
 		}
 
 		return $data;
+	}
+
+	private function get_div_button($id_header)
+	{
+		return '
+			<a type="button" class="btn btn-secondary" href="'.base_url($this->uri->segment(1)).'">Batal</a>
+			<button type="button" class="btn btn-brand" onclick="printStruk(\'' . $id_header . '\')">Print</button>
+		';
+	}
+
+	public function cetak_struk($id_bayar)
+	{
+		$id_user = $this->session->userdata('id_user');
+		$id_klinik = $this->session->userdata('id_klinik');
+
+		$data_user = $this->m_user->get_detail_user($id_user);
+		$data_klinik = $this->m_global->single_row('*', ['id' => $id_klinik], 'm_klinik');
+
+		$data_bayar = $this->t_pembayaran->get_detail_pembayaran($id_bayar);
+		$data_bayar_det = $this->get_detail_pembayaran($data_bayar->id_reg);
+
+		/* echo "<pre>";
+		print_r ($data_user);
+		echo "</pre>";
+
+		echo "<pre>";
+		print_r($data_klinik);
+		echo "</pre>";
+
+		echo "<pre>";
+		print_r ($data_bayar);
+		echo "</pre>";
+
+		echo "<pre>";
+		print_r($data_bayar_det['detail']);
+		echo "</pre>";
+		exit; */
+
+		$html = $this->get_template_cetak($data_user, $data_klinik, $data_bayar, $data_bayar_det['detail']);
+		// echo $html;
+		echo json_encode([
+			'status' => true,
+			'html' => $html
+		]);
+	}
+
+	public function get_template_cetak_header()
+	{
+		return "
+			<html lang='en'>
+				<head>
+					<meta charset='UTF-8'>
+					<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+					<meta http-equiv='X-UA-Compatible' content='ie=edge'>
+					<link rel='stylesheet' href='style.css'>
+					<title>Receipt example</title>
+					<style>
+
+						* {
+							font-size: 12px;
+							font-family: 'Arial';
+						}
+						
+						table {
+							margin-left:7px;
+						}
+						
+						td,
+						th,
+						tr,
+						table.tabel-penjualan {
+							border-top: 1px dashed black;
+							border-collapse: collapse;
+						}
+
+						table.tabel-petugas 
+						td,
+						th,
+						tr {
+							border-collapse: collapse;
+							font-size: 9px;
+							border: none;
+						}
+						
+						td.description,
+						th.description {
+							width: 50%;
+							max-width: 50%;
+							font-size:7px;
+							text-align:left;
+						}
+						
+						td.quantity,
+						th.quantity {
+							width: 40px;
+							max-width: 40px;
+							word-break: break-all;
+						}
+
+						td.quality,
+						th.quality {
+							width: 10%;
+							max-width: 10%;
+							word-break: break-all;
+							text-align: left!important;
+							font-size:9px;
+						}
+						
+						td.price,
+						th.price {
+							width: 40%;
+							max-width: 40%;
+							// word-break: break-all;
+							font-size:7px;
+							text-align: right;
+						}
+						
+						.centered {
+							text-align: center;
+							align-content: center;
+						}
+
+						.centered2 {
+							text-align: center;
+							align-content: center;
+							margin-left:6px!important;
+						}
+						
+						.ticket {
+							margin-left:5px;
+							width: 167px;
+							max-width: 167px;
+						}
+						
+						img {
+							max-width: inherit;
+							width: inherit;
+						}
+						
+						@media print {
+							.hidden-print,
+							.hidden-print * {
+								display: none !important;
+							}
+						}
+					</style>
+				</head>
+		";
+	}
+
+	public function get_template_cetak($data_user, $data_klinik, $data_bayar, $data_bayar_det)
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$jam_trans = $obj_date->createFromFormat('Y-m-d H:i:s', $data_bayar->created_at)->format('d-m-Y H:i');
+		$retval = $this->get_template_cetak_header();
+		$retval .= "
+			<body>
+				<div class='ticket'>
+					<p class='centered2'><span style='font-size: 12px;'>$data_klinik->nama_klinik</span>
+						<br><span style='font-size: 9px;'>$data_klinik->alamat</span>
+						<br><span style='font-size: 9px;'>$data_klinik->kota</span></p>
+					<hr class='centered2'>
+					<table class='tabel-petugas'>
+						<tbody>
+							<tr>
+								<td>Invoice</td>
+								<td>:</td>
+								<td>" . $data_bayar->kode . "</td>
+							</tr>
+							<tr>
+								<td>Kasir</td>
+								<td>:</td>
+								<td>" . $data_user[0]->nama_pegawai . "</td>
+							</tr>
+							<tr>
+								<td>Waktu</td>
+								<td>:</td>
+								<td>" . $jam_trans . "</td>
+							</tr>
+						</tbody>
+					</table>
+					<table class='tabel-penjualan' width='100%'>
+						<thead>
+							<tr>
+								<th class='quality'>#</th>
+								<th class='description'>Nama</th>
+								<th class='description'>Harga</th>
+								<th class='description'>Disc</th>
+								<th class='description'>Subtotal</th>
+							</tr>
+						</thead>
+						<tbody>";
+						foreach ($data_bayar_det as $key => $value) {
+							$retval .= "<tr>
+								<td class='quality'>" . ($key + 1) . "</td>
+								<td class='description'>".$value['nama_aja']."</td>
+								<td class='price' style='text-align:right;'>" . number_format($value['harga'], 0, ',', '.') . "</td>
+								<td class='price' style='text-align:right;'>" . number_format($value['diskon_nilai'], 0, ',', '.') . "</td>
+								<td class='price' style='text-align:right;'>" . number_format($value['subtotal'], 0, ',', '.') . "</td>
+							</tr>";
+						}
+
+						$retval .= "<tr>
+							<td class='description' colspan='4'><strong>Total</strong></td>
+							<td class='price' style='font-size:9px;text-align:right;font-weight:bold;'>" . number_format($data_bayar->total_nett, 0, ',', '.') . "</td>
+						</tr>
+						<tr>
+							<td class='description' colspan='4' style='border-top: 0px;'>Pembayaran</td>
+							<td class='price' style='text-align:right;border-top: 0px;'>" . number_format($data_bayar->rupiah_bayar, 0, ',', '.') . "</td>
+						</tr>
+						<tr>
+							<td class='description' colspan='4' style='border-top: 0px;'>Kembalian</td>
+							<td class='price' style='text-align:right;border-top: 0px;'>" . number_format($data_bayar->rupiah_kembali, 0, ',', '.') . "</td>
+						</tr>";
+
+					$retval .= "</tbody>
+					</table>
+						<p class='centered2' style='font-size: 9px;'>Terima Kasih
+						<br>Atas Kepercayaan Anda</p>
+					</div>
+				</body>
+			</html>
+		";
+
+		return $retval;
 	}
 
 	/////////////////////////////////////////////////////////////

@@ -159,7 +159,7 @@
           <div class="kt-form__actions">
             <div class="row">
               <div class="col-lg-5"></div>
-              <div class="col-lg-7">
+              <div class="col-lg-7 div-button-area">
                 <button type="submit" class="btn btn-brand btnSubmit" disabled>Submit</button>
                 <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1)) ?>">Batal</a>
               </div>

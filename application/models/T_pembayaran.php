@@ -192,31 +192,27 @@ class T_pembayaran extends CI_Model
 		return $q->row();
 	}
 
-	function get_kode_reg(){
-		$q = $this->db->query("select REPLACE(MAX(RIGHT(no_reg,15)),'.','') as kode_max from ".$this->table."");
+	function get_kode_bayar()
+	{
+		$obj_date = new DateTime();
+		$thn = $obj_date->format('Y');
+		$bln = $obj_date->format('m');
+		$q = $this->db->query("select MAX(RIGHT(kode,4)) as kode_max from " . $this->table . " WHERE DATE_FORMAT(tanggal, '%Y-%m') = '".$thn.'-'.$bln."'");
+
 		$kd_fix = "";
-		if($q->num_rows()>0){
-			foreach($q->result() as $k){
-				$tmp = ((int)$k->kode_max)+1;
-				//memberi tambahan padding angka 0 dalam 12 string 
-				$kd = sprintf("%012s", $tmp);
-				// insert string pada huruf ke dua dan param 0 (false untuk hapus lanjutannya)
-				for ($i=3; $i <= 9; $i+=3) { 
-					if($i == 3){
-						$kd_fix = substr_replace($kd,".",$i,0);
-					}else if($i == 6){
-						$kd_fix = substr_replace($kd_fix,".",$i+1,0);
-					}else{
-						$kd_fix = substr_replace($kd_fix,".",$i+2,0);
-					}
-				}
+		if ($q->num_rows() > 0) {
+			foreach ($q->result() as $k) {
+				$tmp = ((int)$k->kode_max) + 1;
+				//memberi tambahan padding angka 0 dalam 4 string 
+				$kd_fix = sprintf("%04s", $tmp);
 			}
-		}else{
-			$kd_fix = "000.000.000.001";
+		} else {
+			$kd_fix = "0001";
 		}
 
-		return $kd_fix;
+		return 'INV' . '-' . $thn . '' . $bln . '-' . $kd_fix;
 	}
+
 	public function get_max_id()
 	{
 		$q = $this->db->query("SELECT MAX(id) as kode_max from ".$this->table."");
