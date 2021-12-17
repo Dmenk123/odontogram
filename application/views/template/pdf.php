@@ -134,7 +134,7 @@
         <tr>
 
           <td align="left" class="outer-left">
-            <img src="<?= base_url('files/img/app_img/') . $data_klinik->gambar; ?>" height="75" width="90">
+            <img src="<?= base_url('files/img/klinik_img/') . $data_klinik->gambar; ?>" height="75" width="90">
           </td>
 
           <td align="right" class="outer-left" style="padding-top: 5px; padding-left:10px;">

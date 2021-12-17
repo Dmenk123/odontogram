@@ -43,6 +43,7 @@ $(document).ready(function() {
         $('#input_tdk_gigi_txt').val('');
 
         let data = e.params.args.data;
+        console.log(data);
         if(data.is_all_gigi) {
             $('#input_tdk_gigi_num').slideUp();
             $('#input_tdk_gigi_txt').slideDown().val('all');

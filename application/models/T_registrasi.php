@@ -38,7 +38,7 @@ class T_registrasi extends CI_Model
 		$this->load->database();
 	}
 
-	private function _get_datatables_query($term='', $tgl_awal, $tgl_akhir)
+	private function _get_datatables_query($term='', $tgl_awal, $tgl_akhir, $id_klinik)
 	{
 		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
 		peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik");
@@ -48,6 +48,10 @@ class T_registrasi extends CI_Model
 		$this->db->join('m_pemetaan pem', 'reg.id_pemetaan = pem.id', 'left');
 		$this->db->join('m_klinik kli', 'reg.id_klinik = kli.id', 'left');
 		$this->db->where('reg.deleted_at is null');
+
+		if($id_klinik != null) {
+			$this->db->where('reg.id_klinik', $id_klinik);
+		}
 		
 		if($tgl_awal != null && $tgl_akhir != null) {
 			$this->db->where('reg.tanggal_reg >=', $tgl_awal);
@@ -103,10 +107,10 @@ class T_registrasi extends CI_Model
 
 	}
 
-	function get_datatable($tgl_awal = null, $tgl_akhir = null)
+	function get_datatable($tgl_awal = null, $tgl_akhir = null, $id_klinik=null)
 	{
 		$term = $_REQUEST['search']['value'];
-		$this->_get_datatables_query($term,$tgl_awal,$tgl_akhir);
+		$this->_get_datatables_query($term,$tgl_awal,$tgl_akhir,$id_klinik);
 		if($_REQUEST['length'] != -1)
 		$this->db->limit($_REQUEST['length'], $_REQUEST['start']);
 
@@ -114,16 +118,20 @@ class T_registrasi extends CI_Model
 		return $query->result();
 	}
 
-	function count_filtered($tgl_awal,$tgl_akhir)
+	function count_filtered($tgl_awal,$tgl_akhir,$id_klinik=null)
 	{
-		$this->_get_datatables_query($term='',$tgl_awal,$tgl_akhir);
+		$this->_get_datatables_query($term='',$tgl_awal,$tgl_akhir,$id_klinik);
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
-	public function count_all()
+	public function count_all($id_klinik = null)
 	{
 		$this->db->from($this->table);
+		if($id_klinik != null) {
+			$this->db->where('id_klinik', $id_klinik);
+		}
+		
 		return $this->db->count_all_results();
 	}
 

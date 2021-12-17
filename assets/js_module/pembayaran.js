@@ -91,7 +91,9 @@ $(document).ready(function() {
                   if(data.status) {
                     swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success').then((cb) => {
                         if(cb.value) {
-                            window.location.href = base_url +'pembayaran';
+                            // window.location.href = base_url +'pembayaran';
+                            $('.div-button-area').html(data.html_button);
+                            printStruk(data.id_trans);
                         }
                     });
                   }else {
@@ -316,6 +318,27 @@ const detail_trans = (enc_id) => {
             alert('Error get data from ajax');
         }
     });
+}
+
+const printStruk = (id_bayar) => {
+
+    $.ajax({
+        type: "get",
+        url:  base_url+"pembayaran/cetak_struk/"+id_bayar,
+        dataType: "json",
+        // data: {id_trans:id_trans},
+        success: function (response) {
+            popupPrint(response.html);
+        }
+    });
+   
+}
+
+const popupPrint = (data) => {
+    let myWindow = window.open('', 'Receipt', 'height=400,width=600');
+    myWindow.document.write(data);
+    myWindow.print();
+    myWindow.close();
 }
 ////////////////////////////////////////////////////
 

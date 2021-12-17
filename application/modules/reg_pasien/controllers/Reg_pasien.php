@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Reg_pasien extends CI_Controller {
 	
+	protected $id_klinik = null;
 	public function __construct()
 	{
 		parent::__construct();
@@ -14,6 +15,7 @@ class Reg_pasien extends CI_Controller {
 		$this->load->model('m_asuransi');
 		$this->load->model('m_global');
 		$this->load->model('t_registrasi');
+		$this->id_klinik = $this->session->userdata('id_klinik');
 	}
 
 	public function index()
@@ -251,7 +253,7 @@ class Reg_pasien extends CI_Controller {
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
 		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik";
-		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
+		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id, 'reg.id_klinik' => $this->id_klinik];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as psn', 'on'	=> 'reg.id_pasien = psn.id'],
@@ -260,7 +262,7 @@ class Reg_pasien extends CI_Controller {
 			['table' => 'm_klinik as kli', 'on' => 'reg.id_klinik = kli.id'],
 		];
 		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
-
+		
 		if($this->session->userdata('id_klinik') == null) {
 			$is_option_klinik = true;
 		}else{
@@ -368,7 +370,7 @@ class Reg_pasien extends CI_Controller {
 		$tgl_akhir = contul(DateTime::createFromFormat('d/m/Y', $this->input->post('tgl_akhir'))->format('Y-m-d'));
 		
 		$this->load->library('Enkripsi');
-		$list = $this->t_registrasi->get_datatable($tgl_awal, $tgl_akhir);
+		$list = $this->t_registrasi->get_datatable($tgl_awal, $tgl_akhir, $this->id_klinik);
 
 		// echo "<pre>";
 		// print_r ($list);
@@ -426,8 +428,8 @@ class Reg_pasien extends CI_Controller {
 
 		$output = [
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->t_registrasi->count_all(),
-			"recordsFiltered" => $this->t_registrasi->count_filtered($tgl_awal, $tgl_akhir),
+			"recordsTotal" => $this->t_registrasi->count_all($this->id_klinik),
+			"recordsFiltered" => $this->t_registrasi->count_filtered($tgl_awal, $tgl_akhir, $this->id_klinik),
 			"data" => $data
 		];
 		

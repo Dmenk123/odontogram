@@ -26,7 +26,10 @@ $(document).ready(function() {
                             kode: item.kode,
                             nama: item.nama,
                             harga: item.harga,
-                            harga_raw: item.harga_raw
+                            harga_raw: item.harga_raw,
+                            disc_persen: item.disc_persen,
+                            harga_nett: item.harga_nett,
+                            harga_nett_raw: item.harga_nett_raw,
                         }
                     })
                 };
@@ -41,11 +44,15 @@ $(document).ready(function() {
         $("#form_tindakanlab input[name='tdklab_tindakan']").val(data.nama);
         $("#form_tindakanlab input[name='tdklab_harga']").val(data.harga);
         $("#form_tindakanlab input[name='tdklab_harga_raw']").val(data.harga_raw);
+        $("#form_tindakanlab input[name='tdklab_diskon']").val(data.disc_persen);
+        $("#form_tindakanlab input[name='tdklab_nett']").val(data.harga_nett);
+        $("#form_tindakanlab input[name='tdklab_nett_raw']").val(data.harga_nett_raw);
     });
     
 });
 
 function reloadFormTindakanLab(){
+    resetFormTindakanLab()
     $('#CssLoader').removeClass('hidden');
     $.ajax({
         type: "post",
@@ -101,5 +108,32 @@ function hapus_tindakanlab_det(id) {
           )
         }
     });
+}
+
+const resetFormTindakanLab = () => {
+    $('#tindakanlab').val('').trigger('change');
+    $("#form_tindakanlab input[name='tdklab_kode']").val('');
+    $("#form_tindakanlab input[name='tdklab_tindakan']").val('');
+    $("#form_tindakanlab input[name='tdklab_harga']").val('');
+    $("#form_tindakanlab input[name='tdklab_harga_raw']").val('');
+    $("#form_tindakanlab input[name='tdklab_diskon']").val('');
+    $("#form_tindakanlab input[name='tdklab_nett']").val('');
+    $("#form_tindakanlab input[name='tdklab_nett_raw']").val('');
+    $("#form_tindakanlab input[name='tdklab_ket']").val('');
+}
+
+const setHargaLabRaw = () => {
+    let diskonLab = $('#tdklab_diskon').val();
+    let rpLab = $('#tdklab_harga').inputmask('unmaskedvalue');
+    
+    let rpLabGrossRaw = parseFloat(rpLab).toFixed(2);
+    let rpLabNettRaw = parseFloat((()=>{
+        return rpLab - (rpLab * diskonLab / 100);
+    })()).toFixed(2);
+
+    // set value
+    $('#tdklab_harga_raw').val(rpLabGrossRaw);
+    $('#tdklab_nett_raw').val(rpLabNettRaw);
+    $('#tdklab_nett').val(formatMoney(Number(rpLabNettRaw)));
 }
 

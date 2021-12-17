@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_tindakan extends CI_Model
 {
 	var $table = 'm_tindakan';
-	var $column_search = ['kode_tindakan','nama_tindakan','harga'];
+	var $column_search = ['kode_tindakan','nama_tindakan','harga','disc_persen'];
 	
 	var $column_order = [
 		null, 
@@ -146,18 +146,18 @@ class M_tindakan extends CI_Model
 		return $this->db->update($this->table, $data, $where);
 	}
 
-	function get_kode_pegawai(){
-		$q = $this->db->query("select MAX(RIGHT(kode,5)) as kode_max from m_pegawai");
+	function get_kode_tindakan(){
+		$q = $this->db->query("select MAX(RIGHT(kode_tindakan,3)) as kode_max from m_tindakan");
 		$kd = "";
 		if($q->num_rows()>0){
 			foreach($q->result() as $k){
 				$tmp = ((int)$k->kode_max)+1;
-				$kd = sprintf("%05s", $tmp);
+				$kd = sprintf("%03s", $tmp);
 			}
 		}else{
-			$kd = "00001";
+			$kd = "001";
 		}
-		return "PEG-".$kd;
+		return "T".$kd;
 	}
 	
 	public function get_max_id_pegawai()

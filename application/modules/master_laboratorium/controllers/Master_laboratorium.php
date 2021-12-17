@@ -60,6 +60,7 @@ class Master_laboratorium extends CI_Controller {
 			$row[] = $lab->kode;
 			$row[] = $lab->tindakan_lab;
 			$row[] = $lab->harga;
+			$row[] = $lab->disc_persen;
 			// $aktif_txt = ($diag->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
 			// $row[] = $aktif_txt;			
 			
@@ -146,6 +147,7 @@ class Master_laboratorium extends CI_Controller {
 		$kode 			= trim($this->input->post('kode'));
 		$tindakan_lab 	= trim($this->input->post('tindakan_lab'));
 		$harga 			= trim($this->input->post('harga'));
+		$diskon 	   = $this->input->post('diskon');
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -159,6 +161,7 @@ class Master_laboratorium extends CI_Controller {
 			'kode' 			=> $kode,
 			'tindakan_lab' 	=> $tindakan_lab,
 			'harga'			=> $harga,
+			'disc_persen'   => $diskon,
 			'created_at' 	=> $timestamp
 		];
 		
@@ -193,6 +196,7 @@ class Master_laboratorium extends CI_Controller {
 		$kode 			= trim($this->input->post('kode'));
 		$tindakan_lab 	= trim($this->input->post('tindakan_lab'));
 		$harga 			= trim($this->input->post('harga'));
+		$diskon = $this->input->post('diskon');
 
 		$this->db->trans_begin();
 		
@@ -200,6 +204,7 @@ class Master_laboratorium extends CI_Controller {
 			'kode' 			=> $kode,
 			'tindakan_lab' 	=> $tindakan_lab,
 			'harga'			=> $harga,
+			'disc_persen'   => $diskon,
 			'updated_at' 	=> $timestamp
 		];
 
@@ -514,6 +519,12 @@ class Master_laboratorium extends CI_Controller {
             $data['status'] = FALSE;
 		}
 
+		if ($this->input->post('diskon') == '') {
+			$data['inputerror'][] = 'diskon';
+            $data['error_string'][] = 'Wajib mengisi Diskon';
+            $data['status'] = FALSE;
+		}
+
 	
         return $data;
 	}
@@ -530,6 +541,9 @@ class Master_laboratorium extends CI_Controller {
 				$row['nama'] = $value->tindakan_lab;
 				$row['harga'] = number_format($value->harga,0,',','.');
 				$row['harga_raw'] = $value->harga;
+				$row['disc_persen'] = $value->disc_persen;
+				$row['harga_nett'] = number_format($value->harga - ($value->harga * $value->disc_persen / 100));
+				$row['harga_nett_raw'] = $value->harga - ($value->harga * $value->disc_persen / 100);
 
 				$retval[] = $row;
 			}
