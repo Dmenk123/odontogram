@@ -91,9 +91,9 @@ class Pembayaran extends CI_Controller {
 			}
 
 			$str_aksi .= '
-				<a class="dropdown-item" target="_blank" href="' . base_url('pembayaran/cetak_data_individu/') . $this->enkripsi->enc_dec('encrypt', $val->id) . '">
-					<i class="la la-print"></i> Cetak Transaksi Ini
-				</a>
+				<button class="dropdown-item" onclick="printStruk(\'' . $val->id . '\')">
+					<i class="la la-search"></i> Cetak Struk
+				</button>
 			';
 
 			$str_aksi .= '</div></div>';
