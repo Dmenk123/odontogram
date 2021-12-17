@@ -50,8 +50,8 @@
 		<!-- begin:: Header Mobile -->
 		<div id="kt_header_mobile" class="kt-header-mobile  kt-header-mobile--fixed ">
 			<div class="kt-header-mobile__logo">
-				<a href="index.html">
-					<img alt="Logo" src="<?= base_url('assets/template/'); ?>assets/media/logos/logo-light.png" />
+				<a href="<?=base_url('home');?>">
+					<img alt="Logo" src="<?= base_url('files/img/logo.PNG'); ?>"/>
 				</a>
 			</div>
 			<div class="kt-header-mobile__toolbar">
