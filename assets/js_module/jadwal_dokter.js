@@ -1,25 +1,44 @@
 
     var get_data        = $('#get_data').val();
-    var backend_url     = '<?php echo base_url(); ?>';
+    $('#jam_mulai').timepicker({
+        minuteStep: 1,
+        // defaultTime: time_now(),
+        showSeconds: false,
+        showMeridian: false,
+        snapToStep: true
+    });
 
+    $('#jam_akhir').timepicker({
+        minuteStep: 1,
+        // defaultTime: time_now(),
+        showSeconds: false,
+        showMeridian: false,
+        snapToStep: true
+    });
     $(document).ready(function() {
         console.log('tes ');
         console.log(get_data);
-        // $('.date-picker').datepicker();
-        $('#calendar_tes').fullCalendar({
+        $('#datepick').datepicker({
+            format: 'yyyy-mm-dd',
+            startDate: '-3d'
+        })
+
+      
+        $('#calendarIO').fullCalendar({
             header: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'month,basicWeek,basicDay'
             },
+    
             defaultDate: moment().format('YYYY-MM-DD'),
             editable: true,
                 eventLimit: true, // allow "more" link when too many events
                 selectable: true,
+                html: true,
                 selectHelper: true,
                 select: function(start, end) {
-                    $('#create_modal input[name=start_date]').val(moment(start).format('YYYY-MM-DD'));
-                    $('#create_modal input[name=end_date]').val(moment(end).format('YYYY-MM-DD'));
+                    $('#create_modal input[name=tanggal]').val(moment(start).format('YYYY-MM-DD'));
                     $('#create_modal').modal('show');
                     save();
                     $('#calendarIO').fullCalendar('unselect');
@@ -50,7 +69,7 @@
         var element = $(this);
         var eventData;
         $.ajax({
-            url     : backend_url+'calendar/save',
+            url     : base_url+'jadwal_dokter/save',
             type    : element.attr('method'),
             data    : element.serialize(),
             dataType: 'JSON',
@@ -64,10 +83,10 @@
                 {   
                     eventData = {
                         id          : data.id,
-                        title       : $('#create_modal input[name=title]').val(),
-                        description : $('#create_modal textarea[name=description]').val(),
-                        start       : moment($('#create_modal input[name=start_date]').val()).format('YYYY-MM-DD HH:mm:ss'),
-                        end         : moment($('#create_modal input[name=end_date]').val()).format('YYYY-MM-DD HH:mm:ss'),
+                        title       : data.id_dokter,
+                        description : '',
+                        start       : moment(data.tanggal),
+                        end         : moment(data.tanggal),
                         color       : $('#create_modal select[name=color]').val()
                     };
                         $('#calendarIO').fullCalendar('renderEvent', eventData, true); // stick? = true
@@ -105,7 +124,7 @@
         }
         
         $.ajax({
-            url     : backend_url+'calendar/save',
+            url     : base_url+'jadwal_dokter/save',
             type    : 'POST',
             data    : 'calendar_id='+event.id+'&title='+event.title+'&start_date='+start+'&end_date='+end,
             dataType: 'JSON',
@@ -137,7 +156,7 @@
             var element = $(this);
             var eventData;
             $.ajax({
-                url     : backend_url+'calendar/save',
+                url     : base_url+'jadwal_dokter/save',
                 type    : element.attr('method'),
                 data    : element.serialize(),
                 dataType: 'JSON',
@@ -151,10 +170,10 @@
                     {   
                         eventData = {
                             id          : data.id,
-                            title       : $('#create_modal input[name=title]').val(),
-                            description : $('#create_modal textarea[name=description]').val(),
-                            start       : moment($('#create_modal input[name=start_date]').val()).format('YYYY-MM-DD HH:mm:ss'),
-                            end         : moment($('#create_modal input[name=end_date]').val()).format('YYYY-MM-DD HH:mm:ss'),
+                            title       : data.id_dokter,
+                            description : '',
+                            start       : moment(data.tanggal),
+                            end         : moment(data.tanggal),
                             color       : $('#create_modal select[name=color]').val()
                         };
                             $('#calendarIO').fullCalendar('renderEvent', eventData, true); // stick? = true
@@ -198,7 +217,7 @@
             var element = $(this);
             var eventData;
             $.ajax({
-                url     : backend_url+'calendar/save',
+                url     : base_url+'jadwal_dokter/save',
                 type    : element.attr('method'),
                 data    : element.serialize(),
                 dataType: 'JSON',
@@ -244,7 +263,7 @@
     {
         $('#create_modal .delete_calendar').click(function(){
             $.ajax({
-                url     : backend_url+'calendar/delete',
+                url     : base_url+'jadwal_dokter/delete',
                 type    : 'POST',
                 data    : 'id='+event.id,
                 dataType: 'JSON',

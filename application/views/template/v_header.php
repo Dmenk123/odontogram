@@ -13,7 +13,7 @@
 		<!--end::Fonts -->
 
 		<!--begin::Page Vendors Styles(used by this page) -->
-		<link href="<?= base_url('assets/template/'); ?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+		<!-- <link href="<?= base_url('assets/template/'); ?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" /> -->
 		<!--end::Page Vendors Styles -->
 
 		<!--begin::Global Theme Styles(used by all pages) -->
