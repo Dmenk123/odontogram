@@ -95,6 +95,7 @@ class Jadwal_dokter extends CI_Controller {
 			if($calendar_id == 0)
 			{
 				$param['create_at']   	= date('Y-m-d H:i:s');
+				$param['create_by']   	= $data_user->id;
 				$insert = $this->modeldb->insert('t_log_jadwal_dokter', $param);
 
 				if ($insert > 0) 
