@@ -311,7 +311,7 @@ const detail_trans = (enc_id) => {
 
             $('tbody#rincian_det').html(data.html_rinci);
             $('#modal_detail').modal('show');
-	        $('#modal_title_det').text('Detail Pasien'); 
+	        $('#modal_title_det').text('Detail Pembayaran'); 
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
