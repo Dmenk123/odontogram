@@ -75,6 +75,8 @@ class Jadwal_dokter extends CI_Controller {
 	public function save()
 	{
 		$obj_date = new DateTime();
+		$id_user = $this->session->userdata('id_user');
+		$data_user = $this->m_user->get_by_id($id_user);
 		$response = array();
 		$this->form_validation->set_rules('id_dokter', 'Dokter Harap Diisi ! ', 'required');
 		$this->form_validation->set_rules('tanggal', 'Tanggal Harap Diisi ! ', 'required');
@@ -114,6 +116,7 @@ class Jadwal_dokter extends CI_Controller {
 			{	
 				$where 		= [ 'id'  => $calendar_id];
 				$param['modified_at']   	= date('Y-m-d H:i:s');
+				$param['modified_by']   	= $data_user->id;
 				$update = $this->modeldb->update('t_log_jadwal_dokter', $param, $where);
 
 				if ($update > 0) 
@@ -122,7 +125,7 @@ class Jadwal_dokter extends CI_Controller {
 					$response['notif']	= 'Success add calendar';
 					$response['id']		= $calendar_id;
 					$response['tanggal'] = $param['tanggal'];
-					$response['id_dokter'] = $id_dokter;
+					$response['id_dokter'] = $dokter->nama;
 					$response['id_klinik'] = $id_klinik;
 				}
 				else
@@ -169,6 +172,27 @@ class Jadwal_dokter extends CI_Controller {
 		}
 
 		echo json_encode($response);
+	}
+
+	public function edit_jadwal()
+	{
+		$id = $this->input->post('id');
+		$this->load->library('Enkripsi');
+		$id_user = $this->session->userdata('id_user');
+		$data_user = $this->m_user->get_by_id($id_user);
+	
+		$oldData = $this->m_global->getSelectedData('t_log_jadwal_dokter', ['id' => $id])->row();
+		
+		if(!$oldData){
+			return redirect($this->uri->segment(1));
+		}
+
+		$data = array(
+			'data_user' => $data_user,
+			'old_data'	=> $oldData
+		);
+		
+		echo json_encode($data);
 	}
 
 
