@@ -70,7 +70,7 @@
                                                <div class="alert alert-danger" style="display: none;"></div>
                                            </div>
                                            <div class="form-group">
-                                            <label class="control-label col-sm-2">Title  <span class="required"> * </span></label>
+                                            <label class="control-label col-sm-2">Dokter  <span class="required"> * </span></label>
                                             <div class="col-sm-10">
                                             <select class="form-control required" name="id_dokter" id="id_dokter">
                                                 <option value=""> Dokter Gigi </option>
@@ -85,7 +85,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label col-sm-2">Description</label>
+                                            <label class="control-label col-sm-2">Klinik</label>
                                             <div class="col-sm-10">
                                                 <input type="text" name="id_klinik" rows="3" class="form-control"  placeholder="Enter description">
                                             </div>
@@ -119,13 +119,13 @@
                                         <div class="form-group timepicker">
                                             <label class="control-label col-sm-2">Jam Mulai</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" id="jam_mulai" name="jam_mulai" readonly placeholder="Pilih Jam" type="text" >
+                                                <input class="form-control" id="jam_mulai" name="jam_mulai"  placeholder="Pilih Jam" type="text" >
                                             </div>
                                         </div>
                                         <div class="form-group timepicker">
                                             <label class="control-label col-sm-2">Jam Akhir</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" id="jam_akhir" name="jam_akhir" readonly placeholder="Pilih Jam" type="text" >
+                                                <input class="form-control" id="jam_akhir" name="jam_akhir"  placeholder="Pilih Jam" type="text" >
                                             </div>
                                         </div>
                                     </div>

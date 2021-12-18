@@ -201,14 +201,37 @@
 
     function deteil(event)
     {
-        $('#create_modal input[name=calendar_id]').val(event.id);
-        $('#create_modal input[name=start_date]').val(moment(event.start).format('YYYY-MM-DD'));
-        $('#create_modal input[name=end_date]').val(moment(event.end).format('YYYY-MM-DD'));
-        $('#create_modal input[name=title]').val(event.title);
-        $('#create_modal input[name=description]').val(event.description);
-        $('#create_modal select[name=color]').val(event.color);
-        $('#create_modal .delete_calendar').show();
-        $('#create_modal').modal('show');
+        $.ajax({
+            url : base_url + 'jadwal_dokter/edit_jadwal',
+            type: "POST",
+            dataType: "JSON",
+            data : {id:event.id},
+            success: function(data)
+            {
+                $('#create_modal input[name=calendar_id]').val(event.id);  
+                $('#create_modal input[name=tanggal]').val(moment(data.old_data.tanggal).format('DD/MM/YYYY'));
+                $('#create_modal input[name=id_dokter]').val(data.old_data.id_dokter);
+                $('#create_modal input[name=id_klinik]').val(data.old_data.id_klinik);
+                $('#create_modal select[name=color]').val(event.color);
+                $('#create_modal select[name=jam_mulai]').val(data.old_data.jam_mulai);
+                $('#create_modal select[name=jam_akhir]').val(data.old_data.jam_akhir);
+                $('#create_modal .delete_calendar').show();
+                $('#create_modal').modal('show');
+    
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Error get data from ajax');
+            }
+        });
+        // $('#create_modal input[name=calendar_id]').val(event.id);
+        // $('#create_modal input[name=start_date]').val(moment(event.start).format('YYYY-MM-DD'));
+        // $('#create_modal input[name=end_date]').val(moment(event.end).format('YYYY-MM-DD'));
+        // $('#create_modal input[name=title]').val(event.title);
+        // $('#create_modal input[name=description]').val(event.description);
+        // $('#create_modal select[name=color]').val(event.color);
+        // $('#create_modal .delete_calendar').show();
+        // $('#create_modal').modal('show');
     }
 
     function editData(event)
@@ -229,10 +252,10 @@
                 {
                     if(data.status)
                     {   
-                        event.title         = $('#create_modal input[name=title]').val();
-                        event.description   = $('#create_modal textarea[name=description]').val();
-                        event.start         = moment($('#create_modal input[name=start_date]').val()).format('YYYY-MM-DD HH:mm:ss');
-                        event.end           = moment($('#create_modal input[name=end_date]').val()).format('YYYY-MM-DD HH:mm:ss');
+                        event.title         = data.id_dokter;
+                        event.description   = '';
+                        event.start         = moment(data.tanggal);
+                        event.end           = moment(data.tanggal);
                         event.color         = $('#create_modal select[name=color]').val();
                         $('#calendarIO').fullCalendar('updateEvent', event);
 
