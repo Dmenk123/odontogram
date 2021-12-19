@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+use Carbon\Carbon;
 class Lap_honor_dokter extends CI_Controller {
-	
+		
 	public function __construct()
 	{
 		parent::__construct();
@@ -25,7 +25,7 @@ class Lap_honor_dokter extends CI_Controller {
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Laporan Penjualan',
+			'title' => 'Laporan Honor Dokter',
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
 		);
@@ -44,6 +44,80 @@ class Lap_honor_dokter extends CI_Controller {
 		];
 
 		$this->template_view->load_view($content, $data);
+	}
+
+	public function tabel_laporan()
+	{
+		$model = $this->input->post('model');
+		$tahun2 = $this->input->post('tahun2');
+		$tahun = $this->input->post('tahun');
+		$bulan = $this->input->post('bulan');
+		$start = $this->input->post('start');
+		$end = $this->input->post('end');
+
+		if ($start) {
+			$start = Carbon::createFromFormat('d/m/Y', $start)->format('Y-m-d');
+		}
+
+		if ($end) {
+			$end = Carbon::createFromFormat('d/m/Y', $end)->format('Y-m-d');
+		}
+
+		if ($model == 2) {
+			### pertahun
+			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun'";
+			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+		}elseif ($model == 1) {
+			### perbulan
+			$where = "DATE_FORMAT(mut.tanggal,'%m') = '$bulan'";
+			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+		}elseif ($model == 3) {
+			### perhari
+			$where = "mut.tanggal between '$start' and '$end'";
+			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+		}
+
+		$q = $this->db->query("
+			SELECT	
+				sum(mut.total_pengeluaran) as total,
+				mut.tanggal,
+				m_klinik.nama_klinik,
+				reg.id_klinik,
+				m_pegawai.nama as nama_dokter,
+				m_pegawai.kode as kode_dokter
+			FROM
+				t_mutasi AS mut
+				LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
+				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
+				LEFT JOIN m_pegawai ON reg.id_pegawai = m_pegawai.id AND m_pegawai.deleted_at IS NULL 
+			WHERE
+				mut.id_jenis_trans = 6 
+				AND mut.deleted_at IS NULL 
+				AND m_pegawai.id_jabatan = 1
+				AND $where
+			GROUP BY $group
+			ORDER BY m_pegawai.nama, m_klinik.nama_klinik
+		")->result();
+
+		$html = '';
+		if ($q) {
+			foreach ($q as $k => $v) {
+				$k++;
+				$html .= "
+					<tr>
+						<td>".$k."</td>
+						<td>".$v->nama_dokter." [".$v->kode_dokter."]</td>
+						<td>".$v->nama_klinik."</td>
+						<td align='right'>".number_format($v->total,0,',','.')."</td>
+					</tr>
+				";
+				
+			}
+		}
+        
+        echo json_encode([
+            'data' => $html
+        ]);
 	}
 
 	public function datatable()

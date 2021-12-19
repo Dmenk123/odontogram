@@ -2,174 +2,173 @@ var save_method;
 var table;
 
 $(document).ready(function() {
-
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
+    var model = $('#model').val();
+    var tanggal_awal = $('#tanggal_awal').val();
+    var tanggal_akhir = $('#tanggal_akhir').val();
+    var bulan = $('#bulan').val();
+    var tahun = $('#tahun').val();
+    var tahun2 = $('#tahun2').val();
+
+    if(model == '1'){
+        $(".div_tanggal_mulai").hide();
+        $(".div_tanggal_akhir").hide();
+        $(".div_bulan").show();
+        $(".div_tahun").hide();
+      }
+      else if(model == '3') {
+        $(".div_tanggal_mulai").show();
+        $(".div_tanggal_akhir").show();
+        $(".div_bulan").hide();
+        $(".div_tahun").hide();
+      }
+      else if (model == '2') {
+        $(".div_tahun").show();
+        $(".div_tanggal_mulai").hide();
+        $(".div_tanggal_akhir").hide();
+        $(".div_bulan").hide();
+      }
+      else {
+        $(".div_tanggal_mulai").hide();
+        $(".div_tanggal_akhir").hide();
+        $(".div_bulan").hide();
+        $(".div_tahun").hide();
+      }
 	//datatables
-    $("#filters").click(function(){
-        var id = $('#id_pelanggan').val();
-        var id_barang = $('#id_barang').val();
-        var start = $('#start').val();
-        var end = $('#end').val();
-        if (start && end) {
-            var mulai = start.split("/")
-            var s = new Date(mulai[2], mulai[1] - 1, mulai[0])
+    if (model) {
+        // table = $('#tabel_lap_penjualan').DataTable({
+        //     responsive: true,
+        //     searchDelay: 500,
+        //     processing: true,
+        //     serverSide: false,
+        //     bDestroy: true,
+        //     ajax: {
+        //         url  : base_url + "laporan_penjualan/datatable",
+        //         type : "POST",
+        //         data : {
+        //             model : model, 
+        //             start: tanggal_awal,
+        //             end : tanggal_akhir,
+        //             bulan : bulan,
+        //             tahun : tahun,
+        //             tahun2 : tahun2
+        //         },
+        //     },
+    
+        //     //set column definition initialisation properties
+        //     columnDefs: [
+        //         {
+        //             targets: [-1], //last column
+        //             orderable: false, //set not orderable
+        //         },
+        //     ],
+        // });
 
-            var akhir = end.split("/")
-            var e = new Date(akhir[2], akhir[1] - 1, akhir[0])
-            if (s > e) {
-                Swal.fire('Tanggal Mulai dilarang melebihi tanggal akhir')
-                return;
+        $.ajax({
+            type: "post",
+            url  : base_url + "lap_honor_dokter/tabel_laporan",
+            data : {
+                model : model, 
+                start: tanggal_awal,
+                end : tanggal_akhir,
+                bulan : bulan,
+                tahun : tahun,
+                tahun2 : tahun2
+            },
+            dataType: "JSON",
+            success: function (response) {
+                $('#tabel_lap_penjualan tbody').html(response.data);
             }
-            
-        }else if (!id) {
-            Swal.fire('Silahkan memilih pelanggan terlebih dahulu')
-            return;
-        }
-        monitoring(id, id_barang, start, end)
-        if (id != '') {
-            table = $('#tabel_mon_pelanggan').DataTable({
-                responsive: true,
-                searchDelay: 500,
-                processing: true,
-                serverSide: false,
-                bDestroy: true,
-                ajax: {
-                    url  : base_url + "monitoring_pelanggan/datatable_monitoring",
-                    type : "POST",
-                    data : {
-                        id_pelanggan : id, 
-                        id_barang: id_barang,
-                        start : start,
-                        end : end
-                    },
-                },
-    
-                //set column definition initialisation properties
-                columnDefs: [
-                    {
-                        targets: [-1], //last column
-                        orderable: false, //set not orderable
-                    },
-                ],
-            });
-        }
-       
-    }); 
+        });
+    }
+   
     
 
-    $(".modal").on("hidden.bs.modal", function(){
-        reset_modal_form();
-        reset_modal_form_import();
-    });
 });	
 
-function add_menu()
-{
-    reset_modal_form();
-    save_method = 'add';
-	$('#modal_log').modal('show');
-	$('#modal_title').text('Tambah Log Harga Jual'); 
-}
+function changeModel() {
+    if($("#model").val() == '1'){
+      $(".div_tanggal_mulai").hide();
+      $(".div_tanggal_akhir").hide();
+      $(".div_bulan").show();
+      $(".div_tahun").hide();
+    }
+    else if($("#model").val() == '3') {
+      $(".div_tanggal_mulai").show();
+      $(".div_tanggal_akhir").show();
+      $(".div_bulan").hide();
+      $(".div_tahun").hide();
+    }
+    else if ($("#model").val() == '2') {
+      $(".div_tahun").show();
+      $(".div_tanggal_mulai").hide();
+      $(".div_tanggal_akhir").hide();
+      $(".div_bulan").hide();
+    }
+    else {
+      $(".div_tanggal_mulai").hide();
+      $(".div_tanggal_akhir").hide();
+      $(".div_bulan").hide();
+      $(".div_tahun").hide();
+    }
+  }
 
+  function save() {
+    var eksekusi = false;
+    var pesan = '';
 
-
-function reload_table()
-{
-    table.ajax.reload(null,false); //reload datatable ajax 
-}
-
-
-function monitoring(id, id_barang, start, end)
-{
-    url = base_url + 'monitoring_pelanggan/monitoring_cart';
-    $.ajax({
-      type: "POST",
-      enctype: 'multipart/form-data',
-      url: url,
-      data: {
-            id_pelanggan:id,
-            id_barang : id_barang,
-            start : start,
-            end : end
-        },
-      dataType: "JSON",
-      // processData: false, // false, it prevent jQuery form transforming the data into a query string
-      // contentType: false, 
-      // cache: false,
-      timeout: 600000,
-      success: function (response) {
-          if(response.status) {
-              console.log('berhasil');
-              new Chart(document.getElementById("line-chart"), {
-                  type: 'bar',
-                  data: {
-                    labels: response.label,
-                    datasets: response.datasets
-                  },
-                  options: {
-                    title: {
-                      display: true,
-                      text: response.judul
-                    }
-                  }
-              });
-          }else {
-              for (var i = 0; i < data.inputerror.length; i++) 
-              {
-                  if (data.inputerror[i] != 'jabatans') {
-                      $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
-                      $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
-                  }else{
-                      $($('#jabatans').data('select2').$container).addClass('has-error');
-                  }
-              }
-  
-              $("#btnSave").prop("disabled", false);
-              $('#btnSave').text('Simpan');
+      if($("#model").val() == '1'){
+        if($("#bulan").val() != '') {
+          if($("#tahun").val() != '') {
+            eksekusi = true;
           }
-      },
-      error: function (e) {
-          console.log("ERROR : ", e);
-          $("#btnSave").prop("disabled", false);
-          $('#btnSave').text('Simpan');
-  
-          reset_modal_form();
-          $(".modal").modal('hide');
-      }
-    });
-}
-
-function getBarang(param){
-    var value = $(param).val();
-
-    field = $("[name='id_barang']");
-    field.html("<option value=''>Loading</option>");
-    $.ajax({
-        url  : base_url + "monitoring_pelanggan/get_barang",
-        type: 'post',
-        data : {
-            id_pelanggan : value
-        },
-    type : 'POST', dataType : 'json'
-    }).done(function(response){
-        var tes = "<option value=''>Pilih Barang</option>";
-        console.log(response);
-        if(response){
-            for(i=0;i<response.length;i++){
-            //    console.log(response[i]['klh_id']);
-                var option = "<option value='"+response[i]['id_barang']+"' ";
-                option += " >"+response[i]['nama_barang']+"</option>";
-                tes += option;
-                // field.append(option);
-            }
-        
+          else {
+            pesan = "Silahkan memilih Tahun terlebih dahulu";
+          }
         }
-        field.html(tes);
-        $('#jenis_event').data("selectBox-selectBoxIt").refresh();
-    });
+        else {
+          pesan = "Silahkan memilih Bulan terlebih dahulu";
+        }
+      }
+      else if($("#model").val() == '3') {
+        if($("#tanggal_mulai").val() != '' && $("#tanggal_akhir").val() != '') {
+          eksekusi = true;
+        }
+        else {
+          pesan = "Silahkan memilih Tanggal Awal dan AKhir terlebih dahulu";
+        }
+      }
+      else if ($("#model").val() == '2') {
+        if ($("#tahun2").val() != '') {
+          eksekusi = true;
+        }
+        else{
+          pesan = "Silahkan memilih Tahun terlebih dahulu";
+        }
+      }
+    
 
-}
+    if(eksekusi) {
+        $('#submit_form').submit();
+    }
+    else {
+        Swal.fire(pesan)
+        exit
+    }
+  }
+
+  function cetak(){
+    let searchParams = new URLSearchParams(window.location.search)
+    let model =  searchParams.get('model')
+    if (model) {
+      window.open(base_url+'pdf/cetak_laporan?model='+model+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&jenis=laporan_penjualan', '_blank');
+      // window.location.href = ;
+    }else{
+      Swal.fire('Silahkan Pilih Periode Terlebih dahulu');
+    }
+  }
+

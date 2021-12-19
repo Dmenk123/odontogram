@@ -6,7 +6,7 @@
     <div class="kt-container  kt-container--fluid ">
       <div class="kt-subheader__main">
         <h3 class="kt-subheader__title">
-          <?= $this->template_view->nama('judul').' - '.$title; ?>
+          <?= $this->template_view->nama('judul'); ?>
         </h3>
       </div>
     </div>
@@ -115,11 +115,9 @@
             <thead>
               <tr>
                 <th style="width: 5%;">No</th>
-                <th>Nama Pelanggan</th>
-                <th>Nama Barang</th>
-                <th>qty</th>
-                <th>Harga</th>
-                <th>Tanggal Order</th>
+                <th>Dokter</th>
+                <th>Klinik</th>
+                <th>Honor Dokter</th>
               </tr>
             </thead>
               <tbody>

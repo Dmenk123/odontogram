@@ -62,20 +62,7 @@ $(document).ready(function() {
        
     }); 
     
-
-    // $(".modal").on("hidden.bs.modal", function(){
-    //     reset_modal_form();
-    //     reset_modal_form_import();
-    // });
 });	
-
-// function add_menu()
-// {
-//     reset_modal_form();
-//     save_method = 'add';
-// 	$('#modal_log').modal('show');
-// 	$('#modal_title').text('Tambah Log Harga Jual'); 
-// }
 
 function reload_table()
 {
@@ -87,7 +74,7 @@ function monitoring(id, start, end)
 {
     // redraw canvas.js
     $('#chart-report').html('<canvas id="line-chart" width="800" height="450"></canvas>');
-    
+
     url = base_url + 'monitoring_honor/monitoring_chart';
     $.ajax({
         type: "POST",
@@ -171,33 +158,3 @@ const detail_trans = (enc_id) => {
         }
     });
 }
-
-// function getDokter(param){
-//     var value = $(param).val();
-
-//     field = $("[name='id_dokter']");
-//     field.html("<option value=''>Loading</option>");
-//     $.ajax({
-//         url  : base_url + "monitoring_pelanggan/get_barang",
-//         type: 'post',
-//         data : { id_pelanggan : value },
-//         type : 'POST', 
-//         dataType : 'json'
-//     }).done(function(response){
-//         var tes = "<option value=''>Pilih Barang</option>";
-//         console.log(response);
-//         if(response){
-//             for(i=0;i<response.length;i++){
-//             //    console.log(response[i]['klh_id']);
-//                 var option = "<option value='"+response[i]['id_barang']+"' ";
-//                 option += " >"+response[i]['nama_barang']+"</option>";
-//                 tes += option;
-//                 // field.append(option);
-//             }
-        
-//         }
-//         field.html(tes);
-//         $('#jenis_event').data("selectBox-selectBoxIt").refresh();
-//     });
-
-// }
