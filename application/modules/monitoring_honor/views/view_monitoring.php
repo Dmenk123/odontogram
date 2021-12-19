@@ -49,7 +49,7 @@
               <select name="id_dokter" id="id_dokter" class="form-control select2">
                   <option value="">Pilih Dokter</option>
                   <?php foreach($dokter as $row):?>
-                      <option value="<?php echo $row->id;?>"><?php echo $row->nama_pegawai;?></option>
+                      <option value="<?php echo $row->id_pegawai;?>"><?php echo $row->nama_pegawai;?></option>
                   <?php endforeach;?>
               </select>
               <span class="help-block"></span>
@@ -66,7 +66,7 @@
         </form>
 
         <div class="row">
-          <div class="col-sm-12">
+          <div class="col-sm-5">
             <table class="table table-striped- table-bordered table-hover table-checkable" id="tabeldata">
               <thead>
                 <tr>
@@ -83,9 +83,9 @@
                 </tbody>      
             </table>
           </div>
-          <!-- <div class="col-sm-7">
+          <div class="col-sm-7">
             <canvas id="line-chart" width="800" height="450"></canvas>
-          </div> -->
+          </div>
         <div>
 
       </div>

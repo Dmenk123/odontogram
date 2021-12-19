@@ -308,8 +308,7 @@ class Lib_mutasi extends CI_Controller {
 							if($flag_tindakan_potong_lab == false) {
 								#### jika dalam array potong tindakan tidak ada yg potong lab maka jumlahkan array dan dipotong persen honor dokter
 								$sum_tindakan += array_sum(array_column($arr_tindakan, 'subtotal'));
-
-								$honor_dokter += $sum_tindakan / $honor->tindakan_persen * 100;
+								$honor_dokter += $sum_tindakan * $honor->tindakan_persen / 100;
 
 							}else{
 								$sum_tindakan_potong += array_sum(array_column($arr_tindakan_potong, 'subtotal'));

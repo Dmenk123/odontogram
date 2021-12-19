@@ -4,6 +4,7 @@ use \Carbon\Carbon;
 
 class Rekam_medik extends CI_Controller {
 	protected $prop_id_klinik = null;
+	protected $prop_data_user = null;
 
 	public function __construct()
 	{
@@ -11,7 +12,7 @@ class Rekam_medik extends CI_Controller {
 		if($this->session->userdata('logged_in') === null) {
 			return redirect('login');
 		}
-
+		
 		if($this->session->userdata('id_klinik') !== null) {
 			$this->prop_id_klinik = $this->session->userdata('id_klinik');
 		}
@@ -22,17 +23,13 @@ class Rekam_medik extends CI_Controller {
 		$this->load->model('m_data_medik');
 		$this->load->model('t_rekam_medik');
 		$this->load->library('enkripsi');
+
+		$id_user = $this->session->userdata('id_user'); 
+		$this->prop_data_user = $this->m_user->get_detail_user($id_user);
 	}
 
 	public function index()
 	{
-		$id_user = $this->session->userdata('id_user'); 
-		$data_user = $this->m_user->get_detail_user($id_user);
-			
-		/**
-		 * data passing ke halaman view content
-		 */
-
 		$id_reg = $this->input->get('pid');
 		$id_reg = $this->enkripsi->enc_dec('decrypt', $id_reg);
 		$datareg = $this->m_global->single_row('*', ['id' => $id_reg, 'deleted_at' => null], 't_registrasi');
@@ -52,7 +49,7 @@ class Rekam_medik extends CI_Controller {
 
 		$data = array(
 			'title' => 'Data Rekam Medik',
-			'data_user' => $data_user,
+			'data_user' => $this->prop_data_user,
 			'is_pulang' => $is_pulang,
 			'datareg' => $datareg
 		);
@@ -90,7 +87,8 @@ class Rekam_medik extends CI_Controller {
 			'reg.tanggal_reg >=' => $tgl_filter_mulai,
 			'reg.tanggal_reg <=' => $tgl_filter_akhir,
 			'byr.is_locked' => null,
-			'reg.id_klinik' => $this->prop_id_klinik
+			'reg.id_klinik' => $this->prop_id_klinik,
+			'reg.id_pegawai' => $this->prop_data_user[0]->id_pegawai,
 		];
 		$table = 't_registrasi as reg';
 		$join = [ 

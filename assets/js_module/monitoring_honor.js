@@ -30,7 +30,7 @@ $(document).ready(function() {
         }
 
         //chart
-        // monitoring(id, id_barang, start, end);
+        monitoring(id, start, end);
 
         if (id != '') {
             table = $('#tabeldata').DataTable({
@@ -63,10 +63,10 @@ $(document).ready(function() {
     }); 
     
 
-    $(".modal").on("hidden.bs.modal", function(){
-        reset_modal_form();
-        reset_modal_form_import();
-    });
+    // $(".modal").on("hidden.bs.modal", function(){
+    //     reset_modal_form();
+    //     reset_modal_form_import();
+    // });
 });	
 
 // function add_menu()
@@ -83,23 +83,19 @@ function reload_table()
 }
 
 
-function monitoring(id, id_barang, start, end)
+function monitoring(id, start, end)
 {
-    url = base_url + 'monitoring_honor/monitoring_cart';
+    url = base_url + 'monitoring_honor/monitoring_chart';
     $.ajax({
-      type: "POST",
-      enctype: 'multipart/form-data',
-      url: url,
-      data: {
-            id_pelanggan:id,
-            id_barang : id_barang,
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: url,
+        data: {
+            id_dokter:id,
             start : start,
             end : end
         },
       dataType: "JSON",
-      // processData: false, // false, it prevent jQuery form transforming the data into a query string
-      // contentType: false, 
-      // cache: false,
       timeout: 600000,
       success: function (response) {
           if(response.status) {
@@ -114,31 +110,32 @@ function monitoring(id, id_barang, start, end)
                     title: {
                       display: true,
                       text: response.judul
+                    },
+                    responsive: true,
+                    responsiveAnimationDuration: 0,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: false,
+                                callback: function(value, index, values) {
+                                    if(parseInt(value) >= 1000){
+                                    return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                    } else {
+                                    return 'Rp' + value;
+                                    }
+                                },
+                                max : 10000000,    
+                                min : -1
+                            }
+                        }]
                     }
-                  }
+                  },
+                  
               });
-          }else {
-              for (var i = 0; i < data.inputerror.length; i++) 
-              {
-                  if (data.inputerror[i] != 'jabatans') {
-                      $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
-                      $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
-                  }else{
-                      $($('#jabatans').data('select2').$container).addClass('has-error');
-                  }
-              }
-  
-              $("#btnSave").prop("disabled", false);
-              $('#btnSave').text('Simpan');
           }
       },
       error: function (e) {
-          console.log("ERROR : ", e);
-          $("#btnSave").prop("disabled", false);
-          $('#btnSave').text('Simpan');
-  
-          reset_modal_form();
-          $(".modal").modal('hide');
+        console.log("ERROR : ", e);
       }
     });
 }
