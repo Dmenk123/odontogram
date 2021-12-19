@@ -83,7 +83,7 @@
                 </tbody>      
             </table>
           </div>
-          <div class="col-sm-7">
+          <div class="col-sm-7" id="chart-report">
             <canvas id="line-chart" width="800" height="450"></canvas>
           </div>
         <div>

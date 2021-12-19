@@ -85,6 +85,9 @@ function reload_table()
 
 function monitoring(id, start, end)
 {
+    // redraw canvas.js
+    $('#chart-report').html('<canvas id="line-chart" width="800" height="450"></canvas>');
+    
     url = base_url + 'monitoring_honor/monitoring_chart';
     $.ajax({
         type: "POST",
@@ -119,13 +122,13 @@ function monitoring(id, start, end)
                                 beginAtZero: false,
                                 callback: function(value, index, values) {
                                     if(parseInt(value) >= 1000){
-                                    return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                        return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                                     } else {
-                                    return 'Rp' + value;
+                                        return 'Rp ' + value;
                                     }
                                 },
-                                max : 10000000,    
-                                min : -1
+                                max : response.v_max + 500000,    
+                                min : 0
                             }
                         }]
                     }

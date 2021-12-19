@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+
 class Monitoring_honor extends CI_Controller {
 	
 	public function __construct()
@@ -141,7 +143,7 @@ class Monitoring_honor extends CI_Controller {
 	{
 		$id_dokter = $this->input->post('id_dokter');
 		$id_user = $this->session->userdata('id_user');
-		
+
 		$data_dokter = $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
 
 		$start = $this->input->post('start');
@@ -154,74 +156,73 @@ class Monitoring_honor extends CI_Controller {
 			$end = Carbon::createFromFormat('d/m/Y', $end)->format('Y-m-d');
 		}
 
-		$data_klinik = $this->db->query("SELECT 
-			t_user_klinik.*,
-			m_klinik.nama_klinik,
+		$period = CarbonPeriod::create($start, $end);
+		foreach ($period as $date) {
+			$dates[] = $date->format('Y-m-d');
+		}
+		
+		$data_klinik = $this->db->query("
+			SELECT 
+				t_user_klinik.*, m_klinik.nama_klinik
 			FROM t_user_klinik 
 			LEFT JOIN m_klinik on t_user_klinik.id_klinik = m_klinik.id
 			WHERE t_user_klinik.id_user = '$id_user'")->result();
 
-		$q = $this->db->query("SELECT	
-				sum(mut.total_pengeluaran) as total,
-				mut.tanggal,
-				m_klinik.nama_klinik
-			FROM
-				t_mutasi AS mut
-				LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
-				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
-			WHERE
-				mut.id_jenis_trans = 6 
-				AND mut.deleted_at IS NULL 
-				AND reg.id_pegawai = '$id_dokter'
-			GROUP BY m_klinik.nama_klinik, mut.tanggal, reg.id_pegawai
-		")->result_array();
+		$dataset = [];
+		$data_label_x = [];
+		$min = 0;
+		$arr_max = [];
+		foreach ($data_klinik as $key => $value) {
+			$total_temp = [];
+			$dataset[$key]['label'] = $value->nama_klinik;
+			$dataset[$key]['backgroundColor'] = "#".$this->random_color();
+			$dataset[$key]['fill'] = true;
 
-		$data_mentah    = array();
-		$data_label = [];
-		
-		// foreach ($q as $key) {
-        //     $data_mentah[$key['nama_klinik']] = $key['total'];
-		// 	$data_label[] = $key['tanggal'];
-        // }
+			$q = $this->db->query("SELECT	
+					sum(mut.total_pengeluaran) as total,
+					mut.tanggal,
+					m_klinik.nama_klinik
+				FROM
+					t_mutasi AS mut
+					LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
+					LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
+				WHERE
+					mut.id_jenis_trans = 6 
+					AND mut.deleted_at IS NULL 
+					AND reg.id_pegawai = '$id_dokter'
+					AND reg.id_klinik = '$value->id_klinik'
+					AND mut.tanggal between '$start' and '$end'
+				GROUP BY m_klinik.nama_klinik, mut.tanggal, reg.id_pegawai
+			")->result();
 
-		$data_mentah   = array();
-		foreach ($q as $key) {
-		  $data_mentah[$key['nama_klinik']] = $key['total'];
-		}
+			foreach ($q as $k => $v) {
+				foreach ($dates as $dk => $dv) {
+					if($v->tanggal != $dv) {
+						### pengecekan by key, agar tidak di replace
+						if (array_key_exists($dk,$total_temp)){
+							continue;
+						}
 
-		// echo "<pre>";
-		// print_r ($data_mentah);
-		// echo "</pre>";
-
-		// echo "<pre>";
-		// print_r ($q);
-		// echo "</pre>";
-
-		// echo "<pre>";
-		// print_r ($data_label);
-		// echo "</pre>";
-		// exit;
-
-		$label          = $data_label;
-		$data['data']   = array();
-		$dataset    = array();
-
-		for ($i=0; $i < count($q); $i++) {
-			//   if($i==0) {
-				$data_grafik[$i] = array();
-
-				$data_grafik[$i]['label'] = $q[$i]['nama_klinik'];
-				$data_grafik[$i]['backgroundColor'] = "#".$this->random_color();
-				$data_grafik[$i]['fill'] = true;
-				$data_grafik[$i]['data'] = [(int)$q[$i]['total']];
-
+						$arr_max[] = 0;
+						$total_temp[$dk] = 0;
+					}else{
+						$arr_max[] = (int)$v->total;
+						$total_temp[$dk] = (int)$v->total;
+					}
+				}				
+			}
 			
-			// }
+			$dataset[$key]['data'] = $total_temp;
 		}
 
-		$data['label'] = $label;
-		$data['datasets'] = $data_grafik;
+		
+		rsort($arr_max);
+
+		$data['label'] = $dates;
+		$data['datasets'] = $dataset;
 		$data['status'] = true;
+		$data['v_min'] = $min;
+		$data['v_max'] = $arr_max[0];
 		$data['judul'] = "Grafik Honor per Dokter, ".$data_dokter->nama;
 
 		echo json_encode($data);
