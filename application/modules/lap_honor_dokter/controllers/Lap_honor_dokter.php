@@ -66,14 +66,17 @@ class Lap_honor_dokter extends CI_Controller {
 		if ($model == 2) {
 			### pertahun
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun'";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun'";
 			$group = "m_klinik.nama_klinik, reg.id_pegawai";
 		}elseif ($model == 1) {
 			### perbulan
 			$where = "DATE_FORMAT(mut.tanggal,'%m') = '$bulan'";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%m') = '$bulan'";
 			$group = "m_klinik.nama_klinik, reg.id_pegawai";
 		}elseif ($model == 3) {
 			### perhari
 			$where = "mut.tanggal between '$start' and '$end'";
+			$where2 = "x_mut.tanggal between '$start' and '$end'";
 			$group = "m_klinik.nama_klinik, reg.id_pegawai";
 		}
 
@@ -84,7 +87,20 @@ class Lap_honor_dokter extends CI_Controller {
 				m_klinik.nama_klinik,
 				reg.id_klinik,
 				m_pegawai.nama as nama_dokter,
-				m_pegawai.kode as kode_dokter
+				m_pegawai.kode as kode_dokter,
+				(SELECT count(sub_tabel.id) 
+					FROM (
+						select x_mut.id 
+						from t_mutasi x_mut
+						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
+						LEFT JOIN m_pegawai AS x_peg ON x_reg.id_pegawai = x_peg.id AND x_peg.deleted_at IS NULL 
+						where id_jenis_trans = 6 
+						and x_mut.deleted_at is null
+						and $where2
+						AND x_peg.id_jabatan = 1 
+						GROUP BY x_mut.tanggal
+					) as sub_tabel
+				) as num_row
 			FROM
 				t_mutasi AS mut
 				LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
@@ -98,10 +114,12 @@ class Lap_honor_dokter extends CI_Controller {
 			GROUP BY $group
 			ORDER BY m_pegawai.nama, m_klinik.nama_klinik
 		")->result();
-
+		
 		$html = '';
+		$grandTotal = 0;
 		if ($q) {
 			foreach ($q as $k => $v) {
+				$grandTotal += $v->total;
 				$k++;
 				$html .= "
 					<tr>
@@ -111,8 +129,14 @@ class Lap_honor_dokter extends CI_Controller {
 						<td align='right'>".number_format($v->total,0,',','.')."</td>
 					</tr>
 				";
-				
 			}
+
+			$html .= "
+				<tr>
+					<td colspan = '3' align='center'><b>Total Honor Dokter</b></td>
+					<td align='right'>" . number_format($grandTotal, 0, ',', '.') . "</td>
+				</tr>
+			";
 		}
         
         echo json_encode([
