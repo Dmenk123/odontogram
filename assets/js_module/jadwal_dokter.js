@@ -210,11 +210,12 @@
             {
                 $('#create_modal input[name=calendar_id]').val(event.id);  
                 $('#create_modal input[name=tanggal]').val(moment(data.old_data.tanggal).format('DD/MM/YYYY'));
-                $('#create_modal input[name=id_dokter]').val(data.old_data.id_dokter);
+                $('[name="id_dokter"]').val(data.old_data.id_dokter);
                 $('#create_modal input[name=id_klinik]').val(data.old_data.id_klinik);
                 $('#create_modal select[name=color]').val(event.color);
-                $('#create_modal select[name=jam_mulai]').val(data.old_data.jam_mulai);
-                $('#create_modal select[name=jam_akhir]').val(data.old_data.jam_akhir);
+
+                $('[name="jam_mulai"]').val(data.old_data.jam_mulai);
+                $('[name="jam_akhir"]').val(data.old_data.jam_akhir);
                 $('#create_modal .delete_calendar').show();
                 $('#create_modal').modal('show');
     
