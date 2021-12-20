@@ -249,9 +249,9 @@ const hostName = window.location.origin;
 const pecah = window.location.pathname.split('/');
 
 if(hostName == 'http://localhost') {
-    const baseurl = hostName+'/'+pecah[1]+'/';
+    var baseurl = hostName+'/'+pecah[1]+'/';
 }else{
-    const baseurl = hostName+'/';
+    var baseurl = hostName+'/';
 }
 
 

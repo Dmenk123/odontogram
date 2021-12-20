@@ -1,9 +1,9 @@
 const hostName = window.location.origin;
 const pecah = window.location.pathname.split('/');
 if(hostName == 'http://localhost') {
-    const base_url = hostName+'/'+pecah[1]+'/';
+    var base_url = hostName+'/'+pecah[1]+'/';
 }else{
-    const base_url = hostName+'/';
+    var base_url = hostName+'/';
 }
 
 
