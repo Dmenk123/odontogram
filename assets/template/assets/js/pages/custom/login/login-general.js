@@ -247,7 +247,13 @@ const swalConfirm = Swal.mixin({
 
 const hostName = window.location.origin;
 const pecah = window.location.pathname.split('/');
-const baseurl = hostName+'/'+pecah[1]+'/';
+
+if(hostName == 'http://localhost') {
+    var baseurl = hostName+'/'+pecah[1]+'/';
+}else{
+    var baseurl = hostName+'/';
+}
+
 
 // Class Initialization
 jQuery(document).ready(function() {

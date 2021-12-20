@@ -15,7 +15,7 @@ class Template_view extends CI_Controller {
     function load_view($content, $data = NULL){
         $this->_ci->load->library('session');
 		
-        if(!$_SESSION['id_role']){
+        if(!$this->_ci->session->userdata('id_role')){
             $id_role = "0";
         }
         else{

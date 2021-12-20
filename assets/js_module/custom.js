@@ -1,6 +1,11 @@
 const hostName = window.location.origin;
 const pecah = window.location.pathname.split('/');
-const base_url = hostName+'/'+pecah[1]+'/';
+if(hostName == 'http://localhost') {
+    var base_url = hostName+'/'+pecah[1]+'/';
+}else{
+    var base_url = hostName+'/';
+}
+
 
 
 $(window).on('load', function(){

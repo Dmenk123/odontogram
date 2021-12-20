@@ -538,7 +538,7 @@ class Pembayaran extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	public function detail_pembayaran()
+	public function detail_pembayaran($monitoring_honor = false)
 	{
 		$enc_id = $this->input->post('enc_id');
 
@@ -558,6 +558,10 @@ class Pembayaran extends CI_Controller {
 		// echo "<pre>";
 		// print_r ($data_bayar);
 		// echo "</pre>";
+
+		// echo "<pre>";
+		// print_r ($data_bayar_det);
+		// echo "</pre>";
 		// exit;
 
 		$html_rinci = '';
@@ -567,9 +571,9 @@ class Pembayaran extends CI_Controller {
 			$html_rinci .= "<tr>
 				<td>".$value['jenis']."</td>
 				<td>".$value['nama']."</td>
-				<td align='right'>".$value['harga']."</td>
+				<td align='right'>".number_format($value['harga'],0,',','.')."</td>
 				<td align='right'>".$value['qty']."</td>
-				<td align='right'>".$value['subtotal']."</td>
+				<td align='right'>".number_format($value['subtotal'],0,',','.')."</td>
 			</tr>";
 		}
 
@@ -585,6 +589,21 @@ class Pembayaran extends CI_Controller {
 			<td colspan='4' align='center'>Total (Nett)</td>
 			<td align='right'>".number_format($data_bayar->total_nett,0,',','.')."</td>
 		</tr>";
+
+		if($monitoring_honor == 'true') {
+			$id_dokter = $data_bayar_det['header'][0]->id_pegawai;
+			$data_honor = $this->m_global->single_row('*', ['id_dokter' => $id_dokter], 't_honor');
+			$nilai_honor = $this->m_global->single_row('total_pengeluaran', ['id_registrasi' => $data_bayar->id_reg,'id_jenis_trans' => 6], 't_mutasi');
+			if($nilai_honor) {
+				$rp_honor = $nilai_honor->total_pengeluaran;
+			}else{
+				$rp_honor = 0;
+			}
+			$html_rinci .= "<tr>
+				<td colspan='4' align='center'><b>Honor Dokter (".$data_honor->tindakan_persen." %)</b></td>
+				<td align='right'><b>".number_format($rp_honor,0,',','.')."</b></td>
+			</tr>";
+		}
 
 		if (!$data_bayar) {
 			echo json_encode([
