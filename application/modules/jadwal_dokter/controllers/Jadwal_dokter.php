@@ -1,13 +1,14 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Jadwal_dokter extends CI_Controller {
+class Jadwal_dokter extends CI_Controller
+{
 	protected $id_klinik = null;
-	
+
 	public function __construct()
 	{
 		parent::__construct();
-		if($this->session->userdata('logged_in') === null) {
+		if ($this->session->userdata('logged_in') === null) {
 			return redirect('login');
 		}
 
@@ -16,17 +17,17 @@ class Jadwal_dokter extends CI_Controller {
 		$this->load->model('m_global');
 		$this->load->model('Globalmodel', 'modeldb');
 
-		if($this->session->userdata('id_klinik') !== null) {
+		if ($this->session->userdata('id_klinik') !== null) {
 			$this->id_klinik = $this->session->userdata('id_klinik');
-		} 
+		}
 	}
 
 	public function index()
 	{
-		$id_user = $this->session->userdata('id_user'); 
+		$id_user = $this->session->userdata('id_user');
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_jabatan = $this->m_global->multi_row('*', 'deleted_at is null', 'm_jabatan', null, 'nama');
-				
+
 		/**
 		 * data passing ke halaman view content
 		 */
@@ -39,20 +40,19 @@ class Jadwal_dokter extends CI_Controller {
 		$select = "log.*, peg.nama";
 		$where = ['peg.id_jabatan' => 1];
 		$table = 't_log_jadwal_dokter as log';
-		$join = [ 
+		$join = [
 			['table' => 'm_pegawai as peg', 'on' => 'log.id_dokter = peg.id']
 		];
-		$data_calendar = $this->m_global->multi_row($select,$where,$table, $join);
+		$data_calendar = $this->m_global->multi_row($select, $where, $table, $join);
 		// $data_calendar = $this->m_global->getSelectedData('t_log_jadwal_dokter', null)->result();
 		$calendar = array();
-		foreach ($data_calendar as $key => $val) 
-		{
+		foreach ($data_calendar as $key => $val) {
 			$calendar[] = array(
-				'id' 	=> intval($val->id), 
-				'title' => $val->nama, 
-				'description' => trim($val->id_klinik), 
-				'start' => date_format( date_create($val->tanggal) ,"Y-m-d H:i:s"),
-				'end' 	=> date_format( date_create($val->tanggal) ,"Y-m-d H:i:s"),
+				'id' 	=> intval($val->id),
+				'title' => $val->nama,
+				'description' => trim($val->id_klinik),
+				'start' => date_format(date_create($val->tanggal), "Y-m-d H:i:s"),
+				'end' 	=> date_format(date_create($val->tanggal), "Y-m-d H:i:s"),
 				'color' => $val->color,
 			);
 		}
@@ -88,71 +88,64 @@ class Jadwal_dokter extends CI_Controller {
 		$this->form_validation->set_rules('tanggal', 'Tanggal Harap Diisi ! ', 'required');
 		$this->form_validation->set_rules('jam_mulai', 'Jam Mulai Harap Diisi ! ', 'required');
 		$this->form_validation->set_rules('jam_akhir', 'Jam AKhir Harap Diisi ! ', 'required');
-		
-		if($this->id_klinik == null) {
+
+
+		if ($this->id_klinik == null) {
 			$response['status'] = FALSE;
 			$response['notif']	= '<p style="font-weight:bold;">Mohon Maaf. Hanya Role Admin Klinik yang dapat menyimpan.</p>';
 			echo json_encode($response);
 			return;
 		}
 
-		if ($this->form_validation->run() == TRUE)
-		{
+		$id_klinik = $this->id_klinik;
+
+		if ($this->form_validation->run() == TRUE) {
 			$param = $this->input->post();
 			$calendar_id = $param['calendar_id'];
 			$start = $this->input->post('tanggal');
 			$id_dokter = $this->input->post('id_dokter');
 			$dokter = $this->m_global->getSelectedData('m_pegawai', ['id' => $id_dokter])->row();
-			$id_klinik = $this->id_klinik;
-			$param['tanggal'] = $obj_date->createFromFormat('d/m/Y', $start)->format('Y-m-d'); 
+
+			$param['tanggal'] = $obj_date->createFromFormat('d/m/Y', $start)->format('Y-m-d');
+			$param['id_klinik'] = $id_klinik;
+
 			unset($param['calendar_id']);
-			if($calendar_id == 0)
-			{
+
+			if ($calendar_id == 0) {
 				$param['create_at']   	= date('Y-m-d H:i:s');
 				$param['create_by']   	= $data_user->id;
 				$insert = $this->modeldb->insert('t_log_jadwal_dokter', $param);
 
-				if ($insert > 0) 
-				{
+				if ($insert > 0) {
 					$response['status'] = TRUE;
 					$response['notif']	= 'Success add calendar';
 					$response['id']		= $insert;
 					$response['tanggal'] = $param['tanggal'];
 					$response['id_dokter'] = $dokter->nama;
 					$response['id_klinik'] = $id_klinik;
-				}
-				else
-				{
+				} else {
 					$response['status'] = FALSE;
 					$response['notif']	= 'Server wrong, please save again';
 				}
-			}
-			else
-			{	
-				$where 		= [ 'id'  => $calendar_id];
+			} else {
+				$where 		= ['id'  => $calendar_id];
 				$param['modified_at']   	= date('Y-m-d H:i:s');
 				$param['modified_by']   	= $data_user->id;
 				$update = $this->modeldb->update('t_log_jadwal_dokter', $param, $where);
 
-				if ($update > 0) 
-				{
+				if ($update > 0) {
 					$response['status'] = TRUE;
 					$response['notif']	= 'Success add calendar';
 					$response['id']		= $calendar_id;
 					$response['tanggal'] = $param['tanggal'];
 					$response['id_dokter'] = $dokter->nama;
 					$response['id_klinik'] = $id_klinik;
-				}
-				else
-				{
+				} else {
 					$response['status'] = FALSE;
 					$response['notif']	= 'Server wrong, please save again';
 				}
-
 			}
-		}
-		else
-		{
+		} else {
 			$response['status'] = FALSE;
 			$response['notif']	= validation_errors();
 		}
@@ -164,24 +157,18 @@ class Jadwal_dokter extends CI_Controller {
 	{
 		$response 		= array();
 		$calendar_id 	= $this->input->post('id');
-		if(!empty($calendar_id))
-		{
+		if (!empty($calendar_id)) {
 			$where = ['id' => $calendar_id];
 			$delete = $this->modeldb->delete('t_log_jadwal_dokter', $where);
 
-			if ($delete > 0) 
-			{
+			if ($delete > 0) {
 				$response['status'] = TRUE;
 				$response['notif']	= 'Success delete calendar';
-			}
-			else
-			{
+			} else {
 				$response['status'] = FALSE;
 				$response['notif']	= 'Server wrong, please save again';
 			}
-		}
-		else
-		{
+		} else {
 			$response['status'] = FALSE;
 			$response['notif']	= 'Data not found';
 		}
@@ -195,10 +182,10 @@ class Jadwal_dokter extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id_user = $this->session->userdata('id_user');
 		$data_user = $this->m_user->get_by_id($id_user);
-	
+
 		$oldData = $this->m_global->getSelectedData('t_log_jadwal_dokter', ['id' => $id])->row();
-		
-		if(!$oldData){
+
+		if (!$oldData) {
 			return redirect($this->uri->segment(1));
 		}
 
@@ -206,9 +193,7 @@ class Jadwal_dokter extends CI_Controller {
 			'data_user' => $data_user,
 			'old_data'	=> $oldData
 		);
-		
+
 		echo json_encode($data);
 	}
-
-
 }

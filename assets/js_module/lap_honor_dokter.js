@@ -91,31 +91,31 @@ $(document).ready(function() {
 });	
 
 function changeModel() {
-    if($("#model").val() == '1'){
-      $(".div_tanggal_mulai").hide();
-      $(".div_tanggal_akhir").hide();
-      $(".div_bulan").show();
-      $(".div_tahun").hide();
-    }
-    else if($("#model").val() == '3') {
-      $(".div_tanggal_mulai").show();
-      $(".div_tanggal_akhir").show();
-      $(".div_bulan").hide();
-      $(".div_tahun").hide();
-    }
-    else if ($("#model").val() == '2') {
-      $(".div_tahun").show();
-      $(".div_tanggal_mulai").hide();
-      $(".div_tanggal_akhir").hide();
-      $(".div_bulan").hide();
-    }
-    else {
-      $(".div_tanggal_mulai").hide();
-      $(".div_tanggal_akhir").hide();
-      $(".div_bulan").hide();
-      $(".div_tahun").hide();
-    }
+  if($("#model").val() == '1'){
+    $(".div_tanggal_mulai").hide();
+    $(".div_tanggal_akhir").hide();
+    $(".div_bulan").show();
+    $(".div_tahun").hide();
   }
+  else if($("#model").val() == '3') {
+    $(".div_tanggal_mulai").show();
+    $(".div_tanggal_akhir").show();
+    $(".div_bulan").hide();
+    $(".div_tahun").hide();
+  }
+  else if ($("#model").val() == '2') {
+    $(".div_tahun").show();
+    $(".div_tanggal_mulai").hide();
+    $(".div_tanggal_akhir").hide();
+    $(".div_bulan").hide();
+  }
+  else {
+    $(".div_tanggal_mulai").hide();
+    $(".div_tanggal_akhir").hide();
+    $(".div_bulan").hide();
+    $(".div_tahun").hide();
+  }
+}
 
   function save() {
     var eksekusi = false;
@@ -161,7 +161,7 @@ function changeModel() {
     }
   }
 
-  function cetak(){
+  /* function cetak(){
     let searchParams = new URLSearchParams(window.location.search)
     let model =  searchParams.get('model')
     if (model) {
@@ -170,5 +170,16 @@ function changeModel() {
     }else{
       Swal.fire('Silahkan Pilih Periode Terlebih dahulu');
     }
-  }
+  } */
+
+function cetak(){
+    let searchParams = new URLSearchParams(window.location.search); 
+    let model =  searchParams.get('model');
+    if (model) {
+      window.open(base_url+'lap_honor_dokter/cetak_data?model='+model+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&jenis=laporan_honor', '_blank');
+      // window.location.href = ;
+    }else{
+      Swal.fire('Silahkan Pilih Periode Terlebih dahulu');
+    }
+}
 
