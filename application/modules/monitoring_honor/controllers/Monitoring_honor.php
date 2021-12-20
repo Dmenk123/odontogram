@@ -145,6 +145,7 @@ class Monitoring_honor extends CI_Controller {
 		$id_user = $this->session->userdata('id_user');
 
 		$data_dokter = $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
+		$data_user = $this->m_global->single_row('*', ['id_pegawai' => $data_dokter->id, 'deleted_at' => null, 'id_role != ' => 1], 'm_user');
 
 		$start = $this->input->post('start');
 		$end = $this->input->post('end');
@@ -166,7 +167,7 @@ class Monitoring_honor extends CI_Controller {
 				t_user_klinik.*, m_klinik.nama_klinik
 			FROM t_user_klinik 
 			LEFT JOIN m_klinik on t_user_klinik.id_klinik = m_klinik.id
-			WHERE t_user_klinik.id_user = '$id_user'")->result();
+			WHERE t_user_klinik.id_user = '$data_user->id'")->result();
 
 		$dataset = [];
 		$data_label_x = [];
@@ -217,7 +218,7 @@ class Monitoring_honor extends CI_Controller {
 
 		
 		rsort($arr_max);
-
+		
 		$data['label'] = $dates;
 		$data['datasets'] = $dataset;
 		$data['status'] = true;

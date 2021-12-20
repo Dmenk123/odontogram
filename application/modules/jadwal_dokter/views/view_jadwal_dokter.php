@@ -84,12 +84,12 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label class="control-label col-sm-2">Klinik</label>
                                             <div class="col-sm-10">
                                                 <input type="text" name="id_klinik" rows="3" class="form-control"  placeholder="Enter description">
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <div class="form-group">
                                             <label for="color" class="col-sm-2 control-label">Color</label>

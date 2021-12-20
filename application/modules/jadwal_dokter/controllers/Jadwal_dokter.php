@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Jadwal_dokter extends CI_Controller {
+	protected $id_klinik = null;
 	
 	public function __construct()
 	{
@@ -13,7 +14,11 @@ class Jadwal_dokter extends CI_Controller {
 		$this->load->model('m_user');
 		// $this->load->model('m_jadwal_dokter');
 		$this->load->model('m_global');
-		$this->load->model('Globalmodel', 'modeldb'); 
+		$this->load->model('Globalmodel', 'modeldb');
+
+		if($this->session->userdata('id_klinik') !== null) {
+			$this->id_klinik = $this->session->userdata('id_klinik');
+		} 
 	}
 
 	public function index()
@@ -74,6 +79,7 @@ class Jadwal_dokter extends CI_Controller {
 
 	public function save()
 	{
+
 		$obj_date = new DateTime();
 		$id_user = $this->session->userdata('id_user');
 		$data_user = $this->m_user->get_by_id($id_user);
@@ -82,6 +88,14 @@ class Jadwal_dokter extends CI_Controller {
 		$this->form_validation->set_rules('tanggal', 'Tanggal Harap Diisi ! ', 'required');
 		$this->form_validation->set_rules('jam_mulai', 'Jam Mulai Harap Diisi ! ', 'required');
 		$this->form_validation->set_rules('jam_akhir', 'Jam AKhir Harap Diisi ! ', 'required');
+		
+		if($this->id_klinik == null) {
+			$response['status'] = FALSE;
+			$response['notif']	= '<p style="font-weight:bold;">Mohon Maaf. Hanya Role Admin Klinik yang dapat menyimpan.</p>';
+			echo json_encode($response);
+			return;
+		}
+
 		if ($this->form_validation->run() == TRUE)
 		{
 			$param = $this->input->post();
@@ -89,9 +103,9 @@ class Jadwal_dokter extends CI_Controller {
 			$start = $this->input->post('tanggal');
 			$id_dokter = $this->input->post('id_dokter');
 			$dokter = $this->m_global->getSelectedData('m_pegawai', ['id' => $id_dokter])->row();
-			$id_klinik = $this->input->post('id_klinik');
+			$id_klinik = $this->id_klinik;
 			$param['tanggal'] = $obj_date->createFromFormat('d/m/Y', $start)->format('Y-m-d'); 
-			unset($param['calendar_id'],);
+			unset($param['calendar_id']);
 			if($calendar_id == 0)
 			{
 				$param['create_at']   	= date('Y-m-d H:i:s');

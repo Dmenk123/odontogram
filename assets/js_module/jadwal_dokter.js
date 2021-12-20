@@ -176,25 +176,26 @@
                             end         : moment(data.tanggal),
                             color       : $('#create_modal select[name=color]').val()
                         };
-                            $('#calendarIO').fullCalendar('renderEvent', eventData, true); // stick? = true
-                            $('#create_modal').modal('hide');
-                            element[0].reset();
-                            $('.notification').removeClass('alert-danger').addClass('alert-primary').find('p').html(data.notif);
-                        }
-                        else
-                        {
-                            element.find('.alert').css('display', 'block');
-                            element.find('.alert').html(data.notif);
-                        }
-                        element.find('button[type=submit]').html('Submit');
-                    },
-                    error: function (jqXHR, textStatus, errorThrown)
+
+                        $('#calendarIO').fullCalendar('renderEvent', eventData, true); // stick? = true
+                        $('#create_modal').modal('hide');
+                        element[0].reset();
+                        $('.notification').removeClass('alert-danger').addClass('alert-primary').find('p').html(data.notif);
+                    }
+                    else
                     {
-                        element.find('button[type=submit]').html('Submit');
                         element.find('.alert').css('display', 'block');
-                        element.find('.alert').html('Wrong server, please save again');
-                    }         
-                });
+                        element.find('.alert').html(data.notif);
+                    }
+                    element.find('button[type=submit]').html('Submit');
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    element.find('button[type=submit]').html('Submit');
+                    element.find('.alert').css('display', 'block');
+                    element.find('.alert').html('Wrong server, please save again');
+                }         
+            });
             return false;
         })
     }
@@ -211,7 +212,7 @@
                 $('#create_modal input[name=calendar_id]').val(event.id);  
                 $('#create_modal input[name=tanggal]').val(moment(data.old_data.tanggal).format('DD/MM/YYYY'));
                 $('#create_modal input[name=id_dokter]').val(data.old_data.id_dokter);
-                $('#create_modal input[name=id_klinik]').val(data.old_data.id_klinik);
+                // $('#create_modal input[name=id_klinik]').val(data.old_data.id_klinik);
                 $('#create_modal select[name=color]').val(event.color);
                 $('#create_modal select[name=jam_mulai]').val(data.old_data.jam_mulai);
                 $('#create_modal select[name=jam_akhir]').val(data.old_data.jam_akhir);
