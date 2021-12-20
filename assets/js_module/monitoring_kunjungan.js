@@ -10,7 +10,6 @@ $(document).ready(function() {
 
 	//datatables
     $("#filters").click(function(){
-        var id = $('#id_dokter').val();
         var start = $('#start').val();
         var end = $('#end').val();
         if (start && end) {
@@ -23,42 +22,37 @@ $(document).ready(function() {
                 Swal.fire('Tanggal Mulai dilarang melebihi tanggal akhir')
                 return;
             }
-            
-        }else if (!id) {
-            Swal.fire('Silahkan memilih dokter terlebih dahulu')
-            return;
         }
 
         //chart
-        monitoring(id, start, end);
+        // monitoring(start, end);
 
-        if (id != '') {
-            table = $('#tabeldata').DataTable({
-                responsive: true,
-                searchDelay: 500,
-                processing: true,
-                serverSide: false,
-                bDestroy: true,
-                ajax: {
-                    url  : base_url + "monitoring_honor/datatable_monitoring",
-                    type : "POST",
-                    data : {
-                        id_dokter : id, 
-                        start : start,
-                        end : end
-                    },
-                },
     
-                //set column definition initialisation properties
-                columnDefs: [
-                    {
-                        targets: [-1], //last column
-                        orderable: false, //set not orderable
-                    },
-                    { targets: 5, className: 'text-right' },
-                ],
-            });
-        }
+        table = $('#tabeldata').DataTable({
+            responsive: true,
+            searchDelay: 500,
+            processing: true,
+            serverSide: false,
+            bDestroy: true,
+            ajax: {
+                url  : base_url + "monitoring_kunjungan/datatable_monitoring",
+                type : "POST",
+                data : {
+                    start : start,
+                    end : end
+                },
+            },
+
+            //set column definition initialisation properties
+            columnDefs: [
+                {
+                    targets: [-1], //last column
+                    orderable: false, //set not orderable
+                },
+                { targets: 5, className: 'text-right' },
+            ],
+        });
+        
        
     }); 
     

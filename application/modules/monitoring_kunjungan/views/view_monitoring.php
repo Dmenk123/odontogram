@@ -60,11 +60,11 @@
                 <tr>
                   <th style="width: 5%;">No</th>
                   <th>Tanggal</th>
-                  <th>Dokter</th>
                   <th>Klinik</th>
+                  <th>Nama Pasien</th>
                   <th>No. RM</th>
-                  <th>Honor (Rp)</th>
-                  <th>#</th>
+                  <th>Dokter</th>
+                  <th>Jenis Pasien</th>
                 </tr>
               </thead>
                 <tbody>

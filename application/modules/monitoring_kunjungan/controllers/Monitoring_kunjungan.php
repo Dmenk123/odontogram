@@ -78,14 +78,10 @@ class Monitoring_kunjungan extends CI_Controller {
 		}
 		// var_dump($end); die();
 
-		$select = "mut.*, reg.no_reg, reg.tanggal_reg, reg.jam_reg, m_klinik.nama_klinik, m_klinik.alamat, m_pasien.no_rm, m_pasien.nama as nama_pasien, peg.nama as nama_dokter";
-		$where = ['mut.id_jenis_trans' => 6, 'mut.deleted_at' => null, 'reg.id_pegawai' => $id_dokter];
-		$table = 't_mutasi as mut';
+		$select = "reg.no_reg, reg.tanggal_reg, reg.jam_reg, m_klinik.nama_klinik, m_klinik.alamat, m_pasien.no_rm, m_pasien.nama as nama_pasien, peg.nama as nama_dokter, m_pasien.created_at as tgl_buat_pasien";
+		$where = ['reg.deleted_at' => null, 'reg.tanggal_reg >=' => $start, 'reg.tanggal_reg <= ' => $end];
+		$table = 't_registrasi as reg';
 		$join = [ 
-			[
-				'table' => 't_registrasi as reg',
-				'on'	=> 'mut.id_registrasi = reg.id'
-			],
 			[
 				'table' => 'm_klinik',
 				'on'	=> 'reg.id_klinik = m_klinik.id and m_klinik.deleted_at is null'
@@ -99,8 +95,10 @@ class Monitoring_kunjungan extends CI_Controller {
 				'on'	=> 'reg.id_pegawai = peg.id and peg.deleted_at is null'
 			],
 		];
-
+		
 		$datatable = $this->m_global->multi_row($select,$where,$table, $join);
+		// echo $this->db->last_query();exit;
+		
 		// echo $this->db->last_query(); die();
 		$data = array();
 		$data = [];
@@ -108,13 +106,17 @@ class Monitoring_kunjungan extends CI_Controller {
 			foreach ($datatable as $key => $value) {
 			
 				$data[$key][] = $key+1;
-				$data[$key][] = Carbon::parse($value->created_at)->format('Y-m-d H:i');
-				$data[$key][] = $value->nama_dokter;
+				$data[$key][] = Carbon::parse($value->tanggal_reg)->format('d-m-Y');
 				$data[$key][] = $value->nama_klinik;
+				$data[$key][] = $value->nama_pasien;
 				$data[$key][] = $value->no_rm;   
-				$data[$key][] = number_format($value->total_pengeluaran); 
-				$data[$key][] = '
-					<button type="button" class="btn btn-sm btn-primary" onclick="detail_trans(\'' . $this->enkripsi->enc_dec('encrypt', $value->id_registrasi) . '\')"> Detail </button>';
+				$data[$key][] = $value->nama_dokter;
+
+				if(strtotime(Carbon::parse($value->tgl_buat_pasien)->format('Y-m-d')) >= strtotime($value->tanggal_reg)) {
+					$data[$key][] = '<span style="color:green;font-weight:bold;">Pasien Baru</span>';
+				}else{
+					$data[$key][] = 'Pasien Lama';
+				}
 			}
 		}
 		
