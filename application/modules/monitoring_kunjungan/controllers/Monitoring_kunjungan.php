@@ -143,11 +143,10 @@ class Monitoring_kunjungan extends CI_Controller {
 
 	public function monitoring_chart()
 	{
-		$id_dokter = $this->input->post('id_dokter');
 		$id_user = $this->session->userdata('id_user');
-
-		$data_dokter = $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
-		$data_user = $this->m_global->single_row('*', ['id_pegawai' => $data_dokter->id, 'deleted_at' => null, 'id_role != ' => 1], 'm_user');
+		// $user_klinik =  $this->m_global->multi_row('*', ['id_user' => $id_user], 't_user_klinik');
+		// $data_dokter = $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
+		// $data_user = $this->m_global->single_row('*', ['id_pegawai' => $data_dokter->id, 'deleted_at' => null, 'id_role != ' => 1], 'm_user');
 
 		$start = $this->input->post('start');
 		$end = $this->input->post('end');
@@ -164,12 +163,17 @@ class Monitoring_kunjungan extends CI_Controller {
 			$dates[] = $date->format('Y-m-d');
 		}
 		
-		$data_klinik = $this->db->query("
-			SELECT 
-				t_user_klinik.*, m_klinik.nama_klinik
-			FROM t_user_klinik 
-			LEFT JOIN m_klinik on t_user_klinik.id_klinik = m_klinik.id
-			WHERE t_user_klinik.id_user = '$data_user->id'")->result();
+		if($this->session->userdata('id_role') != '1') {
+			$data_klinik = $this->db->query("
+				SELECT 
+					m_klinik.nama_klinik, m_klinik.id
+				FROM t_user_klinik 
+				LEFT JOIN m_klinik on t_user_klinik.id_klinik = m_klinik.id
+				WHERE t_user_klinik.id_user = '$id_user'")
+			->result();
+		}else{
+			$data_klinik = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_klinik');
+		}
 
 		$dataset = [];
 		$data_label_x = [];
@@ -180,27 +184,32 @@ class Monitoring_kunjungan extends CI_Controller {
 			$dataset[$key]['label'] = $value->nama_klinik;
 			$dataset[$key]['backgroundColor'] = "#".$this->random_color();
 			$dataset[$key]['fill'] = true;
+			
+			/* if ($this->session->userdata('id_role') != '1') {
+				$where = "reg.tanggal_reg BETWEEN '$start' AND '$end' AND reg.id_klinik = '$value->id_klinik'";
+			}else{
+				$where = "reg.tanggal_reg BETWEEN '$start' AND '$end'";
+			} */
 
-			$q = $this->db->query("SELECT	
-					sum(mut.total_pengeluaran) as total,
-					mut.tanggal,
-					m_klinik.nama_klinik
+			$q = $this->db->query("
+				SELECT
+					count(reg.id) as jml_kunjungan,
+					reg.tanggal_reg,
+					m_klinik.nama_klinik,
+					m_klinik.alamat
 				FROM
-					t_mutasi AS mut
-					LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
+					t_registrasi AS reg 
 					LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
-				WHERE
-					mut.id_jenis_trans = 6 
-					AND mut.deleted_at IS NULL 
-					AND reg.id_pegawai = '$id_dokter'
-					AND reg.id_klinik = '$value->id_klinik'
-					AND mut.tanggal between '$start' and '$end'
-				GROUP BY m_klinik.nama_klinik, mut.tanggal, reg.id_pegawai
+				WHERE 
+					reg.tanggal_reg BETWEEN '$start' AND '$end' AND reg.id_klinik = '$value->id'	 
+				GROUP BY
+					m_klinik.nama_klinik, reg.tanggal_reg
+				ORDER BY tanggal_reg
 			")->result();
 
 			foreach ($q as $k => $v) {
 				foreach ($dates as $dk => $dv) {
-					if($v->tanggal != $dv) {
+					if($v->tanggal_reg != $dv) {
 						### pengecekan by key, agar tidak di replace
 						if (array_key_exists($dk,$total_temp)){
 							continue;
@@ -209,8 +218,8 @@ class Monitoring_kunjungan extends CI_Controller {
 						$arr_max[] = 0;
 						$total_temp[$dk] = 0;
 					}else{
-						$arr_max[] = (int)$v->total;
-						$total_temp[$dk] = (int)$v->total;
+						$arr_max[] = (int)$v->jml_kunjungan;
+						$total_temp[$dk] = (int)$v->jml_kunjungan;
 					}
 				}				
 			}
@@ -218,15 +227,14 @@ class Monitoring_kunjungan extends CI_Controller {
 			$dataset[$key]['data'] = $total_temp;
 		}
 
-		
 		rsort($arr_max);
-		
+			
 		$data['label'] = $dates;
 		$data['datasets'] = $dataset;
 		$data['status'] = true;
 		$data['v_min'] = $min;
 		$data['v_max'] = $arr_max[0];
-		$data['judul'] = "Grafik Honor per Dokter, ".$data_dokter->nama;
+		$data['judul'] = "Grafik Kunjungan per Klinik";
 
 		echo json_encode($data);
 		

@@ -25,7 +25,7 @@ $(document).ready(function() {
         }
 
         //chart
-        // monitoring(start, end);
+        monitoring(start, end);
 
     
         table = $('#tabeldata').DataTable({
@@ -64,18 +64,17 @@ function reload_table()
 }
 
 
-function monitoring(id, start, end)
+function monitoring(start, end)
 {
     // redraw canvas.js
     $('#chart-report').html('<canvas id="line-chart" width="800" height="450"></canvas>');
 
-    url = base_url + 'monitoring_honor/monitoring_chart';
+    url = base_url + 'monitoring_kunjungan/monitoring_chart';
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
         url: url,
         data: {
-            id_dokter:id,
             start : start,
             end : end
         },
@@ -101,14 +100,14 @@ function monitoring(id, start, end)
                         yAxes: [{
                             ticks: {
                                 beginAtZero: false,
-                                callback: function(value, index, values) {
+                                /* callback: function(value, index, values) {
                                     if(parseInt(value) >= 1000){
                                         return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                                     } else {
                                         return 'Rp ' + value;
                                     }
-                                },
-                                max : response.v_max + 500000,    
+                                }, */
+                                max : response.v_max + 5,    
                                 min : 0
                             }
                         }]
