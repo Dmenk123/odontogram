@@ -31,6 +31,7 @@
 
 		<!--end::Layout Skins -->
     	<link rel="shortcut icon" href="<?= base_url('assets/template/'); ?>assets/media/logos/favicon.ico" />
+		
 		<link href="<?= base_url('build/css/'); ?>custom.min.css" rel="stylesheet" type="text/css" />
 		<!-- load file css per modul -->
 		<?php if(isset($link_css)){ ?>

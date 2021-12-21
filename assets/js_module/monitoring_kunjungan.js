@@ -53,6 +53,7 @@ $(document).ready(function() {
             ],
         });
         
+        $('#div-tabel-area').css('display', 'block');
        
     }); 
     
