@@ -79,7 +79,13 @@ class Monitoring_kunjungan extends CI_Controller {
 		// var_dump($end); die();
 
 		$select = "reg.no_reg, reg.tanggal_reg, reg.jam_reg, m_klinik.nama_klinik, m_klinik.alamat, m_pasien.no_rm, m_pasien.nama as nama_pasien, peg.nama as nama_dokter, m_pasien.created_at as tgl_buat_pasien";
-		$where = ['reg.deleted_at' => null, 'reg.tanggal_reg >=' => $start, 'reg.tanggal_reg <= ' => $end];
+		
+		if ($this->session->userdata('id_role') != '1') {
+			$where = ['reg.deleted_at' => null, 'reg.id_klinik' => $this->session->userdata('id_klinik'), 'reg.tanggal_reg >=' => $start, 'reg.tanggal_reg <= ' => $end];
+		} else {
+			$where = ['reg.deleted_at' => null, 'reg.tanggal_reg >=' => $start, 'reg.tanggal_reg <= ' => $end];
+		}
+
 		$table = 't_registrasi as reg';
 		$join = [ 
 			[
