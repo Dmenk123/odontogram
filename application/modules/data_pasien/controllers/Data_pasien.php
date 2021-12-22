@@ -825,17 +825,17 @@ class Data_pasien extends CI_Controller {
             $data['status'] = FALSE;
 		}
 
-		if ($this->input->post('suku') == '') {
+		/* if ($this->input->post('suku') == '') {
 			$data['inputerror'][] = 'suku';
             $data['error_string'][] = 'Wajib Mengisi Suku Bangsa';
             $data['status'] = FALSE;
-		}
+		} */
 
-		if ($this->input->post('pekerjaan') == '') {
+		/* if ($this->input->post('pekerjaan') == '') {
 			$data['inputerror'][] = 'pekerjaan';
             $data['error_string'][] = 'Wajib Mengisi Pekerjaan';
             $data['status'] = FALSE;
-		}
+		} */
 
 		if ($this->input->post('hp') == '') {
 			$data['inputerror'][] = 'hp';

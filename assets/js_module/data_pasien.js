@@ -198,10 +198,13 @@ function save()
         timeout: 600000,
         success: function (data) {
             if(data.status) {
-                swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSave").prop("disabled", false);
-                $('#btnSave').text('Simpan');                
-                window.location.href = base_url+"reg_pasien/add";
+                swalConfirm.fire('Sukses!!', data.pesan, 'success').then((cb) => {
+                    if(cb.value) {
+                        $("#btnSave").prop("disabled", false);
+                        $('#btnSave').text('Simpan');                
+                        window.location.href = base_url+"reg_pasien/add";
+                    }
+                });              
             }else {
                 for (var i = 0; i < data.inputerror.length; i++) 
                 {
@@ -244,8 +247,11 @@ function delete_pasien(id){
                 data : {id:id},
                 success: function(data)
                 {
-                    swalConfirm.fire('Berhasil Hapus Pasien!', data.pesan, 'success');
-                    table.ajax.reload();
+                    swalConfirm.fire('Sukses!!', data.pesan, 'success').then((cb) => {
+                        if(cb.value) {
+                            table.ajax.reload();
+                        }
+                    });
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {
@@ -292,9 +298,12 @@ function import_data_excel(){
         contentType: false, 
         success: function (data) {
             if(data.status) {
-                swal.fire("Sukses!!", data.pesan, "success");
-                $("#btnSaveImport").attr("disabled", false);
-                $('#btnSaveImport').text('Simpan');
+                swalConfirm.fire('Sukses!!', data.pesan, 'success').then((cb) => {
+                    if(cb.value) {
+                        $("#btnSaveImport").attr("disabled", false);
+                        $('#btnSaveImport').text('Simpan');
+                    }
+                });
             }else {
                 swal.fire("Gagal!!", data.pesan, "error");
                 $("#btnSaveImport").attr("disabled", false);
