@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 use Carbon\Carbon;
-class Lap_honor_dokter extends CI_Controller {
+class Lap_penerimaan_klinik extends CI_Controller {
 		
 	public function __construct()
 	{
@@ -25,7 +25,7 @@ class Lap_honor_dokter extends CI_Controller {
 		 * data passing ke halaman view content
 		 */
 		$data = array(
-			'title' => 'Laporan Honor Dokter',
+			'title' => 'Laporan Penerimaan Klinik',
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
 		);
@@ -39,7 +39,7 @@ class Lap_honor_dokter extends CI_Controller {
 		$content = [
 			'css' 	=> null,
 			'modal' => '',
-			'js'	=> 'lap_honor_dokter.js',
+			'js'	=> 'lap_penerimaan_klinik.js',
 			'view'	=> 'view_laporan'
 		];
 
@@ -66,53 +66,29 @@ class Lap_honor_dokter extends CI_Controller {
 		if ($model == 2) {
 			### pertahun
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
-			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun2'";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, kli.nama_klinik";
 		}elseif ($model == 1) {
 			### perbulan
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
-			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, kli.nama_klinik";
 		}elseif ($model == 3) {
 			### perhari
 			$where = "mut.tanggal between '$start' and '$end'";
-			$where2 = "x_mut.tanggal between '$start' and '$end'";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, kli.nama_klinik";
 		}
 
 		$q = $this->db->query("
-			SELECT	
-				sum(mut.total_pengeluaran) as total,
+			SELECT 
 				mut.tanggal,
-				m_klinik.nama_klinik,
-				reg.id_klinik,
-				m_pegawai.nama as nama_dokter,
-				m_pegawai.kode as kode_dokter,
-				(SELECT count(sub_tabel.id) 
-					FROM (
-						select x_mut.id, x_reg.id_pegawai
-						from t_mutasi x_mut
-						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
-						LEFT JOIN m_pegawai AS x_peg ON x_reg.id_pegawai = x_peg.id AND x_peg.deleted_at IS NULL 
-						where id_jenis_trans = 6 
-						and x_mut.deleted_at is null
-						and $where2
-						AND x_peg.id_jabatan = 1 
-						GROUP BY x_mut.tanggal, x_reg.id_pegawai
-					) as sub_tabel where sub_tabel.id_pegawai = reg.id_pegawai
-				) as num_row
-			FROM
-				t_mutasi AS mut
-				LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
-				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
-				LEFT JOIN m_pegawai ON reg.id_pegawai = m_pegawai.id AND m_pegawai.deleted_at IS NULL 
-			WHERE
-				mut.id_jenis_trans = 6 
-				AND mut.deleted_at IS NULL 
-				AND m_pegawai.id_jabatan = 1
-				AND $where
+				kli.nama_klinik,
+				sum(mut.total_penerimaan_nett) as total_omset,
+				sum(mut.total_pengeluaran) as total_bea_dokter
+			FROM t_mutasi mut
+			LEFT JOIN t_registrasi reg on mut.id_registrasi = reg.id
+			LEFT JOIN m_klinik kli on reg.id_klinik = kli.id
+			WHERE $where
 			GROUP BY $group
-			ORDER BY m_pegawai.nama, m_klinik.nama_klinik
+			ORDER BY mut.tanggal, kli.nama_klinik
 		")->result();
 		
 		$html = '';
