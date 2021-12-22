@@ -2,7 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 use Carbon\Carbon;
 class Lap_honor_dokter extends CI_Controller {
-		
+	protected $prop_data_user = null;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -13,6 +14,8 @@ class Lap_honor_dokter extends CI_Controller {
 		$this->load->model('m_user');
 		$this->load->model('m_global');
 		$this->load->model('set_role/m_set_role', 'm_role');
+
+		$this->prop_data_user = $this->m_user->get_detail_user($this->session->userdata('id_user'));
 	}
 
 	public function index()
@@ -235,7 +238,7 @@ class Lap_honor_dokter extends CI_Controller {
 			$group = "m_klinik.nama_klinik, reg.id_pegawai";
 		} elseif ($model == 1) {
 			### perbulan
-			$txt_periode = $bulan.' '.$tahun;
+			$txt_periode = bulan_indo($bulan).' '.$tahun;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
 			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
 			$group = "m_klinik.nama_klinik, reg.id_pegawai";
@@ -283,20 +286,19 @@ class Lap_honor_dokter extends CI_Controller {
 		")->result();
 
 		$data_klinik = $this->m_global->single_row('*',['deleted_at' => null, 'id' => 3], 'm_klinik');
-		$konten_html = $this->load->view('pdf', ['datanya' => $q], true);
+		
+		$konten_html = $this->load->view('pdf', ['datanya' => $q,'title' => 'Laporan Honor Dokter','data_klinik' => $data_klinik, 'data_user' => $this->prop_data_user[0], 'periode' => 'Periode ' . $txt_periode], true);
 
 		$retval = [
 			'data' => $q,
-			'title' => 'Laporan Honor Dokter',
-			'periode' => 'Periode ' . $txt_periode,
 			'data_klinik' => $data_klinik,
 			'content' => $konten_html,
 		];
 
 		// $this->load->view('pdf', $retval);
-		$html = $this->load->view('pdf', $retval, true);
+		$html = $this->load->view('template/pdf', $retval, true);
 		$filename = 'laporan_honor_dokter_'.time();
-		$this->lib_dompdf->generate($html, $filename, true, 'legal', 'potrait');
+		$this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
 	}
 
 	

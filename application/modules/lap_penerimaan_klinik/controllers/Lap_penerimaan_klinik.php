@@ -250,7 +250,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 			$group = "mut.tanggal, kli.nama_klinik";
 		} elseif ($model == 1) {
 			### perbulan
-			$txt_periode = $bulan.' '.$tahun;
+			$txt_periode = bulan_indo($bulan).' '.$tahun;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
 			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
 			$group = "mut.tanggal, kli.nama_klinik";
@@ -296,11 +296,10 @@ class Lap_penerimaan_klinik extends CI_Controller {
 		")->result();
 
 		$data_klinik = $this->m_global->single_row('*',['deleted_at' => null, 'id' => 3], 'm_klinik');
-		$konten_html = $this->load->view('pdf', ['datanya' => $q,'title' => 'Laporan Penerimaan Klinik', 'data_klinik' => $data_klinik, 'data_user' => $this->prop_data_user[0]], true);
+		$konten_html = $this->load->view('pdf', ['datanya' => $q,'title' => 'Laporan Penerimaan Klinik', 'data_klinik' => $data_klinik, 'data_user' => $this->prop_data_user[0], 'periode' => 'Periode ' . $txt_periode], true);
 
 		$retval = [
 			'data' => $q,
-			'periode' => 'Periode ' . $txt_periode,
 			'data_klinik' => $data_klinik,
 			'content' => $konten_html,
 			'footer' => '', // set '' agar tidak ikut default, footer ikut konten

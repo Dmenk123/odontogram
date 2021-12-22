@@ -36,7 +36,7 @@
   <table class="tbl-header">
     <tr>
       <td align="center" class="head-center">
-        <p style="text-align: center; font-size: 16px; padding-top:10px;" class="head-left"><strong> <?= $title; ?> </strong></p>
+        <p style="text-align: center; font-size: 16px; padding-top:10px;" class="head-left"><strong> <?= $title; ?> </strong> <br> <strong> <?= $periode; ?> </strong></p>
       </td>
     </tr>
   </table>
