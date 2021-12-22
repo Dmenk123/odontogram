@@ -104,19 +104,21 @@
           if ($this->input->get('model')) {
         ?>
             <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_lap_penjualan">
-            <thead>
-              <tr>
-                <th style="width: 5%;">No</th>
-                <th>Dokter</th>
-                <th>Klinik</th>
-                <th>Honor Dokter</th>
-              </tr>
-            </thead>
+              <thead>
+                <tr>
+                  <th style="width: 5%;">No</th>
+                  <th>Tanggal</th>
+                  <th>Klinik</th>
+                  <th>Total Omset</th>
+                  <th>Honor Dokter</th>
+                  <th>Total Nett</th>
+                </tr>
+              </thead>
               <tbody>
               </tbody>      
           </table>
         <?php
-          }
+        }
         ?>
         
 

@@ -229,15 +229,15 @@ class Lap_honor_dokter extends CI_Controller {
 
 		if ($model == 2) {
 			### pertahun
-			$txt_periode = $tahun;
-			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun'";
-			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun'";
+			$txt_periode = $tahun2;
+			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun2'";
 			$group = "m_klinik.nama_klinik, reg.id_pegawai";
 		} elseif ($model == 1) {
 			### perbulan
 			$txt_periode = $bulan.' '.$tahun;
-			$where = "DATE_FORMAT(mut.tanggal,'%m') = '$bulan'";
-			$where2 = "DATE_FORMAT(x_mut.tanggal,'%m') = '$bulan'";
+			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
 			$group = "m_klinik.nama_klinik, reg.id_pegawai";
 		} elseif ($model == 3) {
 			### perhari

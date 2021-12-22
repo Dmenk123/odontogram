@@ -154,7 +154,7 @@
     } ?>
 
 
-    <?php if (isset($footer) && $footer != null) { 
+    <?php if (isset($footer)) { 
       echo $footer;
     } else { ?>
       <table class="tbl-footer" border='0'>
