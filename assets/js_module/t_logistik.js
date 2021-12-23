@@ -15,6 +15,10 @@ const formPintasanLogistik = () => {
 }
 
 const initOpsijenisLogistik = () => {
+    if ($("#form_master_logistik select[name='jenis']").data('select2')) {
+        $("#form_master_logistik select[name='jenis']").select2('destroy');
+    }
+    
     $("#form_master_logistik select[name='jenis']").select2({
         // tags: true,
         //multiple: false,
@@ -47,7 +51,11 @@ const initOpsijenisLogistik = () => {
 }
 
 const initOpsiLogistik = () => {
-     $("#logistik").select2({
+    if ($("#logistik").data('select2')) {
+        $("#logistik").select2('destroy');
+    }
+
+    $("#logistik").select2({
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
@@ -202,3 +210,84 @@ function hapus_logistik_det(id) {
     });
 }
 
+function saveMasterLogistik()
+{
+    let form = $('#form_master_logistik')[0];
+    let data = new FormData(form);
+
+    $("#btnSaveMasterLogistik").prop("disabled", true);
+    $('#btnSaveMasterLogistik').text('Menyimpan Data'); //change button text
+    swalConfirm.fire({
+        title: 'Perhatian !!',
+        text: "Apakah anda yakin menambah data ini ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: base_url + 'master_logistik/add_data_logistik',
+                data: data,
+                dataType: "JSON",
+                processData: false,
+                contentType: false, 
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.status) {
+                        swal.fire("Sukses!!", "Aksi Berhasil", "success");
+                        $("#btnSaveMasterLogistik").prop("disabled", false);
+                        $('#btnSaveMasterLogistik').text('Simpan');
+                        reset_modal_form_logistik();
+                        initOpsiLogistik();
+                        $("#modalPintasanLogistik").modal('hide');
+                    }else {
+                        for (var i = 0; i < data.inputerror.length; i++) 
+                        {
+                            if (data.inputerror[i] != 'jabatans') {
+                                $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                                $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                            }else{
+                                $($('#jabatans').data('select2').$container).addClass('has-error');
+                            }
+                        }
+        
+                        $("#btnSaveMasterLogistik").prop("disabled", false);
+                        $('#btnSaveMasterLogistik').text('Simpan');
+                    }
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#btnSaveMasterLogistik").prop("disabled", false);
+                    $('#btnSaveMasterLogistik').text('Simpan');
+        
+                    reset_modal_form_logistik();
+                    $("#modalPintasanLogistik").modal('hide');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+      })
+    
+}
+
+function reset_modal_form_logistik()
+{
+    $('#form_master_logistik')[0].reset();
+    $('.append-opt').remove(); 
+    $('div.form-group').children().removeClass("is-invalid invalid-feedback");
+    $('span.help-block').text('');
+    $('#div_pass_lama').css("display","none");
+}

@@ -98,7 +98,7 @@
           </div>
           <div class="form-group">
             <label for="lbl_telp1" class="form-control-label">Jenis Logistik:</label>
-            <select id="jenisLogistikModal" name="jenis" class="form-control" data-placeholder="">
+            <select id="jenisLogistikModal" name="jenis" class="form-control kt-select2" style="width: 100%;">
               <option value="">Silahkan Pilih jenis Logistik</option>
             </select>
             <span class="help-block"></span>
@@ -107,7 +107,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-success" id="btnSave" onclick="saveMasterLogistik()">Simpan</button>
+        <button type="button" class="btn btn-success" id="btnSaveMasterLogistik" onclick="saveMasterLogistik()">Simpan</button>
       </div>
     </div>
   </div>
