@@ -163,7 +163,7 @@ class Master_logistik extends CI_Controller {
 		$arr_valid = $this->rule_validasi();
 		
 		$nama 		= trim($this->input->post('nama'));
-		$kode 		= trim($this->input->post('kode'));
+		$kode 		= $this->m_logistik->get_kode_logistik();
 		// $harga_beli = trim($this->input->post('harga_beli'));
 		// $harga_jual = trim($this->input->post('harga_jual'));
 		$stok 		= trim($this->input->post('stok'));
@@ -249,7 +249,7 @@ class Master_logistik extends CI_Controller {
 		}
 
 		$nama 		= trim($this->input->post('nama'));
-		$kode 		= trim($this->input->post('kode'));
+		// $kode 		= trim($this->input->post('kode'));
 		$harga_beli = trim($this->input->post('harga_beli'));
 		$harga_jual = trim($this->input->post('harga_jual'));
 		$stok 		= trim($this->input->post('stok'));
@@ -259,7 +259,7 @@ class Master_logistik extends CI_Controller {
 		
 		$data = [
 			'nama_logistik' => $nama,
-			'kode_logistik' => $kode,
+			// 'kode_logistik' => $kode,
 			'harga_beli'	=> $harga_beli,
 			'harga_jual'	=> $harga_jual,
 			'stok'			=> $stok,
@@ -624,11 +624,11 @@ class Master_logistik extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if ($this->input->post('kode') == '') {
-			$data['inputerror'][] = 'kode';
-            $data['error_string'][] = 'Wajib mengisi Kode logistik';
-            $data['status'] = FALSE;
-		}
+		// if ($this->input->post('kode') == '') {
+		// 	$data['inputerror'][] = 'kode';
+        //     $data['error_string'][] = 'Wajib mengisi Kode logistik';
+        //     $data['status'] = FALSE;
+		// }
 
 		if ($this->input->post('nama') == '') {
 			$data['inputerror'][] = 'nama';

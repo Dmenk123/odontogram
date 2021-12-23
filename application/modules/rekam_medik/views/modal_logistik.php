@@ -82,11 +82,6 @@
       <div class="modal-body">
         <form id="form_master_logistik" name="form_master_logistik">
           <div class="form-group">
-            <label for="lbl_nama_pegawai" class="form-control-label">Kode Logistik:</label>
-            <input type="text" class="form-control" name="kode">
-            <span class="help-block"></span>
-          </div>
-          <div class="form-group">
             <label for="lbl_telp1" class="form-control-label">Nama :</label>
             <input type="text" class="form-control" name="nama">
             <span class="help-block"></span>

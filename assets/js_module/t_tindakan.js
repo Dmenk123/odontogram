@@ -1,4 +1,39 @@
 $(document).ready(function() {
+    initOpsiTindakan();
+
+    $('#tindakan').on('select2:selecting', function(e) {
+        $('#input_tdk_gigi_num').val('');
+        $('#input_tdk_gigi_txt').val('');
+
+        let data = e.params.args.data;
+        console.log(data);
+        if(data.is_all_gigi) {
+            $('#input_tdk_gigi_num').slideUp();
+            $('#input_tdk_gigi_txt').slideDown().val('all');
+        }else{
+            $('#input_tdk_gigi_num').slideDown();
+            $('#input_tdk_gigi_txt').slideUp().val('');
+        }
+
+        $("#form_tindakan input[name='tdk_kode']").val(data.kode);
+        $("#form_tindakan input[name='tdk_tindakan']").val(data.nama);
+        $("#form_tindakan input[name='tdk_harga']").val(data.harga);
+        $("#form_tindakan input[name='tdk_harga_raw']").val(data.harga_raw);
+        $("#form_tindakan input[name='tdk_diskon']").val(data.disc_persen);
+        $("#form_tindakan input[name='tdk_nett']").val(data.harga_nett);
+        $("#form_tindakan input[name='tdk_nett_raw']").val(data.harga_nett_raw);
+    });
+    
+});
+
+const formPintasanTindakan = () => {
+    $('#modalPintasanTindakan').modal('show');
+}
+
+const initOpsiTindakan = () => {
+    if ($("#tindakan").data('select2')) {
+        $("#tindakan").select2('destroy');
+    }
 
     $("#tindakan").select2({
         // tags: true,
@@ -37,31 +72,7 @@ $(document).ready(function() {
             }
         }
     });
-
-    $('#tindakan').on('select2:selecting', function(e) {
-        $('#input_tdk_gigi_num').val('');
-        $('#input_tdk_gigi_txt').val('');
-
-        let data = e.params.args.data;
-        console.log(data);
-        if(data.is_all_gigi) {
-            $('#input_tdk_gigi_num').slideUp();
-            $('#input_tdk_gigi_txt').slideDown().val('all');
-        }else{
-            $('#input_tdk_gigi_num').slideDown();
-            $('#input_tdk_gigi_txt').slideUp().val('');
-        }
-
-        $("#form_tindakan input[name='tdk_kode']").val(data.kode);
-        $("#form_tindakan input[name='tdk_tindakan']").val(data.nama);
-        $("#form_tindakan input[name='tdk_harga']").val(data.harga);
-        $("#form_tindakan input[name='tdk_harga_raw']").val(data.harga_raw);
-        $("#form_tindakan input[name='tdk_diskon']").val(data.disc_persen);
-        $("#form_tindakan input[name='tdk_nett']").val(data.harga_nett);
-        $("#form_tindakan input[name='tdk_nett_raw']").val(data.harga_nett_raw);
-    });
-    
-});
+}
 
 function reloadFormTindakan(){
     resetFormTindakan();
@@ -150,4 +161,88 @@ const setHargaRaw = () => {
     $('#tdk_nett_raw').val(rpNettRaw);
     $('#tdk_nett').val(formatMoney(Number(rpNettRaw)));
 }
+
+
+function saveMasterTindakan()
+{
+    let form = $('#form_master_tindakan')[0];
+    let data = new FormData(form);
+
+    $("#btnSaveMasterTindakan").prop("disabled", true);
+    $('#btnSaveMasterTindakan').text('Menyimpan Data'); //change button text
+    swalConfirm.fire({
+        title: 'Perhatian !!',
+        text: "Apakah anda yakin menambah data ini ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: base_url + 'master_tindakan/add_data_tindakan',
+                data: data,
+                dataType: "JSON",
+                processData: false,
+                contentType: false, 
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.status) {
+                        swal.fire("Sukses!!", "Aksi Berhasil", "success");
+                        $("#btnSaveMasterTindakan").prop("disabled", false);
+                        $('#btnSaveMasterTindakan').text('Simpan');
+                        reset_modal_form_tindakan();
+                        initOpsiTindakan();
+                        $("#modalPintasanTindakan").modal('hide');
+                    }else {
+                        for (var i = 0; i < data.inputerror.length; i++) 
+                        {
+                            if (data.inputerror[i] != 'jabatans') {
+                                $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                                $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                            }else{
+                                $($('#jabatans').data('select2').$container).addClass('has-error');
+                            }
+                        }
+        
+                        $("#btnSaveMasterTindakan").prop("disabled", false);
+                        $('#btnSaveMasterTindakan').text('Simpan');
+                    }
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#btnSaveMasterTindakan").prop("disabled", false);
+                    $('#btnSaveMasterTindakan').text('Simpan');
+        
+                    reset_modal_form_tindakan();
+                    $("#modalPintasanTindakan").modal('hide');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+      })
+    
+}
+
+function reset_modal_form_tindakan()
+{
+    $('#form_master_tindakan')[0].reset();
+    $('.append-opt').remove(); 
+    $('div.form-group').children().removeClass("is-invalid invalid-feedback");
+    $('span.help-block').text('');
+    $('#div_pass_lama').css("display","none");
+}
+
 

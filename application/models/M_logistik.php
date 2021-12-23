@@ -160,18 +160,18 @@ class M_logistik extends CI_Model
 		return $this->db->update($this->table, $data, $where);
 	}
 
-	function get_kode_pegawai(){
-		$q = $this->db->query("select MAX(RIGHT(kode,5)) as kode_max from m_pegawai");
+	function get_kode_logistik(){
+		$q = $this->db->query("select MAX(RIGHT(kode_logistik,3)) as kode_max from m_logistik");
 		$kd = "";
 		if($q->num_rows()>0){
 			foreach($q->result() as $k){
 				$tmp = ((int)$k->kode_max)+1;
-				$kd = sprintf("%05s", $tmp);
+				$kd = sprintf("%03s", $tmp);
 			}
 		}else{
-			$kd = "00001";
+			$kd = "001";
 		}
-		return "PEG-".$kd;
+		return "L-".$kd;
 	}
 	
 	public function get_max_id_pegawai()
