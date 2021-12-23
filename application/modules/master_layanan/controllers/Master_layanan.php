@@ -20,6 +20,7 @@ class Master_layanan extends CI_Controller {
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_jabatan = $this->m_global->multi_row('*', 'deleted_at is null', 'm_jabatan', null, 'nama');
+		$dokter  = $this->m_global->getSelectedData('m_pegawai', ['deleted_at' => null, 'id_jabatan' => 1])->result();
 				
 		/**
 		 * data passing ke halaman view content
@@ -27,7 +28,8 @@ class Master_layanan extends CI_Controller {
 		$data = array(
 			'title' => 'Pengelolaan Data Master Layanan',
 			'data_user' => $data_user,
-			'data_jabatan'	=> $data_jabatan
+			'data_jabatan'	=> $data_jabatan,
+			'dokter' => $dokter
 		);
 
 		/**

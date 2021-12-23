@@ -62,4 +62,10 @@ class Home extends CI_Controller {
 		return $arr_bulan[(int) $bulan];
 	}
 
+	public function kirim(){
+		$this->load->library('Api_wa');
+		$wa = new Api_wa;
+		$hasil = $wa->send();
+	}
+
 }

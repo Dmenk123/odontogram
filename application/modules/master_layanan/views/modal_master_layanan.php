@@ -34,6 +34,21 @@
             <input type="number" class="form-control" id="waktu" name="waktu">
             <span class="help-block"></span>
           </div>
+          <div class="form-group">
+            <label for="lbl_telp1" class="form-control-label">Dokter yg melayani:</label>
+            <br>
+            <?php
+              foreach ($dokter as $value) {
+            ?>
+                <label class="kt-checkbox kt-checkbox--success">
+                  <input type="checkbox" name="dokter[]" value="<?= $value->id;?>"> <?= $value->nama;?>
+                  <span></span>
+                </label><br>
+            <?php
+              }
+            ?>
+           
+          </div>
         </form>
       </div>
       <div class="modal-footer">
