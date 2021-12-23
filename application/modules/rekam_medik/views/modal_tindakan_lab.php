@@ -13,7 +13,7 @@
               <div class="form-group">
                 <input type="hidden" class="form-control" id="id_tindakanlab" name="id_tindakanlab" value="">           
                 <div class="col-12 row">
-                  <label class="col-12 col-form-label">Tindakan :</label>
+                  <label class="col-12 col-form-label">Tindakan : <a href="javascript:void(0)" onclick='formPintasanTindakanLab()'>(Tambah Master)</a></label>
                 </div>
                 <div class="col-12 row">
                   <div class="col-12">
@@ -99,6 +99,42 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade modal_add_form" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modalPintasanLab">
+  <div class="modal-dialog modal-xs" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_title">Master Laboratorium</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form_master_lab" name="form_master_lab">
+          <div class="form-group">
+            <label for="lbl_telp1" class="form-control-label">Tindakan Lab :</label>
+            <input type="text" class="form-control" id="tindakan_Lab" name="tindakan_lab">
+            <span class="help-block"></span>
+          </div>
+          <div class="form-group">
+            <label for="lbl_telp1" class="form-control-label">Harga :</label>
+            <input type="text" class="form-control" id="harga" name="harga">
+            <span class="help-block"></span>
+          </div>
+          <div class="form-group">
+            <label for="lbl_telp1" class="form-control-label">Diskon (%):</label>
+            <input type="text" class="form-control numberinput" id="diskon" name="diskon" value="0">
+            <span class="help-block"></span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-success" id="btnSaveMasterLab" onclick="saveMasterTindakanLab()">Simpan</button>
       </div>
     </div>
   </div>

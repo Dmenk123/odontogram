@@ -1,4 +1,3 @@
-
 <div class="modal fade modal_add_form" tabindex="-1" role="dialog" aria-labelledby="add_menu" aria-hidden="true" id="modal_pegawai_form">
   <div class="modal-dialog modal-xs" role="document">
     <div class="modal-content">
@@ -9,14 +8,14 @@
       </div>
       <div class="modal-body">
         <form id="form-pegawai" name="form-pegawai">
-          <div class="form-group">
-            <input type="hidden" class="form-control" id="id_laboratorium" name="id_laboratorium">
+          <!-- <div class="form-group">
             <label for="lbl_nama_pegawai" class="form-control-label">Kode :</label>
             <input type="text" class="form-control" id="kode" name="kode">
             <span class="help-block"></span>
-          </div>
+          </div> -->
           <div class="form-group">
             <label for="lbl_telp1" class="form-control-label">Tindakan Lab :</label>
+            <input type="hidden" class="form-control" id="id_laboratorium" name="id_laboratorium">
             <input type="text" class="form-control" id="tindakan_Lab" name="tindakan_lab">
             <span class="help-block"></span>
           </div>

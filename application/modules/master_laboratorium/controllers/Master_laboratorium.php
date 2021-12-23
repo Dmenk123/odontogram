@@ -144,7 +144,7 @@ class Master_laboratorium extends CI_Controller {
 		$timestamp = $obj_date->format('Y-m-d H:i:s');
 		$arr_valid = $this->rule_validasi();
 		
-		$kode 			= trim($this->input->post('kode'));
+		$kode 			= $this->m_laboratorium->get_kode_lab();
 		$tindakan_lab 	= trim($this->input->post('tindakan_lab'));
 		$harga 			= trim($this->input->post('harga'));
 		$diskon 	   = $this->input->post('diskon');
@@ -193,7 +193,7 @@ class Master_laboratorium extends CI_Controller {
 			return;
 		}
 
-		$kode 			= trim($this->input->post('kode'));
+		// $kode 			= trim($this->input->post('kode'));
 		$tindakan_lab 	= trim($this->input->post('tindakan_lab'));
 		$harga 			= trim($this->input->post('harga'));
 		$diskon = $this->input->post('diskon');
@@ -201,7 +201,7 @@ class Master_laboratorium extends CI_Controller {
 		$this->db->trans_begin();
 		
 		$data = [
-			'kode' 			=> $kode,
+			// 'kode' 			=> $kode,
 			'tindakan_lab' 	=> $tindakan_lab,
 			'harga'			=> $harga,
 			'disc_persen'   => $diskon,
@@ -501,11 +501,11 @@ class Master_laboratorium extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if ($this->input->post('kode') == '') {
-			$data['inputerror'][] = 'kode';
-            $data['error_string'][] = 'Wajib mengisi Kode Laboratorium';
-            $data['status'] = FALSE;
-		}
+		// if ($this->input->post('kode') == '') {
+		// 	$data['inputerror'][] = 'kode';
+        //     $data['error_string'][] = 'Wajib mengisi Kode Laboratorium';
+        //     $data['status'] = FALSE;
+		// }
 
 		if ($this->input->post('tindakan_lab') == '') {
 			$data['inputerror'][] = 'tindakan_lab';
