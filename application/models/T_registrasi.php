@@ -213,6 +213,7 @@ class T_registrasi extends CI_Model
 
 		return $kd_fix;
 	}
+	
 	public function get_max_id()
 	{
 		$q = $this->db->query("SELECT MAX(id) as kode_max from ".$this->table."");

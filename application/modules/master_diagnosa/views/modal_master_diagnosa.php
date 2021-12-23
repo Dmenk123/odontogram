@@ -15,11 +15,6 @@
         <form id="form-pegawai" name="form-pegawai">
           <div class="form-group">
             <input type="hidden" class="form-control" id="id_diagnosa" name="id_diagnosa">
-            <label for="lbl_nama_pegawai" class="form-control-label">Kode Diagnosa:</label>
-            <input type="text" class="form-control" id="kode" name="kode">
-            <span class="help-block"></span>
-          </div>
-          <div class="form-group">
             <label for="lbl_telp1" class="form-control-label">Nama Diagnosa:</label>
             <input type="text" class="form-control" id="nama" name="nama">
             <span class="help-block"></span>

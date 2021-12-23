@@ -6,12 +6,6 @@ if(hostName == 'http://localhost') {
     var base_url = hostName+'/';
 }
 
-
-
-$(window).on('load', function(){
-    $('div#CssLoader').addClass('hidden');
-});
-
 var KTAppOptions = {
     "colors": {
         "state": {

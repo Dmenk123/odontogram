@@ -56,7 +56,7 @@
         <!-- <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"></script> -->
         <script src="<?= base_url('build/'); ?>js/custom.js" type="text/javascript"></script>
 
-        	<!--begin::Page Vendors(used by this page) -->
+        <!--begin::Page Vendors(used by this page) -->
 		
         <!-- <script src="<?= base_url('assets/template/'); ?>assets/plugins/custom/fullcalendar/moment.js" type="text/javascript"></script> -->
         <!--end::Page Vendors -->
@@ -78,6 +78,12 @@
         <script src="<?= base_url("$link_js"); ?>" type="text/javascript"></script>
         <?php } ?> 
         <?php } ?>
+
+        <script>
+            $(window).on('load', function(){
+                $('div#CssLoader').hide();
+            });
+        </script>
     </body>
 
 	<!-- end::Body -->

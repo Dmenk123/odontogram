@@ -143,7 +143,7 @@ class Master_diagnosa extends CI_Controller {
 		$arr_valid = $this->rule_validasi();
 		
 		$nama_diagnosa = trim($this->input->post('nama'));
-		$kode_diagnosa = trim($this->input->post('kode'));
+		$kode_diagnosa = $this->m_diagnosa->get_kode_diagnosa();
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -188,13 +188,11 @@ class Master_diagnosa extends CI_Controller {
 		}
 
 		$nama = trim($this->input->post('nama'));
-		$kode = trim($this->input->post('kode'));
 
 		$this->db->trans_begin();
 		
 		$data = [
 			'nama_diagnosa' => $nama,
-			'kode_diagnosa' => $kode,
 			'updated_at' => $timestamp
 		];
 
@@ -509,11 +507,11 @@ class Master_diagnosa extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if ($this->input->post('kode') == '') {
+		/* if ($this->input->post('kode') == '') {
 			$data['inputerror'][] = 'kode';
             $data['error_string'][] = 'Wajib mengisi Kode Diagnosa';
             $data['status'] = FALSE;
-		}
+		} */
 
 		if ($this->input->post('nama') == '') {
 			$data['inputerror'][] = 'nama';
