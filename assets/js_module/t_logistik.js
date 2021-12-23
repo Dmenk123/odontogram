@@ -1,6 +1,53 @@
 $(document).ready(function() {
+    initOpsiLogistik();
+   
 
-    $("#logistik").select2({
+    $('#logistik').on('select2:selecting', function(e) {
+        let data = e.params.args.data;
+        $("#form_logistik input[name='harga_jual_raw']").val(data.harga_jual_raw);
+    });
+    
+});
+
+const formPintasanLogistik = () => {
+    initOpsijenisLogistik();
+    $('#modalPintasanLogistik').modal('show');
+}
+
+const initOpsijenisLogistik = () => {
+    $("#form_master_logistik select[name='jenis']").select2({
+        // tags: true,
+        //multiple: false,
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
+        ajax: {
+            url: base_url+'master_logistik/get_select_jenis_logistik',
+            dataType: "json",
+            type: "GET",
+            data: function (params) {
+
+                var queryParameters = {
+                    term: params.term
+                }
+                return queryParameters;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            id: item.id,
+                        }
+                    })
+                };
+            }
+        }
+    });
+}
+
+const initOpsiLogistik = () => {
+     $("#logistik").select2({
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
@@ -33,13 +80,7 @@ $(document).ready(function() {
             }
         }
     });
-
-    $('#logistik').on('select2:selecting', function(e) {
-        let data = e.params.args.data;
-        $("#form_logistik input[name='harga_jual_raw']").val(data.harga_jual_raw);
-    });
-    
-});
+}
 
 function reloadFormLogistik(){
     $('#CssLoader').removeClass('hidden');

@@ -600,6 +600,22 @@ class Master_logistik extends CI_Controller {
 		echo json_encode($retval);
 	}
 
+	public function get_select_jenis_logistik()
+	{
+		$term = $this->input->get('term');
+		$jenis = $this->m_global->getSelectedData('m_jenis_logistik', ['deleted_at' => null])->result();
+		if ($jenis) {
+			foreach ($jenis as $key => $value) {
+				$row['id'] = $value->id_jenis_logistik;
+				$row['text'] = $value->jenis;
+				$retval[] = $row;
+			}
+		} else {
+			$retval = false;
+		}
+		echo json_encode($retval);
+	}
+
 	// ===============================================
 	private function rule_validasi()
 	{
