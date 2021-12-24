@@ -26,6 +26,7 @@ class M_layanan extends CI_Model
 		$this->db->select('*');
         $this->db->from('m_layanan');
         $this->db->where('m_layanan.deleted_at is null');
+		$this->db->order_by('m_layanan.id_layanan', 'DESC');
 		
 		$i = 0;
 

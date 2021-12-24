@@ -48,6 +48,7 @@
               <th>Nama Layanan</th>
               <th>Keterangan</th>
               <th>Waktu Layanan (Menit)</th>
+              <th>Dokter yg menangani</th>
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>

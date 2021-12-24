@@ -103,6 +103,7 @@ function edit_layanan(id)
             $('[name="nama"]').val(data.old_data.nama_layanan);
             $('[name="keterangan"]').val(data.old_data.keterangan);
             $('[name="waktu"]').val(data.old_data.waktu_layanan);
+            $('[name="dokter[]"]').prop("checked")
             $('#modal_pegawai_form').modal('show');
 	        $('#modal_title').text('Edit Data Layanan'); 
 

@@ -63,6 +63,15 @@ class Master_layanan extends CI_Controller {
 			$row[] = $layan->nama_layanan;
 			$row[] = $layan->keterangan;
 			$row[] = $layan->waktu_layanan;
+			$arr_dokter = explode(",", $layan->dokter);
+			$dokter = '<ul>';
+			for ($i=0; $i <count($arr_dokter) ; $i++) { 
+				$val = $this->m_global->getSelectedData('m_pegawai', ['id' => $arr_dokter[$i]])->row();
+				$dokter .= '<li>'.$val->nama.'</li>';
+			}
+
+			$dokter .= '</ul>';
+			$row[] = $dokter;
 			// $aktif_txt = ($diag->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
 			// $row[] = $aktif_txt;			
 			
@@ -72,6 +81,9 @@ class Master_layanan extends CI_Controller {
 					<div class="dropdown-menu">
 						<button class="dropdown-item" onclick="edit_layanan(\''.$layan->id_layanan.'\')">
 							<i class="la la-pencil"></i> Edit Layanan
+						</button>
+						<button class="dropdown-item" onclick="set_dokter(\''.$layan->id_layanan.'\')">
+							<i class="la la-pencil"></i> Dokter yg menangani
 						</button>
 						<button class="dropdown-item" onclick="delete_layanan(\''.$layan->id_layanan.'\')">
 							<i class="la la-trash"></i> Hapus
@@ -150,6 +162,8 @@ class Master_layanan extends CI_Controller {
 		$kode_layanan = trim($this->input->post('kode'));
 		$keterangan = trim($this->input->post('keterangan'));
 		$waktu_layanan = trim($this->input->post('waktu'));
+		// $dokter = $this->input->post('dokter');
+		// $str_dokter = implode(",", $dokter);
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -164,6 +178,7 @@ class Master_layanan extends CI_Controller {
 			'nama_layanan' => $nama_layanan,
 			'keterangan' => $keterangan,
 			'waktu_layanan' => $waktu_layanan,
+			// 'dokter' => $str_dokter,
 			'created_at' => $timestamp
 		];
 		
