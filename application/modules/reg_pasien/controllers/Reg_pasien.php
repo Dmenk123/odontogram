@@ -413,12 +413,16 @@ class Reg_pasien extends CI_Controller {
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="'.base_url('reg_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id).'"">
-							<i class="la la-pencil"></i> Edit Registrasi
-						</a>
-						<button class="dropdown-item" onclick="delete_reg(\''.$this->enkripsi->enc_dec('encrypt', $val->id).'\')">
-							<i class="la la-trash"></i> Hapus
-						</button>
+						'.$this->template_view->getEditButton(
+							base_url('reg_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id), 
+							'Edit Registrasi', 
+							true
+						).'
+						'.$this->template_view->getDeleteButtonDatatable(
+							"delete_reg(\"".$this->enkripsi->enc_dec('encrypt', $val->id)."\")",
+							'Hapus', 
+							true
+						).'
 						<a class="dropdown-item" target="_blank" href="'.base_url('reg_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
 							<i class="la la-print"></i> Cetak Data Ini
 						</a>

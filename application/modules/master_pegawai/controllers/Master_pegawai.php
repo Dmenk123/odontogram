@@ -62,8 +62,9 @@ class Master_pegawai extends CI_Controller {
 			$row[] = $peg->nama_jabatan;
 			$row[] = $peg->telp_1;
 			$row[] = $peg->telp_2;
-			$aktif_txt = ($peg->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
-			$row[] = $aktif_txt;			
+			$aktif_txt = ($peg->status_aktif == 'Aktif') ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Nonaktif</span>';
+			$row[] = $aktif_txt;	
+			$row[] = $peg->owner;		
 			
 			$str_aksi = '
 				<div class="btn-group">
@@ -139,6 +140,7 @@ class Master_pegawai extends CI_Controller {
 		$telp1 = trim($this->input->post('telp1'));
 		$telp2 = trim($this->input->post('telp2'));
 		$jabatan = $this->input->post('jabatan');
+		$is_owner   = ($this->input->post('is_owner') == '1') ? 1 : null;
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -157,6 +159,7 @@ class Master_pegawai extends CI_Controller {
 			'telp_1' => $telp1,
 			'telp_2' => $telp2,
 			'is_aktif' => 1,
+			'is_owner' => $is_owner,
 			'created_at' => $timestamp
 		];
 		
@@ -206,6 +209,7 @@ class Master_pegawai extends CI_Controller {
 		$telp1 = trim($this->input->post('telp1'));
 		$telp2 = trim($this->input->post('telp2'));
 		$jabatan = $this->input->post('jabatan');
+		$is_owner   = ($this->input->post('is_owner') == '1') ? 1 : null;
 
 		$this->db->trans_begin();
 		
@@ -214,7 +218,8 @@ class Master_pegawai extends CI_Controller {
 			'alamat' => $alamat,
 			'telp_1' => $telp1,
 			'telp_2' => $telp2,
-			'id_jabatan'=> $jabatan
+			'id_jabatan'=> $jabatan,
+			'is_owner' => $is_owner
 		];
 
 		$where = ['id' => $this->input->post('id_pegawai')];

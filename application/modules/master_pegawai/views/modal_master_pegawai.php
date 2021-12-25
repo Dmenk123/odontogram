@@ -43,6 +43,17 @@
             </select>
             <span class="help-block"></span>
           </div>
+          <div class="form-group row">
+            <label class="col-4 form-control-label">Apakah Pegawai ini Owner ?</label>
+            <div class="col-6">
+              <span class="kt-switch kt-switch--icon">
+                <label>
+                  <input type="checkbox" name="is_owner" id="is_owner" value="1">
+                  <span></span>
+                </label>
+              </span>
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">

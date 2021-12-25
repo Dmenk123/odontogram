@@ -7,13 +7,13 @@
 		<title>Sofine | <?= $title; ?></title>
 		<meta name="description" content="Updates and statistics">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
 		<!--begin::Fonts -->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Roboto:300,400,500,600,700">
 		<!--end::Fonts -->
 
 		<!--begin::Page Vendors Styles(used by this page) -->
 		<!-- <link href="<?= base_url('assets/template/'); ?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" /> -->
+		<link href="<?= base_url('build/css/'); ?>loader.min.css" rel="stylesheet" type="text/css" />
 		<!--end::Page Vendors Styles -->
 
 		<!--begin::Global Theme Styles(used by all pages) -->

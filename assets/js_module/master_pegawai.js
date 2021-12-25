@@ -103,6 +103,11 @@ function edit_pegawai(id)
             $('[name="telp1"]').val(data.old_data.telp_1);
             $('[name="telp2"]').val(data.old_data.telp_2);
             $('[name="jabatan"]').val(data.old_data.id_jabatan);
+
+            if(data.old_data.is_owner == '1') {
+                $('[name="is_owner"]').prop('checked', true);
+            }
+
             $('#modal_pegawai_form').modal('show');
 	        $('#modal_title').text('Edit Data Pegawai'); 
 

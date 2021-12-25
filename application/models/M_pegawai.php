@@ -3,17 +3,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_Pegawai extends CI_Model
 {
 	var $table = 'm_pegawai';
-	var $column_search = ['kode','nama_jabatan','nama', 'alamat', 'telp_1', 'telp_2', 'telp_3'];
+	var $column_search = ['m_pegawai.kode','m_jabatan.nama','m_pegawai.nama', 'm_pegawai.alamat', 'm_pegawai.telp_1', 'm_pegawai.telp_2', 'status_aktif', 'owner'];
 	
 	var $column_order = [
 		null, 
-		'kode',
-		'nama',
-		'nama_jabatan',
-		'alamat',
-		'telp_1',
-		'telp_2',
+		'm_pegawai.kode',
+		'm_pegawai.nama',
+		'm_jabatan.nama',
+		'm_pegawai.alamat',
+		'm_pegawai.telp_1',
+		'm_pegawai.telp_2',
 		'is_aktif',
+		'is_owner',
 		null
 	];
 
@@ -28,10 +29,12 @@ class M_Pegawai extends CI_Model
 
 	private function _get_datatables_query($term='')
 	{
-		$this->db->select('
+		$this->db->select("
 			m_pegawai.*,
+			CASE WHEN m_pegawai.is_owner = 1 THEN 'Ya' ELSE '-' END as owner,
+			CASE WHEN m_pegawai.is_aktif = 1 THEN 'Aktif' ELSE 'Nonaktif' END as status_aktif,
 			m_jabatan.nama as nama_jabatan
-		');
+		");
 
 		$this->db->from('m_pegawai');
 		$this->db->join('m_jabatan', 'm_pegawai.id_jabatan = m_jabatan.id', 'left');
@@ -54,7 +57,17 @@ class M_Pegawai extends CI_Model
 				}
 				else
 				{
-					$this->db->or_like($item, $_POST['search']['value']);
+					if($item == 'owner') {
+						/**
+						 * param both untuk wildcard pada awal dan akhir kata
+						 * param false untuk disable escaping (karena pake subquery)
+						 */
+						$this->db->or_like('(CASE WHEN m_pegawai.is_owner = 1 THEN \'Ya\' ELSE \'-\' END)', $_POST['search']['value'],'both',false);
+					}elseif($item == 'status_aktif') {
+						$this->db->or_like('(CASE WHEN m_pegawai.is_aktif = 1 THEN \'Ya\' ELSE \'-\' END)', $_POST['search']['value'],'both',false);
+					}else{
+						$this->db->or_like($item, $_POST['search']['value']);
+					}
 				}
 				//last loop
 				if(count($this->column_search) - 1 == $i) 

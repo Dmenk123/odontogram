@@ -44,6 +44,7 @@
               <th>Telp 1</th>
               <th>Telp 2</th>
               <th>Status</th>
+              <th>Owner</th>
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>
