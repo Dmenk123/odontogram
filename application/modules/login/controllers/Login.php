@@ -71,7 +71,12 @@ class Login extends CI_Controller {
 		}
 
 		$this->m_user->set_lastlogin($id_user);
-		$data_user = $this->m_global->single_row("*", ['deleted_at' => null, 'id' => $id_user], "m_user");
+		$data_user = $this->m_global->single_row("
+			m_user.*, m_pegawai.is_owner", 
+			['m_user.deleted_at' => null, 'm_user.id' => $id_user], 
+			"m_user",
+			[['table' => 'm_pegawai', 'on' => 'm_user.id_pegawai = m_pegawai.id']]
+		);
 		
 		if(!$data_user) {
 			echo json_encode([
@@ -87,6 +92,7 @@ class Login extends CI_Controller {
 				'last_login' => $data_user->last_login,
 				'id_role' => $data_user->id_role,
 				'id_klinik' => $data_klinik->id,
+				'is_owner' => $data_user->is_owner,
 				'logged_in' => true,
 			)
 		);

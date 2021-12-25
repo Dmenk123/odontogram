@@ -2,7 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Master_tindakan extends CI_Controller {
-	
+	protected $prop_is_owner = null;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -13,6 +14,10 @@ class Master_tindakan extends CI_Controller {
 		$this->load->model('m_user');
 		$this->load->model('m_tindakan');
 		$this->load->model('m_global');
+
+		if($this->session->userdata('is_owner') !== null) {
+			$this->prop_is_owner = $this->session->userdata('is_owner');
+		}
 	}
 
 	public function index()
@@ -490,6 +495,7 @@ class Master_tindakan extends CI_Controller {
 				$row['disc_persen'] = $value->disc_persen;
 				$row['harga_nett'] = number_format($value->harga - ($value->harga * $value->disc_persen / 100));
 				$row['harga_nett_raw'] = $value->harga - ($value->harga * $value->disc_persen / 100);
+				$row['is_owner'] = $this->prop_is_owner;
 
 				$retval[] = $row;
 			}

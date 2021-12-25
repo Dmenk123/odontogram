@@ -5,6 +5,7 @@ use \Carbon\Carbon;
 class Rekam_medik extends CI_Controller {
 	protected $prop_id_klinik = null;
 	protected $prop_data_user = null;
+	protected $prop_is_owner = null;
 
 	public function __construct()
 	{
@@ -16,6 +17,11 @@ class Rekam_medik extends CI_Controller {
 		if($this->session->userdata('id_klinik') !== null) {
 			$this->prop_id_klinik = $this->session->userdata('id_klinik');
 		}
+
+		if($this->session->userdata('is_owner') !== null) {
+			$this->prop_is_owner = $this->session->userdata('is_owner');
+		}
+
 
 		$this->load->model('m_user');
 		$this->load->model('m_global');

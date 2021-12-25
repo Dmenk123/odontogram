@@ -6,7 +6,7 @@ $(document).ready(function() {
         $('#input_tdk_gigi_txt').val('');
 
         let data = e.params.args.data;
-        console.log(data);
+        // console.log(data);
         if(data.is_all_gigi) {
             $('#input_tdk_gigi_num').slideUp();
             $('#input_tdk_gigi_txt').slideDown().val('all');
@@ -17,7 +17,13 @@ $(document).ready(function() {
 
         $("#form_tindakan input[name='tdk_kode']").val(data.kode);
         $("#form_tindakan input[name='tdk_tindakan']").val(data.nama);
-        $("#form_tindakan input[name='tdk_harga']").val(data.harga);
+        
+        if(data.is_owner != '1') {
+            $("#form_tindakan input[name='tdk_harga']").val(data.harga).attr('disabled', true);
+        }else{
+            $("#form_tindakan input[name='tdk_harga']").val(data.harga).attr('disabled', false);
+        }
+       
         $("#form_tindakan input[name='tdk_harga_raw']").val(data.harga_raw);
         $("#form_tindakan input[name='tdk_diskon']").val(data.disc_persen);
         $("#form_tindakan input[name='tdk_nett']").val(data.harga_nett);
@@ -66,6 +72,7 @@ const initOpsiTindakan = () => {
                             disc_persen: item.disc_persen,
                             harga_nett: item.harga_nett,
                             harga_nett_raw: item.harga_nett_raw,
+                            is_owner:item.is_owner
                         }
                     })
                 };
