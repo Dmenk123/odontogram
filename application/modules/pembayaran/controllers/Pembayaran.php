@@ -122,7 +122,7 @@ class Pembayaran extends CI_Controller {
 		$data = array(
 			'title' => 'Form Pembayaran',
 			'data_user' => $data_user,
-			'data_bank_kredit' => $this->m_global->multi_row('*',['deleted_at' => null], 'm_bank_kredit', null, 'nama')
+			'data_nontunai' => $this->m_global->multi_row('*',['deleted_at' => null], 'm_nontunai', null, 'nama')
 		);
 
 		/**
@@ -515,14 +515,20 @@ class Pembayaran extends CI_Controller {
 		}
 
 		#### mutasi honor dokter
-		$mutasi_honor = $this->lib_mutasi->simpan_mutasi_lain($id_reg, '6', $arr_pembayaran, '2');
-		
-		if($mutasi_honor == false) {
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan Data Pembayaran';
+		$datareg =  $this->m_global->single_row('*',['reg.id' => $id_reg, 'reg.deleted_at' => null], 't_registrasi as reg', [['table' => 'm_pegawai as peg','on' => 'reg.id_pegawai = peg.id']]);
+
+		if($datareg->is_owner != '1') {
+			$mutasi_honor = $this->lib_mutasi->simpan_mutasi_lain($id_reg, '6', $arr_pembayaran, '2');
+
+			if($mutasi_honor == false) {
+				$this->db->trans_rollback();
+				$retval['status'] = false;
+				$retval['pesan'] = 'Gagal menambahkan Data Pembayaran';
+			}
+			
 		}
 		
+	
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;

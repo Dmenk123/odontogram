@@ -90,17 +90,11 @@
         </div>
         <div class="kt-portlet__body">
           <div class="form-group">
-            <label>Jenis Pembayaran</label>
-            <div class="kt-radio-inline">
-              <label class="kt-radio">
-                <input type="radio" name="jenis_bayar" value="cash" checked> Cash
-                <span></span>
-              </label>
-              <label class="kt-radio">
-                <input type="radio" name="jenis_bayar" value="nontunai"> Nontunai
-                <span></span>
-              </label>
-            </div>
+            <label>Jenis Pembayaran : </label>
+            <select class="form-control select2" id="jenis_bayar" name="jenis_bayar" style="width: 100%;">
+              <option value="cash">Tunai</option>
+              <option value="nontunai">Nontunai</option>
+            </select>
             <span class="help-block"></span>
           </div>
 

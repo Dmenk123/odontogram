@@ -23,13 +23,13 @@ $(document).ready(function() {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
-
-    $('#jenis_bayar').change(function (e) { 
-      if(this.value == 'kredit') {
-        $('#div_opt_kredit').slideDown();
-      }else{
-        $('#div_opt_kredit').slideUp();
-      }
+    $('input:radio[name="jenis_bayar"]').change(
+        function(){
+            if ($(this).is(':checked') && $(this).val() == 'nontunai') {
+                $('#div_opt_kredit').slideDown();
+            }else{
+                $('#div_opt_kredit').slideUp();
+            }
     });
 
     $('#jenis_diskon').change(function (e) { 
