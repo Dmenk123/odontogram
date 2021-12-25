@@ -485,38 +485,6 @@ class Template_view extends CI_Controller {
 		}
     }
 
-	function getDeleteButtonDatatable($method_js, $button_text = '', $is_btn_dropdown = false){
-
-		if(!$_SESSION['id_role']){
-		  $id_role = "0";
-		}
-		else{
-		  $id_role = $this->_ci->session->userdata('id_role');
-		}
-  
-		  if($id_role){
-			  $queryButton = $this->_ci->db->query("
-			  select
-				  t_role_menu.delete_button
-			  from
-				  m_menu,t_role_menu
-			  WHERE
-				  m_menu.id=t_role_menu.id_menu
-				  and t_role_menu.id_role= '".$id_role."'
-				  and m_menu.link = '".$this->_ci->uri->segment(1)."'
-			  ");
-			  $dataButton = $queryButton->row();
-			  
-			  if($dataButton->delete_button == 1 ){
-				  if($is_btn_dropdown) {
-					  return "<button class='dropdown-item' onclick='".$method_js."'><i class='la la-trash'></i> $button_text</button>";
-				  }else{
-					  echo "<span class='btn btn-danger btn-xs' onclick='".$method_js."'><i class='glyphicon glyphicon-remove'></i></span>";
-				  }
-			  }
-		  }
-	  }
-
     function getDeleteButton($msgDelete,$urlDelete){
 
       if(!$_SESSION['id_level_user']){
@@ -581,5 +549,90 @@ class Template_view extends CI_Controller {
 		}
 		
 	}
+
+
+	####################################
+
+	function getEditButtonTable($function_or_url, $button_text = '', $is_btn_dropdown = false, $is_js_button = false){
+
+		if(!$_SESSION['id_role']){
+		  $id_role = "0";
+		}
+		else{
+		  $id_role = $this->_ci->session->userdata('id_role');
+		}
+  
+		  if($id_role){
+			  $queryButton = $this->_ci->db->query("
+			  select
+				  t_role_menu.edit_button
+			  from
+				  m_menu,t_role_menu
+			  WHERE
+				  m_menu.id=t_role_menu.id_menu
+				  and t_role_menu.id_role= '".$id_role."'
+				  and m_menu.link = '".$this->_ci->uri->segment(1)."'
+			  ");
+			  $dataButton = $queryButton->row();
+			  if($dataButton->edit_button == 1 ){
+				  if($is_btn_dropdown) {
+					  if($is_js_button) {
+						return "<button class='dropdown-item' onclick='".$function_or_url."'><i class='la la-pencil'></i> $button_text</button>";
+					  }else{
+						return "<a class='dropdown-item' href='".$function_or_url."'><i class='la la-pencil'></i> $button_text</a>";
+					  }
+					 
+				  }else{
+					if($is_js_button) {
+						return "<button class='btn btn-warning' onclick='".$function_or_url."'><i class='la la-pencil'></i> $button_text</button>";
+					}else{
+						return "<a href='".$function_or_url."'><span class='btn btn-warning btn-xs'><i class='la la-pencil'></i> $button_text</span></a>";
+					}
+				  }
+			  }
+		  }
+	}
+
+	function getDeleteButtonTable($function_or_url, $button_text = '', $is_btn_dropdown = false, $is_js_button = false){
+
+		if(!$_SESSION['id_role']){
+		  $id_role = "0";
+		}
+		else{
+		  $id_role = $this->_ci->session->userdata('id_role');
+		}
+  
+		  if($id_role){
+			  $queryButton = $this->_ci->db->query("
+			  select
+				  t_role_menu.delete_button
+			  from
+				  m_menu,t_role_menu
+			  WHERE
+				  m_menu.id=t_role_menu.id_menu
+				  and t_role_menu.id_role= '".$id_role."'
+				  and m_menu.link = '".$this->_ci->uri->segment(1)."'
+			  ");
+			  $dataButton = $queryButton->row();
+			  
+			  if($dataButton->delete_button == 1 ){
+				  if($is_btn_dropdown) {
+						if($is_js_button) {
+							return "<button class='dropdown-item' onclick='".$function_or_url."'><i class='la la-trash'></i> $button_text</button>";
+						}else{
+							return "<a class='dropdown-item' href='".$function_or_url."'><i class='la la-trash'></i> $button_text</a>";
+						}
+				  }else{
+						if($is_js_button) {
+							return "<button class='btn btn-danger' onclick='".$function_or_url."'><i class='la la-trash'></i> $button_text</button>";
+						}else{
+							return "<a href='".$function_or_url."'><span class='btn btn-danger btn-xs'><i class='la la-trash'></i> $button_text</span></a>";
+						}
+				  }
+			  }
+		  }
+	  }
+
+	
 
 }

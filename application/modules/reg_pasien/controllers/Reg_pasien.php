@@ -412,18 +412,25 @@ class Reg_pasien extends CI_Controller {
 			$str_aksi = '
 				<div class="btn-group">
 					<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opsi</button>
-					<div class="dropdown-menu">
-						'.$this->template_view->getEditButton(
-							base_url('reg_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id), 
-							'Edit Registrasi', 
-							true
-						).'
-						'.$this->template_view->getDeleteButtonDatatable(
-							"delete_reg(\"".$this->enkripsi->enc_dec('encrypt', $val->id)."\")",
-							'Hapus', 
-							true
-						).'
-						<a class="dropdown-item" target="_blank" href="'.base_url('reg_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
+					<div class="dropdown-menu">';
+
+			if($val->is_pulang != '1') {
+				$str_aksi .= $this->template_view->getEditButtonTable(
+					base_url('reg_pasien/edit/').$this->enkripsi->enc_dec('encrypt', $val->id), 
+					'Edit Registrasi', 
+					true,
+					false
+				).
+				''
+				.$this->template_view->getDeleteButtonTable(
+					"delete_reg(\"".$this->enkripsi->enc_dec('encrypt', $val->id)."\")",
+					'Hapus', 
+					true,
+					true
+				);
+			}
+			
+			$str_aksi .= '<a class="dropdown-item" target="_blank" href="'.base_url('reg_pasien/cetak_data_individu/').$this->enkripsi->enc_dec('encrypt', $val->id).'">
 							<i class="la la-print"></i> Cetak Data Ini
 						</a>
 					</div>
