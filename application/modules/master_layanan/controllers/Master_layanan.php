@@ -50,6 +50,7 @@ class Master_layanan extends CI_Controller {
 
 	public function list_layanan()
 	{
+		$this->load->library('Enkripsi');
 		$list = $this->m_layanan->get_datatable();
 		
 		$data = array();
@@ -72,6 +73,7 @@ class Master_layanan extends CI_Controller {
 
 			$dokter .= '</ul>';
 			$row[] = $dokter;
+			$id = $this->enkripsi->enc_dec('encrypt', $layan->id_layanan);
 			// $aktif_txt = ($diag->is_aktif == 1) ? '<span style="color:blue;">Aktif</span>' : '<span style="color:red;">Non Aktif</span>';
 			// $row[] = $aktif_txt;			
 			
@@ -82,7 +84,7 @@ class Master_layanan extends CI_Controller {
 						<button class="dropdown-item" onclick="edit_layanan(\''.$layan->id_layanan.'\')">
 							<i class="la la-pencil"></i> Edit Layanan
 						</button>
-						<button class="dropdown-item" onclick="set_dokter(\''.$layan->id_layanan.'\')">
+						<button class="dropdown-item" onclick="set_dokter(\''.$id.'\')">
 							<i class="la la-pencil"></i> Dokter yg menangani
 						</button>
 						<button class="dropdown-item" onclick="delete_layanan(\''.$layan->id_layanan.'\')">
@@ -148,6 +150,36 @@ class Master_layanan extends CI_Controller {
 		);
 		
 		echo json_encode($data);
+	}
+
+	public function setting_dokter($id)
+	{
+		$this->load->library('Enkripsi');
+		$id_layanan = $this->enkripsi->enc_dec('decrypt', $id);
+		$dokter  = $this->m_global->getSelectedData('m_pegawai', ['deleted_at' => null, 'id_jabatan' => 1])->result();
+		$layanan = $this->m_global->getSelectedData('m_layanan', ['id_layanan' => $id_layanan ])->row();
+
+		$data = array(
+			'title' => 'Pilih Dokter yang menangani layanan ini',
+			'dokter' => $dokter,
+			'layanan' => $layanan
+		);
+
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => 'modal_master_layanan',
+			'js'	=> 'master_layanan.js',
+			'view'	=> 'view_setting_dokter'
+		];
+
+		$this->template_view->load_view($content, $data);
+		
 	}
 
 	public function add_data_layanan()
@@ -554,5 +586,37 @@ class Master_layanan extends CI_Controller {
             $data['status'] = FALSE;
 		}
         return $data;
+	}
+
+	public function save_dokter()
+	{
+		$id_user = $this->session->userdata('id_user'); 
+		$this->load->library('Enkripsi');
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		
+		$dokter = $this->input->post('dokter');
+		$str_dokter = implode(",", $dokter);
+
+		$this->db->trans_begin();
+		
+		$data = [
+			'dokter' => $str_dokter,
+		];
+
+		$where = ['id_layanan' => $this->input->post('id_layanan')];
+		$update = $this->m_layanan->update($where, $data);
+				
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$data['status'] = false;
+			$data['pesan'] = 'Gagal update Master Layanan';
+		}else{
+			$this->db->trans_commit();
+			$data['status'] = true;
+			$data['pesan'] = 'Sukses update Master Layanan';
+		}
+		
+		echo json_encode($data);
 	}
 }

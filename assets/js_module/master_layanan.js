@@ -305,3 +305,91 @@ function import_data_excel(){
         }
     });
 }
+
+function set_dokter(id)
+{
+    window.location.href = base_url + 'master_layanan/setting_dokter/' + id;
+}
+
+function save_dokter()
+{
+    var url;
+    var txtAksi;
+
+    url = base_url + 'master_layanan/save_dokter';
+    txtAksi = 'Tambah Layanan';
+
+    
+    var form = $('#form-dokter')[0];
+    var data = new FormData(form);
+    
+    $("#btnSave").prop("disabled", true);
+    $('#btnSave').text('Menyimpan Data'); //change button text
+    swalConfirmDelete.fire({
+        title: 'Perhatian !!',
+        text: "Apakah anda yakin mengupdate data ini ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: url,
+                data: data,
+                dataType: "JSON",
+                processData: false, // false, it prevent jQuery form transforming the data into a query string
+                contentType: false, 
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+                    if(data.status) {
+                        swal.fire("Sukses!!", "Aksi "+txtAksi+" Berhasil", "success");
+                        $("#btnSave").prop("disabled", false);
+                        $('#btnSave').text('Simpan');
+                        
+                        // reset_modal_form();
+                        // $(".modal").modal('hide');
+                    
+                        window.location.href = base_url + 'master_layanan';
+                    }else {
+                        for (var i = 0; i < data.inputerror.length; i++) 
+                        {
+                            if (data.inputerror[i] != 'jabatans') {
+                                $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                                $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                            }else{
+                                $($('#jabatans').data('select2').$container).addClass('has-error');
+                            }
+                        }
+        
+                        $("#btnSave").prop("disabled", false);
+                        $('#btnSave').text('Simpan');
+                    }
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#btnSave").prop("disabled", false);
+                    $('#btnSave').text('Simpan');
+        
+                    reset_modal_form();
+                    $(".modal").modal('hide');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+      })
+    
+}
+
