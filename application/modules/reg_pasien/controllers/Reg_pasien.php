@@ -450,8 +450,66 @@ class Reg_pasien extends CI_Controller {
 		];
 		
 		echo json_encode($output);
-	}	
+	}
 
+	public function list_data_broadcast()
+	{
+		$this->load->library('Enkripsi');
+		$list = $this->t_registrasi->get_list_broadcast($this->id_klinik);
+
+		$data = array();
+		$data = [];
+		if ($list) {
+			foreach ($list as $key => $val) {
+			
+				$data[$key][] = $key+1;
+				$data[$key][] = $val->no_reg;
+				$data[$key][] = $val->nama_pasien;
+				$data[$key][] = $val->no_rm;
+				$data[$key][] = DateTime::createFromFormat('Y-m-d', $val->tanggal_reg)->format('d/m/Y');
+				$data[$key][] = $val->jam_reg; 
+				$data[$key][] = $val->nama_klinik;
+				$data[$key][] = $val->nama_dokter;
+				$data[$key][] = $val->id;
+			}
+		}
+		
+		// $this->output->enable_profiler(TRUE);
+
+        echo json_encode([
+            'data' => $data
+        ]);
+
+	}
+
+	public function send_broadcast()
+	{
+		$this->load->library('Api_wa');
+
+		if($this->input->post('id') == null || $this->input->post('id') == '') {
+			echo json_encode([
+				'status' => false,
+				'pesan' => 'Mohon ceklist salah satu'
+			]);
+			return;
+		}
+
+		$this->db->select('b.nama, b.hp');
+		$this->db->from('t_registrasi a');
+		$this->db->join('m_pasien b', 'a.id_pasien = b.id', 'left');
+		$this->db->where('a.deleted_at', null);	
+		$this->db->where('b.deleted_at', null);		
+		$this->db->where_in('a.id', $this->input->post('id'));
+		$q = $this->db->get()->result();
+		
+		// foreach ($this->input->post('id') as $key => $value) {
+		// 	$this->api_wa->send();
+		// }
+		// echo "<pre>";
+		// print_r ($this->input->post('id'));
+		// echo "</pre>";
+		
+	}
 	/**
 	 * Hanya melakukan softdelete saja
 	 * isi kolom updated_at dengan datetime now()

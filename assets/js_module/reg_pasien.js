@@ -2,6 +2,7 @@ var save_method;
 var txtAksi;
 var table;
 var table2;
+var table3;
 
 $(document).ready(function() {
     let uri = new URL(window.location.href);
@@ -195,6 +196,27 @@ $(document).ready(function() {
     if(get_uri_segment(3) !== 'undefined' && get_uri_segment(3) == 'edit') {
         get_data_form_edit();
     }
+
+    $('#form_broadcast').on('submit', function(e){
+        e.preventDefault();
+        var form = this;
+        var rows_selected = table3.column(8).checkboxes.selected();
+        let arrData = [];
+
+        $.each(rows_selected, function(index, rowId){
+           arrData[index] = rowId;
+        });
+        
+        $.ajax({
+            type: "post",
+            url: base_url + "reg_pasien/send_broadcast",
+            dataType: "JSON",
+            data: {id : arrData},
+            success: function (response) {
+                
+            }
+        });
+    });
 });
 
 function filter_tanggal(){
@@ -226,6 +248,38 @@ function filter_tanggal(){
 				orderable: false, //set not orderable
 			},
 		],
+    });
+}
+
+function tabel_broadcast(){
+    if ( $.fn.DataTable.isDataTable('#tabel_broadcast') ) {
+        $('#tabel_broadcast').DataTable().clear().destroy();
+    }
+
+    table3 = $('#tabel_broadcast').DataTable({
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: false,
+        bDestroy: true,
+        ajax: {
+            url  : base_url + "reg_pasien/list_data_broadcast",
+            type : "POST",
+        },
+
+        //set column definition initialisation properties
+        columnDefs: [
+			{
+				targets: [-1], //last column
+				orderable: false, //set not orderable
+                checkboxes: {
+                    selectRow: true
+                }
+			},
+		],
+        select: {
+            style: 'multi'
+        },
     });
 }
 

@@ -46,14 +46,13 @@
         <script src="<?= base_url('assets/template/'); ?>assets/js/scripts.bundle.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/template/'); ?>assets/js/jspdf.debug.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/template/'); ?>assets/plugins/custom/datatables/datatables.bundle.js" type="text/javascript"></script>
+        <script src="<?= base_url('assets/plugins/'); ?>datatables/extensions/Checkboxes/js/dataTables.checkboxes.min.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/ckeditor/adapters/jquery.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/jquery-mask/jquery.mask.min.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/moment/moment.min.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/template/'); ?>assets/plugins/custom/fullcalendar/fullcalendar.js" type="text/javascript"></script>
         <script src="<?= base_url('assets/'); ?>plugins/inputmask/dist/jquery.inputmask.min.js" type="text/javascript"></script>
-        <!-- <script src="<?= base_url('assets/template/'); ?>assets/js/html2canvas.min.js" type="text/javascript"></script> -->
-        <!-- <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"></script> -->
         <script src="<?= base_url('build/'); ?>js/custom.js" type="text/javascript"></script>
 
         <!--begin::Page Vendors(used by this page) -->
