@@ -1465,13 +1465,13 @@ class Rekam_medik extends CI_Controller {
 		$enc_id = $this->input->get('pid');
 		$id_reg = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, pas.nik, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$select = "reg.*, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, pas.nik, peg.nama as nama_dokter";
 		$where = ['reg.id' => $id_reg];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
 			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
+			// ['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
 		];
 				
 		$datareg = $this->m_global->single_row($select, $where, $table, $join);
@@ -1984,13 +1984,13 @@ class Rekam_medik extends CI_Controller {
 		$enc_id = $this->input->get('pid');
 		$id_reg = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, peg.nama as nama_dokter, asu.nama as nama_asuransi";
+		$select = "reg.*, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, peg.nama as nama_dokter";
 		$where = ['reg.id' => $id_reg];
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
 			['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
-			['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
+			// ['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
 		];
 				
 		$datareg = $this->m_global->single_row($select, $where, $table, $join);
@@ -2019,5 +2019,49 @@ class Rekam_medik extends CI_Controller {
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
 		
 	}
+
+		############ cetak foto ##############
+		public function cetak_foto()
+		{
+			$obj_date = new DateTime();
+			$timestamp = $obj_date->format('Y-m-d H:i:s');
+			$datenow = $obj_date->format('Y-m-d');
+			$enc_id = $this->input->get('pid');
+			$id_reg = $this->enkripsi->enc_dec('decrypt', $enc_id);
+	
+			$select = "reg.*, pas.no_rm, pas.nama as nama_pasien, pas.tempat_lahir, pas.tanggal_lahir, pas.jenis_kelamin, peg.nama as nama_dokter";
+			$where = ['reg.id' => $id_reg];
+			$table = 't_registrasi as reg';
+			$join = [ 
+				['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
+				['table' => 'm_pegawai as peg', 'on' => 'reg.id_pegawai = peg.id'],
+				// ['table' => 'm_asuransi as asu', 'on' => 'reg.id_asuransi = asu.id and reg.is_asuransi is not null']
+			];
+					
+			$datareg = $this->m_global->single_row($select, $where, $table, $join);
+			
+			$datanya = $this->m_global->single_row('*', ['id_reg' => $id_reg], 't_perawatan');
+	
+			$foto = $this->t_rekam_medik->getFotoDet($id_reg)->result();
+			
+			$data_klinik = $this->m_global->single_row('*', ['deleted_at' => null, 'id' => $datareg->id_klinik], 'm_klinik');
+	
+			$konten_html = $this->load->view('pdf_foto', ['data_reg'=>$datareg, 'datanya' => $datanya, 'foto' => $foto], true);
+			
+			// var_dump($konten_html);exit;
+			$retval = [
+				'data' => $datanya,
+				'data_reg' => $datareg,
+				'data_klinik' => $data_klinik,
+				'content' => $konten_html,
+				'title' => 'Foto X-Ray Pasien'
+			];
+	
+			//$this->load->view('template/pdf', $retval, true);		
+			$html = $this->load->view('template/pdf', $retval, true);
+			$filename = $retval['title'].'_'.time();
+			$this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
+			
+		}
 
 }

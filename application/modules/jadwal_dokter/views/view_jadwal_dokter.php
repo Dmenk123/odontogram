@@ -40,6 +40,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="btn-group">
+                                            <?= $this->template_view->getAddButton(true, 'add_schedule'); ?>
                                             <a href="#" class="btn btn-primary add_calendar"> Tambah Jadwal
                                                 <i class="fa fa-plus"></i>
                                             </a>

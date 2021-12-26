@@ -69,7 +69,7 @@ class Jadwal_dokter extends CI_Controller
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => '',
+			'modal' => 'modal_schedule',
 			'js'	=> 'jadwal_dokter.js',
 			'view'	=> 'view_jadwal_dokter'
 		];
@@ -195,5 +195,17 @@ class Jadwal_dokter extends CI_Controller
 		);
 
 		echo json_encode($data);
+	}
+
+	public function save_schedule(){
+		$from_date ='01-01-2013';
+		$to_date ='05-01-2013';
+		
+		$from_date = new DateTime($from_date);
+		$to_date = new DateTime($to_date);
+		
+		for ($date = $from_date; $date <= $to_date; $date->modify('+1 day')) {
+		  echo $date->format('Y-m-d') . "\n";
+		}
 	}
 }
