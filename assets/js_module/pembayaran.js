@@ -10,6 +10,7 @@ $(document).ready(function() {
     $('#div_opt_kredit').css('display', 'none');
     $('#div_opt_diskon_nominal').css('display', 'none');
     $('#div_opt_diskon_persen').css('display', 'none');
+    $('#div_opt_hutang').css('display', 'none');
 
     let uri = new URL(window.location.href);
     pid = uri.searchParams.get("pid");
@@ -23,16 +24,21 @@ $(document).ready(function() {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
-    $('input:radio[name="jenis_bayar"]').change(
-        function(){
-            if ($(this).is(':checked') && $(this).val() == 'nontunai') {
-                $('#div_opt_kredit').slideDown();
-            }else{
-                $('#div_opt_kredit').slideUp();
-            }
+
+    $('input:radio[name="jenis_bayar"]').change(function(){
+        if ($(this).is(':checked') && $(this).val() == 'nontunai') {
+            $('#div_opt_kredit').slideDown();
+            $('#div_opt_hutang').slideUp();
+        }else if ($(this).is(':checked') && $(this).val() == 'hutang') {
+            $('#div_opt_kredit').slideUp();
+            $('#div_opt_hutang').slideDown();
+        }else{
+            $('#div_opt_kredit').slideUp();
+            $('#div_opt_hutang').slideUp();
+        }
     });
 
-    $('#jenis_diskon').change(function (e) { 
+    $('input:radio[name="jenis_diskon"]').change(function(){
         $('#disc_persen').val(0);
         $('#disc_rp_raw').val(0);
         $('#disc_rp').val(0);
@@ -40,15 +46,13 @@ $(document).ready(function() {
         $('#total_biaya_nett_raw').val(biaya_raw_global);
         $('#biaya').val(formatMoney(Number(biaya_raw_global)));
 
-        if(this.value == 'nominal') {
+        if ($(this).is(':checked') && $(this).val() == 'nominal') {
             $('#div_opt_diskon_nominal').slideDown();
             $('#div_opt_diskon_persen').slideUp();
-            
-        }else if(this.value == 'persen'){
+        }else if ($(this).is(':checked') && $(this).val() == 'persen'){
             $('#div_opt_diskon_nominal').slideUp();
             $('#div_opt_diskon_persen').slideDown();
-            
-        }else if(this.value == 'none'){
+        }else if ($(this).is(':checked') && $(this).val() == 'none'){
             $('#div_opt_diskon_nominal').slideUp();
             $('#div_opt_diskon_persen').slideUp();
         }
@@ -56,7 +60,6 @@ $(document).ready(function() {
 
     $('#form_pembayaran').submit(function (e) { 
         e.preventDefault();
-        
     });
 
     $('#form_pembayaran').submit(function(e){
@@ -171,6 +174,10 @@ $(document).ready(function() {
 
     $(".modal").on("hidden.bs.modal", function(){
         reset_modal_form_import();
+    });
+
+    $("#ktp").change(function() {
+        readURL(this);
     });
 });	
 
@@ -445,5 +452,19 @@ function handle_boolean(str) {
         return 'Ya';
     }else{
         return 'Tidak';
+    }
+}
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $('#div_preview_foto').css("display","block");
+        $('#preview_img').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(input.files[0]);
+    } else {
+        $('#div_preview_foto').css("display","none");
+        $('#preview_img').attr('src', '');
     }
 }
