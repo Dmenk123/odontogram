@@ -379,10 +379,10 @@ fieldSet
                           <td><button class="button split btn-default pull-right" style="width: 155px;" id="outline">Mahkota Logam</button></td>
                           <td width="5%">&nbsp;</td>
                           <td><span><img src="<?php echo base_url('assets/images/green.png');?>" width="20px;" height="20px;"></span></td>
-                          <td><button class="button split btn-default pull-right" style="width: 155px;" id="green">Tambalan Sewarna</button></td>
+                          <td><button class="button split btn-default pull-right" style="width: 155px;" id="green">Komposit</button></td>
                           <td width="5%">&nbsp;</td>
                           <td><span><img src="<?php echo base_url('assets/images/biru_muda.png');?>" width="20px;" height="20px;"></span></td>
-                          <td><button class="button split btn-default pull-right" style="width: 165px;" id="biru_muda">Tambalan Non Logam</button></td>
+                          <td><button class="button split btn-default pull-right" style="width: 165px;" id="biru_muda">Glassionomer</button></td>
                           <!-- <td width="20%"></td> -->
                         </tr>
                         <tr>

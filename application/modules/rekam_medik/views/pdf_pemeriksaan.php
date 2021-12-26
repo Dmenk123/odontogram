@@ -196,7 +196,7 @@
                 </tbody>
             </table>
         </div>
-        <table id="tbl_content" class="table table-bordered table-hover" style="padding-left:20px;" cellspacing="2" cellpadding="2" width="100%" border="0">
+        <table  class="table table-bordered table-hover" style="padding-left:20px;line-height:15px;!important" cellspacing="2" cellpadding="2" width="100%" border="0">
             <tbody>
                 <tr>
                     <td width="20%">Occlusi</td>

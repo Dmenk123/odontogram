@@ -174,4 +174,16 @@ class T_rekam_medik extends CI_Model
 		$query = $this->db->get();
 		return $query;
 	}
+
+	public function getFotoDet($id_reg)
+	{
+		$this->db->select('kd.*');
+		$this->db->from("t_kamera_det kd");
+		$this->db->join("t_kamera k", "k.id = kd.id_t_kamera", "left");
+		$this->db->join("t_registrasi tr", "tr.id = k.id_reg", "left");
+		$this->db->where('kd.delete_at is null');
+		$this->db->where('tr.id', $id_reg);
+		$query = $this->db->get();
+		return $query;
+	}
 }

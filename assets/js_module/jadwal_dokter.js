@@ -23,6 +23,14 @@
             startDate: '-3d'
         })
 
+        $(".add-more").click(function(){ 
+            var html = $(".copy").html();
+            $(".after-add-more").after(html);
+        });
+        $("body").on("click",".remove",function(){ 
+            $(this).parents(".control-group").remove();
+        });
+
       
         $('#calendarIO').fullCalendar({
             header: {
@@ -284,6 +292,14 @@
         })
     }
 
+    function add_schedule()
+    {
+        // reset_modal_form();
+        save_method = 'add';
+        $('#modal_schedule').modal('show');
+        $('#modal_title').text('Buat Jadwal Praktik Dokter Baru'); 
+    }
+
     function deleteData(event)
     {
         $('#create_modal .delete_calendar').click(function(){
@@ -318,4 +334,13 @@
                 }         
             });
         })
+    }
+
+    function reset_modal_form()
+    {
+        $('#form-schedule')[0].reset();
+        $('.append-opt').remove(); 
+        $('div.form-group').children().removeClass("is-invalid invalid-feedback");
+        $('span.help-block').text('');
+        $('#div_pass_lama').css("display","none");
     }
