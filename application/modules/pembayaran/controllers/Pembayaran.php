@@ -115,14 +115,16 @@ class Pembayaran extends CI_Controller {
 	{
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
-			
+		$this->load->library('Enkripsi');
+		
 		/**
 		 * data passing ke halaman view content
 		 */
 		$data = array(
 			'title' => 'Form Pembayaran',
 			'data_user' => $data_user,
-			'data_nontunai' => $this->m_global->multi_row('*',['deleted_at' => null], 'm_nontunai', null, 'nama')
+			'data_nontunai' => $this->m_global->multi_row('*',['deleted_at' => null], 'm_nontunai', null, 'nama'),
+			'div_button' => null
 		);
 
 		/**
@@ -135,8 +137,18 @@ class Pembayaran extends CI_Controller {
 			'css' 	=> null,
 			'modal' => ['rekam_medik/modal_pilih_pasien'],
 			'js'	=> 'pembayaran.js',
-			'view'	=> 'form_pembayaran'
+			'view'	=> 'form_pembayaran',
 		];
+
+		##cek apakah sudah dibayar
+		$id_reg = $this->input->get('pid');
+		if($id_reg != '') {
+			$id_reg = $this->enkripsi->enc_dec('decrypt', $id_reg);
+			$cek = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'deleted_at' => null], 't_pembayaran');
+			if($cek && $cek->is_locked) {
+				$data['div_button'] =  $this->get_div_button($cek->id);
+			}
+		}
 
 		$this->template_view->load_view($content, $data);
 	}
@@ -488,6 +500,51 @@ class Pembayaran extends CI_Controller {
 		if($jenis_bayar == 'cash') {
 			$arr_pembayaran['is_cash'] = 1;
 			$arr_pembayaran['reff_trans_kredit'] = null;
+		}elseif($jenis_bayar == 'hutang') {
+			$namafileseo = $this->seoUrl($id_pasien.' '.time());
+			$file_mimes = ['image/png', 'image/x-citrix-png', 'image/x-png', 'image/x-citrix-jpeg', 'image/jpeg', 'image/pjpeg'];
+
+			if(isset($_FILES['ktp']['name']) && in_array($_FILES['ktp']['type'], $file_mimes)) {
+				$this->konfigurasi_upload_img($namafileseo);
+				//get detail extension
+				$pathDet = $_FILES['ktp']['name'];
+				$extDet = pathinfo($pathDet, PATHINFO_EXTENSION);
+				
+				if ($this->file_obj->do_upload('ktp')) 
+				{
+					$gbrBukti = $this->file_obj->data();
+					$nama_file_foto = $gbrBukti['file_name'];
+					$this->konfigurasi_image_resize($nama_file_foto);
+					$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
+					$this->image_lib->clear();
+					## replace nama file + ext
+					$namafileseo = $this->seoUrl($id_pasien.' '.time()).'.'.$extDet;
+
+					### update m_pasien
+					$upd_pasien = $this->m_global->update('m_pasien', ['file_ktp' => $namafileseo], ['id'=>$id_pasien]);
+					if(!$upd_pasien) {
+						echo json_encode([
+							'inputerror' => 'ktp',
+							'error_string' => 'Gagal update KTP',
+							'status' => FALSE
+						]);
+						return;
+					}
+				} else {
+					$error = array('error' => $this->file_obj->display_errors());
+					var_dump($error);exit;
+				}
+			}else{
+				echo json_encode([
+					'inputerror' => 'ktp',
+					'error_string' => 'Wajib Mengupload KTP',
+					'status' => FALSE
+				]);
+				return;
+			}
+
+			$arr_pembayaran['is_cash'] = null;
+			$arr_pembayaran['reff_trans_kredit'] = null;
 		}else{
 			$arr_pembayaran['is_cash'] = null;
 			$arr_pembayaran['reff_trans_kredit'] = $opt_kredit;
@@ -678,7 +735,7 @@ class Pembayaran extends CI_Controller {
 	private function get_div_button($id_header)
 	{
 		return '
-			<a type="button" class="btn btn-secondary" href="'.base_url($this->uri->segment(1)).'">Batal</a>
+			<a type="button" class="btn btn-secondary" href="'.base_url($this->uri->segment(1)).'">Kembali</a>
 			<button type="button" class="btn btn-brand" onclick="printStruk(\'' . $id_header . '\')">Print</button>
 		';
 	}
@@ -899,6 +956,68 @@ class Pembayaran extends CI_Controller {
 		";
 
 		return $retval;
+	}
+
+	private function konfigurasi_upload_img($nmfile)
+	{ 
+		//konfigurasi upload img display
+		$config['upload_path'] = './files/img/pasien_img/';
+		$config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
+		$config['overwrite'] = TRUE;
+		$config['max_size'] = '4000';//in KB (4MB)
+		$config['max_width']  = '0';//zero for no limit 
+		$config['max_height']  = '0';//zero for no limit
+		$config['file_name'] = $nmfile;
+		//load library with custom object name alias
+		$this->load->library('upload', $config, 'file_obj');
+		$this->file_obj->initialize($config);
+	}
+
+	private function konfigurasi_image_resize($filename)
+	{
+		//konfigurasi image lib
+	    $config['image_library'] = 'gd2';
+	    $config['source_image'] = './files/img/pasien_img/'.$filename;
+	    $config['create_thumb'] = FALSE;
+	    $config['maintain_ratio'] = FALSE;
+	    $config['new_image'] = './files/img/pasien_img/'.$filename;
+	    $config['overwrite'] = TRUE;
+	    $config['width'] = 450; //resize
+	    $config['height'] = 500; //resize
+	    $this->load->library('image_lib',$config); //load image library
+	    $this->image_lib->initialize($config);
+	    $this->image_lib->resize();
+	}
+
+	private function konfigurasi_image_thumb($filename, $gbr)
+	{
+		//konfigurasi image lib
+	    $config2['image_library'] = 'gd2';
+	    $config2['source_image'] = './files/img/pasien_img/'.$filename;
+	    $config2['create_thumb'] = TRUE;
+	 	$config2['thumb_marker'] = '_thumb';
+	    $config2['maintain_ratio'] = FALSE;
+	    $config2['new_image'] = './files/img/pasien_img/thumbs/'.$filename;
+	    $config2['overwrite'] = TRUE;
+	    $config2['quality'] = '60%';
+	 	$config2['width'] = 45;
+	 	$config2['height'] = 45;
+	    $this->load->library('image_lib',$config2); //load image library
+	    $this->image_lib->initialize($config2);
+	    $this->image_lib->resize();
+	    return $output_thumb = $gbr['raw_name'].'_thumb'.$gbr['file_ext'];	
+	}
+
+	private function seoUrl($string) {
+	    //Lower case everything
+	    $string = strtolower($string);
+	    //Make alphanumeric (removes all other characters)
+	    $string = preg_replace("/[^a-z0-9_\s-]/", "", $string);
+	    //Clean up multiple dashes or whitespaces
+	    $string = preg_replace("/[\s-]+/", " ", $string);
+	    //Convert whitespaces and underscore to dash
+	    $string = preg_replace("/[\s_]/", "-", $string);
+	    return $string;
 	}
 
 	/////////////////////////////////////////////////////////////

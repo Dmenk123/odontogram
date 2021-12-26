@@ -92,12 +92,16 @@
           <div class="form-group">
             <label>Jenis Pembayaran</label>
             <div class="kt-radio-inline">
-              <label class="kt-radio">
+              <label class="kt-radio kt-radio--bold kt-radio--brand">
                 <input type="radio" name="jenis_bayar" value="cash" checked> Cash
                 <span></span>
               </label>
-              <label class="kt-radio">
+              <label class="kt-radio kt-radio--bold kt-radio--brand">
                 <input type="radio" name="jenis_bayar" value="nontunai"> Nontunai
+                <span></span>
+              </label>
+              <label class="kt-radio kt-radio--bold kt-radio--brand">
+                <input type="radio" name="jenis_bayar" value="hutang"> Hutang
                 <span></span>
               </label>
             </div>
@@ -107,22 +111,53 @@
           <div id="div_opt_kredit">
             <div class="form-group">
               <label>Jenis Nontunai : </label>
-              <select class="form-control select2" id="opt_kredit" name="opt_kredit" style="width: 100%;">
-                <?php foreach ($data_nontunai as $k => $v) {
-                  echo '<option value="' . $v->id . '">' . $v->nama . '</option>';
-                } ?>
-              </select>
+              <div class="kt-radio-inline">
+                <?php foreach ($data_nontunai as $k => $v) { ?>
+                  <label class="kt-radio kt-radio--solid kt-radio--brand">
+                    <input type="radio" name="opt_kredit" value="<?=$v->id?>" > <?= $v->nama; ?>
+                    <span></span>
+                  </label>
+                <?php } ?>
+              </div>
               <span class="help-block"></span>
             </div>
           </div>
 
+          <div id="div_opt_hutang">
+            <div class="form-group"> 
+              <label>Upload KTP : </label> 
+              <div></div> 
+              <div class="custom-file"> 
+                <input type="file" class="custom-file-input" id="ktp" name="ktp" accept=".jpg,.jpeg,.png"> 
+                <label class="custom-file-label" id="label_ktp" for="customFile" style="text-align: left;">Pilih gambar KTP</label> 
+              </div> 
+            </div>
+
+            <div class="form-group" id="div_preview_foto" style="display: none;">
+              <label for="" class="form-control-label">Preview KTP:</label>
+              <div></div>
+              <img id="preview_img" src="#" alt="Preview Foto" height="200" width="200"/>
+              <span class="help-block"></span>
+            </div>
+
+          </div>
+
           <div class="form-group">
             <label>Pilih Jenis Diskon : </label>
-            <select class="form-control select2" id="jenis_diskon" name="jenis_diskon" style="width: 100%;">
-              <option value="none">Tanpa Diskon</option>
-              <option value="nominal">Nominal</option>
-              <option value="persen">Persen</option>
-            </select>
+            <div class="kt-radio-inline">
+              <label class="kt-radio kt-radio--bold kt-radio--success">
+                <input type="radio" name="jenis_diskon" value="none" checked> Tanpa Diskon
+                <span></span>
+              </label>
+              <label class="kt-radio kt-radio--bold kt-radio--success">
+                <input type="radio" name="jenis_diskon" value="nominal"> Nominal
+                <span></span>
+              </label>
+              <label class="kt-radio kt-radio--bold kt-radio--success">
+                <input type="radio" name="jenis_diskon" value="persen"> Persen
+                <span></span>
+              </label>
+            </div>
             <span class="help-block"></span>
           </div>
 
@@ -166,8 +201,12 @@
             <div class="row">
               <div class="col-lg-5"></div>
               <div class="col-lg-7 div-button-area">
-                <button type="submit" class="btn btn-brand btnSubmit" disabled>Submit</button>
-                <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1)) ?>">Batal</a>
+                <?php if($div_button != null) {
+                  echo $div_button;
+                } else { ?>
+                  <button type="submit" class="btn btn-brand btnSubmit" disabled>Submit</button>
+                  <a type="button" class="btn btn-secondary" href="<?= base_url($this->uri->segment(1)) ?>">Batal</a>
+                <?php } ?>
               </div>
             </div>
           </div>

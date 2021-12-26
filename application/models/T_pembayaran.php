@@ -185,7 +185,7 @@ class T_pembayaran extends CI_Model
 		$this->db->join('m_klinik c', 'b.id_klinik = c.id', 'left');
 		$this->db->join('m_user d', 'a.id_user = d.id', 'left');
 		$this->db->join('m_pasien e', 'b.id_pasien = e.id', 'left');
-		$this->db->join('m_bank_kredit f', 'a.reff_trans_kredit = f.id', 'left');
+		$this->db->join('m_nontunai f', 'a.reff_trans_kredit = f.id', 'left');
 		$this->db->where('a.deleted_at is null');
 		$this->db->where('a.id', $id);
 		$q = $this->db->get();
