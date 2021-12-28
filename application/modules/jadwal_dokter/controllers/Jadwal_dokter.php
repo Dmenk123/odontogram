@@ -32,10 +32,44 @@ class Jadwal_dokter extends CI_Controller
 		 * data passing ke halaman view content
 		 */
 		$data = array(
+			'title' => 'Jadwal Praktek Dokter',
+			'data_user' => $data_user,
+			'data_jabatan'	=> $data_jabatan
+		);
+
+		$data['dokter']             = $this->m_global->getSelectedData('m_pegawai', ['id_jabatan' => 1])->result();
+		// var_dump($data['get_data']); die();
+		/**
+		 * content data untuk template
+		 * param (css : link css pada direktori assets/css_module)
+		 * param (modal : modal komponen pada modules/nama_modul/views/nama_modal)
+		 * param (js : link js pada direktori assets/js_module)
+		 */
+		$content = [
+			'css' 	=> null,
+			'modal' => ['modal_schedule', 'modal_jadwal_rutin'],
+			'js'	=> 'jadwal_dokter.js',
+			'view'	=> 'view_jadwal_dokter_rutin_nonrutin'
+		];
+
+		$this->template_view->load_view($content, $data);
+	}
+
+	public function index_backup()
+	{
+		$id_user = $this->session->userdata('id_user');
+		$data_user = $this->m_user->get_detail_user($id_user);
+		$data_jabatan = $this->m_global->multi_row('*', 'deleted_at is null', 'm_jabatan', null, 'nama');
+
+		/**
+		 * data passing ke halaman view content
+		 */
+		$data = array(
 			// 'title' => 'Jadwal Praktek Dokter',
 			'data_user' => $data_user,
 			'data_jabatan'	=> $data_jabatan
 		);
+
 
 		$select = "log.*, peg.nama";
 		$where = ['peg.id_jabatan' => 1];
@@ -75,6 +109,188 @@ class Jadwal_dokter extends CI_Controller
 		];
 
 		$this->template_view->load_view($content, $data);
+	}
+
+	public function datatable_jadwal_rutin()
+	{
+		// var_dump($end); die();
+
+		$select = "r.*, p.nama, k.nama_klinik";
+		$where = ['r.deleted_at' => null, 'r.id_klinik >=' => $this->session->userdata('id_klinik')];
+		$table = 't_jadwal_dokter_rutin as r';
+		$join = [ 
+			[
+				'table' => 'm_pegawai as p',
+				'on'	=> 'r.id_dokter = p.id'
+			],
+			[
+				'table' => 'm_klinik as k',
+				'on'	=> 'r.id_klinik = k.id'
+			],
+		];
+		
+		$datatable = $this->m_global->multi_row($select,$where,$table, $join);
+		// echo $this->db->last_query();exit;
+		
+		// echo $this->db->last_query(); die();
+		$data = array();
+		$data = [];
+		if ($datatable) {
+			foreach ($datatable as $key => $value) {
+			
+				$data[$key][] = $key+1;
+				$data[$key][] = $value->nama;
+				$data[$key][] = $value->nama_klinik;
+				$data[$key][] = $value->hari;
+				$data[$key][] = date('H:i', strtotime($value->jam_mulai)).' WIB';   
+				$data[$key][] = date('H:i', strtotime($value->jam_akhir)).' WIB'; 
+
+				$data[$key][] = '<button onclick="delete_jadwal_rutin(\''.$value->id.'\')" class="btn btn-danger">
+									<i class="la la-trash"></i> Hapus
+								</button>';
+			}
+		}
+		
+		// $this->output->enable_profiler(TRUE);
+
+        echo json_encode([
+            'data' => $data
+        ]);
+	}
+
+	public function add_jadwal_rutin()
+	{
+		$this->load->library('Enkripsi');
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$arr_valid = $this->rule_validasi_jadwal_rutin();
+		
+		$id_dokter = $this->input->post('dokter');
+		$hari = $this->input->post('hari');
+		$id_klinik = $this->session->userdata('id_klinik');
+		$jam_mulai = $this->input->post('jam_mulai');
+		$jam_akhir = $this->input->post('jam_akhir');
+
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+
+
+		$this->db->trans_begin();
+		
+		$data = [
+			'id_dokter' => $id_dokter,
+			'id_klinik' => $id_klinik,
+			'hari' => $hari,
+			'jam_mulai' => $jam_mulai,
+			'jam_akhir' => $jam_akhir,
+			'created_at' => $timestamp
+		];
+		
+		$insert = $this->m_global->store_id($data, 't_jadwal_dokter_rutin');
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan jadwal praktik dokter';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses menambahkan jadwal praktik dokter';
+		}
+
+		echo json_encode($retval);
+	}
+
+	private function rule_validasi_jadwal_rutin()
+	{
+		$data = array();
+		$data['error_string'] = array();
+		$data['inputerror'] = array();
+		$data['status'] = TRUE;
+
+		/* if ($this->input->post('kode') == '') {
+			$data['inputerror'][] = 'kode';
+            $data['error_string'][] = 'Wajib mengisi Kode Diagnosa';
+            $data['status'] = FALSE;
+		} */
+
+		if ($this->input->post('dokter') == '') {
+			$data['inputerror'][] = 'dokter';
+            $data['error_string'][] = 'Wajib memilih Dokter';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('hari') == '') {
+			$data['inputerror'][] = 'hari';
+            $data['error_string'][] = 'Wajib memilih Hari';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('jam_mulai') == '') {
+			$data['inputerror'][] = 'jam_mulai';
+            $data['error_string'][] = 'Wajib mengisi jam mulai praktik';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('jam_akhir') == '') {
+			$data['inputerror'][] = 'jam_akhir';
+            $data['error_string'][] = 'Wajib mengisi jam akhir praktik';
+            $data['status'] = FALSE;
+		}
+
+	
+        return $data;
+	}
+
+	public function datatable_jadwal_tidak_rutin()
+	{
+		// var_dump($end); die();
+
+		$select = "r.*, p.nama, k.nama_klinik";
+		$where = ['r.deleted_at' => null, 'r.id_klinik >=' => $this->session->userdata('id_klinik')];
+		$table = 't_jadwal_dokter_tidak_rutin as r';
+		$join = [ 
+			[
+				'table' => 'm_pegawai as p',
+				'on'	=> 'r.id_dokter = p.id'
+			],
+			[
+				'table' => 'm_klinik as k',
+				'on'	=> 'r.id_klinik = k.id'
+			],
+		];
+
+		$order_by = 'r.id, "DESC"';
+		
+		$datatable = $this->m_global->multi_row($select,$where,$table, $join, $order_by);
+		// echo $this->db->last_query();exit;
+		
+		// echo $this->db->last_query(); die();
+		$data = array();
+		$data = [];
+		if ($datatable) {
+			foreach ($datatable as $key => $value) {
+			
+				$data[$key][] = $key+1;
+				$data[$key][] = $value->nama.'<br>( <span style="color:#34eb3a;">Aktif Praktek</span> )';
+				$data[$key][] = $value->nama_klinik;
+				$data[$key][] = tanggal_indo($value->tanggal);
+				$data[$key][] = date('H:i', strtotime($value->jam_mulai)).' WIB';   
+				$data[$key][] = date('H:i', strtotime($value->jam_akhir)).' WIB'; 
+
+				$data[$key][] = '<button onclick="delete_jadwal_tidak_rutin(\''.$value->id.'\')" class="btn btn-danger">
+									<i class="la la-trash"></i> Hapus
+								</button>';
+			}
+		}
+		
+		// $this->output->enable_profiler(TRUE);
+
+        echo json_encode([
+            'data' => $data
+        ]);
 	}
 
 	public function save()
@@ -207,5 +423,20 @@ class Jadwal_dokter extends CI_Controller
 		for ($date = $from_date; $date <= $to_date; $date->modify('+1 day')) {
 		  echo $date->format('Y-m-d') . "\n";
 		}
+	}
+
+	public function delete_jadwal_rutin()
+	{
+		$where = ['id' => $this->input->post('id') ];
+		$del = $this->m_global->softdelete($where, 't_jadwal_dokter_rutin');
+		if($del) {
+			$retval['status'] = TRUE;
+			$retval['pesan'] = 'Data Jadwal Praktik Berhasil dihapus';
+		}else{
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Data jadwal Praktik Gagal dihapus';
+		}
+
+		echo json_encode($retval);
 	}
 }
