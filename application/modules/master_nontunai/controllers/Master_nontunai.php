@@ -84,26 +84,16 @@ class Master_nontunai extends CI_Controller {
 			return;
 		}
 		
-		$persen = $this->input->post('persen');
-		
-		//cek exist
-		$cek = $this->m_global->single_row('*', ['deleted_at' => null], 't_diskon');
-		
+		$nama = $this->input->post('nama');		
 		$this->db->trans_begin();
 
-		if($cek) {
-			### delete existing
-			$del = $this->m_global->softdelete(['deleted_at' => null], 't_diskon');
-		}
-			
 		### add new data
 		$data_ins = [
-			'id_jenis_trans' => 2,
-			'persentase' => $persen,
+			'nama' => $nama,
 			'created_at' => $timestamp,
 		];
 
-		$insert = $this->m_global->store($data_ins,'t_diskon');
+		$insert = $this->m_global->store($data_ins,'m_nontunai');
 		
 
 		if ($this->db->trans_status() === FALSE){
@@ -123,18 +113,17 @@ class Master_nontunai extends CI_Controller {
 	 * Hanya melakukan softdelete saja
 	 * isi kolom updated_at dengan datetime now()
 	 */
-	public function delete_data_diskon()
+	public function delete_data()
 	{
 		$id = $this->input->post('id');
 		$id = $this->enkripsi->enc_dec('decrypt', $id);
-
-		$del = $this->m_global->softdelete(['id' => $id], 't_diskon');
+		$del = $this->m_global->softdelete(['id' => $id], 'm_nontunai');
 		if($del) {
 			$retval['status'] = TRUE;
-			$retval['pesan'] = 'Data Master Diskon dihapus';
+			$retval['pesan'] = 'Data Master dihapus';
 		}else{
 			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Data Master Diskon dihapus';
+			$retval['pesan'] = 'Data Master dihapus';
 		}
 
 		echo json_encode($retval);
@@ -148,9 +137,9 @@ class Master_nontunai extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if ($this->input->post('persen') == '') {
-			$data['inputerror'][] = 'persen';
-			$data['error_string'][] = 'Minimal Honor adalah 0';
+		if ($this->input->post('nama') == '') {
+			$data['inputerror'][] = 'nama';
+			$data['error_string'][] = 'Wajib mengisi nama';
 			$data['status'] = FALSE;
 		}
 

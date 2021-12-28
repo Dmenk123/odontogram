@@ -2,16 +2,16 @@ var table;
 var save_method;
 $(document).ready(function() {
 
-    $('#modal_diskon').on('hidden', function () {
+    $('#modal_master').on('hidden', function () {
         reset_modal_form();
     })
 
-    $('#form-diskon').submit(function(e){
+    $('#form-master').submit(function(e){
         e.preventDefault();
         $("#btnSave").prop("disabled", true);
         $('#btnSave').text('Menyimpan Data ....');
   
-        var form = $('#form-diskon')[0];
+        var form = $('#form-master')[0];
         var reg = new FormData(form);
   
         swalConfirm.fire({
@@ -27,7 +27,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "POST",
                 enctype: 'multipart/form-data',
-                url: base_url + 'master_diskon/simpan_data',
+                url: base_url + 'master_nontunai/simpan_data',
                 data: reg,
                 dataType: "JSON",
                 processData: false, // false, it prevent jQuery form transforming the data into a query string
@@ -38,7 +38,7 @@ $(document).ready(function() {
                     if(data.status) {
                       swalConfirm.fire('Berhasil Menambah Data!', data.pesan, 'success').then((cb) => {
                           if(cb.value) {
-                            $('#modal_diskon').modal('hide');
+                            $('#modal_master').modal('hide');
                             reset_modal_form();
                             reload_table();
                           }
@@ -109,15 +109,15 @@ $(document).ready(function() {
 
 function add_menu()
 {
-    reset_modal_form();
-    save_method = 'add';
-	$('#modal_diskon').modal('show');
-	$('#modal_title').text('Tambah Diskon Baru'); 
+  reset_modal_form();
+  save_method = 'add';
+	$('#modal_master').modal('show');
+	$('#modal_title').text('Tambah Data Baru'); 
 }
 
 function reset_modal_form()
 {
-    $('#form-diskon')[0].reset();
+    $('#form-master')[0].reset();
     $('.append-opt').remove(); 
     $('div.form-group').children().removeClass("is-invalid invalid-feedback");
     $('span.help-block').text('');
@@ -140,7 +140,7 @@ function delete_transaksi(id) {
       }).then((result) => {
         if (result.value) {
             $.ajax({
-                url : base_url + 'master_diskon/delete_data_diskon',
+                url : base_url + 'master_nontunai/delete_data',
                 type: "POST",
                 dataType: "JSON",
                 data : {id:id},

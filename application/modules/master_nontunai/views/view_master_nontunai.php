@@ -7,6 +7,10 @@
     <div class="kt-portlet kt-portlet--mobile">
       <div class="kt-portlet__head kt-portlet__head--lg">
         <div class="kt-portlet__head-label">
+          <span class="kt-portlet__head-icon">
+            <i class="kt-font-brand flaticon2-line-chart"></i>
+          </span>
+          <h3 class="kt-portlet__head-title"> <?= $this->template_view->nama('judul') . ' - ' . $title; ?> </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
