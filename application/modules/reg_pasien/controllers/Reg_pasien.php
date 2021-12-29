@@ -47,18 +47,27 @@ class Reg_pasien extends CI_Controller {
 		$this->template_view->load_view($content, $data);
 	}
 
-	private function umur_dan_pemetaan($tanggal_lahir, $flag_cari = 'umur')
+	private function umur_dan_pemetaan($tanggal_lahir = null, $flag_cari = 'umur')
 	{
 		$tgl_lhr = new DateTime($tanggal_lahir);
 		$skrg  = new DateTime('today');
 		$umur = $tgl_lhr->diff($skrg)->y;
 		
-		if($flag_cari == 'umur') {
-			$retval = $umur;
+		if($tanggal_lahir !== null) {
+			if($flag_cari == 'umur') {
+				$retval = $umur;
+			}else{
+				$data = $this->m_global->single_row('*', ['umur_awal <=' => $umur, 'umur_akhir >=' => $umur], 'm_pemetaan');
+				if($data) {
+					$retval = $data->id;
+				}else{
+					$retval = null;
+				}
+			}
 		}else{
-			$data = $this->m_global->single_row('*', ['umur_awal <=' => $umur, 'umur_akhir >=' => $umur], 'm_pemetaan');
-			$retval = $data->id;
+			$retval = null;
 		}
+		
 
 		return $retval;
 	}
@@ -66,7 +75,7 @@ class Reg_pasien extends CI_Controller {
 	public function get_select_pasien()
 	{
 		$term = $this->input->get('term');
-		$data_pasien = $this->m_global->multi_row('*', ['deleted_at' => null, 'is_aktif' => '1', 'nama like' => '%'.$term.'%'], 'm_pasien', null, 'no_rm');
+		$data_pasien = $this->m_global->multi_row('*', ['deleted_at' => null, 'is_aktif' => '1', 'nama like' => '%'.$term.'%'], 'm_pasien', null, 'no_rm', 20);
 		if($data_pasien) {
 			foreach ($data_pasien as $key => $value) {
 				$row['id'] = $value->id;

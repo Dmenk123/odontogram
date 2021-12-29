@@ -58,10 +58,6 @@ $(document).ready(function() {
         }
     });
 
-    $('#form_pembayaran').submit(function (e) { 
-        e.preventDefault();
-    });
-
     $('#form_pembayaran').submit(function(e){
       e.preventDefault();
       $("#btnSave").prop("disabled", true);
@@ -96,6 +92,7 @@ $(document).ready(function() {
                         if(cb.value) {
                             // window.location.href = base_url +'pembayaran';
                             $('.div-button-area').html(data.html_button);
+                            $('#btn-cari-data-pasien').css('display', 'none');
                             printStruk(data.id_trans);
                         }
                     });

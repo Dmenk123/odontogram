@@ -172,6 +172,13 @@ class Pembayaran extends CI_Controller {
 			'reg.tanggal_reg <=' => $tgl_filter_akhir,
 			'byr.is_locked' => null
 		];
+
+		if($this->id_klinik !== null) {
+			$where += [
+				'reg.id_klinik' => $this->id_klinik
+			];
+		}
+
 		$table = 't_registrasi as reg';
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],

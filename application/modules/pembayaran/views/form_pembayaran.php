@@ -30,7 +30,7 @@
         <div class="kt-portlet__body">
           <div class="col-12 row" style="padding-bottom: 20px;">
             <div class="col-12">
-              <button type="button" class="btn btn-brand" onclick="show_modal_pasien()">Cari Data</button>
+              <button type="button" id="btn-cari-data-pasien" class="btn btn-brand" onclick="show_modal_pasien()">Cari Data</button>
             </div>
           </div>
           <div class="col-12 table-responsive">

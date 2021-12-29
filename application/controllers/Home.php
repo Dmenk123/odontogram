@@ -345,6 +345,101 @@ class Home extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function chart_total_omset()
+	{
+		$id_user = $this->session->userdata('id_user');
+		$start = Carbon::now()->subDays(PERIOD_CHART)->format('Y-m-d');
+		$end = Carbon::now()->format('Y-m-d');
+
+		$dataset = [];
+		$data_label_x = [];
+		
+		$q = $this->db->query("
+			SELECT
+				sum(t_mutasi.total_penerimaan_gross) as total_omset,
+				m_klinik.nama_klinik,
+				m_klinik.alamat
+			FROM
+				t_registrasi AS reg 
+				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
+				LEFT JOIN t_mutasi ON reg.id = t_mutasi.id_registrasi AND t_mutasi.deleted_at IS NULL 
+			WHERE 
+				reg.tanggal_reg BETWEEN '$start' AND '$end'	 
+			GROUP BY
+				m_klinik.nama_klinik
+			ORDER BY tanggal_reg
+		")->result();
+
+		foreach ($q as $k => $v) {
+			$total_temp = [];
+			$arr_data['label'][$k] = $v->nama_klinik;
+			$arr_data['backgroundColor'][$k] = "#" . $this->random_color();
+			$arr_data['data'][$k] = (int)$v->total_omset;
+			$data_label_x[$k] = $v->nama_klinik;
+		}
+
+		$dataset['label'] = $arr_data['label'];
+		$dataset['data'] = $arr_data['data'];
+		$dataset['backgroundColor'] = $arr_data['backgroundColor'];
+		$dataset['hoverOffset'] = 4;
+
+		$data['labels'] = $data_label_x;
+		$data['datasets'] = [$dataset];
+		$data['status'] = true;
+		// $data['v_min'] = $min;
+		// $data['v_max'] = $arr_max[0];
+		$data['judul'] = "Total Kunjungan Klinik (Last ".PERIOD_CHART." days)";
+
+		echo json_encode($data);
+	}
+	
+	public function chart_total_honor_dokter()
+	{
+		$id_user = $this->session->userdata('id_user');
+		$start = Carbon::now()->subDays(PERIOD_CHART)->format('Y-m-d');
+		$end = Carbon::now()->format('Y-m-d');
+
+		$dataset = [];
+		$data_label_x = [];
+		
+		$q = $this->db->query("
+			SELECT
+				sum(t_mutasi.total_pengeluaran) as total_honor,
+				m_pegawai.nama
+			FROM
+				t_registrasi AS reg 
+				LEFT JOIN m_pegawai ON reg.id_pegawai = m_pegawai.id AND m_pegawai.deleted_at IS NULL AND m_pegawai.is_owner is null
+				LEFT JOIN t_mutasi ON reg.id = t_mutasi.id_registrasi AND t_mutasi.deleted_at IS NULL 
+			WHERE 
+				reg.tanggal_reg BETWEEN '$start' AND '$end'	and m_pegawai.nama is not null
+			GROUP BY
+				m_pegawai.nama
+			ORDER BY tanggal_reg
+		")->result();
+
+		foreach ($q as $k => $v) {
+			$total_temp = [];
+			$arr_data['label'][$k] = $v->nama;
+			$arr_data['backgroundColor'][$k] = "#" . $this->random_color();
+			$arr_data['data'][$k] = (int)$v->total_honor;
+			$data_label_x[$k] = $v->nama;
+		}
+
+		$dataset['label'] = $arr_data['label'];
+		$dataset['data'] = $arr_data['data'];
+		$dataset['backgroundColor'] = $arr_data['backgroundColor'];
+		$dataset['hoverOffset'] = 4;
+
+		$data['labels'] = $data_label_x;
+		$data['datasets'] = [$dataset];
+		$data['status'] = true;
+		// $data['v_min'] = $min;
+		// $data['v_max'] = $arr_max[0];
+		$data['judul'] = "Total Kunjungan Klinik (Last ".PERIOD_CHART." days)";
+
+		echo json_encode($data);
+	}
+
 	function random_color()
 	{
 		mt_srand((float)microtime() * 1000000);

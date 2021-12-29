@@ -5,6 +5,8 @@ $(document).ready(function() {
     chart_kunjungan();
     chart_omset();
     chart_total_kunjungan();
+    chart_total_omset();
+    chart_total_honor();
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
@@ -20,7 +22,7 @@ function reload_table()
 function chart_kunjungan()
 {
     // redraw canvas.js
-    $('#dash_kunjungan').html('<canvas id="line-chart" width="418px" height="120px"></canvas>');
+    $('#dash_kunjungan').html('<canvas id="dash_kunjungan" width="418px" height="120px"></canvas>');
     
     url = base_url + 'home/chart_kunjungan';
     $.ajax({
@@ -76,7 +78,7 @@ function chart_kunjungan()
 }
 
 function chart_omset() {
-    $('#dash_omset').html('<canvas id="line-chart" width="418px" height="120px"></canvas>');
+    $('#dash_omset').html('<canvas id="dash_omset" width="418px" height="120px"></canvas>');
     url = base_url + 'home/chart_omset';
     $.ajax({
         type: "POST",
@@ -130,8 +132,48 @@ function chart_omset() {
     });
 }
 
+function chart_total_omset() {  
+    $('#dash_total_omset').html('<canvas id="dash_total_omset" width="418px" height="120px"></canvas>');
+    url = base_url + 'home/chart_total_omset';
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: url,
+        // data: {
+        //     start : start,
+        //     end : end
+        // },
+      dataType: "JSON",
+      timeout: 600000,
+      success: function (response) {
+          if(response.status) {
+              new Chart(document.getElementById("dash_total_omset"), {
+                  
+                  type: 'pie',
+                  data: {
+                    labels: response.labels,
+                    datasets: response.datasets
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: response.judul
+                    },
+                    responsive: true,
+                    responsiveAnimationDuration: 0,
+                  },
+                  
+              });
+          }
+      },
+      error: function (e) {
+        console.log("ERROR : ", e);
+      }
+    });
+}
+
 function chart_total_kunjungan() {
-    $('#dash_total_kunjungan').html('<canvas id="line-chart" width="418px" height="120px"></canvas>');
+    $('#dash_total_kunjungan').html('<canvas id="dash_total_kunjungan" width="418px" height="120px"></canvas>');
     url = base_url + 'home/chart_total_kunjungan';
     $.ajax({
         type: "POST",
@@ -146,6 +188,46 @@ function chart_total_kunjungan() {
       success: function (response) {
           if(response.status) {
               new Chart(document.getElementById("dash_total_kunjungan"), {
+                  
+                  type: 'pie',
+                  data: {
+                    labels: response.labels,
+                    datasets: response.datasets
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: response.judul
+                    },
+                    responsive: true,
+                    responsiveAnimationDuration: 0,
+                  },
+                  
+              });
+          }
+      },
+      error: function (e) {
+        console.log("ERROR : ", e);
+      }
+    });
+}
+
+function chart_total_honor() {  
+    $('#dash_total_honor').html('<canvas id="dash_total_honor" width="418px" height="120px"></canvas>');
+    url = base_url + 'home/chart_total_honor_dokter';
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: url,
+        // data: {
+        //     start : start,
+        //     end : end
+        // },
+      dataType: "JSON",
+      timeout: 600000,
+      success: function (response) {
+          if(response.status) {
+              new Chart(document.getElementById("dash_total_honor"), {
                   
                   type: 'pie',
                   data: {

@@ -462,10 +462,13 @@ function save()
                 timeout: 600000,
                 success: function (data) {
                     if(data.status) {
-                        swalConfirm.fire('Sukses!!', data.pesan, 'success');
-                        $("#btnSave").prop("disabled", false);
-                        $('#btnSave').text('Simpan');                
-                        window.location.href = base_url+"reg_pasien";
+                        swalConfirm.fire('Sukses!!', data.pesan, 'success').then((cb) => {
+                            if(cb.value) {
+                                $("#btnSave").prop("disabled", false);
+                                $('#btnSave').text('Simpan');                
+                                window.location.href = base_url+"reg_pasien";
+                            }
+                        });
                     }else {
                         for (var i = 0; i < data.inputerror.length; i++) 
                         {
