@@ -74,7 +74,7 @@ class Home extends CI_Controller {
 				break;
 
 			case DOKTER:
-				$content['view'] = 'dashboard/view_dashboard_dokter';
+				$content['view'] = 'dashboard/view_dashboard';
 				$content['js'] = null;
 				break;
 			
