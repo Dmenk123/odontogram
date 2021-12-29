@@ -34,36 +34,121 @@
         </div>
       </div>
       <div class="kt-portlet__body">
-        <div class="col-xl-6 col-lg-6 order-lg-2 order-xl-1">
+        <div class="row">
 
-          <!--begin:: Widgets/Daily Sales-->
-          <div class="kt-portlet kt-portlet--height-fluid">
-            <div class="kt-widget14">
-              <div class="kt-widget14__header kt-margin-b-30">
-                <h3 class="kt-widget14__title">
-                  Kunjungan Klinik
-                </h3>
-                <span class="kt-widget14__desc">
-                  Check out each collumn for more details
-                </span>
-              </div>
-              <div class="kt-widget14__chart" style="height:120px;">
-                <div class="chartjs-size-monitor">
-                  <div class="chartjs-size-monitor-expand">
-                    <div class=""></div>
-                  </div>
-                  <div class="chartjs-size-monitor-shrink">
-                    <div class=""></div>
-                  </div>
+          <div class="col-xl-6 col-lg-6 order-lg-2 order-xl-1">
+
+            <!--begin:: Widgets/Daily Sales-->
+            <div class="kt-portlet kt-portlet--height-fluid">
+              <div class="kt-widget14">
+                <div class="kt-widget14__header">
+                  <h3 class="kt-widget14__title">
+                    Kunjungan Klinik
+                  </h3>
                 </div>
-                <canvas id="dash_kunjungan" style="display: block; height: 120px; width: 418px;" width="376" height="107" class="chartjs-render-monitor"></canvas>
+                <div class="kt-widget14__chart" style="height:150;">
+                  <div class="chartjs-size-monitor">
+                    <div class="chartjs-size-monitor-expand">
+                      <div class=""></div>
+                    </div>
+                    <div class="chartjs-size-monitor-shrink">
+                      <div class=""></div>
+                    </div>
+                  </div>
+                  <canvas id="dash_kunjungan" style="display: block; height: 150; width: 418px;" width="376" height="150" class="chartjs-render-monitor"></canvas>
+                </div>
               </div>
             </div>
+
+            <!--end:: Widgets/Daily Sales-->
           </div>
 
-          <!--end:: Widgets/Daily Sales-->
+          <div class="col-xl-6 col-lg-6 order-lg-2 order-xl-1">
+
+            <!--begin:: Widgets/Daily Sales-->
+            <div class="kt-portlet kt-portlet--height-fluid">
+              <div class="kt-widget14">
+                <div class="kt-widget14__header">
+                  <h3 class="kt-widget14__title">
+                    Omset Per Klinik
+                  </h3>
+                </div>
+                <div class="kt-widget14__chart" style="height:150;">
+                  <div class="chartjs-size-monitor">
+                    <div class="chartjs-size-monitor-expand">
+                      <div class=""></div>
+                    </div>
+                    <div class="chartjs-size-monitor-shrink">
+                      <div class=""></div>
+                    </div>
+                  </div>
+                  <canvas id="dash_omset" style="display: block; height: 150; width: 418px;" width="376" height="150" class="chartjs-render-monitor"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!--end:: Widgets/Daily Sales-->
+          </div>
+
         </div>
 
+        <div class="row">
+
+          <div class="col-xl-6 col-lg-6 order-lg-2 order-xl-1">
+
+            <!--begin:: Widgets/Daily Sales-->
+            <div class="kt-portlet kt-portlet--height-fluid">
+              <div class="kt-widget14">
+                <div class="kt-widget14__header">
+                  <h3 class="kt-widget14__title">
+                    Total Kunjungan Klinik
+                  </h3>
+                </div>
+                <div class="kt-widget14__chart" style="height:150;">
+                  <div class="chartjs-size-monitor">
+                    <div class="chartjs-size-monitor-expand">
+                      <div class=""></div>
+                    </div>
+                    <div class="chartjs-size-monitor-shrink">
+                      <div class=""></div>
+                    </div>
+                  </div>
+                  <canvas id="dash_total_kunjungan" style="display: block; height: 150; width: 418px;" width="376" height="150" class="chartjs-render-monitor"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!--end:: Widgets/Daily Sales-->
+          </div>
+
+          <div class="col-xl-6 col-lg-6 order-lg-2 order-xl-1">
+
+            <!--begin:: Widgets/Daily Sales-->
+            <div class="kt-portlet kt-portlet--height-fluid">
+              <div class="kt-widget14">
+                <div class="kt-widget14__header">
+                  <h3 class="kt-widget14__title">
+                    Total Honor Dokter
+                  </h3>
+                </div>
+                <div class="kt-widget14__chart" style="height:150;">
+                  <div class="chartjs-size-monitor">
+                    <div class="chartjs-size-monitor-expand">
+                      <div class=""></div>
+                    </div>
+                    <div class="chartjs-size-monitor-shrink">
+                      <div class=""></div>
+                    </div>
+                  </div>
+                  <canvas id="dash_omset_dokter" style="display: block; height: 150; width: 418px;" width="376" height="150" class="chartjs-render-monitor"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!--end:: Widgets/Daily Sales-->
+          </div>
+
+        </div>
 
       </div>
     </div>

@@ -7,6 +7,8 @@ define('ROLE_DEVELOPER','1');
 define('ROLE_ADMINISTRATOR','2');
 define('ROLE_ADMIN', '3');
 define('DOKTER', '4');
+define('PERIOD_CHART', 7);
+
 class Home extends CI_Controller {
 	protected $prop_id_role;
 	public function __construct()
@@ -67,7 +69,7 @@ class Home extends CI_Controller {
 				break;
 
 			case ROLE_ADMIN:
-				$content['view'] = 'dashboard/view_dashboard_admin';
+				$content['view'] = 'dashboard/view_dashboard';
 				$content['js'] = null;
 				break;
 
@@ -113,7 +115,7 @@ class Home extends CI_Controller {
 		// $data_dokter = $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
 		// $data_user = $this->m_global->single_row('*', ['id_pegawai' => $data_dokter->id, 'deleted_at' => null, 'id_role != ' => 1], 'm_user');
 
-		$start = Carbon::now()->subDays(7)->format('Y-m-d');		
+		$start = Carbon::now()->subDays(PERIOD_CHART)->format('Y-m-d');		
 		$end = Carbon::now()->format('Y-m-d');
 
 		$period = CarbonPeriod::create($start, $end);
@@ -142,8 +144,9 @@ class Home extends CI_Controller {
 		foreach ($data_klinik as $key => $value) {
 			$total_temp = [];
 			$dataset[$key]['label'] = $value->nama_klinik;
-			$dataset[$key]['backgroundColor'] = "#" . $this->random_color();
-			$dataset[$key]['fill'] = true;
+			// $dataset[$key]['backgroundColor'] = "#" . $this->random_color();
+			$dataset[$key]['borderColor'] = "#" . $this->random_color();
+			$dataset[$key]['fill'] = false;
 
 			/* if ($this->session->userdata('id_role') != '1') {
 				$where = "reg.tanggal_reg BETWEEN '$start' AND '$end' AND reg.id_klinik = '$value->id_klinik'";
@@ -195,7 +198,149 @@ class Home extends CI_Controller {
 		$data['status'] = true;
 		$data['v_min'] = $min;
 		$data['v_max'] = $arr_max[0];
-		$data['judul'] = "Grafik Kunjungan per Klinik";
+		$data['judul'] = "Grafik Kunjungan per Klinik (Last ".PERIOD_CHART." days)";
+
+		echo json_encode($data);
+	}
+
+	public function chart_omset()
+	{
+		$id_user = $this->session->userdata('id_user');
+		// $user_klinik =  $this->m_global->multi_row('*', ['id_user' => $id_user], 't_user_klinik');
+		// $data_dokter = $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
+		// $data_user = $this->m_global->single_row('*', ['id_pegawai' => $data_dokter->id, 'deleted_at' => null, 'id_role != ' => 1], 'm_user');
+
+		$start = Carbon::now()->subDays(PERIOD_CHART)->format('Y-m-d');
+		$end = Carbon::now()->format('Y-m-d');
+
+		$period = CarbonPeriod::create($start, $end);
+		foreach ($period as $date) {
+			$dates[] = $date->format('Y-m-d');
+		}
+
+		if ($this->session->userdata('id_role') != '1') {
+			$data_klinik = $this->db->query("
+				SELECT 
+					m_klinik.nama_klinik, m_klinik.id
+				FROM t_user_klinik 
+				LEFT JOIN m_klinik on t_user_klinik.id_klinik = m_klinik.id
+				WHERE t_user_klinik.id_user = '$id_user'")
+			->result();
+		} else {
+			$data_klinik = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_klinik');
+		}
+
+		$dataset = [];
+		$data_label_x = [];
+		$min = 0;
+		$arr_max = [];
+		// set default value
+		$arr_max[] = 0;
+		foreach ($data_klinik as $key => $value) {
+			$total_temp = [];
+			$dataset[$key]['label'] = $value->nama_klinik;
+			// $dataset[$key]['backgroundColor'] = "#" . $this->random_color();
+			$dataset[$key]['borderColor'] = "#" . $this->random_color();
+			$dataset[$key]['fill'] = false;
+
+			/* if ($this->session->userdata('id_role') != '1') {
+				$where = "reg.tanggal_reg BETWEEN '$start' AND '$end' AND reg.id_klinik = '$value->id_klinik'";
+			}else{
+				$where = "reg.tanggal_reg BETWEEN '$start' AND '$end'";
+			} */
+
+			$q = $this->db->query("
+				SELECT
+					sum(t_mutasi.total_penerimaan_gross) as total_omset,
+					reg.tanggal_reg,
+					m_klinik.nama_klinik,
+					m_klinik.alamat
+				FROM
+					t_registrasi AS reg 
+					LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
+					LEFT JOIN t_mutasi ON reg.id = t_mutasi.id_registrasi AND t_mutasi.deleted_at IS NULL 
+				WHERE 
+					reg.tanggal_reg BETWEEN '$start' AND '$end' AND reg.id_klinik = '$value->id'	 
+				GROUP BY
+					m_klinik.nama_klinik, reg.tanggal_reg
+				ORDER BY tanggal_reg
+			")->result();
+
+			foreach ($q as $k => $v) {
+				foreach ($dates as $dk => $dv) {
+					if ($v->tanggal_reg != $dv) {
+						### pengecekan by key, agar tidak di replace
+						if (array_key_exists($dk, $total_temp)) {
+							continue;
+						}
+
+						$arr_max[] = 0;
+						$total_temp[$dk] = 0;
+					} else {
+						$arr_max[] = (int)$v->total_omset;
+						$total_temp[$dk] = (int)$v->total_omset;
+					}
+				}
+			}
+
+			$dataset[$key]['data'] = $total_temp;
+		}
+
+		rsort($arr_max);
+
+		$data['label'] = $dates;
+		$data['datasets'] = $dataset;
+		$data['status'] = true;
+		$data['v_min'] = $min;
+		$data['v_max'] = $arr_max[0];
+		$data['judul'] = "Grafik Omset per Klinik (Last ".PERIOD_CHART." days)";
+
+		echo json_encode($data);
+	}
+
+	public function chart_total_kunjungan()
+	{
+		$id_user = $this->session->userdata('id_user');
+		$start = Carbon::now()->subDays(PERIOD_CHART)->format('Y-m-d');
+		$end = Carbon::now()->format('Y-m-d');
+
+		$dataset = [];
+		$data_label_x = [];
+		
+		$q = $this->db->query("
+			SELECT
+				count(reg.id) as jml_kunjungan,
+				m_klinik.nama_klinik,
+				m_klinik.alamat
+			FROM
+				t_registrasi AS reg 
+				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
+			WHERE 
+				reg.tanggal_reg BETWEEN '$start' AND '$end'	 
+			GROUP BY
+				m_klinik.nama_klinik
+			ORDER BY tanggal_reg
+		")->result();
+
+		foreach ($q as $k => $v) {
+			$total_temp = [];
+			$arr_data['label'][$k] = $v->nama_klinik;
+			$arr_data['backgroundColor'][$k] = "#" . $this->random_color();
+			$arr_data['data'][$k] = (int)$v->jml_kunjungan;
+			$data_label_x[$k] = $v->nama_klinik;
+		}
+
+		$dataset['label'] = $arr_data['label'];
+		$dataset['data'] = $arr_data['data'];
+		$dataset['backgroundColor'] = $arr_data['backgroundColor'];
+		$dataset['hoverOffset'] = 4;
+
+		$data['labels'] = $data_label_x;
+		$data['datasets'] = [$dataset];
+		$data['status'] = true;
+		// $data['v_min'] = $min;
+		// $data['v_max'] = $arr_max[0];
+		$data['judul'] = "Total Kunjungan Klinik (Last ".PERIOD_CHART." days)";
 
 		echo json_encode($data);
 	}

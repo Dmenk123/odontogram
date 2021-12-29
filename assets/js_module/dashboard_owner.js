@@ -2,7 +2,9 @@ var save_method;
 var table;
 
 $(document).ready(function() {
-    monitoring();
+    chart_kunjungan();
+    chart_omset();
+    chart_total_kunjungan();
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
@@ -15,11 +17,11 @@ function reload_table()
 }
 
 
-function monitoring()
+function chart_kunjungan()
 {
     // redraw canvas.js
     $('#dash_kunjungan').html('<canvas id="line-chart" width="418px" height="120px"></canvas>');
-
+    
     url = base_url + 'home/chart_kunjungan';
     $.ajax({
         type: "POST",
@@ -33,9 +35,8 @@ function monitoring()
       timeout: 600000,
       success: function (response) {
           if(response.status) {
-              console.log('berhasil');
               new Chart(document.getElementById("dash_kunjungan"), {
-                  type: 'bar',
+                  type: 'line',
                   data: {
                     labels: response.label,
                     datasets: response.datasets
@@ -63,6 +64,101 @@ function monitoring()
                             }
                         }]
                     }
+                  },
+                  
+              });
+          }
+      },
+      error: function (e) {
+        console.log("ERROR : ", e);
+      }
+    });
+}
+
+function chart_omset() {
+    $('#dash_omset').html('<canvas id="line-chart" width="418px" height="120px"></canvas>');
+    url = base_url + 'home/chart_omset';
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: url,
+        // data: {
+        //     start : start,
+        //     end : end
+        // },
+      dataType: "JSON",
+      timeout: 600000,
+      success: function (response) {
+          if(response.status) {
+              new Chart(document.getElementById("dash_omset"), {
+                  type: 'line',
+                  data: {
+                    labels: response.label,
+                    datasets: response.datasets
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: response.judul
+                    },
+                    responsive: true,
+                    responsiveAnimationDuration: 0,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: false,
+                                callback: function(value, index, values) {
+                                    if(parseInt(value) >= 1000){
+                                        return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                    } else {
+                                        return 'Rp ' + value;
+                                    }
+                                },
+                                max : response.v_max + 500000, 
+                                min : 0
+                            }
+                        }]
+                    }
+                  },
+                  
+              });
+          }
+      },
+      error: function (e) {
+        console.log("ERROR : ", e);
+      }
+    });
+}
+
+function chart_total_kunjungan() {
+    $('#dash_total_kunjungan').html('<canvas id="line-chart" width="418px" height="120px"></canvas>');
+    url = base_url + 'home/chart_total_kunjungan';
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: url,
+        // data: {
+        //     start : start,
+        //     end : end
+        // },
+      dataType: "JSON",
+      timeout: 600000,
+      success: function (response) {
+          if(response.status) {
+              new Chart(document.getElementById("dash_total_kunjungan"), {
+                  
+                  type: 'pie',
+                  data: {
+                    labels: response.labels,
+                    datasets: response.datasets
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: response.judul
+                    },
+                    responsive: true,
+                    responsiveAnimationDuration: 0,
                   },
                   
               });
