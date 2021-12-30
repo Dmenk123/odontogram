@@ -4,27 +4,48 @@ class T_registrasi extends CI_Model
 {
 	var $table = 't_registrasi';
 	var $column_search = [
-		'reg.no_reg', 'reg.tanggal_reg', 'reg.jam_reg', 'reg.tanggal_pulang', 'reg.jam_pulang', 'reg.is_asuransi', 'reg.nama_asuransi', 'reg.umur', 'reg.no_asuransi', 'psn.nama', 'psn.no_rm', 'psn.tanggal_lahir', 'psn.tempat_lahir', 'psn.nik', 'psn.jenis_kelamin', 'kli.nama_klinik',
-		'peg.nama', 'pem.keterangan', 'penjamin', 'jenkel'
+		'reg.tanggal_reg', 
+		'reg.jam_reg', 
+		'reg.no_reg', 
+		'psn.no_rm', 
+		'psn.nama', 
+		'kli.nama_klinik',
+		'lay.nama_layanan',
+		'peg.nama',
+		'sudah_rekam_medik',
+		'reg.tanggal_pulang', 
+		'reg.jam_pulang', 
+		'psn.tempat_lahir', 
+		'psn.tanggal_lahir', 
+		'psn.nik', 
+		'psn.jenis_kelamin',
+		'penjamin', 
+		'reg.nama_asuransi', 
+		'reg.no_asuransi', 
+		'reg.umur',
+		'jenkel',
 	];
 	
 	var $column_order = [
-		'reg.no_reg',
-		'psn.nama',
 		'reg.tanggal_reg',
 		'reg.jam_reg',
+		'reg.no_reg',
+		'psn.no_rm',
+		'psn.nama',
+		'kli.nama_klinik',
+		'lay.nama_layanan',
+		'peg.nama',
 		'reg.is_pulang',
 		'reg.tanggal_pulang',
 		'reg.jam_pulang',
-		'psn.no_rm',
 		'psn.tempat_lahir', 
 		'psn.tanggal_lahir',
 		'psn.nik',
 		'psn.jenis_kelamin',
-		'kli.nama_klinik',
-		'peg_nama',
 		'reg.is_asuransi',
 		'reg.nama_asuransi',
+		'reg.no_asuransi',
+		'reg.umur',
 		'pem.keterangan',
 		null
 	];
@@ -41,12 +62,13 @@ class T_registrasi extends CI_Model
 	private function _get_datatables_query($term='', $tgl_awal, $tgl_akhir, $id_klinik)
 	{
 		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
-		peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik");
+		peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, lay.nama_layanan, CASE WHEN reg.is_pulang = '1' THEN 'Sudah' ELSE 'Belum' END as sudah_rekam_medik");
 		$this->db->from($this->table.' reg');
 		$this->db->join('m_pasien psn', 'reg.id_pasien = psn.id', 'left');
 		$this->db->join('m_pegawai peg', 'reg.id_pegawai = peg.id', 'left');
 		$this->db->join('m_pemetaan pem', 'reg.id_pemetaan = pem.id', 'left');
 		$this->db->join('m_klinik kli', 'reg.id_klinik = kli.id', 'left');
+		$this->db->join('m_layanan lay', 'reg.id_layanan = lay.id_layanan', 'left');
 		$this->db->where('reg.deleted_at is null');
 
 		if($id_klinik != null) {
@@ -83,6 +105,8 @@ class T_registrasi extends CI_Model
 						$this->db->or_like('(CASE WHEN reg.is_asuransi = 1 THEN \'Aktif\' ELSE \'Non Aktif\' END)', $_POST['search']['value'],'both',false);
 					}elseif($item == 'jenkel'){
 						$this->db->or_like('(CASE WHEN psn.jenis_kelamin = \'L\' THEN \'Laki-Laki\' ELSE \'Perempuan\' END)', $_POST['search']['value'],'both',false);
+					} elseif ($item == 'sudah_rekam_medik') {
+						$this->db->or_like('(CASE WHEN reg.is_pulang = \'1\' THEN \'Sudah\' ELSE \'Belum\' END)', $_POST['search']['value'], 'both', false);
 					}
 					else{
 						$this->db->or_like($item, $_POST['search']['value']);
@@ -249,7 +273,7 @@ class T_registrasi extends CI_Model
 	public function get_data_ekspor($tgl_awal = false, $tgl_akhir = false, $id = false)
 	{
 		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
-		peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel");
+		peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel,  CASE WHEN reg.is_pulang = '1' THEN 'Sudah' ELSE 'Belum' END as sudah_rekam_medik");
 		$this->db->from($this->table.' reg');
 		$this->db->join('m_pasien psn', 'reg.id_pasien = psn.id', 'left');
 		$this->db->join('m_pegawai peg', 'reg.id_pegawai = peg.id', 'left');

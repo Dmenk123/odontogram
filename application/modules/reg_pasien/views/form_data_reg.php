@@ -137,7 +137,17 @@ $obj_date = new DateTime();
               <span class="help-block"></span>
             </div>
           </div>
-          <div><br /></div>
+
+          <div class="form-group row form-group-marginless kt-margin-t-20">
+            <label class="col-lg-2 col-form-label">Layanan:</label>
+            <div class=" col-lg-8">
+              <select class="form-control kt-select2" id="layanan" name="layanan">
+                <option value="">Silahkan Pilih Layanan</option>
+              </select>
+              <span class="help-block"></span>
+            </div>
+          </div>
+
           <div class="form-group row form-group-marginless kt-margin-t-20">
             <label class="col-lg-2 col-form-label">Jenis Penjamin:</label>
             <div class=" col-lg-8">

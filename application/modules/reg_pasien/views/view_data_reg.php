@@ -38,9 +38,11 @@
             <li class="nav-item" >
                 <a class="nav-link active" href="javascript: void(0);" data-toggle="tab" data-target="#reg-tab" role="tab">Data Registrasi</a>
             </li>
+            <?php if(!in_array($this->session->userdata('id_role'), ['1','2'])) { ?>
             <li class="nav-item">
                 <a class="nav-link" href="javascript: void(0);" style="background-color: #eaeaea;" data-toggle="tab" data-target="#wa-tab" role="tab" onclick="tabel_broadcast()">Boradcast</a>
             </li>
+            <?php } ?>
         </ul>
         <div class="tab-content padding-vertical-20">
           <div class="tab-pane active" id="reg-tab" role="tabpanel">
@@ -76,20 +78,21 @@
             <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_index">
               <thead>
                 <tr>
-                  <th>No Reg</th>
-                  <th>Nama</th>
                   <th>Tgl Masuk</th>
                   <th>Pkl Masuk</th>
-                  <th>Pulang</th>
+                  <th>No Reg</th>
+                  <th>No Rm</th>
+                  <th>Nama</th>
+                  <th>Klinik</th>
+                  <th>Layanan</th>
+                  <th>Dokter</th>
+                  <th>Rekam Medik</th>
                   <th>Tgl Keluar</th>
                   <th>Pkl Keluar</th>
-                  <th>No Rm</th>
                   <th>Tempat Lahir</th>
                   <th>Tgl Lahir</th>
                   <th>NIK</th>
                   <th>JK</th>
-                  <th>Klinik</th>
-                  <th>Dokter</th>
                   <th>jenis Penjamin</th>
                   <th>Asuransi</th>
                   <th>No Asuransi</th>
@@ -101,31 +104,32 @@
             </table>
             <!--end: Datatable -->
           </div>
-
-          <div class="tab-pane" id="wa-tab" role="tabpanel">
-            <h3>Silahkan pilih ceklist pada tabel dibawah ini. kemudian klik "Pilih & Broadcast"</h3>
-            <form name="form_broadcast" id="form_broadcast">
-              <p class="form-group">
-                <button type="submit" class="btn btn-primary">Pilih & Broadcast</button>
-              </p>
-              <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_broadcast">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>No Reg</th>
-                    <th>Nama</th>
-                    <th>No Rm</th>
-                    <th>Tgl Daftar</th>
-                    <th>Jam Daftar</th>
-                    <th>Klinik</th>
-                    <th>Dokter</th>
-                    <th style="width: 5%;"></th>
-                  </tr>
-                </thead>
-              </table>
-            </form>
-          </div>
-
+          <?php if(!in_array($this->session->userdata('id_role'), ['1','2'])) { ?>
+              <div class="tab-pane" id="wa-tab" role="tabpanel">
+           
+                <h3>Silahkan pilih ceklist pada tabel dibawah ini. kemudian klik "Pilih & Broadcast"</h3>
+                <form name="form_broadcast" id="form_broadcast">
+                  <p class="form-group">
+                    <button type="submit" class="btn btn-primary">Pilih & Broadcast</button>
+                  </p>
+                  <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_broadcast">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>No Reg</th>
+                        <th>Nama</th>
+                        <th>No Rm</th>
+                        <th>Tgl Daftar</th>
+                        <th>Jam Daftar</th>
+                        <th>Klinik</th>
+                        <th>Dokter</th>
+                        <th style="width: 5%;"></th>
+                      </tr>
+                    </thead>
+                  </table>
+                </form>
+              </div>
+          <?php } ?>
         </div>
       </div>
     </div>

@@ -182,6 +182,30 @@ class Reg_pasien extends CI_Controller {
 		echo json_encode($html);
 	}
 
+	public function get_select_layanan()
+	{
+		$term = $this->input->get('term');
+		$id_dokter = $this->input->get('id_dokter');
+		$this->db->select('*');
+		$this->db->from('m_layanan');
+		$this->db->where('deleted_at', null);
+		$this->db->like('dokter', $id_dokter);
+		$q = $this->db->get();
+		$data = $q->result();
+
+		if($data) {
+			foreach ($data as $key => $value) {
+				$row['id'] = $value->id_layanan;
+				$row['text'] = $value->nama_layanan;
+				$retval[] = $row;
+			}
+		} else {
+			$retval = false;
+		}
+
+		echo json_encode($retval);
+	}
+
 	public function add()
 	{
 		$id_user = $this->session->userdata('id_user'); 
@@ -328,6 +352,7 @@ class Reg_pasien extends CI_Controller {
 		$is_asuransi = ($flag_asuransi) ? 1 : null;
 		$umur = contul(trim($this->input->post('umur_reg')));
 		$id_pemetaan = contul($this->input->post('pemetaan'));
+		$id_layanan = contul($this->input->post('layanan'));
 		
 		if($this->session->userdata('id_klinik') != null) {
 			$id_klinik = $this->session->userdata('id_klinik');
@@ -347,7 +372,8 @@ class Reg_pasien extends CI_Controller {
 			'no_asuransi' => $no_asuransi,
 			'id_klinik' => $id_klinik,
 			'umur' => $umur,
-			'id_pemetaan' => $id_pemetaan
+			'id_pemetaan' => $id_pemetaan,
+			'id_layanan'=> $id_layanan
 		];
 
 		if($this->input->post('id_reg') != '') {
@@ -398,20 +424,21 @@ class Reg_pasien extends CI_Controller {
 			$row = array();
 			//loop value tabel db
 			// $row[] = $no;
-			$row[] = $val->no_reg;
-			$row[] = $val->nama_pasien;
 			$row[] = DateTime::createFromFormat('Y-m-d', $val->tanggal_reg)->format('d/m/Y');
-			$row[] = $val->jam_reg;
-			$row[] = ($val->is_pulang == '1') ? 'Pulang' : '-';
+			$row[] = ($val->jam_reg) ?  DateTime::createFromFormat('H:i:s', $val->jam_reg)->format('H:i') : '-';
+			$row[] = $val->no_reg;
+			$row[] = $val->no_rm;
+			$row[] = $val->nama_pasien;
+			$row[] = $val->nama_klinik;
+			$row[] = $val->nama_layanan;
+			$row[] = $val->nama_dokter;
+			$row[] = $val->sudah_rekam_medik;
 			$row[] = ($val->tanggal_pulang) ? DateTime::createFromFormat('Y-m-d', $val->tanggal_pulang)->format('d/m/Y') : '-';
 			$row[] = $val->jam_pulang;
-			$row[] = $val->no_rm;
 			$row[] = $val->tempat_lahir;
 			$row[] = DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d/m/Y');
 			$row[] = $val->nik;
 			$row[] = $val->jenkel;
-			$row[] = $val->nama_klinik;
-			$row[] = $val->nama_dokter;
 			$row[] = $val->penjamin;
 			$row[] = $val->nama_asuransi;
 			$row[] = $val->no_asuransi;
@@ -743,6 +770,13 @@ class Reg_pasien extends CI_Controller {
             $data['error_string'][] = 'Wajib Mengisi Umur';
 			$data['status'] = FALSE;
 			$data['is_select2'][] = FALSE;
+		}
+
+		if ($this->input->post('layanan') == '') {
+			$data['inputerror'][] = 'layanan';
+			$data['error_string'][] = 'Wajib Mengisi layanan';
+			$data['status'] = FALSE;
+			$data['is_select2'][] = TRUE;
 		}
 
 		if($is_asuransi) {

@@ -193,6 +193,39 @@ $(document).ready(function() {
         });
     });   
 
+    $('#dokter').change(function (e) { 
+        $("#layanan").val(null).trigger("change"); 
+        $("#layanan").select2({
+            // tags: true,
+            allowClear: true,
+            tokenSeparators: [',', ' '],
+            minimumInputLength: 0,
+            minimumResultsForSearch: 5,
+            ajax: {
+                url: base_url+"reg_pasien/get_select_layanan?id_dokter="+$(this).val(),
+                dataType: "json",
+                type: "GET",
+                data: function (params) {
+
+                    var queryParameters = {
+                        term: params.term,
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.text,
+                                id: item.id,
+                            }
+                        })
+                    };
+                }
+            }
+        });
+    });   
+
     if(get_uri_segment(3) !== 'undefined' && get_uri_segment(3) == 'edit') {
         get_data_form_edit();
     }

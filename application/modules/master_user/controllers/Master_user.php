@@ -145,13 +145,12 @@ class Master_user extends CI_Controller {
 			return redirect($this->uri->segment(1));
 		}
 
+		if($oldData->foto==null) {
+			$url_foto = base_url('files/img/user_img/user_default.png');
+		}else{
+			$url_foto = base_url('files/img/user_img/') . $oldData->foto;
+		}
 		
-		/* echo "<pre>";
-		print_r ($oldData);
-		echo "</pre>";
-		exit; */
-
-		$url_foto = base_url('files/img/user_img/').$oldData->foto;
 		$foto = base64_encode(file_get_contents($url_foto));  
 		
 		$data = array(
@@ -176,7 +175,7 @@ class Master_user extends CI_Controller {
 		$role = $this->input->post('role');
 		$status = $this->input->post('status');
 		$id_pegawai = $this->input->post('pegawai');
-		$namafileseo = $this->seoUrl($username.' '.time());
+		$namafileseo = $this->seoUrl($username.' '.strtotime(date('Y-m-d H')));
 
 		if ($arr_valid['status'] == FALSE) {
 			echo json_encode($arr_valid);
@@ -215,7 +214,7 @@ class Master_user extends CI_Controller {
 				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
 				$this->image_lib->clear();
 				## replace nama file + ext
-				$namafileseo = $this->seoUrl($username.' '.time()).'.'.$extDet;
+				$namafileseo = $this->seoUrl($username.' '.strtotime(date('Y-m-d H'))).'.'.$extDet;
 			} else {
 				$error = array('error' => $this->file_obj->display_errors());
 				var_dump($error);exit;
@@ -278,7 +277,7 @@ class Master_user extends CI_Controller {
 		$status = $this->input->post('status');
 		
 		$q = $this->m_user->get_by_id($id_user);
-		$namafileseo = $this->seoUrl($q->username.' '.time());
+		$namafileseo = $this->seoUrl($q->username.' '.strtotime(date('Y-m-d H')));
 
 		if($skip_pass == false) {
 			if ($password != $repassword) {
@@ -328,7 +327,7 @@ class Master_user extends CI_Controller {
 				$output_thumb = $this->konfigurasi_image_thumb($nama_file_foto, $gbrBukti);
 				$this->image_lib->clear();
 				## replace nama file + ext
-				$namafileseo = $this->seoUrl($q->username.' '.time()).'.'.$extDet;
+				$namafileseo = $this->seoUrl($q->username.' '.strtotime(date('Y-m-d H'))).'.'.$extDet;
 				$foto = $namafileseo;
 			} else {
 				$error = array('error' => $this->file_obj->display_errors());
