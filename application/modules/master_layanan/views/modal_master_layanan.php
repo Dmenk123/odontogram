@@ -13,13 +13,14 @@
       </div>
       <div class="modal-body">
         <form id="form-pegawai" name="form-pegawai">
-          <div class="form-group">
-            <input type="hidden" class="form-control" id="id_layanan" name="id_layanan">
-            <label for="lbl_nama_pegawai" class="form-control-label">Kode Layanan:</label>
+          <!-- <div class="form-group"> -->
+           
+            <!-- <label for="lbl_nama_pegawai" class="form-control-label">Kode Layanan:</label>
             <input type="text" class="form-control" id="kode" name="kode">
-            <span class="help-block"></span>
-          </div>
+            <span class="help-block"></span> -->
+          <!-- </div> -->
           <div class="form-group">
+            <input type="hidden" class="form-control" id="id_layanan" name="id_layanan">  
             <label for="lbl_telp1" class="form-control-label">Nama Layanan:</label>
             <input type="text" class="form-control" id="nama" name="nama">
             <span class="help-block"></span>

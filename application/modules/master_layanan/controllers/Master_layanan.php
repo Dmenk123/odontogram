@@ -20,7 +20,7 @@ class Master_layanan extends CI_Controller {
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_jabatan = $this->m_global->multi_row('*', 'deleted_at is null', 'm_jabatan', null, 'nama');
-		$dokter  = $this->m_global->getSelectedData('m_pegawai', ['deleted_at' => null, 'id_jabatan' => 1])->result();
+		$dokter  = $this->m_global->getSelectedData('m_pegawai', ['is_aktif' => 1, 'id_jabatan' => 1])->result();
 				
 		/**
 		 * data passing ke halaman view content
@@ -63,12 +63,15 @@ class Master_layanan extends CI_Controller {
 			$row[] = $layan->kode_layanan;
 			$row[] = $layan->nama_layanan;
 			$row[] = $layan->keterangan;
-			$row[] = $layan->waktu_layanan;
+			$row[] = $layan->waktu_layanan.' Menit';
 			$arr_dokter = explode(",", $layan->dokter);
 			$dokter = '<ul>';
 			for ($i=0; $i <count($arr_dokter) ; $i++) { 
-				$val = $this->m_global->getSelectedData('m_pegawai', ['id' => $arr_dokter[$i]])->row();
-				$dokter .= '<li>'.$val->nama.'</li>';
+				$val = $this->m_global->getSelectedData('m_pegawai', ['id' => $arr_dokter[$i], 'is_aktif' => 1])->row();
+				if ($val) {
+					$dokter .= '<li>'.$val->nama.'</li>';
+				}
+				
 			}
 
 			$dokter .= '</ul>';
@@ -156,7 +159,7 @@ class Master_layanan extends CI_Controller {
 	{
 		$this->load->library('Enkripsi');
 		$id_layanan = $this->enkripsi->enc_dec('decrypt', $id);
-		$dokter  = $this->m_global->getSelectedData('m_pegawai', ['deleted_at' => null, 'id_jabatan' => 1])->result();
+		$dokter  = $this->m_global->getSelectedData('m_pegawai', ['is_aktif' => 1, 'id_jabatan' => 1])->result();
 		$layanan = $this->m_global->getSelectedData('m_layanan', ['id_layanan' => $id_layanan ])->row();
 
 		$data = array(
@@ -191,7 +194,7 @@ class Master_layanan extends CI_Controller {
 		$arr_valid = $this->rule_validasi();
 		
 		$nama_layanan = trim($this->input->post('nama'));
-		$kode_layanan = trim($this->input->post('kode'));
+		// $kode_layanan = trim($this->input->post('kode'));
 		$keterangan = trim($this->input->post('keterangan'));
 		$waktu_layanan = trim($this->input->post('waktu'));
 		// $dokter = $this->input->post('dokter');
@@ -206,7 +209,7 @@ class Master_layanan extends CI_Controller {
 		$this->db->trans_begin();
 		
 		$data = [
-			'kode_layanan' => $kode_layanan,
+			'kode_layanan' => $this->m_layanan->get_kode_layanan(),
 			'nama_layanan' => $nama_layanan,
 			'keterangan' => $keterangan,
 			'waktu_layanan' => $waktu_layanan,
@@ -243,14 +246,14 @@ class Master_layanan extends CI_Controller {
 		}
 
 		$nama_layanan = trim($this->input->post('nama'));
-		$kode_layanan = trim($this->input->post('kode'));
+		// $kode_layanan = trim($this->input->post('kode'));
 		$keterangan = trim($this->input->post('keterangan'));
 		$waktu_layanan = trim($this->input->post('waktu'));
 
 		$this->db->trans_begin();
 		
 		$data = [
-			'kode_layanan' => $kode_layanan,
+			// 'kode_layanan' => $kode_layanan,
 			'nama_layanan' => $nama_layanan,
 			'keterangan' => $keterangan,
 			'waktu_layanan' => $waktu_layanan,
@@ -568,11 +571,11 @@ class Master_layanan extends CI_Controller {
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
 
-		if ($this->input->post('kode') == '') {
-			$data['inputerror'][] = 'kode';
-            $data['error_string'][] = 'Wajib mengisi Kode Layanan';
-            $data['status'] = FALSE;
-		}
+		// if ($this->input->post('kode') == '') {
+		// 	$data['inputerror'][] = 'kode';
+        //     $data['error_string'][] = 'Wajib mengisi Kode Layanan';
+        //     $data['status'] = FALSE;
+		// }
 
 		if ($this->input->post('nama') == '') {
 			$data['inputerror'][] = 'nama';

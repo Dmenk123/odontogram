@@ -47,7 +47,7 @@ class Jadwal_dokter extends CI_Controller
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_schedule', 'modal_jadwal_rutin'],
+			'modal' => ['modal_schedule', 'modal_jadwal_rutin', 'modal_jadwal_tidak_rutin'],
 			'js'	=> 'jadwal_dokter.js',
 			'view'	=> 'view_jadwal_dokter_rutin_nonrutin'
 		];
@@ -203,6 +203,56 @@ class Jadwal_dokter extends CI_Controller
 		echo json_encode($retval);
 	}
 
+	public function add_jadwal_tidak_rutin()
+	{
+		$this->load->library('Enkripsi');
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$arr_valid = $this->rule_validasi_jadwal_tidak_rutin();
+		
+		$id_dokter = $this->input->post('dokter');
+		$tanggal = $this->input->post('tanggal');
+		$id_klinik = $this->session->userdata('id_klinik');
+		$jam_mulai = $this->input->post('jam_mulai');
+		$jam_akhir = $this->input->post('jam_akhir');
+		$status = $this->input->post('status');
+		if ($status == 0) {
+			$status = null;
+		}
+
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+
+
+		$this->db->trans_begin();
+		
+		$data = [
+			'id_dokter' => $id_dokter,
+			'id_klinik' => $id_klinik,
+			'tanggal' => date('Y-m-d', strtotime($tanggal)),
+			'jam_mulai' => $jam_mulai,
+			'jam_akhir' => $jam_akhir,
+			'is_libur' => $status,
+			'created_at' => $timestamp
+		];
+		
+		$insert = $this->m_global->store_id($data, 't_jadwal_dokter_tidak_rutin');
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal menambahkan jadwal praktik dokter';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses menambahkan jadwal praktik dokter';
+		}
+
+		echo json_encode($retval);
+	}
+
 	private function rule_validasi_jadwal_rutin()
 	{
 		$data = array();
@@ -225,6 +275,47 @@ class Jadwal_dokter extends CI_Controller
 		if ($this->input->post('hari') == '') {
 			$data['inputerror'][] = 'hari';
             $data['error_string'][] = 'Wajib memilih Hari';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('jam_mulai') == '') {
+			$data['inputerror'][] = 'jam_mulai';
+            $data['error_string'][] = 'Wajib mengisi jam mulai praktik';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('jam_akhir') == '') {
+			$data['inputerror'][] = 'jam_akhir';
+            $data['error_string'][] = 'Wajib mengisi jam akhir praktik';
+            $data['status'] = FALSE;
+		}
+
+	
+        return $data;
+	}
+
+	private function rule_validasi_jadwal_tidak_rutin()
+	{
+		$data = array();
+		$data['error_string'] = array();
+		$data['inputerror'] = array();
+		$data['status'] = TRUE;
+
+		/* if ($this->input->post('kode') == '') {
+			$data['inputerror'][] = 'kode';
+            $data['error_string'][] = 'Wajib mengisi Kode Diagnosa';
+            $data['status'] = FALSE;
+		} */
+
+		if ($this->input->post('dokter') == '') {
+			$data['inputerror'][] = 'dokter';
+            $data['error_string'][] = 'Wajib memilih Dokter';
+            $data['status'] = FALSE;
+		}
+
+		if ($this->input->post('tanggal') == '') {
+			$data['inputerror'][] = 'tanggal';
+            $data['error_string'][] = 'Wajib memilih Tanggal';
             $data['status'] = FALSE;
 		}
 
@@ -274,7 +365,12 @@ class Jadwal_dokter extends CI_Controller
 			foreach ($datatable as $key => $value) {
 			
 				$data[$key][] = $key+1;
-				$data[$key][] = $value->nama.'<br>( <span style="color:#34eb3a;">Aktif Praktek</span> )';
+				if ($value->is_libur == 1) {
+					$nama = $value->nama.'<br>( <span style="color:red;"><i><b>Libur</b></i></span> )';
+				}else{
+					$nama = $value->nama.'<br>( <span style="color:#34eb3a;"><b>Aktif Praktek</b></span> )';
+				}
+				$data[$key][] = $nama;
 				$data[$key][] = $value->nama_klinik;
 				$data[$key][] = tanggal_indo($value->tanggal);
 				$data[$key][] = date('H:i', strtotime($value->jam_mulai)).' WIB';   
@@ -429,6 +525,21 @@ class Jadwal_dokter extends CI_Controller
 	{
 		$where = ['id' => $this->input->post('id') ];
 		$del = $this->m_global->softdelete($where, 't_jadwal_dokter_rutin');
+		if($del) {
+			$retval['status'] = TRUE;
+			$retval['pesan'] = 'Data Jadwal Praktik Berhasil dihapus';
+		}else{
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Data jadwal Praktik Gagal dihapus';
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function delete_jadwal_tidak_rutin()
+	{
+		$where = ['id' => $this->input->post('id') ];
+		$del = $this->m_global->softdelete($where, 't_jadwal_dokter_tidak_rutin');
 		if($del) {
 			$retval['status'] = TRUE;
 			$retval['pesan'] = 'Data Jadwal Praktik Berhasil dihapus';

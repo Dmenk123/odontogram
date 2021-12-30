@@ -99,7 +99,7 @@ function edit_layanan(id)
         success: function(data)
         {
             $('[name="id_layanan"]').val(data.old_data.id_layanan);
-            $('[name="kode"]').val(data.old_data.kode_layanan);
+            // $('[name="kode"]').val(data.old_data.kode_layanan);
             $('[name="nama"]').val(data.old_data.nama_layanan);
             $('[name="keterangan"]').val(data.old_data.keterangan);
             $('[name="waktu"]').val(data.old_data.waktu_layanan);
