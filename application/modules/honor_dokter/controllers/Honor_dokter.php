@@ -60,10 +60,10 @@ class Honor_dokter extends CI_Controller {
 			//loop value tabel db
 			// $row[] = $no;
 			$row[] = $val->nama_dokter;
-			$row[] = "Rp " . number_format($val->honor_visite,2,',','.');
+			// $row[] = "Rp " . number_format($val->honor_visite,2,',','.');
 			$row[] = $val->tindakan_persen.' %';
-			$row[] = $val->obat_persen.' %';
-			$row[] = $val->tindakan_lab_persen.' %';
+			// $row[] = $val->obat_persen.' %';
+			// $row[] = $val->tindakan_lab_persen.' %';
 			
 			$str_aksi = '
 				<div class="btn-group">
@@ -245,11 +245,11 @@ class Honor_dokter extends CI_Controller {
 			return;
 		}
 		
-		$honor_visite = (int)str_replace(".","",$this->input->post('honor_visite'));
+		// $honor_visite = (int)str_replace(".","",$this->input->post('honor_visite'));
 		$id_dokter = trim($this->input->post('dokter'));
 		$tindakan_persen = trim($this->input->post('honor_tindakan'));
-		$obat_persen = trim($this->input->post('honor_obat'));
-		$tindakan_lab_persen = trim($this->input->post('honor_lab'));
+		// $obat_persen = trim($this->input->post('honor_obat'));
+		// $tindakan_lab_persen = trim($this->input->post('honor_lab'));
 		
 		//cek exist
 		$cek = $this->m_global->single_row('*', ['id_dokter' => $id_dokter, 'deleted_at' => null], 't_honor');
@@ -264,10 +264,10 @@ class Honor_dokter extends CI_Controller {
 			$this->db->trans_begin();
 			$data_ins = [
 				'id_dokter' => $id_dokter,
-				'honor_visite' => (float)$honor_visite,
+				'honor_visite' => 0,
 				'tindakan_persen' => $tindakan_persen,
-				'tindakan_lab_persen' => $tindakan_lab_persen,
-				'obat_persen' => $obat_persen,
+				'tindakan_lab_persen' => 0,
+				'obat_persen' => 0,
 				'created_at' => $timestamp,
 			];
 
@@ -403,17 +403,17 @@ class Honor_dokter extends CI_Controller {
 		}
 
 		$id = $this->input->post('id_honor');
-		$honor_visite = (int)str_replace(".","",$this->input->post('honor_visite'));
+		// $honor_visite = (int)str_replace(".","",$this->input->post('honor_visite'));
 		$id_dokter = trim($this->input->post('dokter'));
 		$tindakan_persen = trim($this->input->post('honor_tindakan'));
-		$obat_persen = trim($this->input->post('honor_obat'));
-		$tindakan_lab_persen = trim($this->input->post('honor_lab'));
+		// $obat_persen = trim($this->input->post('honor_obat'));
+		// $tindakan_lab_persen = trim($this->input->post('honor_lab'));
 
 		//cek exist
 		$cek = $this->m_global->single_row('*', ['id_dokter' => $id_dokter, 'deleted_at' => null], 't_honor');
 
 		if($cek) {
-			if($cek->id_dokter == $id) {
+			if($cek->id_dokter == $id_dokter) {
 				$flag_lanjut = true;
 			}else{
 				$flag_lanjut = false;
@@ -433,10 +433,10 @@ class Honor_dokter extends CI_Controller {
 
 			$data = [
 				'id_dokter' => $id_dokter,
-				'honor_visite' => (float)$honor_visite,
+				'honor_visite' => 0,
 				'tindakan_persen' => $tindakan_persen,
-				'tindakan_lab_persen' => $tindakan_lab_persen,
-				'obat_persen' => $obat_persen,
+				'tindakan_lab_persen' => 0,
+				'obat_persen' => 0,
 				'updated_at' => $timestamp,
 			];
 
@@ -512,11 +512,11 @@ class Honor_dokter extends CI_Controller {
 			}
 			
 		}else{
-			if ($this->input->post('honor_visite') == '') {
-				$data['inputerror'][] = 'honor_visite';
-				$data['error_string'][] = 'Minimal Honor adalah 0';
-				$data['status'] = FALSE;
-			}
+			// if ($this->input->post('honor_visite') == '') {
+			// 	$data['inputerror'][] = 'honor_visite';
+			// 	$data['error_string'][] = 'Minimal Honor adalah 0';
+			// 	$data['status'] = FALSE;
+			// }
 
 			if ($this->input->post('dokter') == '') {
 				$data['inputerror'][] = 'dokter';
@@ -530,17 +530,17 @@ class Honor_dokter extends CI_Controller {
 				$data['status'] = FALSE;
 			}
 
-			if ($this->input->post('honor_obat') == '') {
-				$data['inputerror'][] = 'honor_obat';
-				$data['error_string'][] = 'Minimal Honor adalah 0';
-				$data['status'] = FALSE;
-			}
+			// if ($this->input->post('honor_obat') == '') {
+			// 	$data['inputerror'][] = 'honor_obat';
+			// 	$data['error_string'][] = 'Minimal Honor adalah 0';
+			// 	$data['status'] = FALSE;
+			// }
 
-			if ($this->input->post('honor_lab') == '') {
-				$data['inputerror'][] = 'honor_lab';
-				$data['error_string'][] = 'Minimal Honor adalah 0';
-				$data['status'] = FALSE;
-			}
+			// if ($this->input->post('honor_lab') == '') {
+			// 	$data['inputerror'][] = 'honor_lab';
+			// 	$data['error_string'][] = 'Minimal Honor adalah 0';
+			// 	$data['status'] = FALSE;
+			// }
 		}
 
         return $data;

@@ -37,10 +37,10 @@
           <thead>
             <tr>
               <th>Nama Dokter</th>
-              <th>Honor Visite</th>
+              <!-- <th>Honor Visite</th> -->
               <th>Honor Tindakan Dokter</th>
-              <th>Honor Obat Dokter</th>
-              <th>Honor Tidakan Lab</th>
+              <!-- <th>Honor Obat Dokter</th>
+              <th>Honor Tidakan Lab</th> -->
               <th style="width: 5%;">Aksi</th>
             </tr>
           </thead>

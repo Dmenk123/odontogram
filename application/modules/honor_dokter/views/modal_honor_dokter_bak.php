@@ -10,9 +10,9 @@
         <form id="form-honor" name="form-honor">
           <div class="form-group">
             <input type="hidden" class="form-control" id="id_honor" name="id_honor">
-            <!-- <label for="lbl_visite" class="form-control-label">Honor Visite:</label>
+            <label for="lbl_visite" class="form-control-label">Honor Visite:</label>
             <input type="text" class="form-control numberinput mask_money" id="honor_visite" name="honor_visite" autocomplete="off">
-            <span class="help-block"></span> -->
+            <span class="help-block"></span>
           </div>
           <div class="form-group">
             <label for="lbl_username" class="form-control-label">Nama Dokter:</label>
@@ -32,12 +32,15 @@
             <label for="" class="form-control-label">Honor Tindakan Dokter % :</label>
             <div class="input-group">
               <input type="text" class="form-control numberinput" id="honor_tindakan" name="honor_tindakan" autocomplete="off">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" onclick="bukaFormTindakan()">.....</button>
+              </div>
             </div>
             <span class="help-block"></span>
           </div>
           
 
-          <!-- <div class="form-group">
+          <div class="form-group">
             <label for="" class="form-control-label">Honor Obat Dokter % :</label>
             <input type="text" class="form-control numberinput" id="honor_obat" name="honor_obat" autocomplete="off">
             <span class="help-block"></span>
@@ -47,9 +50,12 @@
             <label for="" class="form-control-label">Honor Tind Lab Dokter % :</label>
             <div class="input-group">
               <input type="text" class="form-control numberinput" id="honor_lab" name="honor_lab" autocomplete="off">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" onclick="bukaFormLab()">.....</button>
+              </div>
             </div>
             <span class="help-block"></span>
-          </div> -->
+          </div>
 
         </form>
       </div>

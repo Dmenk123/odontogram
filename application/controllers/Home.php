@@ -298,6 +298,95 @@ class Home extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function chart_honor_dokter()
+	{
+		$id_user = $this->session->userdata('id_user');
+		// $user_klinik =  $this->m_global->multi_row('*', ['id_user' => $id_user], 't_user_klinik');
+		// $data_dokter = $this->m_global->single_row('*', ['id' => $id_dokter], 'm_pegawai');
+		// $data_user = $this->m_global->single_row('*', ['id_pegawai' => $data_dokter->id, 'deleted_at' => null, 'id_role != ' => 1], 'm_user');
+
+		$start = Carbon::now()->subDays(PERIOD_CHART)->format('Y-m-d');
+		$end = Carbon::now()->format('Y-m-d');
+
+		$period = CarbonPeriod::create($start, $end);
+		foreach ($period as $date) {
+			$dates[] = $date->format('Y-m-d');
+		}
+
+		
+		$data_dokter = $this->db->query("SELECT * from m_pegawai where id_jabatan = 1 and is_aktif = 1 and deleted_at is null and is_owner is null order by nama")->result();
+		
+		$dataset = [];
+		$data_label_x = [];
+		$min = 0;
+		$arr_max = [];
+		// set default value
+		$arr_max[] = 0;
+		foreach ($data_dokter as $key => $value) {
+			$total_temp = [];
+			$dataset[$key]['label'] = $value->nama;
+			// $dataset[$key]['backgroundColor'] = "#" . $this->random_color();
+			$dataset[$key]['borderColor'] = "#" . $this->random_color();
+			$dataset[$key]['fill'] = false;
+
+			/* if ($this->session->userdata('id_role') != '1') {
+				$where = "reg.tanggal_reg BETWEEN '$start' AND '$end' AND reg.id_klinik = '$value->id_klinik'";
+			}else{
+				$where = "reg.tanggal_reg BETWEEN '$start' AND '$end'";
+			} */
+
+			$q = $this->db->query("
+				SELECT
+					sum(t_mutasi.total_pengeluaran) as total_honor,
+					reg.tanggal_reg,
+					m_pegawai.nama
+				FROM
+					t_registrasi AS reg 
+					LEFT JOIN m_pegawai ON reg.id_pegawai = m_pegawai.id AND m_pegawai.deleted_at IS NULL AND m_pegawai.is_owner is null
+					LEFT JOIN t_mutasi ON reg.id = t_mutasi.id_registrasi AND t_mutasi.deleted_at IS NULL 
+				WHERE 
+					reg.tanggal_reg BETWEEN '$start' AND '$end' AND reg.id_pegawai = '$value->id'	 
+				GROUP BY
+					m_pegawai.nama, reg.tanggal_reg
+				ORDER BY tanggal_reg
+			")->result();
+
+			foreach ($q as $k => $v) {
+				foreach ($dates as $dk => $dv) {
+					if ($v->tanggal_reg != $dv) {
+						### pengecekan by key, agar tidak di replace
+						if (array_key_exists($dk, $total_temp)) {
+							continue;
+						}
+
+						$arr_max[] = 0;
+						$total_temp[$dk] = 0;
+					} else {
+						$arr_max[] = (int)$v->total_honor;
+						$total_temp[$dk] = (int)$v->total_honor;
+					}
+				}
+			}
+
+			$dataset[$key]['data'] = $total_temp;
+		}
+
+		rsort($arr_max);
+
+		$data['label'] = $dates;
+		$data['datasets'] = $dataset;
+		$data['status'] = true;
+		$data['v_min'] = $min;
+		$data['v_max'] = $arr_max[0];
+		$data['judul'] = "Grafik Honor Dokter Per Tanggal (Last ".PERIOD_CHART." days)";
+
+		echo json_encode($data);
+	}
+
+
+
+
+
 	public function chart_total_kunjungan()
 	{
 		$id_user = $this->session->userdata('id_user');

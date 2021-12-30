@@ -29,8 +29,8 @@
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
             <div class="kt-portlet__head-actions">
-              &nbsp;
-              <?= $this->template_view->getOpsiButton(); ?>
+              <!-- &nbsp;
+              <?= $this->template_view->getOpsiButton(); ?> -->
               &nbsp;
               <?= $this->template_view->getAddButton(true, 'add_tindakan'); ?>
             </div>
@@ -45,7 +45,7 @@
             <tr>
               <th style="width: 5%;">No</th>
               <th>Kode</th>
-              <th>Nama Diagnosa</th>
+              <th>Nama Tindakan</th>
               <th>Harga</th>
               <th style="width: 10%;">Diskon (%)</th>
               <th style="width: 5%;">Aksi</th>

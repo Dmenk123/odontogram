@@ -23,8 +23,8 @@
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
             <div class="kt-portlet__head-actions">
-              &nbsp;
-              <?= $this->template_view->getOpsiButton(); ?>
+              <!-- &nbsp;
+              <?= $this->template_view->getOpsiButton(); ?> -->
               &nbsp;
               <?= $this->template_view->getAddButton(true, 'add_pegawai'); ?>
             </div>

@@ -4,6 +4,7 @@ var table;
 $(document).ready(function() {
     chart_kunjungan();
     chart_omset();
+    chart_honor_dokter();
     chart_total_kunjungan();
     chart_total_omset();
     chart_total_honor();
@@ -130,6 +131,61 @@ function chart_omset() {
         console.log("ERROR : ", e);
       }
     });
+}
+
+function chart_honor_dokter() {
+  $('#dash_honor_dokter').html('<canvas id="dash_honor_dokter" width="418px" height="120px"></canvas>');
+  url = base_url + 'home/chart_honor_dokter';
+  $.ajax({
+      type: "POST",
+      enctype: 'multipart/form-data',
+      url: url,
+      // data: {
+      //     start : start,
+      //     end : end
+      // },
+    dataType: "JSON",
+    timeout: 600000,
+    success: function (response) {
+        if(response.status) {
+            new Chart(document.getElementById("dash_honor_dokter"), {
+                type: 'line',
+                data: {
+                  labels: response.label,
+                  datasets: response.datasets
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: response.judul
+                  },
+                  responsive: true,
+                  responsiveAnimationDuration: 0,
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: false,
+                              callback: function(value, index, values) {
+                                  if(parseInt(value) >= 1000){
+                                      return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                  } else {
+                                      return 'Rp ' + value;
+                                  }
+                              },
+                              max : response.v_max + 500000, 
+                              min : 0
+                          }
+                      }]
+                  }
+                },
+                
+            });
+        }
+    },
+    error: function (e) {
+      console.log("ERROR : ", e);
+    }
+  });
 }
 
 function chart_total_omset() {  
