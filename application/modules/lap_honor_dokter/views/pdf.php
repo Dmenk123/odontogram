@@ -45,6 +45,7 @@
    <thead>
      <tr>
        <th style="width: 5%;">No</th>
+       <th>Tanggal</th>
        <th>Dokter</th>
        <th>Klinik</th>
        <th>Honor Dokter</th>
@@ -58,16 +59,17 @@
         $no = 1;
         foreach ($datanya as $k => $v) {
           $grandTotal += $v->total;
-          if ($flag_rowspan != $v->kode_dokter) { ?>
+          if ($flag_rowspan != $v->tanggal) { ?>
            <tr>
-             <td rowspan='<?= $v->num_row; ?>'><?= $no; ?></td>
-             <td rowspan='<?= $v->num_row; ?>'><?= $v->nama_dokter . " [" . $v->kode_dokter . "]"; ?></td>
+             <td rowspan='<?= $v->cnt; ?>'><?= $no; ?></td>
+             <td rowspan='<?= $v->cnt; ?>'><?= $v->tanggal; ?></td>
+             <td rowspan='<?= $v->cnt; ?>'><?= $v->nama_dokter . " [" . $v->kode_dokter . "]"; ?></td>
              <td><?= $v->nama_klinik; ?></td>
              <td align="right"><?= number_format($v->total, 0, ',', '.'); ?></td>
            </tr>
            <?php
             $no++;
-            $flag_rowspan = $v->kode_dokter;
+            $flag_rowspan = $v->tanggal;
             ?>
          <?php } else { ?>
            <tr>
@@ -77,11 +79,11 @@
          <?php } ?>
        <?php } ?>
        <tr>
-         <td colspan='3' align='center'><b>Total Honor Dokter</b></td>
+         <td colspan='4' align='center'><b>Total Honor Dokter</b></td>
          <td align='right'><?= number_format($grandTotal, 0, ',', '.'); ?></td>
        </tr>
      <?php } else {
-        echo '<tr><td colspan="4" align="center">Tidak ada data</td></th>';
+        echo '<tr><td colspan="5" align="center">Tidak ada data</td></th>';
       }
       ?>
    </tbody>

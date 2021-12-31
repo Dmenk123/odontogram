@@ -85,10 +85,14 @@ class Master_user extends CI_Controller {
 						<button class="dropdown-item" onclick="edit_user(\'' . $user->id . '\')">
 							<i class="la la-pencil"></i> Edit User
 						</button>
-						<button class="dropdown-item" onclick="delete_user(\'' . $user->id . '\')">
-							<i class="la la-trash"></i> Hapus
+						<button class="dropdown-item" onclick="reset_password_user(\'' . $user->id . '\')">
+							<i class="la la-gear"></i> Reset Password
 						</button>
 			';
+
+			// <button class="dropdown-item" onclick="delete_user(\'' . $user->id . '\')">
+			// 	<i class="la la-trash"></i> Hapus
+			// </button>
 			
 			if ($user->status == 1) {
 				$str_aksi .=
@@ -365,6 +369,25 @@ class Master_user extends CI_Controller {
 		}
 		
 		echo json_encode($data);
+	}
+
+	public function reset_password_user()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$this->load->library('Enkripsi');
+		$id = $this->input->post('id');
+		$hash_password = $this->enkripsi->enc_dec('encrypt', '123456');
+		$reset_pass = $this->m_user->update(['id' => $id], ['updated_at' => $timestamp, 'password' => $hash_password]);
+		if ($reset_pass) {
+			$retval['status'] = TRUE;
+			$retval['pesan'] = 'Data Master User direset Password';
+		} else {
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Data Master User direset Password';
+		}
+
+		echo json_encode($retval);
 	}
 
 	/**

@@ -53,8 +53,11 @@ $(document).ready(function() {
                     data : {status : status},
                     success: function(data)
                     {
-                        swalConfirm.fire('Berhasil Ubah Status User!', data.pesan, 'success');
-                        table.ajax.reload();
+                        swalConfirm.fire('Berhasil Ubah Status User!', data.pesan, 'success').then((cb) => {
+                            if(cb.value) {
+                                table.ajax.reload();
+                            }
+                        });
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {
@@ -294,6 +297,48 @@ function delete_user(id){
                 {
                     swalConfirm.fire('Berhasil Hapus User!', data.pesan, 'success');
                     table.ajax.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}
+
+function reset_password_user(id){
+    swalConfirmDelete.fire({
+        title: 'Reset Password User ?',
+        text: "Password akan di reset menjadi \'123456\' ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Reset Password !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'master_user/reset_password_user',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Reset Password!', data.pesan, 'success').then((cb) => {
+                        if(cb.value) {
+                            table.ajax.reload();
+                        }
+                    });                   
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

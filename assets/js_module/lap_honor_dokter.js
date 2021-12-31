@@ -13,21 +13,25 @@ $(document).ready(function() {
     var bulan = $('#bulan').val();
     var tahun = $('#tahun').val();
     var tahun2 = $('#tahun2').val();
+    var dokter = $('#dokter').val();
 
     if(model == '1'){
         $(".div_tanggal_mulai").hide();
         $(".div_tanggal_akhir").hide();
         $(".div_bulan").show();
+        $(".div_dokter").show();
         $(".div_tahun").hide();
       }
       else if(model == '3') {
         $(".div_tanggal_mulai").show();
         $(".div_tanggal_akhir").show();
+        $(".div_dokter").show();
         $(".div_bulan").hide();
         $(".div_tahun").hide();
       }
       else if (model == '2') {
         $(".div_tahun").show();
+        $(".div_dokter").show();
         $(".div_tanggal_mulai").hide();
         $(".div_tanggal_akhir").hide();
         $(".div_bulan").hide();
@@ -37,6 +41,7 @@ $(document).ready(function() {
         $(".div_tanggal_akhir").hide();
         $(".div_bulan").hide();
         $(".div_tahun").hide();
+        $(".div_dokter").hide();
       }
 	//datatables
     if (model) {
@@ -77,7 +82,8 @@ $(document).ready(function() {
                 end : tanggal_akhir,
                 bulan : bulan,
                 tahun : tahun,
-                tahun2 : tahun2
+                tahun2 : tahun2,
+                dokter : dokter
             },
             dataType: "JSON",
             success: function (response) {
@@ -96,24 +102,28 @@ function changeModel() {
     $(".div_tanggal_akhir").hide();
     $(".div_bulan").show();
     $(".div_tahun").hide();
+    $(".div_dokter").show();
   }
   else if($("#model").val() == '3') {
     $(".div_tanggal_mulai").show();
     $(".div_tanggal_akhir").show();
     $(".div_bulan").hide();
     $(".div_tahun").hide();
+    $(".div_dokter").show();
   }
   else if ($("#model").val() == '2') {
     $(".div_tahun").show();
     $(".div_tanggal_mulai").hide();
     $(".div_tanggal_akhir").hide();
     $(".div_bulan").hide();
+    $(".div_dokter").show();
   }
   else {
     $(".div_tanggal_mulai").hide();
     $(".div_tanggal_akhir").hide();
     $(".div_bulan").hide();
     $(".div_tahun").hide();
+    $(".div_dokter").hide();
   }
 }
 
@@ -150,6 +160,11 @@ function changeModel() {
           pesan = "Silahkan memilih Tahun terlebih dahulu";
         }
       }
+
+      if($("#dokter").val() == '') {
+        eksekusi = false;
+        pesan = "Silahkan memilih Dokter terlebih dahulu";
+      }
     
 
     if(eksekusi) {
@@ -157,7 +172,7 @@ function changeModel() {
     }
     else {
         Swal.fire(pesan)
-        exit
+        return;
     }
   }
 
@@ -176,7 +191,7 @@ function cetak(){
     let searchParams = new URLSearchParams(window.location.search); 
     let model =  searchParams.get('model');
     if (model) {
-      window.open(base_url+'lap_honor_dokter/cetak_data?model='+model+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&jenis=laporan_honor', '_blank');
+      window.open(base_url+'lap_honor_dokter/cetak_data?model='+model+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&dokter='+searchParams.get('dokter')+'&jenis=laporan_honor', '_blank');
       // window.location.href = ;
     }else{
       Swal.fire('Silahkan Pilih Periode Terlebih dahulu');

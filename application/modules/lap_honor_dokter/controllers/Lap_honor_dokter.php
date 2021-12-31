@@ -23,7 +23,12 @@ class Lap_honor_dokter extends CI_Controller {
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
-			
+		$data_dokter = $this->m_global->multi_row('*', [
+			'id_jabatan' => 1,
+			'deleted_at' => null,
+			'is_aktif' => 1,
+			'is_owner' => null
+		], 'm_pegawai', NULL, 'nama');
 		/**
 		 * data passing ke halaman view content
 		 */
@@ -31,6 +36,7 @@ class Lap_honor_dokter extends CI_Controller {
 			'title' => 'Laporan Honor Dokter',
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
+			'data_dokter' => $data_dokter
 		);
 
 		/**
@@ -57,6 +63,7 @@ class Lap_honor_dokter extends CI_Controller {
 		$bulan = $this->input->post('bulan');
 		$start = $this->input->post('start');
 		$end = $this->input->post('end');
+		$dokter = $this->input->post('dokter');
 
 		if ($start) {
 			$start = Carbon::createFromFormat('d/m/Y', $start)->format('Y-m-d');
@@ -70,54 +77,75 @@ class Lap_honor_dokter extends CI_Controller {
 			### pertahun
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
 			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun2'";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		}elseif ($model == 1) {
 			### perbulan
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
 			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		}elseif ($model == 3) {
 			### perhari
 			$where = "mut.tanggal between '$start' and '$end'";
 			$where2 = "x_mut.tanggal between '$start' and '$end'";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		}
 
 		$q = $this->db->query("
-			SELECT	
+				SELECT	
 				sum(mut.total_pengeluaran) as total,
 				mut.tanggal,
 				m_klinik.nama_klinik,
 				reg.id_klinik,
 				m_pegawai.nama as nama_dokter,
 				m_pegawai.kode as kode_dokter,
-				(SELECT count(sub_tabel.id) 
-					FROM (
-						select x_mut.id, x_reg.id_pegawai
-						from t_mutasi x_mut
-						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
-						LEFT JOIN m_pegawai AS x_peg ON x_reg.id_pegawai = x_peg.id AND x_peg.deleted_at IS NULL 
-						where id_jenis_trans = 6 
-						and x_mut.deleted_at is null
-						and $where2
-						AND x_peg.id_jabatan = 1 
-						GROUP BY x_mut.tanggal, x_reg.id_pegawai
-					) as sub_tabel where sub_tabel.id_pegawai = reg.id_pegawai
-				) as num_row
+				tbl_sub_join.cnt
 			FROM
 				t_mutasi AS mut
 				LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
 				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
 				LEFT JOIN m_pegawai ON reg.id_pegawai = m_pegawai.id AND m_pegawai.deleted_at IS NULL 
+				JOIN (
+					select 
+						count(tbl_sub.tanggal) as cnt,
+						tbl_sub.tanggal
+					FROM (
+						SELECT
+							x_mut.id,
+							x_reg.id_pegawai,
+							x_mut.tanggal
+						FROM
+							t_mutasi x_mut
+						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
+						LEFT JOIN m_pegawai AS x_peg ON x_reg.id_pegawai = x_peg.id AND x_peg.deleted_at IS NULL 
+						WHERE
+							id_jenis_trans = 6 
+							AND x_mut.deleted_at IS NULL 
+							AND $where2
+							and x_reg.id_pegawai = $dokter
+							AND x_peg.id_jabatan = 1 
+						GROUP BY x_mut.tanggal, x_reg.id_pegawai, x_reg.id_klinik
+					) as tbl_sub
+						
+					GROUP BY tbl_sub.tanggal
+				) as tbl_sub_join on mut.tanggal = tbl_sub_join.tanggal
 			WHERE
 				mut.id_jenis_trans = 6 
 				AND mut.deleted_at IS NULL 
 				AND m_pegawai.id_jabatan = 1
-				AND $where
+				AND $where  
+				AND reg.id_pegawai = $dokter
 			GROUP BY $group
 			ORDER BY m_pegawai.nama, m_klinik.nama_klinik
 		")->result();
 		
+		// echo $this->db->last_query();exit;
+					
+		
+		// echo "<pre>";
+		// print_r ($q);
+		// echo "</pre>";
+		// exit;
+
 		$html = '';
 		$flag_rowspan = null;
 		$grandTotal = 0;
@@ -126,18 +154,19 @@ class Lap_honor_dokter extends CI_Controller {
 			foreach ($q as $k => $v) {
 				$grandTotal += $v->total;
 			
-				if($flag_rowspan != $v->kode_dokter) {
+				if($flag_rowspan != $v->tanggal) {
 					$html .= "
 						<tr>
-							<td rowspan ='$v->num_row'>" . $no . "</td>
-							<td rowspan ='$v->num_row'>" . $v->nama_dokter . " [" . $v->kode_dokter . "]</td>
+							<td rowspan ='$v->cnt'>" . $no . "</td>
+							<td rowspan ='$v->cnt'>" . $v->tanggal . "</td>
+							<td rowspan ='$v->cnt'>" . $v->nama_dokter . " [" . $v->kode_dokter . "]</td>
 							<td>" . $v->nama_klinik . "</td>
 							<td align='right'>" . number_format($v->total, 0, ',', '.') . "</td>
 						</tr>
 					";
 
 					$no++;
-					$flag_rowspan = $v->kode_dokter;
+					$flag_rowspan = $v->tanggal;
 				}else{
 					$html .= "
 						<tr>
@@ -150,7 +179,7 @@ class Lap_honor_dokter extends CI_Controller {
 
 			$html .= "
 				<tr>
-					<td colspan = '3' align='center'><b>Total Honor Dokter</b></td>
+					<td colspan = '4' align='center'><b>Total Honor Dokter</b></td>
 					<td align='right'>" . number_format($grandTotal, 0, ',', '.') . "</td>
 				</tr>
 			";
@@ -221,6 +250,7 @@ class Lap_honor_dokter extends CI_Controller {
 		$bulan = $this->input->get('bulan');
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
+		$dokter = $this->input->get('dokter');
 
 		if ($start) {
 			$start = Carbon::createFromFormat('d/m/Y', $start)->format('Y-m-d');
@@ -235,52 +265,65 @@ class Lap_honor_dokter extends CI_Controller {
 			$txt_periode = $tahun2;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
 			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun2'";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		} elseif ($model == 1) {
 			### perbulan
 			$txt_periode = bulan_indo($bulan).' '.$tahun;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
 			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		} elseif ($model == 3) {
 			### perhari
 			$txt_periode = tanggal_indo($start).' s/d '. tanggal_indo($end);
 			$where = "mut.tanggal between '$start' and '$end'";
 			$where2 = "x_mut.tanggal between '$start' and '$end'";
-			$group = "m_klinik.nama_klinik, reg.id_pegawai";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		}
 
 		$q = $this->db->query("
-			SELECT	
+				SELECT	
 				sum(mut.total_pengeluaran) as total,
 				mut.tanggal,
 				m_klinik.nama_klinik,
 				reg.id_klinik,
 				m_pegawai.nama as nama_dokter,
 				m_pegawai.kode as kode_dokter,
-				(SELECT count(sub_tabel.id) 
-					FROM (
-						select x_mut.id, x_reg.id_pegawai
-						from t_mutasi x_mut
-						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
-						LEFT JOIN m_pegawai AS x_peg ON x_reg.id_pegawai = x_peg.id AND x_peg.deleted_at IS NULL 
-						where id_jenis_trans = 6 
-						and x_mut.deleted_at is null
-						and $where2
-						AND x_peg.id_jabatan = 1 
-						GROUP BY x_mut.tanggal, x_reg.id_pegawai
-					) as sub_tabel where sub_tabel.id_pegawai = reg.id_pegawai
-				) as num_row
+				tbl_sub_join.cnt
 			FROM
 				t_mutasi AS mut
 				LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
 				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
 				LEFT JOIN m_pegawai ON reg.id_pegawai = m_pegawai.id AND m_pegawai.deleted_at IS NULL 
+				JOIN (
+					select 
+						count(tbl_sub.tanggal) as cnt,
+						tbl_sub.tanggal
+					FROM (
+						SELECT
+							x_mut.id,
+							x_reg.id_pegawai,
+							x_mut.tanggal
+						FROM
+							t_mutasi x_mut
+						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
+						LEFT JOIN m_pegawai AS x_peg ON x_reg.id_pegawai = x_peg.id AND x_peg.deleted_at IS NULL 
+						WHERE
+							id_jenis_trans = 6 
+							AND x_mut.deleted_at IS NULL 
+							AND $where2
+							and x_reg.id_pegawai = $dokter
+							AND x_peg.id_jabatan = 1 
+						GROUP BY x_mut.tanggal, x_reg.id_pegawai, x_reg.id_klinik
+					) as tbl_sub
+						
+					GROUP BY tbl_sub.tanggal
+				) as tbl_sub_join on mut.tanggal = tbl_sub_join.tanggal
 			WHERE
 				mut.id_jenis_trans = 6 
 				AND mut.deleted_at IS NULL 
 				AND m_pegawai.id_jabatan = 1
-				AND $where
+				AND $where  
+				AND reg.id_pegawai = $dokter
 			GROUP BY $group
 			ORDER BY m_pegawai.nama, m_klinik.nama_klinik
 		")->result();
