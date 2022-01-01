@@ -69,7 +69,7 @@
               <div class="col-lg-12 row">
                 
                 <?php foreach ($data as $key => $value) { ?>
-                  <div class="col-4 div_menu" data-uid="<?= $this->enkripsi->enc_dec('encrypt', $value->id);?>" data-id="<?= $this->enkripsi->enc_dec('encrypt', $value->id_klinik);?>" data-nama="<?=$value->nama_klinik;?>" style="cursor:pointer;display:flex">
+                  <div class="col-6 div_menu" data-uid="<?= $this->enkripsi->enc_dec('encrypt', $value->id);?>" data-id="<?= $this->enkripsi->enc_dec('encrypt', $value->id_klinik);?>" data-nama="<?=$value->nama_klinik;?>" style="cursor:pointer;display:flex">
                     <div class="kt-portlet kt-iconbox kt-iconbox--success kt-iconbox--animate-slower">
                       <div class="kt-portlet__body">
                         <div class="kt-iconbox__body">

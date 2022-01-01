@@ -155,8 +155,8 @@ class Rekam_medik extends CI_Controller {
 			$html .= '<tr>';
 			$html .= '<td>'.$data->no_reg.'</td>';
 			$html .= '<td>'.DateTime::createFromFormat('Y-m-d', $data->tanggal_reg)->format('d/m/Y').' '.$data->jam_reg.'</td>';
-			$html .= '<td>'.$data->nama_pasien.'</td>';
 			$html .= '<td>'.$data->nama_dokter.'</td>';
+			$html .= '<td>'.$data->nama_pasien.'</td>';
 			$html .= '<td>'.$data->no_rm.'</td>';
 			$html .= ($data->is_asuransi) ? '<td>Asuransi</td>' : '<td>Umum</td>';
 			$html .= '<td>'.$data->nama_asuransi.'</td>';
@@ -275,7 +275,15 @@ class Rekam_medik extends CI_Controller {
 			###update
 			$data['updated_at'] = $timestamp;
 			$where = ['id' => $this->input->post('id_anamnesa')];
+		
+			$cek = $this->m_global->single_row('*', $where, 't_perawatan');
 			$update = $this->t_rekam_medik->update($where, $data, 't_perawatan');
+			$merge_arr = array_merge($where, $data);
+			$this->m_global->insert_log_aktifitas('UBAH DATA ANAMNESA (REKAM MEDIK)', [
+				'old_data' => json_encode($cek),
+				'new_data' => json_encode($merge_arr)
+			]);
+
 			$pesan = 'Sukses Mengupdate data Perawatan';
 		}else{
 			###insert
@@ -284,6 +292,11 @@ class Rekam_medik extends CI_Controller {
 			$data['created_at'] = $timestamp;
 			
 			$insert = $this->t_rekam_medik->save($data, 't_perawatan');
+
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA ANAMNESA (REKAM MEDIK)', [
+				'new_data' => json_encode($data)
+			]);
+
 			$pesan = 'Sukses Menambah data Perawatan';
 		}
 				
@@ -379,6 +392,9 @@ class Rekam_medik extends CI_Controller {
 			];
 						
 			$insert = $this->t_rekam_medik->save($data, 't_diagnosa');
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA DIAGNOSA (REKAM MEDIK)', [
+				'new_data' => json_encode($data)
+			]);
 			// $pesan = 'Sukses Menambah data Perawatan';
 		}
 
@@ -391,6 +407,10 @@ class Rekam_medik extends CI_Controller {
 		];
 
 		$insert_det = $this->t_rekam_medik->save($data_det, 't_diagnosa_det');
+
+		$this->m_global->insert_log_aktifitas('TAMBAH DATA DIAGNOSA DETAIL (REKAM MEDIK)', [
+			'new_data' => json_encode($data_det)
+		]);
 
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -578,12 +598,17 @@ class Rekam_medik extends CI_Controller {
 	public function delete_data_diagnosa_det()
 	{
 		$id = $this->input->post('id');
+		$cek = $this->m_global->single_row('*', ['id' => $id], 't_diagnosa_det');
 		$hapus = $this->m_global->delete(['id' => $id], 't_diagnosa_det');
 		if($hapus) {
 			$data = [
 				'status' => true,
 				'pesan' => 'Berhasil Hapus Data',
 			];
+
+			$this->m_global->insert_log_aktifitas('HAPUS DATA DIAGNOSA DETAIL (REKAM MEDIK)', [
+				'old_data' => json_encode($cek)
+			]);
 		}else{
 			$data = [
 				'status' => false,
@@ -597,12 +622,17 @@ class Rekam_medik extends CI_Controller {
 	public function delete_data_kamera_det()
 	{
 		$id = $this->input->post('id');
+		$cek = $this->m_global->single_row('*', ['id' => $id], 't_kamera_det');
 		$hapus = $this->m_global->delete(['id' => $id], 't_kamera_det');
 		if($hapus) {
 			$data = [
 				'status' => true,
 				'pesan' => 'Berhasil Hapus Data',
 			];
+
+			$this->m_global->insert_log_aktifitas('HAPUS DATA KAMERA DETAIL (REKAM MEDIK)', [
+				'old_data' => json_encode($cek)
+			]);
 		}else{
 			$data = [
 				'status' => false,
@@ -665,6 +695,9 @@ class Rekam_medik extends CI_Controller {
 							
 				$insert = $this->t_rekam_medik->save($data, 't_tindakan');
 
+				$this->m_global->insert_log_aktifitas('TAMBAH DATA TINDAKAN (REKAM MEDIK)', [
+					'new_data' => json_encode($data)
+				]);
 			}else{
 				$data = [
 					'id' => $data->id,
@@ -702,6 +735,9 @@ class Rekam_medik extends CI_Controller {
 
 			$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakan_det');
 
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA TINDAKAN DETAIL (REKAM MEDIK)', [
+				'new_data' => json_encode($data_det)
+			]);
 			// isi mutasi
 			/**
 			 * param 1 = id_registrasi
@@ -789,6 +825,9 @@ class Rekam_medik extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}else{
+			$this->m_global->insert_log_aktifitas('HAPUS DATA TINDAKAN DETAIL (REKAM MEDIK)', [
+				'old_data' => json_encode($data_lawas)
+			]);
 			
 			$data_kirim[] = $data_lawas;
 			/**

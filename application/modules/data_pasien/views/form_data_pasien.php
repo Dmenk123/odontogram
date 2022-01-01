@@ -28,7 +28,7 @@
         </div>
         <div class="kt-portlet__body">
           <div class="form-group row form-group-marginless kt-margin-t-20">
-            <input type="hidden" class="form-control" name="id_pasien" value="">
+            <input type="hidden" class="form-control" name="id_pasien" value="<?php if(isset($data_pasien)) { echo $data_pasien->id_pasien; }?>">
             <label class="col-lg-1 col-form-label">Nama Pasien:</label>
             <div class="col-lg-3">
               <input type="text" class="form-control" name="nama" onkeyup="to_upper(this)" value="<?php if(isset($data_pasien)) {echo $data_pasien->nama;} ?>">

@@ -85,11 +85,10 @@ class Data_pasien extends CI_Controller {
 
 		$this->load->library('Enkripsi');
 		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
-		
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 
-		$select = "pas.*, mdk.*";
+		$select = "pas.id as id_pasien, pas.*, mdk.*";
 		$where = ['pas.deleted_at' => null, 'pas.id' => $id_pasien];
 		$table = 'm_pasien as pas';
 		$join = [ 
@@ -251,6 +250,7 @@ class Data_pasien extends CI_Controller {
 		}else{
 			$flag_data_baru = true;
 		}
+		
 		######### end flag pasien baru
 
 		######## flag no_rm otomatis
@@ -331,6 +331,10 @@ class Data_pasien extends CI_Controller {
 			$pasien['is_aktif'] = 1;
 
 			$insert = $this->m_pasien->save($pasien);
+
+			$log_aktifitas = $this->m_global->insert_log_aktifitas('TAMBAH DATA PASIEN', [
+				'new_data' => json_encode($pasien)
+			]);
 		}
 		##jika update data
 		else{
@@ -338,6 +342,11 @@ class Data_pasien extends CI_Controller {
 			
 			$where = ['id' => $id_pasien];
 			$update = $this->m_pasien->update($where, $pasien);
+			$merge_arr = array_merge($where, $pasien);
+			$log_aktifitas = $this->m_global->insert_log_aktifitas('UBAH DATA PASIEN', [
+				'old_data' => json_encode($cek),
+				'new_data' => json_encode($merge_arr)
+			]);
 		}
 
 		###################### data medik
@@ -365,6 +374,10 @@ class Data_pasien extends CI_Controller {
 			$medik['created_at'] = $timestamp;
 
 			$insert = $this->m_data_medik->save($medik);
+
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA MEDIK', [
+				'new_data' => json_encode($medik)
+			]);
 		}
 		##jika update data
 		else{
@@ -373,6 +386,12 @@ class Data_pasien extends CI_Controller {
 
 			$where = ['id' => $cek_medik->id];
 			$update = $this->m_data_medik->update($where, $medik);
+
+			$merge_arr = array_merge($where, $medik);
+			$this->m_global->insert_log_aktifitas('UBAH DATA MEDIK', [
+				'old_data' => json_encode($cek_medik),
+				'new_data' => json_encode($merge_arr)
+			]);
 		}
 		
 		if ($this->db->trans_status() === FALSE){
@@ -407,14 +426,26 @@ class Data_pasien extends CI_Controller {
 		}
 
 		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
-		$del = $this->m_pasien->softdelete_by_id($id_pasien);
-		if($del) {
-			$retval['status'] = TRUE;
-			$retval['pesan'] = 'Data Pasien Sukses dihapus';
+		$cek = $this->m_pasien->get_by_id($id_pasien);
+		if($cek) {
+			$del = $this->m_pasien->softdelete_by_id($id_pasien);
+			if($del) {
+				$this->m_global->insert_log_aktifitas('HAPUS DATA PASIEN', [
+					'old_data' => json_encode($cek),
+				]);
+				$retval['status'] = TRUE;
+				$retval['pesan'] = 'Data Pasien Sukses dihapus';
+			}else{
+				$retval['status'] = FALSE;
+				$retval['pesan'] = 'Data Pasien Gagal dihapus';
+			}
 		}else{
+		
 			$retval['status'] = FALSE;
 			$retval['pesan'] = 'Data Pasien Gagal dihapus';
+	
 		}
+		
 
 		echo json_encode($retval);
 	}

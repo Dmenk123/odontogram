@@ -189,5 +189,38 @@ class M_global extends CI_Model
 			return '1';
 		} 
 	}
+
+    public function insert_log_aktifitas($aksi, $arrdata=null)
+    {
+        $obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+        $id_user = $this->session->userdata('id_user');
+        $url = $this->get_existing_url();
+
+        $data_ins['id_user'] = $id_user;
+        $data_ins['url'] = $url; 
+        $data_ins['aksi'] = $aksi; 
+        if (isset($arrdata['new_data'])) {
+            $data_ins['new_data'] = $arrdata['new_data']; 
+        }
+
+        if (isset($arrdata['old_data'])) {
+            $data_ins['old_data'] = $arrdata['old_data'];
+        }
+
+        $data_ins['created_at'] = $timestamp;
+        $this->db->insert('t_log_aktifitas', $data_ins);
+        return ($this->db->affected_rows() != 1) ? false : true;
+        
+    }
+
+    public function get_existing_url()
+    {
+        $this->load->helper('url');
+        $currentURL = current_url();
+        $params   = $_SERVER['QUERY_STRING'];
+        $fullURL = $currentURL . '?' . $params;
+        return $fullURL;
+    }
 		
 }

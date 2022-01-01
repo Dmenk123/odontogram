@@ -380,8 +380,15 @@ class Reg_pasien extends CI_Controller {
 			###update
 			$registrasi['updated_at'] = $timestamp;
 			$where = ['id' => $this->input->post('id_reg')];
+			$cek = $this->m_global->single_row('*', $where,'t_registrasi');
+
 			$update = $this->t_registrasi->update($where, $registrasi);
 			$pesan = 'Sukses Mengupdate data Registrasi';
+			$merge_arr = array_merge($where, $registrasi);
+			$log_aktifitas = $this->m_global->insert_log_aktifitas('UBAH DATA REGISTRASI', [
+				'old_data' => json_encode($cek),
+				'new_data' => json_encode($merge_arr)
+			]);
 		}else{
 			###insert
 			$registrasi['id'] = $this->t_registrasi->get_max_id();
@@ -389,6 +396,10 @@ class Reg_pasien extends CI_Controller {
 			$registrasi['created_at'] = $timestamp;
 			$insert = $this->t_registrasi->save($registrasi);
 			$pesan = 'Sukses Menambah data Registrasi';
+
+			$log_aktifitas = $this->m_global->insert_log_aktifitas('TAMBAH DATA REGISTRASI', [
+				'new_data' => json_encode($registrasi)
+			]);
 		}
 				
 		if ($this->db->trans_status() === FALSE){
@@ -563,8 +574,13 @@ class Reg_pasien extends CI_Controller {
 			return;
 		}
 
-		$id_pasien = $this->enkripsi->enc_dec('decrypt', $enc_id);
-		$del = $this->t_registrasi->softdelete_by_id($id_pasien);
+		$id_reg = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		$cek = $this->m_global->single_row('*', ['id' => $id_reg], 't_registrasi');
+		$log_aktifitas = $this->m_global->insert_log_aktifitas('HAPUS DATA REGISTRASI', [
+			'old_data' => json_encode($cek)
+		]);
+
+		$del = $this->t_registrasi->softdelete_by_id($id_reg);
 		if($del) {
 			$retval['status'] = TRUE;
 			$retval['pesan'] = 'Data Pasien Sukses dihapus';

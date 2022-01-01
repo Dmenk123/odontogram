@@ -11,6 +11,7 @@ class Login extends CI_Controller {
 		parent::__construct();
 		//Do your magic here
 		$this->load->library('Enkripsi');
+		$this->load->model('m_global');
 	}
 	
 
@@ -97,6 +98,14 @@ class Login extends CI_Controller {
 			)
 		);
 
+		$log_aktifitas = $this->m_global->insert_log_aktifitas('LOGIN');
+		if(!$log_aktifitas) {
+			echo json_encode([
+				'status' => false,
+			]);
+			return;
+		}
+
 		echo json_encode([
 			'status' => true,
 		]);
@@ -132,11 +141,14 @@ class Login extends CI_Controller {
 					)
 				);
 
+				$log_aktifitas = $this->m_global->insert_log_aktifitas('LOGIN');
+
 				echo json_encode([
 					'status' => true,
 					'is_klinik_choice' => false,
 				]);
 			}else{
+
 				### user dokter
 				echo json_encode([
 					'status' => true,
@@ -160,6 +172,7 @@ class Login extends CI_Controller {
 		if ($this->session->userdata('logged_in')) 
 		{
 			//$this->session->sess_destroy();
+			$log_aktifitas = $this->m_global->insert_log_aktifitas('LOGOUT');
 			$this->session->unset_userdata('username');
 			$this->session->unset_userdata('id_user');
 			$this->session->unset_userdata('id_role');
