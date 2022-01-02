@@ -287,7 +287,7 @@ class Reg_pasien extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik";
+		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, reg.id_layanan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik, lay.nama_layanan";
 		/* $where = ['reg.deleted_at is null' => null, 'reg.id' => $id, 'reg.id_klinik' => $this->id_klinik]; */
 		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
 		$table = 't_registrasi as reg';
@@ -296,6 +296,7 @@ class Reg_pasien extends CI_Controller {
 			['table' => 'm_pegawai as peg', 'on'=> 'reg.id_pegawai = peg.id'],
 			['table' => 'm_pemetaan as pem', 'on' => 'reg.id_pemetaan = pem.id'],
 			['table' => 'm_klinik as kli', 'on' => 'reg.id_klinik = kli.id'],
+			['table' => 'm_layanan as lay', 'on' => 'reg.id_layanan = lay.id_layanan'],
 		];
 		$data_reg = $this->m_global->single_row($select,$where,$table, $join);
 		
@@ -320,6 +321,7 @@ class Reg_pasien extends CI_Controller {
 			'data' => $data_reg,
 			'txt_opt_pasien' => '['.$data_reg->no_rm.' - '.$data_reg->nik.'] '.$data_reg->nama_pasien,
 			'txt_opt_dokter' => '['.$data_reg->kode_dokter.'] '.$data_reg->nama_dokter,
+			'txt_opt_layanan' => $data_reg->nama_layanan,
 			'txt_opt_klinik' =>  $data_reg->nama_klinik.' - '.$data_reg->alamat_klinik,
 			'is_option_klinik' => $is_option_klinik
 		]);

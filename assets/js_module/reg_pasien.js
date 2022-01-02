@@ -433,6 +433,9 @@ function get_data_form_edit() {
                 var option_dokter = $("<option selected='selected'></option>").val(response.data.id_pegawai).text(response.txt_opt_dokter);
                 $("#dokter").append(option_dokter).trigger('change');
 
+                var option_layanan = $("<option selected='selected'></option>").val(response.data.id_layanan).text(response.txt_opt_layanan);
+                $("#layanan").append(option_layanan).trigger('change');
+
                 if(response.is_option_klinik) {
                     var option_klinik = $("<option selected='selected'></option>").val(response.data.id_klinik).text(response.txt_opt_klinik);
                     $("select.klinik").append(option_klinik).trigger('change');
