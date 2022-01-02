@@ -475,6 +475,10 @@ class Rekam_medik extends CI_Controller {
 				];
 							
 				$insert = $this->t_rekam_medik->save($data, 't_kamera');
+
+				$this->m_global->insert_log_aktifitas('TAMBAH DATA X-RAY (REKAM MEDIK)', [
+					'new_data' => json_encode($data)
+				]);
 				// $pesan = 'Sukses Menambah data Perawatan';
 			}
 
@@ -487,6 +491,10 @@ class Rekam_medik extends CI_Controller {
 			];
 
 			$insert_det = $this->t_rekam_medik->save($data_det, 't_kamera_det');
+
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA X-RAY DETAIL (REKAM MEDIK)', [
+				'new_data' => json_encode($data_det)
+			]);
 
 			if ($this->db->trans_status() === FALSE){
 				$this->db->trans_rollback();
@@ -828,7 +836,7 @@ class Rekam_medik extends CI_Controller {
 			$this->m_global->insert_log_aktifitas('HAPUS DATA TINDAKAN DETAIL (REKAM MEDIK)', [
 				'old_data' => json_encode($data_lawas)
 			]);
-			
+
 			$data_kirim[] = $data_lawas;
 			/**
 			 * param 1 = id_registrasi
@@ -893,6 +901,10 @@ class Rekam_medik extends CI_Controller {
 			];
 						
 			$insert = $this->t_rekam_medik->save($data, 't_logistik');
+
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA LOGISTIK (REKAM MEDIK)', [
+				'new_data' => json_encode($data)
+			]);
 		}else{
 			$data = [
 				'id' => $data->id,
@@ -921,6 +933,9 @@ class Rekam_medik extends CI_Controller {
 
 		$insert_det = $this->t_rekam_medik->save($data_det, 't_logistik_det');
 
+		$this->m_global->insert_log_aktifitas('TAMBAH DATA LOGISTIK DETAIL (REKAM MEDIK)', [
+			'new_data' => json_encode($data_det)
+		]);
 		// isi mutasi
 		/**
 		 * param 1 = id_registrasi
@@ -1060,7 +1075,9 @@ class Rekam_medik extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}else{
-			
+			$this->m_global->insert_log_aktifitas('HAPUS DATA LOGISTIK DETAIL (REKAM MEDIK)', [
+				'old_data' => json_encode($data_lawas)
+			]);
 			$data_kirim[] = $data_lawas;
 			/**
 			 * param 1 = id_registrasi
@@ -1126,6 +1143,9 @@ class Rekam_medik extends CI_Controller {
 						
 			$insert = $this->t_rekam_medik->save($data, 't_tindakanlab');
 
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA TINDAKAN LAB (REKAM MEDIK)', [
+				'new_data' => json_encode($data)
+			]);
 		}else{
 			$data = [
 				'id' => $data->id,
@@ -1162,7 +1182,9 @@ class Rekam_medik extends CI_Controller {
 		$data_det_kirim[] = $data_det;
 
 		$insert_det = $this->t_rekam_medik->save($data_det, 't_tindakanlab_det');
-
+		$this->m_global->insert_log_aktifitas('TAMBAH DATA TINDAKAN LAB DETAIL (REKAM MEDIK)', [
+			'new_data' => json_encode($data_det)
+		]);
 		// isi mutasi
 		/**
 		 * param 1 = id_registrasi
@@ -1241,7 +1263,9 @@ class Rekam_medik extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}else{
-			
+			$this->m_global->insert_log_aktifitas('HAPUS DATA TINDAKAN LAB DETAIL (REKAM MEDIK)', [
+				'old_data' => json_encode($data_lawas)
+			]);
 			$data_kirim[] = $data_lawas;
 			/**
 			 * param 1 = id_registrasi
@@ -1442,8 +1466,17 @@ class Rekam_medik extends CI_Controller {
 		if ($result !== FALSE) {
 			if ($cek) {
 				$this->m_global->update('t_odontogram', ['gambar'=>$fileName], ['id_reg' => $id_reg]);
+
+				$this->m_global->insert_log_aktifitas('UBAH DATA GAMBAR ODONTO (REKAM MEDIK)', [
+					'old_data' => json_encode($cek),
+					'new_data' => json_encode(['gambar'=>$fileName, 'id_reg'=> $id_reg])
+				]);
 			}else{
 				$this->m_global->store(['gambar'=>$fileName, 'id_reg'=> $id_reg], 't_odontogram');
+
+				$this->m_global->insert_log_aktifitas('TAMBAH DATA GAMBAR ODONTO (REKAM MEDIK)', [
+					'new_data' => json_encode(['gambar'=>$fileName, 'id_reg'=> $id_reg])
+				]);
 			}
 			$retval['status'] = true;
 			$retval['pesan'] = 'Berhasil Tersimpan';
@@ -1598,6 +1631,12 @@ class Rekam_medik extends CI_Controller {
 			$this->m_global->update('t_odontogram', $data, ['id_reg' => $id_reg]);
 
 			$old_data = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
+
+			$this->m_global->insert_log_aktifitas('UBAH DATA FORM ODONTO (REKAM MEDIK)', [
+				'old_data' => json_encode($cek),
+				'new_data' => json_encode($data)
+			]);
+
 			$retval['status'] = true;
 			$retval['pesan'] = 'Berhasil Diupdate';
 			$retval['old_data'] = $old_data;
@@ -1606,6 +1645,11 @@ class Rekam_medik extends CI_Controller {
 			$this->m_global->store($data, 't_odontogram');
 
 			$old_data = $this->m_global->getSelectedData('t_odontogram', ['id_reg' => $id_reg])->row();
+
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA FORM ODONTO (REKAM MEDIK)', [
+				'new_data' => json_encode($data)
+			]);
+
 			$retval['status'] = true;
 			$retval['pesan'] = 'Berhasil Tersimpan';
 			$retval['old_data'] = $old_data;
@@ -1638,6 +1682,7 @@ class Rekam_medik extends CI_Controller {
 
 		### cek apakah sudah dibayar, redirect jika sudah dibayar
 		$data_bayar = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'deleted_at' => null], 't_pembayaran');
+
 		if($data_bayar) {
 			echo json_encode([
 				'status' => false,
@@ -1662,6 +1707,17 @@ class Rekam_medik extends CI_Controller {
 			'updated_at' => $timestamp
 		], ['id' => $id_reg]);
 		if($upd) {
+
+			$this->m_global->insert_log_aktifitas('REKAM MEDIK SELESAI', [
+				'new_data' => json_encode([
+					'tanggal_pulang' => $datenow,
+					'jam_pulang' =>  Carbon::parse($timestamp)->format('H:i:s'),
+					'is_pulang' => 1, 
+					'updated_at' => $timestamp,
+					'id' => $id_reg
+				])
+			]);
+
 			echo json_encode([
 				'status' => true,
 				'pesan' => 'Pasien ['.$datareg->no_reg.'] telah selesai proses Rekam Medik',  
@@ -1709,6 +1765,17 @@ class Rekam_medik extends CI_Controller {
 			'updated_at' => $timestamp
 		], ['id' => $id_reg]);
 		if($upd) {
+
+			$this->m_global->insert_log_aktifitas('PEMBATALAN REKAM MEDIK SELESAI', [
+				'new_data' => json_encode([
+					'tanggal_pulang' => $datenow,
+					'jam_pulang' =>  Carbon::parse($timestamp)->format('H:i:s'),
+					'is_pulang' => 1, 
+					'updated_at' => $timestamp,
+					'id' => $id_reg
+				])
+			]);
+
 			echo json_encode([
 				'status' => true,
 				'pesan' => 'Pasien ['.$datareg->no_reg.'] Sukses dilakukan Pembatalan',  

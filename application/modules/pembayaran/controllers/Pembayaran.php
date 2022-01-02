@@ -561,6 +561,9 @@ class Pembayaran extends CI_Controller {
 
 		$insert = $this->t_pembayaran->save($arr_pembayaran);
 		
+		$this->m_global->insert_log_aktifitas('TAMBAH DATA PEMBAYARAN', [
+			'new_data' => json_encode($arr_pembayaran)
+		]);
 		// isi mutasi
 		/**
 		 * param 1 = id_registrasi
