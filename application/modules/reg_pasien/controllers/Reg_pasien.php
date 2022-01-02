@@ -554,7 +554,6 @@ class Reg_pasien extends CI_Controller {
 			$this->db->where_in('a.id', $this->input->post('id'));
 			$q = $this->db->get()->result();
 			
-
 			if($q) {
 				### get template pesan broadcast
 				$template_pesan = $this->m_global->single_row('*', ['type' => 'broadcast'], 'm_pesan_blash');
@@ -562,7 +561,7 @@ class Reg_pasien extends CI_Controller {
 					$text = $template_pesan->pesan;
 					$text = str_replace("#KLINIK#", $value->nama_klinik, $text);
 					$text = str_replace("#NAMA#", $value->nama, $text);
-					$text = str_replace("#WAKTU#", tanggal_indo($value->tanggal_reg).' '.$value->jam_reg, $text);
+					$text = str_replace("#WAKTU#", tanggal_indo($value->tanggal_reg).' '.Carbon::createFromFormat('H:i:s', $value->jam_reg)->format('H:i'), $text);
 					$post_pesan = json_decode($this->api_wa->send_message($value->hp, $text, $value->token_wa), true);
 					
 					if($post_pesan['status'] == false) {
