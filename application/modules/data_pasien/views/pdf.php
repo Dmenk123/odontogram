@@ -1,7 +1,3 @@
-<html>
-
-<head>
-  <title><?php echo $title; ?></title>
   <style type="text/css">
     #outtable {
       padding: 10px;
@@ -160,24 +156,6 @@
     </table>
   </footer>
   <div class="container">
-    <table class="tbl-outer">
-      <tr>
-        
-        <td align="left" class="outer-left">
-          <img src="<?=base_url('files/img/app_img/').$data_klinik->gambar;?>" height="75" width="75">
-        </td>
-
-        <td align="right" class="outer-left" style="padding-top: 30px; padding-left:10px;">
-          <p style="text-align: left; font-size: 14px" class="outer-left">
-            <strong><?= $data_klinik->nama_klinik; ?></strong>
-          </p>
-          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat.' '.$data_klinik->kelurahan.' '.$data_klinik->kecamatan; ?></p>
-          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota.', '.$data_klinik->provinsi.' '.$data_klinik->kode_pos; ?></p>
-        </td>
-        
-      </tr>
-    </table>
-
     <table class="tbl-header">
       <tr>
         <td align="center" class="head-center">
@@ -194,8 +172,8 @@
           <th style="width: 20%; text-align: center;">TTL</th>
           <th style="width: 10%;text-align: center;">NIK</th>
           <th style="width: 3%; text-align: center;">JK</th>
-          <th style="width: 15%; text-align: center;">Pekerjaan</th>
-          <th style="width: 15%; text-align: center;">Alamat</th>
+          <th style="width: 15%; text-align: center;">Alamat KTP</th>
+          <th style="width: 15%; text-align: center;">Alamat Domisili</th>
           <th style="width: 10%; text-align: center;">HP/WA</th>
           <th style="width: 5%; text-align: center;">Gol Darah</th>
           <th style="width: 10%; text-align: center;">Tkn Darah</th>
@@ -218,8 +196,8 @@
             <td class="text-center"><?= $val->tempat_lahir.'/'.DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d-m-Y'); ?></td>
             <td class="text-center"><?= $val->nik; ?></td>
             <td class="text-center"><?= $val->jenis_kelamin; ?></td>
-            <td class="text-center"><?= $val->pekerjaan; ?></td>
             <td class="text-center"><?= $val->alamat_rumah; ?></td>
+            <td class="text-center"><?= $val->alamat_kantor; ?></td>
             <td class="text-center"><?= $val->hp; ?></td>
             <td class="text-center"><?= $val->gol_darah; ?></td>
             <td class="text-center"><?= $val->tekanan_darah.' ('.$val->tekanan_darah_val.')'; ?></td>

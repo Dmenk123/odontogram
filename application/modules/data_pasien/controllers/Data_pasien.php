@@ -4,7 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use Carbon\Carbon;
 
 class Data_pasien extends CI_Controller {
-	
+	protected $prop_data_user = null;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -17,6 +18,8 @@ class Data_pasien extends CI_Controller {
 		$this->load->model('m_global');
 		$this->load->model('m_pasien');
 		$this->load->model('m_data_medik');
+
+		$this->prop_data_user = $this->m_user->get_detail_user($this->session->userdata('id_user'));
 	}
 
 	public function index()
@@ -509,6 +512,7 @@ class Data_pasien extends CI_Controller {
 			]
 		];
 		$data = $this->m_global->multi_row($select,$where,$table,$join);
+		
 		if($data) {
 			$counter = count($data)+1;
 		}else{
@@ -537,26 +541,23 @@ class Data_pasien extends CI_Controller {
 			->setCellValue('D1', 'Tgl Lahir')
 			->setCellValue('E1', 'NIK')
 			->setCellValue('F1', 'Jenis Kelamin')
-			->setCellValue('G1', 'Suku')
-			->setCellValue('H1', 'Pekerjaan')
-			->setCellValue('I1', 'Alamat Rumah')
-			->setCellValue('J1', 'Telp Rumah')
-			->setCellValue('K1', 'Alamat Kantor')
-			->setCellValue('L1', 'HP/WA')
-			->setCellValue('M1', 'Status Pasien')
-			->setCellValue('N1', 'Golongan Darah')
-			->setCellValue('O1', 'Tekanan Darah')
-			->setCellValue('P1', 'Nilai Tek Darah')
-			->setCellValue('Q1', 'Penyakit Jantung')
-			->setCellValue('R1', 'Diabetes')
-			->setCellValue('S1', 'Haemopilia')
-			->setCellValue('T1', 'Hepatitis')
-			->setCellValue('U1', 'Gastring')
-			->setCellValue('V1', 'Penyakit Lainnya')
-			->setCellValue('W1', 'Alergi Obat')
-			->setCellValue('X1', 'List Alergi Obat')
-			->setCellValue('Y1', 'Alergi Makanan')
-			->setCellValue('Z1', 'List Alergi Makanan');
+			->setCellValue('G1', 'Alamat KTP')
+			->setCellValue('H1', 'Alamat Domisili')
+			->setCellValue('I1', 'HP/WA')
+			->setCellValue('J1', 'Status Pasien')
+			->setCellValue('K1', 'Golongan Darah')
+			->setCellValue('L1', 'Tekanan Darah')
+			->setCellValue('M1', 'Nilai Tek Darah')
+			->setCellValue('N1', 'Penyakit Jantung')
+			->setCellValue('O1', 'Diabetes')
+			->setCellValue('P1', 'Haemopilia')
+			->setCellValue('Q1', 'Hepatitis')
+			->setCellValue('R1', 'Gastring')
+			->setCellValue('S1', 'Penyakit Lainnya')
+			->setCellValue('T1', 'Alergi Obat')
+			->setCellValue('U1', 'List Alergi Obat')
+			->setCellValue('V1', 'Alergi Makanan')
+			->setCellValue('W1', 'List Alergi Makanan');
 					
 		$startRow = 2;
 		$row = $startRow;
@@ -571,26 +572,23 @@ class Data_pasien extends CI_Controller {
 					->setCellValue("D{$row}", DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d/m/Y'))
 					->setCellValue("E{$row}", $val->nik)
 					->setCellValue("F{$row}", $val->jenis_kelamin)
-					->setCellValue("G{$row}", $val->suku)
-					->setCellValue("H{$row}", $val->pekerjaan)
-					->setCellValue("I{$row}", $val->alamat_rumah)
-					->setCellValue("J{$row}", $val->telp_rumah)
-					->setCellValue("K{$row}", $val->alamat_kantor)
-					->setCellValue("L{$row}", $val->hp)
-					->setCellValue("M{$row}", $val->status_pasien)
-					->setCellValue("N{$row}", $val->gol_darah)
-					->setCellValue("O{$row}", $val->tekanan_darah)
-					->setCellValue("P{$row}", $val->tekanan_darah_val)
-					->setCellValue("Q{$row}", ($val->penyakit_jantung == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("R{$row}", ($val->diabetes == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("S{$row}", ($val->haemopilia == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("T{$row}", ($val->hepatitis == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("U{$row}", ($val->gastring == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("V{$row}", ($val->penyakit_lainnya == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("W{$row}", ($val->alergi_obat == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("X{$row}", $val->alergi_obat_val)
-					->setCellValue("Y{$row}", ($val->alergi_makanan == '1') ? 'Ya' : 'Tidak')
-					->setCellValue("Z{$row}", $val->alergi_makanan_val);
+					->setCellValue("G{$row}", $val->alamat_rumah)
+					->setCellValue("H{$row}", $val->alamat_kantor)
+					->setCellValue("I{$row}", $val->hp)
+					->setCellValue("J{$row}", $val->status_pasien)
+					->setCellValue("K{$row}", $val->gol_darah)
+					->setCellValue("L{$row}", $val->tekanan_darah)
+					->setCellValue("M{$row}", $val->tekanan_darah_val)
+					->setCellValue("N{$row}", ($val->penyakit_jantung == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("O{$row}", ($val->diabetes == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("P{$row}", ($val->haemopilia == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("Q{$row}", ($val->hepatitis == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("R{$row}", ($val->gastring == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("S{$row}", ($val->penyakit_lainnya == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("T{$row}", ($val->alergi_obat == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("U{$row}", $val->alergi_obat_val)
+					->setCellValue("V{$row}", ($val->alergi_makanan == '1') ? 'Ya' : 'Tidak')
+					->setCellValue("W{$row}", $val->alergi_makanan_val);
 				$row++;
 			}
 
@@ -650,37 +648,38 @@ class Data_pasien extends CI_Controller {
 
 				$id_pasien = $this->m_pasien->get_max_id_pasien();
 				$pasien['id'] = $id_pasien;
-				$pasien['no_rm'] = contul(strtoupper(strtolower(trim($sheetData[$i][0]))));
-				$pasien['nama'] = contul(strtoupper(strtolower(trim($sheetData[$i][1]))));
-				$pasien['tempat_lahir'] = contul(strtoupper(strtolower(trim($sheetData[$i][2]))));
-				$pasien['tanggal_lahir'] = DateTime::createFromFormat('d-m-Y', trim($sheetData[$i][3]))->format('Y-m-d');
-				$pasien['nik'] = contul(trim($sheetData[$i][4]));
-				$pasien['jenis_kelamin'] = contul(strtoupper(strtolower(trim($sheetData[$i][5]))));
-				$pasien['suku'] = contul(strtoupper(strtolower(trim($sheetData[$i][6]))));
-				$pasien['pekerjaan'] = contul(strtoupper(strtolower(trim($sheetData[$i][7]))));
-				$pasien['alamat_rumah'] = contul(strtoupper(strtolower(trim($sheetData[$i][8]))));
-				$pasien['telp_rumah'] = contul(trim($sheetData[$i][9]));
-				$pasien['alamat_kantor'] = contul(strtoupper(strtolower(trim($sheetData[$i][10]))));
-				$pasien['hp'] = contul(trim($sheetData[$i][11]));
+				$pasien['no_rm'] = $this->m_pasien->get_kode_rm(
+					substr(strtoupper(strtolower(trim($sheetData[$i][0]))),0,2), 
+					Carbon::parse(trim($sheetData[$i][2]))->format('Y'),
+					Carbon::parse(trim($sheetData[$i][2]))->format('m')
+				);
+				$pasien['nama'] = contul(strtoupper(strtolower(trim($sheetData[$i][0]))));
+				$pasien['tempat_lahir'] = contul(strtoupper(strtolower(trim($sheetData[$i][1]))));
+				$pasien['tanggal_lahir'] = DateTime::createFromFormat('d-m-Y', trim($sheetData[$i][2]))->format('Y-m-d');
+				$pasien['nik'] = contul(trim($sheetData[$i][3]));
+				$pasien['jenis_kelamin'] = contul(strtoupper(strtolower(trim($sheetData[$i][4]))));
+				$pasien['alamat_rumah'] = contul(strtoupper(strtolower(trim($sheetData[$i][5]))));
+				$pasien['alamat_kantor'] = contul(strtoupper(strtolower(trim($sheetData[$i][6]))));
+				$pasien['hp'] = contul(trim($sheetData[$i][7]));
 				$pasien['is_aktif'] = 1;
 				$pasien['created_at'] = $timestamp;
 				$data_pasien[] = $pasien;
 
 				################# DATA MEDIK
 				$medik['id_pasien'] = $id_pasien;
-				$medik['gol_darah'] = contul(strtoupper(strtolower(trim($sheetData[$i][12]))));
-				$medik['tekanan_darah'] = contul(strtoupper(strtolower(trim($sheetData[$i][13]))));
-				$medik['tekanan_darah_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][14]))));
-				$medik['penyakit_jantung'] = contul(strtoupper(strtolower(trim($sheetData[$i][15]))));
-				$medik['diabetes'] = contul(strtoupper(strtolower(trim($sheetData[$i][16]))));
-				$medik['haemopilia'] = contul(strtoupper(strtolower(trim($sheetData[$i][17]))));
-				$medik['hepatitis'] = contul(strtoupper(strtolower(trim($sheetData[$i][18]))));
-				$medik['gastring'] = contul(strtoupper(strtolower(trim($sheetData[$i][19]))));
-				$medik['penyakit_lainnya'] = contul(strtoupper(strtolower(trim($sheetData[$i][20]))));
-				$medik['alergi_obat'] = contul(strtoupper(strtolower(trim($sheetData[$i][21]))));
-				$medik['alergi_obat_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][22]))));
-				$medik['alergi_makanan'] = contul(strtoupper(strtolower(trim($sheetData[$i][23]))));
-				$medik['alergi_makanan_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][24]))));
+				$medik['gol_darah'] = contul(strtoupper(strtolower(trim($sheetData[$i][8]))));
+				$medik['tekanan_darah'] = contul(strtoupper(strtolower(trim($sheetData[$i][9]))));
+				$medik['tekanan_darah_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][10]))));
+				$medik['penyakit_jantung'] = contul(strtoupper(strtolower(trim($sheetData[$i][11]))));
+				$medik['diabetes'] = contul(strtoupper(strtolower(trim($sheetData[$i][12]))));
+				$medik['haemopilia'] = contul(strtoupper(strtolower(trim($sheetData[$i][13]))));
+				$medik['hepatitis'] = contul(strtoupper(strtolower(trim($sheetData[$i][14]))));
+				$medik['gastring'] = contul(strtoupper(strtolower(trim($sheetData[$i][15]))));
+				$medik['penyakit_lainnya'] = contul(strtoupper(strtolower(trim($sheetData[$i][16]))));
+				$medik['alergi_obat'] = contul(strtoupper(strtolower(trim($sheetData[$i][17]))));
+				$medik['alergi_obat_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][18]))));
+				$medik['alergi_makanan'] = contul(strtoupper(strtolower(trim($sheetData[$i][19]))));
+				$medik['alergi_makanan_val'] = contul(strtoupper(strtolower(trim($sheetData[$i][20]))));
 				$medik['created_at'] = $timestamp;
 				$data_medik[] = $medik;
 
@@ -704,10 +703,6 @@ class Data_pasien extends CI_Controller {
 				}
 				
 				$this->db->trans_begin();
-				
-				#### truncate loh !!!!!!
-				$this->m_data_medik->trun_data_medik();
-				$this->m_pasien->trun_data_pasien();
 				
 				foreach ($data_pasien as $key => $val) {
 					$simpan = $this->m_pasien->save($val);
@@ -798,18 +793,49 @@ class Data_pasien extends CI_Controller {
 		$data = $this->m_global->multi_row($select, $where, $table, $join, 'pas.no_rm');
 		$data_klinik = $this->m_global->single_row('*', 'deleted_at is null', 'm_klinik');
 
+		$konten_html = $this->load->view('pdf', ['data' => $data, 'title' => 'Data Pasien', 'data_klinik' => $data_klinik, 'data_user' => $this->prop_data_user[0]], true);
+
 		$retval = [
 			'data' => $data,
-			'title' => 'Data Pasien',
-			'data_klinik' => $data_klinik
+			'data_klinik' => $data_klinik,
+			'content' => $konten_html,
+			'footer' => '', // set '' agar tidak ikut default, footer ikut konten
 		];
 
 
 		// $this->load->view('pdf', $retval);
-		$html = $this->load->view('pdf', $retval, true);
+		$html = $this->load->view('template/pdf', $retval, true);
 	    $filename = 'data_pasien'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'legal', 'landscape');
 	}
+
+	// public function cetak_data()
+	// {
+	// 	$select = "pas.*, mdk.*, CASE WHEN pas.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel";
+	// 	$where = ['pas.deleted_at' => null];
+	// 	$table = 'm_pasien as pas';
+	// 	$join = [ 
+	// 		[
+	// 			'table' => 'm_data_medik as mdk',
+	// 			'on'	=> 'pas.id = mdk.id_pasien'
+	// 		]
+	// 	];
+
+	// 	$data = $this->m_global->multi_row($select, $where, $table, $join, 'pas.no_rm');
+	// 	$data_klinik = $this->m_global->single_row('*', 'deleted_at is null', 'm_klinik');
+
+	// 	$retval = [
+	// 		'data' => $data,
+	// 		'title' => 'Data Pasien',
+	// 		'data_klinik' => $data_klinik
+	// 	];
+
+
+	// 	// $this->load->view('pdf', $retval);
+	// 	$html = $this->load->view('pdf', $retval, true);
+	//     $filename = 'data_pasien'.time();
+	//     $this->lib_dompdf->generate($html, $filename, true, 'legal', 'landscape');
+	// }
 
 	// ===============================================
 	private function rule_validasi($is_update=false, $skip_pass=false)
