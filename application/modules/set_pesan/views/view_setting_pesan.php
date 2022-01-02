@@ -49,7 +49,7 @@
                 <span class="help-block"></span>
               </div>
               <div class="form-group">
-                <button type="button" class="btn btn-primary" id="btnSave" onclick="save_personal()">Simpan</button>
+                <button type="button" class="btn btn-primary" id="btnSave1" onclick="save_personal()">Simpan</button>
               </div>
             </form>
             </div>
@@ -64,7 +64,7 @@
                 <span class="help-block"></span>
               </div>
               <div class="form-group">
-                <button type="button" class="btn btn-primary" id="btnSave" onclick="save_broadcast()">Simpan</button>
+                <button type="button" class="btn btn-primary" id="btnSave2" onclick="save_broadcast()">Simpan</button>
               </div>
             </form>
             </div>

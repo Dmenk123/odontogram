@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use Carbon\Carbon;
+
 class Reg_pasien extends CI_Controller {
 	
 	protected $id_klinik = null;
@@ -503,7 +505,8 @@ class Reg_pasien extends CI_Controller {
 	{
 		$this->load->library('Enkripsi');
 		$list = $this->t_registrasi->get_list_broadcast($this->id_klinik);
-
+		// echo $this->db->last_query();exit;
+		
 		$data = array();
 		$data = [];
 		if ($list) {
@@ -531,31 +534,65 @@ class Reg_pasien extends CI_Controller {
 
 	public function send_broadcast()
 	{
-		$this->load->library('Api_wa');
+		try {
+			$this->load->library('Api_wa');
 
-		if($this->input->post('id') == null || $this->input->post('id') == '') {
-			echo json_encode([
-				'status' => false,
-				'pesan' => 'Mohon ceklist salah satu'
-			]);
-			return;
+			if($this->input->post('id') == null || $this->input->post('id') == '') {
+				echo json_encode([
+					'status' => false,
+					'pesan' => 'Mohon ceklist salah satu'
+				]);
+				return;
+			}
+
+			$this->db->select('a.id as id_reg, b.nama, b.hp, c.nama_klinik, c.alamat, c.telp, c.token_wa, a.tanggal_reg, a.jam_reg');
+			$this->db->from('t_registrasi a');
+			$this->db->join('m_pasien b', 'a.id_pasien = b.id', 'left');
+			$this->db->join('m_klinik c', 'a.id_klinik = c.id', 'left');
+			$this->db->where('a.deleted_at', null);	
+			$this->db->where('b.deleted_at', null);		
+			$this->db->where_in('a.id', $this->input->post('id'));
+			$q = $this->db->get()->result();
+			
+
+			if($q) {
+				### get template pesan broadcast
+				$template_pesan = $this->m_global->single_row('*', ['type' => 'broadcast'], 'm_pesan_blash');
+				foreach ($q as $key => $value) {
+					$text = $template_pesan->pesan;
+					$text = str_replace("#KLINIK#", $value->nama_klinik, $text);
+					$text = str_replace("#NAMA#", $value->nama, $text);
+					$text = str_replace("#WAKTU#", tanggal_indo($value->tanggal_reg).' '.$value->jam_reg, $text);
+					$post_pesan = json_decode($this->api_wa->send_message($value->hp, $text, $value->token_wa), true);
+					
+					if($post_pesan['status'] == false) {
+						echo json_encode([
+							'status' => false,
+							'pesan' => $post_pesan['message']
+						]);
+						return;
+					}
+
+					#flag registrasi
+					$this->m_global->update('t_registrasi', ['is_send_broadcast' => 1],  ['id' => $value->id_reg]);
+				}
+
+				$retval['status'] = TRUE;
+				$retval['pesan'] = 'Sukses Broadcast reminder';
+				echo json_encode($retval);
+			}else{
+				echo json_encode([
+					'status' => false,
+					'pesan' => 'Data tidak ditemukan'
+				]);
+				return;
+			}
+		} catch (\Throwable $th) {
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Gagal Broadcast reminder';
+			echo json_encode($retval);
 		}
-
-		$this->db->select('b.nama, b.hp');
-		$this->db->from('t_registrasi a');
-		$this->db->join('m_pasien b', 'a.id_pasien = b.id', 'left');
-		$this->db->where('a.deleted_at', null);	
-		$this->db->where('b.deleted_at', null);		
-		$this->db->where_in('a.id', $this->input->post('id'));
-		$q = $this->db->get()->result();
-		
-		// foreach ($this->input->post('id') as $key => $value) {
-		// 	$this->api_wa->send();
-		// }
-		// echo "<pre>";
-		// print_r ($this->input->post('id'));
-		// echo "</pre>";
-		
+				
 	}
 	/**
 	 * Hanya melakukan softdelete saja

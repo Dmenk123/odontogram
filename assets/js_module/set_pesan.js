@@ -37,14 +37,14 @@ function save_personal()
     
     $("#btnSave").prop("disabled", true);
     $('#btnSave').text('Menyimpan Data'); //change button text
-    swalConfirmDelete.fire({
+    swalConfirm.fire({
         title: 'Perhatian !!',
         text: "Apakah anda yakin mengubah format pesan ini ?",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya',
         cancelButtonText: 'Tidak',
-        reverseButtons: true
+        reverseButtons: false
       }).then((result) => {
         if (result.value) {
             $.ajax({
@@ -59,12 +59,14 @@ function save_personal()
                 timeout: 600000,
                 success: function (data) {
                     if(data.status) {
-                        swal.fire("Sukses!!", data.pesan, "success");
-                        $("#btnSave").prop("disabled", false);
-                        $('#btnSave').text('Simpan');
-                    
-                        
-                        location.reload();
+                        swalConfirm.fire('Sukses!', data.pesan, 'success').then((cb) => {
+                            if(cb.value) {
+                                // window.location.href = base_url +'pembayaran';
+                                $("#btnSave").prop("disabled", false);
+                                $('#btnSave').text('Simpan');
+                                location.reload();
+                            }
+                        });
                     }else {
                         for (var i = 0; i < data.inputerror.length; i++) 
                         {
@@ -113,16 +115,16 @@ function save_broadcast()
     var form = $('#form-broadcast')[0];
     var data = new FormData(form);
     
-    $("#btnSave").prop("disabled", true);
-    $('#btnSave').text('Menyimpan Data'); //change button text
-    swalConfirmDelete.fire({
+    $("#btnSave2").prop("disabled", true);
+    $('#btnSave2').text('Menyimpan Data'); //change button text
+    swalConfirm.fire({
         title: 'Perhatian !!',
         text: "Apakah anda yakin mengubah format pesan ini ?",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya',
         cancelButtonText: 'Tidak',
-        reverseButtons: true
+        reverseButtons: false
       }).then((result) => {
         if (result.value) {
             $.ajax({
@@ -137,12 +139,15 @@ function save_broadcast()
                 timeout: 600000,
                 success: function (data) {
                     if(data.status) {
-                        swal.fire("Sukses!!", data.pesan, "success");
-                        $("#btnSave").prop("disabled", false);
-                        $('#btnSave').text('Simpan');
-                    
-                        
-                        location.reload();
+                        swalConfirm.fire('Sukses!', data.pesan, 'success').then((cb) => {
+                            if(cb.value) {
+                                // window.location.href = base_url +'pembayaran';
+                                $("#btnSave2").prop("disabled", false);
+                                $('#btnSave2').text('Simpan');
+                                location.reload();
+                            }
+                        });
+                       
                     }else {
                         for (var i = 0; i < data.inputerror.length; i++) 
                         {
@@ -154,14 +159,14 @@ function save_broadcast()
                             }
                         }
         
-                        $("#btnSave").prop("disabled", false);
-                        $('#btnSave').text('Simpan');
+                        $("#btnSave2").prop("disabled", false);
+                        $('#btnSave2').text('Simpan');
                     }
                 },
                 error: function (e) {
                     console.log("ERROR : ", e);
-                    $("#btnSave").prop("disabled", false);
-                    $('#btnSave').text('Simpan');
+                    $("#btnSave2").prop("disabled", false);
+                    $('#btnSave2').text('Simpan');
         
                     reset_modal_form();
                     $(".modal").modal('hide');

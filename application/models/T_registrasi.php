@@ -252,6 +252,10 @@ class T_registrasi extends CI_Model
 
 	function get_list_broadcast($id_klinik)
 	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$tgl = $obj_date->format('Y-m-d');
+
 		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
 		peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik");
 		$this->db->from($this->table.' reg');
@@ -260,12 +264,16 @@ class T_registrasi extends CI_Model
 		$this->db->join('m_pemetaan pem', 'reg.id_pemetaan = pem.id', 'left');
 		$this->db->join('m_klinik kli', 'reg.id_klinik = kli.id', 'left');
 		$this->db->where('reg.deleted_at is null');
+		$this->db->where('reg.tanggal_reg', $tgl);
+		$this->db->where('reg.is_send_broadcast', null);
+		
 
 		if($id_klinik != null) {
 			$this->db->where('reg.id_klinik', $id_klinik);
 		}
 		
-		$this->db->where('is_pulang', 1);
+		$this->db->where('is_pulang', null);
+
 		$q = $this->db->get();
 		return $q->result();
 	}

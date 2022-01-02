@@ -245,8 +245,16 @@ $(document).ready(function() {
             url: base_url + "reg_pasien/send_broadcast",
             dataType: "JSON",
             data: {id : arrData},
-            success: function (response) {
-                
+            success: function (data) {
+                if(data.status) {
+                    swalConfirm.fire('Sukses!!', data.pesan, 'success').then((cb) => {
+                        if(cb.value) {
+                           location.reload;
+                        }
+                    });
+                }else{
+                    swal.fire('Gagal!!', data.pesan, 'error');
+                }
             }
         });
     });

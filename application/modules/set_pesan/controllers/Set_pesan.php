@@ -60,15 +60,26 @@ class Set_pesan extends CI_Controller {
 		$type = $this->input->post('type');
 		$pesan = $this->input->post('pesan');
 
+		$cek = $this->m_global->single_row('*', ['type' => $type], 'm_pesan_blash');
+		if($cek) {
+			$where = ['type' => $type];
+			$data = [
+				'pesan' => $pesan,
+				'type' => $type,
+				'updated_at' => $timestamp
+			];
+			$update = $this->m_global->update('m_pesan_blash', $data, $where);
+		}else{
+			$data = [
+				'pesan' => $pesan,
+				'type' => $type,
+				'created_at' => $timestamp
+			];
 
+			$this->m_global->store($data,'m_pesan_blash');
+		}
 		$this->db->trans_begin();
 		
-		$data = [
-			'pesan' => $pesan,
-		];
-		
-		$where = ['type' => $type];
-		$update = $this->m_global->update('m_pesan_blash', $data, $where);
 		
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -82,6 +93,7 @@ class Set_pesan extends CI_Controller {
 
 		echo json_encode($retval);
 	}
+	
 
 	public function update_data_diagnosa()
 	{
