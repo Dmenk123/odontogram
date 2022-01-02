@@ -212,7 +212,7 @@
               <span class="help-block"></span>
             </div>
             <div class="col-lg-6">
-              <input type="text" class="form-control" name="alergi_obat_val" disabled value="<?php if(isset($data_pasien)) {echo $data_pasien->alergi_obat_val;} ?>">
+              <input type="text" class="form-control" name="alergi_obat_val" value="<?php if(isset($data_pasien)) {echo $data_pasien->alergi_obat_val;} ?>">
               <span class="help-block"></span>
             </div>
           </div>
@@ -226,7 +226,7 @@
               <span class="help-block"></span>
             </div>
             <div class="col-lg-6">
-              <input type="text" class="form-control" name="alergi_makanan_val" disabled value="<?php if(isset($data_pasien)) {echo $data_pasien->alergi_makanan_val;} ?>">
+              <input type="text" class="form-control" name="alergi_makanan_val" value="<?php if(isset($data_pasien)) {echo $data_pasien->alergi_makanan_val;} ?>">
               <span class="help-block"></span>
             </div>
           </div>

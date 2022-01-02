@@ -249,7 +249,7 @@ $(document).ready(function() {
                 if(data.status) {
                     swalConfirm.fire('Sukses!!', data.pesan, 'success').then((cb) => {
                         if(cb.value) {
-                           location.reload;
+                            table.ajax.reload();
                         }
                     });
                 }else{
