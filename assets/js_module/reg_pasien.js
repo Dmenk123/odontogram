@@ -706,6 +706,15 @@ function time_now() {
 }
 
 function get_uri_segment(segment) {
+
+    const hostName = window.location.origin;
     var pathArray = window.location.pathname.split( '/' );
-    return pathArray[segment];
+    
+    if(hostName == 'http://localhost') {
+        return pathArray[segment];
+    }else{
+        return pathArray[parseInt(segment) - 1];
+    }
+
+    // console.log(pathArray);
 }

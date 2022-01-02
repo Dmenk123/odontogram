@@ -35,15 +35,15 @@
               <span class="help-block"></span>
             </div>
             <label class="col-lg-1 col-form-label">NIK:</label>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
               <input type="text" class="form-control" name="nik" maxlength="16" value="<?php if(isset($data_pasien)) {echo $data_pasien->nik;} ?>">
               <span class="help-block"></span>
             </div>
-           <!--  <label class="col-lg-1 col-form-label">No RM:</label>
+            <label class="col-lg-1 col-form-label">HP/WA:</label>
             <div class="col-lg-2">
-              <input type="text" class="form-control mask_rm" name="no_rm" onkeyup="to_upper(this)" disabled value="<?php if(isset($data_pasien)) {echo $data_pasien->no_rm;} ?>">
+              <input type="text" class="form-control" name="hp" value="<?php if(isset($data_pasien)) {echo $data_pasien->hp;} ?>">
               <span class="help-block"></span>
-            </div> -->
+            </div>
             <div class="col-lg-2 hidden">
               <div class="kt-checkbox-list">
                 <label class="kt-checkbox kt-checkbox--tick kt-checkbox--brand">
@@ -75,45 +75,21 @@
               <span class="help-block"></span>
             </div>
           </div>
-          <!-- <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Suku Bangsa:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="suku" value="<?php if(isset($data_pasien)) {echo $data_pasien->suku;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Pekerjaan:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="pekerjaan" value="<?php if(isset($data_pasien)) {echo $data_pasien->pekerjaan;} ?>">
-              <span class="help-block"></span>
-            </div>
-          </div> -->
           <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
+
           <div class="form-group row">
-            <label class="col-lg-1 col-form-label">HP/WA:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="hp" value="<?php if(isset($data_pasien)) {echo $data_pasien->hp;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Alamat Rumah:</label>
+            <label class="col-lg-1 col-form-label">Alamat KTP:</label>
             <div class="col-lg-5">
               <input type="text" class="form-control" name="alamat_rumah" value="<?php if(isset($data_pasien)) {echo $data_pasien->alamat_rumah;} ?>">
               <span class="help-block"></span>
             </div>
-          </div>
-          <!-- <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg kt-separator--portlet-fit"></div>
-          <div class="form-group row">
-            <label class="col-lg-1 col-form-label">Telp Rumah:</label>
-            <div class="col-lg-5">
-              <input type="text" class="form-control" name="telp" value="<?php if(isset($data_pasien)) {echo $data_pasien->telp_rumah;} ?>">
-              <span class="help-block"></span>
-            </div>
-            <label class="col-lg-1 col-form-label">Alamat Kantor:</label>
+
+            <label class="col-lg-1 col-form-label">Alamat Domisili:</label>
             <div class="col-lg-5">
               <input type="text" class="form-control" name="alamat_kantor" value="<?php if(isset($data_pasien)) {echo $data_pasien->alamat_kantor;} ?>">
               <span class="help-block"></span>
             </div>
-          </div> -->
+          </div>
         </div>
       </div>
 
