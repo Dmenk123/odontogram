@@ -40,7 +40,7 @@
             </li>
             <?php if(!in_array($this->session->userdata('id_role'), ['1','2'])) { ?>
             <li class="nav-item">
-                <a class="nav-link" href="javascript: void(0);" style="background-color: #eaeaea;" data-toggle="tab" data-target="#wa-tab" role="tab" onclick="tabel_broadcast()">Boradcast</a>
+                <a class="nav-link" href="javascript: void(0);" style="background-color: #eaeaea;" data-toggle="tab" data-target="#wa-tab" role="tab" onclick="tabel_broadcast()">Broadcast</a>
             </li>
             <?php } ?>
         </ul>

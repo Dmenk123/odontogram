@@ -265,7 +265,7 @@ class T_registrasi extends CI_Model
 		$this->db->join('m_klinik kli', 'reg.id_klinik = kli.id', 'left');
 		$this->db->where('reg.deleted_at is null');
 		$this->db->where('reg.tanggal_reg', $tgl);
-		$this->db->where('reg.is_send_broadcast', null);
+		// $this->db->where('reg.is_send_broadcast', null);
 		
 
 		if($id_klinik != null) {
