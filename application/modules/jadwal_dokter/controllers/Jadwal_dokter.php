@@ -37,7 +37,7 @@ class Jadwal_dokter extends CI_Controller
 			'data_jabatan'	=> $data_jabatan
 		);
 
-		$data['dokter']             = $this->m_global->getSelectedData('m_pegawai', ['id_jabatan' => 1])->result();
+		$data['dokter']             = $this->m_global->getSelectedData('m_pegawai', ['id_jabatan' => 1, 'is_aktif' => 1])->result();
 		// var_dump($data['get_data']); die();
 		/**
 		 * content data untuk template
@@ -116,7 +116,7 @@ class Jadwal_dokter extends CI_Controller
 		// var_dump($end); die();
 
 		$select = "r.*, p.nama, k.nama_klinik";
-		$where = ['r.deleted_at' => null, 'r.id_klinik >=' => $this->session->userdata('id_klinik')];
+		$where = ['r.deleted_at' => null, 'r.id_klinik' => $this->session->userdata('id_klinik')];
 		$table = 't_jadwal_dokter_rutin as r';
 		$join = [ 
 			[
@@ -340,7 +340,7 @@ class Jadwal_dokter extends CI_Controller
 		// var_dump($end); die();
 
 		$select = "r.*, p.nama, k.nama_klinik";
-		$where = ['r.deleted_at' => null, 'r.id_klinik >=' => $this->session->userdata('id_klinik')];
+		$where = ['r.deleted_at' => null, 'r.id_klinik' => $this->session->userdata('id_klinik')];
 		$table = 't_jadwal_dokter_tidak_rutin as r';
 		$join = [ 
 			[
