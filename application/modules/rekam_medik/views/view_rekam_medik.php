@@ -9,7 +9,7 @@ $obj_date = new DateTime();
     <div class="kt-container  kt-container--fluid ">
       <div class="kt-subheader__main">
         <h3 class="kt-subheader__title">
-          <?= $this->template_view->nama('judul').' - '.$title; ?>
+          <?= 'Pengelolaan '.$this->template_view->nama('judul'); ?>
         </h3>
       </div>
     </div>

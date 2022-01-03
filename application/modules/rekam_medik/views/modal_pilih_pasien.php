@@ -13,7 +13,8 @@
               <div class="col-5 row">
                 <label class="col-form-label col-lg-2">Mulai</label>
                 <div class="col-lg-9">
-                  <input type="text" class="form-control kt_datepicker" id="tgl_filter_mulai" name="tgl_filter_mulai" readonly placeholder="Tanggal Awal" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->modify('-10 day')->format('d/m/Y'); ?>" />
+                  <!-- <input type="text" class="form-control kt_datepicker" id="tgl_filter_mulai" name="tgl_filter_mulai" readonly placeholder="Tanggal Awal" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->modify('-10 day')->format('d/m/Y'); ?>" /> -->
+                  <input type="text" class="form-control kt_datepicker" id="tgl_filter_mulai" name="tgl_filter_mulai" readonly placeholder="Tanggal Awal" value="<?= DateTime::createFromFormat('Y-m-d', date('Y-m-d'))->format('d/m/Y'); ?>" />
                 </div>
               </div>
               <div class="col-5 row">

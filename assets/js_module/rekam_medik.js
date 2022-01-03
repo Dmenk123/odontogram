@@ -42,6 +42,7 @@ $(document).ready(function() {
 function show_modal_pasien() {
     $('#modal_pilih_pasien').modal('show');
     $('#modal_pilih_pasien_title').text('Pilih Pasien'); 
+    cari_pasien();
 }
 
 function cari_pasien() {

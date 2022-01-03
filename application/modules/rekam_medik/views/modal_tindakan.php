@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-12 row">
                   <div class="col-2">
-                    <input type="number" class="form-control" name="tdk_gigi_num" value="" id="input_tdk_gigi_num">
+                    <input type="text" class="form-control" name="tdk_gigi_num" value="" id="input_tdk_gigi_num">
                     <input type="text" class="form-control" name="tdk_gigi_txt" value="all" id="input_tdk_gigi_txt" style="display: none;" readonly>
                     <span class="help-block"></span>
                   </div>
