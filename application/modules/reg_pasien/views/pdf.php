@@ -131,24 +131,6 @@
 
 <body>
   <div class="container">
-    <table class="tbl-outer">
-      <tr>
-        
-        <td align="left" class="outer-left">
-          <img src="<?=base_url('files/img/app_img/').$data_klinik->gambar;?>" height="75" width="75">
-        </td>
-
-        <td align="right" class="outer-left" style="padding-top: 30px; padding-left:10px;">
-          <p style="text-align: left; font-size: 14px" class="outer-left">
-            <strong><?= $data_klinik->nama_klinik; ?></strong>
-          </p>
-          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->alamat.' '.$data_klinik->kelurahan.' '.$data_klinik->kecamatan; ?></p>
-          <p style="text-align: left; font-size: 12px" class="outer-left"><?= $data_klinik->kota.', '.$data_klinik->provinsi.' '.$data_klinik->kode_pos; ?></p>
-        </td>
-        
-      </tr>
-    </table>
-
     <table class="tbl-header">
       <tr>
         <td align="center" class="head-center">
@@ -164,8 +146,9 @@
           <th style="text-align: center;">No Reg</th>
           <th style="text-align: center;">Tgl Reg</th>
           <th style="text-align: center;">Jam reg</th>
-          <th style="text-align: center;">Tgl Pulang</th>
+          <th style="text-align: center;">Tgl Selesai</th>
           <th style="text-align: center;">Dokter</th>
+          <th style="text-align: center;">Layanan</th>
           <th style="text-align: center;">Penjamin</th>
           <th style="text-align: center;">Asuransi</th>
           <th style="text-align: center;">No Asuransi</th>
@@ -188,6 +171,7 @@
             <td class="text-center"><?= $val->jam_reg; ?></td>
             <td class="text-center"><?php echo ($val->tanggal_pulang) ? DateTime::createFromFormat('Y-m-d', $val->tanggal_pulang)->format('d/m/Y') : '-'; ?></td>
             <td class="text-center"><?= $val->nama_dokter; ?></td>
+            <td class="text-center"><?= $val->nama_layanan; ?></td>
             <td class="text-center"><?php echo ($val->is_asuransi == '1') ? 'Asuransi' : 'Umum'; ?></td>
             <td class="text-center"><?php echo ($val->nama_asuransi) ? $val->nama_asuransi : '-'; ?></td>
             <td class="text-center"><?php echo ($val->no_asuransi) ? $val->no_asuransi : '-'; ?></td>

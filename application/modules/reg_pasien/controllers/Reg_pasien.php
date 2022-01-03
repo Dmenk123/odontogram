@@ -669,46 +669,49 @@ class Reg_pasien extends CI_Controller {
 			->setCellValue('B1', 'Nama')
 			->setCellValue('C1', 'Tgl Masuk')
 			->setCellValue('D1', 'Pukul Masuk')
-			->setCellValue('E1', 'Pulang')
-			->setCellValue('F1', 'Tgl Keluar')
-			->setCellValue('G1', 'Pkl Keluar')
+			->setCellValue('E1', 'Sudah Rekam Medik')
+			->setCellValue('F1', 'Tgl Selesai')
+			->setCellValue('G1', 'Pkl Selesai')
 			->setCellValue('H1', 'No RM')
 			->setCellValue('I1', 'Tempat Lahir')
 			->setCellValue('J1', 'Tgl Lahir')
 			->setCellValue('K1', 'NIK')
 			->setCellValue('L1', 'Jenis Kelamin')
 			->setCellValue('M1', 'Dokter')
-			->setCellValue('N1', 'Jenis Penjamin')
-			->setCellValue('O1', 'Asuransi')
-			->setCellValue('P1', 'No Asuransi')
-			->setCellValue('Q1', 'Umur')
-			->setCellValue('R1', 'Pemetaan');
+			->setCellValue('N1', 'Layanan')
+			->setCellValue('O1', 'Jenis Penjamin')
+			->setCellValue('P1', 'Asuransi')
+			->setCellValue('Q1', 'No Asuransi')
+			->setCellValue('R1', 'Umur')
+			->setCellValue('S1', 'Pemetaan');
 					
 		$startRow = 2;
 		$row = $startRow;
 		if($data){
 			foreach ($data as $key => $val) {
-				$is_pulang = ($val->is_pulang == '1') ? 'Pulang' : '-';
+				$is_pulang = ($val->is_pulang == '1') ? 'Ya' : '-';
 				$tgl_plg = ($val->tanggal_pulang) ? DateTime::createFromFormat('Y-m-d', $val->tanggal_pulang)->format('d/m/Y') : '-';
+				$jam_plg = ($val->jam_pulang) ? DateTime::createFromFormat('H:i:s', $val->jam_pulang)->format('H:i') : '-';
 				$sheet
 					->setCellValue("A{$row}", $val->no_reg)
 					->setCellValue("B{$row}", $val->nama_pasien)
 					->setCellValue("C{$row}", DateTime::createFromFormat('Y-m-d', $val->tanggal_reg)->format('d/m/Y'))
-					->setCellValue("D{$row}", $val->jam_reg)
+					->setCellValue("D{$row}", DateTime::createFromFormat('H:i:s', $val->jam_reg)->format('H:i'))
 					->setCellValue("E{$row}", $is_pulang)
 					->setCellValue("F{$row}", $tgl_plg)
-					->setCellValue("G{$row}", $val->jam_pulang)
+					->setCellValue("G{$row}", $jam_plg)
 					->setCellValue("H{$row}", $val->no_rm)
 					->setCellValue("I{$row}", $val->tempat_lahir)
 					->setCellValue("J{$row}", DateTime::createFromFormat('Y-m-d', $val->tanggal_lahir)->format('d/m/Y'))
 					->setCellValue("K{$row}", $val->nik)
 					->setCellValue("L{$row}", $val->jenkel)
 					->setCellValue("M{$row}", $val->nama_dokter)
-					->setCellValue("N{$row}", $val->penjamin)
-					->setCellValue("O{$row}", $val->nama_asuransi)
-					->setCellValue("P{$row}", $val->no_asuransi)
-					->setCellValue("Q{$row}", $val->umur)
-					->setCellValue("R{$row}", $val->keterangan);
+					->setCellValue("N{$row}", $val->nama_layanan)
+					->setCellValue("O{$row}", $val->penjamin)
+					->setCellValue("P{$row}", $val->nama_asuransi)
+					->setCellValue("Q{$row}", $val->no_asuransi)
+					->setCellValue("R{$row}", $val->umur)
+					->setCellValue("S{$row}", $val->keterangan);
 				$row++;
 			}
 
@@ -750,7 +753,7 @@ class Reg_pasien extends CI_Controller {
 	    $this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
 	}
 
-	public function cetak_data()
+	/* public function cetak_data()
 	{
 		$tgl_awal = $this->input->get('tgl_awal');
 		$tgl_akhir = $this->input->get('tgl_akhir');
@@ -775,6 +778,35 @@ class Reg_pasien extends CI_Controller {
 		$html = $this->load->view('pdf', $retval, true);
 	    $filename = 'data_registrasi'.$tgl_awal_fix.'_'.$tgl_akhir_fix.'_'.time();
 	    $this->lib_dompdf->generate($html, $filename, true, 'legal', 'landscape');
+	} */
+
+	public function cetak_data()
+	{
+		$tgl_awal = $this->input->get('tgl_awal');
+		$tgl_akhir = $this->input->get('tgl_akhir');
+
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$tgl_awal_fix = $obj_date->createFromFormat('d/m/Y', $tgl_awal)->format('Y-m-d');
+		$tgl_akhir_fix = $obj_date->createFromFormat('d/m/Y', $tgl_akhir)->format('Y-m-d');
+
+		// var_dump($tgl_awal, $tgl_akhir);
+		$data = $this->t_registrasi->get_data_ekspor($tgl_awal_fix, $tgl_akhir_fix);
+		$data_klinik = $this->m_global->single_row('*', 'deleted_at is null', 'm_klinik');
+
+		$konten_html = $this->load->view('pdf', ['data' => $data, 'title' => 'Data Registrasi', 'data_klinik' => $data_klinik, 'data_user' => $this->prop_data_user[0], 'periode' => 'Periode ' . $tgl_awal . ' - ' . $tgl_akhir,], true);
+
+		$retval = [
+			'data' => $data,
+			'data_klinik' => $data_klinik,
+			'content' => $konten_html,
+			'footer' => '', // set '' agar tidak ikut default, footer ikut konten
+		];
+
+		// $this->load->view('pdf', $retval);
+		$html = $this->load->view('template/pdf', $retval, true);
+		$filename = 'data_registrasi' . $tgl_awal_fix . '_' . $tgl_akhir_fix . '_' . time();
+		$this->lib_dompdf->generate($html, $filename, true, 'legal', 'landscape');
 	}
 
 	private function rule_validasi($is_asuransi = FALSE)
