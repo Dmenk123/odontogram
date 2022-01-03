@@ -84,7 +84,7 @@ class Rekam_medik extends CI_Controller {
 		$pilih_nama = $this->input->post('pilih_nama');
 		$pilih_norm = $this->input->post('pilih_norm');
 		
-		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, byr.id as id_pembayaran";
+		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, byr.id as id_pembayaran, lay.nama_layanan";
 		$where = [
 			'reg.deleted_at' => null,
 			'pas.is_aktif' => '1',
@@ -100,6 +100,7 @@ class Rekam_medik extends CI_Controller {
 		$join = [ 
 			['table' => 'm_pasien as pas', 'on' => 'reg.id_pasien = pas.id'],
 			['table' => 't_pembayaran as byr', 'on' => 'reg.id = byr.id_reg'],
+			['table' => 'm_layanan as lay', 'on' => 'reg.id_layanan = lay.id_layanan'],
 		];
 				
 		// var_dump($join);exit;
@@ -112,14 +113,17 @@ class Rekam_medik extends CI_Controller {
 				if($value->id_pembayaran !== null) {
 					continue;
 				}
+				
+				$txt_status = ($value->is_pulang == '1') ? 'Ya' : '-';
+
 				$html .= '<tr>';
 				$html .= '<td>'.$value->no_reg.'</td>';
 				$html .= '<td>'.$value->nama_pasien.'</td>';
-				$html .= '<td>'.DateTime::createFromFormat('Y-m-d', $value->tanggal_reg)->format('d/m/Y').'</td>';
-				$html .= '<td>'.$value->jam_reg.'</td>';
+				$html .= '<td>'.Carbon::createFromFormat('Y-m-d', $value->tanggal_reg)->format('d/m/Y').'</td>';
+				$html .= '<td>'.Carbon::createFromFormat('H:i:s', $value->jam_reg)->format('H:i').'</td>';
 				$html .= '<td>'.$value->no_rm.'</td>';
-				$html .= '<td>'.$value->is_pulang.'</td>';
-				$html .= '<td>'.$value->no_asuransi.'</td>';
+				$html .= '<td>'.$txt_status.'</td>';
+				$html .= '<td>'.$value->nama_layanan.'</td>';
 				// $html .= '<td><button type="button" class="button btn-sm btn-success" onclick="pilih_pasien(\''.$this->enkripsi->enc_dec('encrypt', $value->id).'\')"> Pilih</button></td>';
 				$html .= '<td><button type="button" class="button btn-sm btn-success" onclick="submit_pasien(\''.$this->enkripsi->enc_dec('encrypt', $value->id).'\')"> Pilih</button></td>';
 				$html .= '</tr>';

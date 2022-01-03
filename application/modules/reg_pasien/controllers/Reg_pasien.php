@@ -191,7 +191,7 @@ class Reg_pasien extends CI_Controller {
 		$this->db->select('*');
 		$this->db->from('m_layanan');
 		$this->db->where('deleted_at', null);
-		$this->db->like('dokter', $id_dokter);
+		// $this->db->like('dokter', $id_dokter);
 		$q = $this->db->get();
 		$data = $q->result();
 

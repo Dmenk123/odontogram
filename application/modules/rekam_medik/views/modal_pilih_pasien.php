@@ -57,8 +57,8 @@
                 <td>Tgl Masuk</td>
                 <td>Pukul</td>
                 <td>No. RM</td>
-                <td>Pulang</td>
-                <td>No. Asuransi</td>
+                <td>Sudah Rekam Medik</td>
+                <td>Layanan</td>
                 <td>Aksi</td>
               </tr>
             </thead>
