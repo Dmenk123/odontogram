@@ -371,6 +371,69 @@ class Master_user extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function update_data_profile()
+	{
+		$this->load->library('Enkripsi');
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		
+		$arr_valid = $this->rule_validasi_profile();
+
+		if ($arr_valid['status'] == FALSE) {
+			echo json_encode($arr_valid);
+			return;
+		}
+
+		$id_user = $this->input->post('id_user_profile');
+		$password_lama = trim($this->input->post('p_password_lama'));
+		$password = trim($this->input->post('p_password'));
+		$repassword = trim($this->input->post('p_repassword'));
+		
+		$q = $this->m_user->get_by_id($id_user);
+		
+		$hash_password = $this->enkripsi->enc_dec('encrypt', $password);
+		$hash_password_lama = $this->enkripsi->enc_dec('encrypt', trim($password_lama));
+
+		if($q->password != $hash_password_lama) {
+			$data['inputerror'][] = 'p_password_lama';
+			$data['error_string'][] = 'Password Lama tidak sesuai';
+			$data['status'] = FALSE;
+			echo json_encode($data);
+			return;
+		}
+		
+		if($password != $repassword) {
+			$data['inputerror'][] = 'p_repassword';
+			$data['error_string'][] = 'Password baru tidak sama';
+			$data['status'] = FALSE;
+			echo json_encode($data);
+			return;
+		}
+		
+		$this->db->trans_begin();
+
+		$data_user = [
+			'password' => $hash_password,
+			'updated_at' => $timestamp
+		];
+
+
+		$where = ['id' => $id_user];
+		$update = $this->m_user->update($where, $data_user);
+
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$data['status'] = false;
+			$data['pesan'] = 'Gagal update Profile';
+		}else{
+			$this->db->trans_commit();
+			$data['status'] = true;
+			$data['pesan'] = 'Sukses update Profile';
+		}
+		
+		echo json_encode($data);
+	}
+
 	public function reset_password_user()
 	{
 		$obj_date = new DateTime();
@@ -805,6 +868,35 @@ class Master_user extends CI_Controller {
             $data['error_string'][] = 'Wajib Memilih Status';
             $data['status'] = FALSE;
 		}
+
+        return $data;
+	}
+
+	private function rule_validasi_profile()
+	{
+		$data = array();
+		$data['error_string'] = array();
+		$data['inputerror'] = array();
+		$data['status'] = TRUE;
+
+		if ($this->input->post('p_password_lama') == '') {
+			$data['inputerror'][] = 'p_password_lama';
+			$data['error_string'][] = 'Wajib mengisi Password Lama';
+			$data['status'] = FALSE;
+		}
+
+		if ($this->input->post('p_password') == '') {
+			$data['inputerror'][] = 'p_password';
+			$data['error_string'][] = 'Wajib Mengisi Password Baru';
+			$data['status'] = FALSE;
+		}
+
+		if ($this->input->post('p_repassword') == '') {
+			$data['inputerror'][] = 'p_repassword';
+			$data['error_string'][] = 'Wajib Menulis Ulang Password';
+			$data['status'] = FALSE;
+		}
+		
 
         return $data;
 	}

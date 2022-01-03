@@ -36,7 +36,7 @@ if($this->session->userdata('id_klinik') != null) {
       <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
          <!--begin: Navigation -->
          <div class="kt-notification">
-            <a href="custom/apps/user/profile-1/personal-information.html" class="kt-notification__item">
+            <a href="javascript:void(0)" class="kt-notification__item" onclick="showProfileUser('<?=$this->session->userdata('id_user');?>')">
                <div class="kt-notification__item-icon">
                   <i class="flaticon2-calendar-3 kt-font-success"></i>
                </div>
