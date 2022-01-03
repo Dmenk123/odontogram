@@ -24,7 +24,7 @@
                     <span class="help-block"></span>
                   </div>
                   <div class="col-4">
-                    <input type="number" class="form-control" id="gigi" name="gigi" value="">
+                    <input type="text" class="form-control" id="gigi" name="gigi" value="">
                     <span class="help-block"></span>
                   </div>
                 </div>
