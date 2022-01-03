@@ -309,4 +309,37 @@ class T_registrasi extends CI_Model
 			return $query->result();
 		}
 	}
+
+
+	public function get_data_log_edit($id, $new_data, $old_data)
+	{
+		$this->db->select("reg.id, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, 
+		peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel,  CASE WHEN reg.is_pulang = '1' THEN 'Sudah' ELSE 'Belum' END as sudah_rekam_medik, lay.nama_layanan");
+		$this->db->from($this->table . ' reg');
+		$this->db->join('m_pasien psn', 'reg.id_pasien = psn.id', 'left');
+		$this->db->join('m_pegawai peg', 'reg.id_pegawai = peg.id', 'left');
+		$this->db->join('m_pemetaan pem', 'reg.id_pemetaan = pem.id', 'left');
+		$this->db->join('m_layanan lay', 'reg.id_layanan = lay.id_layanan', 'left');
+		$this->db->where('reg.deleted_at is null');
+
+
+		if ($id) {
+			$this->db->where('reg.id', $id);
+		}
+
+		if ($tgl_awal == true && $tgl_akhir == true) {
+			$this->db->where('reg.tanggal_reg >=', $tgl_awal);
+			$this->db->where('reg.tanggal_reg <=', $tgl_akhir);
+		}
+
+		$this->db->order_by('reg.tanggal_reg', 'asc');
+
+		$query = $this->db->get();
+
+		if ($id) {
+			return $query->row();
+		} else {
+			return $query->result();
+		}
+	}
 }

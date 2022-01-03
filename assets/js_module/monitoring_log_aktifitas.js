@@ -25,7 +25,7 @@ $(document).ready(function() {
         }
 
         //chart
-        monitoring(start, end);
+        // monitoring(start, end);
 
     
         table = $('#tabeldata').DataTable({
@@ -65,86 +65,77 @@ function reload_table()
 }
 
 
-function monitoring(start, end)
-{
-    // redraw canvas.js
-    $('#chart-report').html('<canvas id="line-chart" width="800" height="450"></canvas>');
+// function monitoring(start, end)
+// {
+//     // redraw canvas.js
+//     $('#chart-report').html('<canvas id="line-chart" width="800" height="450"></canvas>');
 
-    url = base_url + 'monitoring_kunjungan/monitoring_chart';
-    $.ajax({
-        type: "POST",
-        enctype: 'multipart/form-data',
-        url: url,
-        data: {
-            start : start,
-            end : end
-        },
-      dataType: "JSON",
-      timeout: 600000,
-      success: function (response) {
-          if(response.status) {
-              console.log('berhasil');
-              new Chart(document.getElementById("line-chart"), {
-                  type: 'bar',
-                  data: {
-                    labels: response.label,
-                    datasets: response.datasets
-                  },
-                  options: {
-                    title: {
-                      display: true,
-                      text: response.judul
-                    },
-                    responsive: true,
-                    responsiveAnimationDuration: 0,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: false,
-                                /* callback: function(value, index, values) {
-                                    if(parseInt(value) >= 1000){
-                                        return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                                    } else {
-                                        return 'Rp ' + value;
-                                    }
-                                }, */
-                                max : response.v_max + 5,    
-                                min : 0
-                            }
-                        }]
-                    }
-                  },
+//     url = base_url + 'monitoring_kunjungan/monitoring_chart';
+//     $.ajax({
+//         type: "POST",
+//         enctype: 'multipart/form-data',
+//         url: url,
+//         data: {
+//             start : start,
+//             end : end
+//         },
+//       dataType: "JSON",
+//       timeout: 600000,
+//       success: function (response) {
+//           if(response.status) {
+//               console.log('berhasil');
+//               new Chart(document.getElementById("line-chart"), {
+//                   type: 'bar',
+//                   data: {
+//                     labels: response.label,
+//                     datasets: response.datasets
+//                   },
+//                   options: {
+//                     title: {
+//                       display: true,
+//                       text: response.judul
+//                     },
+//                     responsive: true,
+//                     responsiveAnimationDuration: 0,
+//                     scales: {
+//                         yAxes: [{
+//                             ticks: {
+//                                 beginAtZero: false,
+//                                 /* callback: function(value, index, values) {
+//                                     if(parseInt(value) >= 1000){
+//                                         return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+//                                     } else {
+//                                         return 'Rp ' + value;
+//                                     }
+//                                 }, */
+//                                 max : response.v_max + 5,    
+//                                 min : 0
+//                             }
+//                         }]
+//                     }
+//                   },
                   
-              });
-          }
-      },
-      error: function (e) {
-        console.log("ERROR : ", e);
-      }
-    });
-}
+//               });
+//           }
+//       },
+//       error: function (e) {
+//         console.log("ERROR : ", e);
+//       }
+//     });
+// }
 
-const detail_trans = (enc_id) => {
+const detail_log = (id, enc_aksi) => {
     $.ajax({
-        url : base_url + 'pembayaran/detail_pembayaran/true',
+        url : base_url + 'monitoring_log_aktifitas/detail_aktifitas',
         type: "POST",
         dataType: "JSON",
-        data : {enc_id:enc_id},
+        data : {id:id, enc_aksi:enc_aksi},
         success: function(data)
         {
-            $('#klinik_det').text(data.old_data.nama_klinik);
-            $('#no_reg_det').text(data.old_data.no_reg);
-            $('#tgl_reg_det').text(moment(data.old_data.tanggal, 'YYYY-MM-DD').format('DD-MM-YYYY'));
-            $('#user_det').text(data.old_data.username);
-
-            $('#pasien_det').text(data.old_data.nama);
-            $('#rm_det').text(data.old_data.no_rm);
-            $('#jenis_det').text(data.old_data.jenis_bayar);
-            $('#kredit_det').text(data.old_data.nama_kredit);
-
-            $('tbody#rincian_det').html(data.html_rinci);
+            // $('#tgl_reg_det').text(moment(data.old_data.tanggal, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('tbody#tbl_log_aktifitas_det').html(data.html_rinci);
             $('#modal_detail').modal('show');
-            $('#modal_title_det').text('Detail Pembayaran'); 
+            $('#modal_title_det').text('Detail Log Aktifitas'); 
         },
         error: function (jqXHR, textStatus, errorThrown)
         {

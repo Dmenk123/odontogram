@@ -14,6 +14,7 @@ class Monitoring_log_aktifitas extends CI_Controller {
 		
 		$this->load->model('m_user');
 		$this->load->model('m_global');
+		$this->load->model('t_registrasi');
 		$this->load->library('Enkripsi');
 		
 	}
@@ -55,7 +56,7 @@ class Monitoring_log_aktifitas extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => null,
+			'modal' => 'modal_detail',
 			'js'	=> 'monitoring_log_aktifitas.js',
 			'view'	=> 'view_monitoring'
 		];
@@ -108,8 +109,13 @@ class Monitoring_log_aktifitas extends CI_Controller {
 				$data[$key][] = Carbon::parse($value->created_at)->format('d-m-Y H:i:s');
 				$data[$key][] = $value->username;
 				$data[$key][] = $value->nama_pegawai;
-				$data[$key][] = $value->aksi;   
-				$data[$key][] = 'on progress';   
+				$data[$key][] = $value->aksi;
+				if($value->new_data == null && $value->old_data == null) {
+					$data[$key][] = '-';   
+				}else{
+					$data[$key][] = '<button class="btn btn-sm btn-info" onclick="detail_log(\'' . $value->id . '\',\'' . $this->enkripsi->enc_dec('encrypt', $value->aksi) . '\')">Detail</button>';   
+				}
+				
 			}
 		}
 		
@@ -118,6 +124,35 @@ class Monitoring_log_aktifitas extends CI_Controller {
         echo json_encode([
             'data' => $data
         ]);
+	}
+
+	public function detail_aktifitas() {
+		$id = $this->input->post('id');
+		$aksi = $this->enkripsi->enc_dec($this->input->post('enc_aksi'), 'decrypt');
+
+		switch ($aksi) {
+			case 'UBAH DATA REGISTRASI':
+				$data = $this->get_detail_reg_html($id, 'edit');
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+	}
+
+	protected function get_detail_reg_html($id, $ket)
+	{
+		switch ($ket) {
+			case 'edit':
+				$datalog = $this->m_global->single_row('*', ['id'=>$id], 't_log_aktifitas');
+				$q = $this->t_registrasi->get_data_log_edit($id, json_decode($datalog->new_data, true), json_decode($datalog->old_data, true));
+				break;
+
+			default:
+				# code...
+				break;
+		}
 	}
 
 	// ===============================================
