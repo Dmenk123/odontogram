@@ -248,10 +248,10 @@ class Pembayaran extends CI_Controller {
 			$status = true;
 			$html .= '<tr>';
 			$html .= '<td>'.$data->no_reg.'</td>';
-			$html .= '<td>'.Carbon::parse($data->tanggal_reg.' '.$data->jam_reg)->format('d/m/Y H:i:s').'</td>';
-			$html .= '<td>'.Carbon::parse($data->tanggal_pulang.' '.$data->jam_pulang)->format('d/m/Y H:i:s').'</td>';
-			$html .= '<td>'.$data->nama_pasien.'</td>';
+			$html .= '<td>'.Carbon::parse($data->tanggal_reg.' '.$data->jam_reg)->format('d/m/Y H:i').'</td>';
+			$html .= '<td>'.Carbon::parse($data->tanggal_pulang.' '.$data->jam_pulang)->format('d/m/Y H:i').'</td>';
 			$html .= '<td>'.$data->nama_dokter.'</td>';
+			$html .= '<td>'.$data->nama_pasien.'</td>';
 			$html .= '<td>'.$data->no_rm.'</td>';
 			$html .= ($data->is_asuransi) ? '<td>Asuransi</td>' : '<td>Umum</td>';
 			$html .= '<td>'.$data->nama_asuransi.'</td>';
