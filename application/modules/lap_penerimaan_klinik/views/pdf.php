@@ -73,8 +73,8 @@
               <td align="right"><?= number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.'); ?></td>
             </tr>
             <?php
-            $no++;
-            $flag_rowspan = $v->tanggal;
+              $no++;
+              $flag_rowspan = $v->tanggal;
             ?>
           <?php } else { ?>
             <tr>

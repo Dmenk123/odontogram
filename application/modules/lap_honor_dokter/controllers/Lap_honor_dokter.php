@@ -60,7 +60,7 @@ class Lap_honor_dokter extends CI_Controller {
 		$model = $this->input->post('model');
 		$tahun2 = $this->input->post('tahun2');
 		$tahun = $this->input->post('tahun');
-		$bulan = $this->input->post('bulan');
+		$bulan = sprintf("%02d", $this->input->post('bulan'));
 		$start = $this->input->post('start');
 		$end = $this->input->post('end');
 		$dokter = $this->input->post('dokter');
@@ -158,7 +158,7 @@ class Lap_honor_dokter extends CI_Controller {
 					$html .= "
 						<tr>
 							<td rowspan ='$v->cnt'>" . $no . "</td>
-							<td rowspan ='$v->cnt'>" . $v->tanggal . "</td>
+							<td rowspan ='$v->cnt'>" . tanggal_indo($v->tanggal) . "</td>
 							<td rowspan ='$v->cnt'>" . $v->nama_dokter . " [" . $v->kode_dokter . "]</td>
 							<td>" . $v->nama_klinik . "</td>
 							<td align='right'>" . number_format($v->total, 0, ',', '.') . "</td>
@@ -247,7 +247,7 @@ class Lap_honor_dokter extends CI_Controller {
 		$model = $this->input->get('model');
 		$tahun2 = $this->input->get('tahun2');
 		$tahun = $this->input->get('tahun');
-		$bulan = $this->input->get('bulan');
+		$bulan = sprintf("%02d", $this->input->get('bulan'));
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
 		$dokter = $this->input->get('dokter');
@@ -336,6 +336,7 @@ class Lap_honor_dokter extends CI_Controller {
 			'data' => $q,
 			'data_klinik' => $data_klinik,
 			'content' => $konten_html,
+			'footer' => '', // set '' agar tidak ikut default, footer ikut konten
 		];
 
 		// $this->load->view('pdf', $retval);

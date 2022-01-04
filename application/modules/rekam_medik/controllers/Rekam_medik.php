@@ -158,7 +158,7 @@ class Rekam_medik extends CI_Controller {
 			$status = true;
 			$html .= '<tr>';
 			$html .= '<td>'.$data->no_reg.'</td>';
-			$html .= '<td>'.DateTime::createFromFormat('Y-m-d', $data->tanggal_reg)->format('d/m/Y').' '.$data->jam_reg.'</td>';
+			$html .= '<td>' . DateTime::createFromFormat('Y-m-d', $data->tanggal_reg)->format('d/m/Y') . ' ' . DateTime::createFromFormat('H:i:s', $data->jam_reg)->format('H:i') . '</td>';
 			$html .= '<td>'.$data->nama_dokter.'</td>';
 			$html .= '<td>'.$data->nama_pasien.'</td>';
 			$html .= '<td>'.$data->no_rm.'</td>';

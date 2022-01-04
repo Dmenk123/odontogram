@@ -38,13 +38,13 @@
           <div class="form-group row div_tanggal_mulai" style="display:none;">
               <label class="col-lg-3 col-form-label text-left">Tanggal Mulai</label>
               <div class="col-lg-7">
-                  <input type="text" class="form-control kt_datepicker" id="tanggal_awal" name="start" value="<?php echo $this->input->get('start') ?? null;?>">
+                  <input type="text" class="form-control kt_datepicker" id="tanggal_awal" name="start" value="<?php echo $this->input->get('start') ?? null;?>" autocomplete="off">
               </div>
           </div>
           <div class="form-group row div_tanggal_akhir" style="display:none;">
               <label class="col-lg-3 col-form-label text-left">Tanggal Akhir</label>
               <div class="col-lg-7">
-                  <input type="text" class="form-control kt_datepicker" id="tanggal_akhir" name="end" value="<?php echo $this->input->get('end') ?? null;?>">
+                  <input type="text" class="form-control kt_datepicker" id="tanggal_akhir" name="end" value="<?php echo $this->input->get('end') ?? null;?>" autocomplete="off">
               </div>
           </div>
           <div class="form-group row div_bulan" style="display:none;">

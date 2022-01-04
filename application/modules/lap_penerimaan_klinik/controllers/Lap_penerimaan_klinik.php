@@ -54,7 +54,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 		$model = $this->input->post('model');
 		$tahun2 = $this->input->post('tahun2');
 		$tahun = $this->input->post('tahun');
-		$bulan = $this->input->post('bulan');
+		$bulan = sprintf("%02d", $this->input->post('bulan'));
 		$start = $this->input->post('start');
 		$end = $this->input->post('end');
 
@@ -230,7 +230,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 		$model = $this->input->get('model');
 		$tahun2 = $this->input->get('tahun2');
 		$tahun = $this->input->get('tahun');
-		$bulan = $this->input->get('bulan');
+		$bulan = sprintf("%02d", $this->input->get('bulan'));
 		$start = $this->input->get('start');
 		$end = $this->input->get('end');
 
@@ -275,7 +275,6 @@ class Lap_penerimaan_klinik extends CI_Controller {
 						from t_mutasi x_mut
 						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
 						LEFT JOIN m_klinik AS x_kli ON x_reg.id_klinik = x_kli.id AND x_kli.deleted_at IS NULL 	
-						JOIN t_pembayaran x_byr ON x_reg.id = x_byr.id_reg 
 						and x_mut.deleted_at is null
 						and $where2 
 						GROUP BY x_mut.tanggal, x_reg.id_klinik
@@ -285,7 +284,6 @@ class Lap_penerimaan_klinik extends CI_Controller {
 				t_mutasi mut
 				LEFT JOIN t_registrasi reg ON mut.id_registrasi = reg.id
 				LEFT JOIN m_klinik kli ON reg.id_klinik = kli.id 
-				JOIN t_pembayaran byr ON reg.id = byr.id_reg 
 			WHERE
 				$where
 			GROUP BY

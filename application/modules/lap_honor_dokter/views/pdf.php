@@ -45,7 +45,7 @@
    <thead>
      <tr>
        <th style="width: 5%;">No</th>
-       <th>Tanggal</th>
+       <th style="width: 15%;">Tanggal</th>
        <th>Dokter</th>
        <th>Klinik</th>
        <th>Honor Dokter</th>
@@ -62,7 +62,7 @@
           if ($flag_rowspan != $v->tanggal) { ?>
            <tr>
              <td rowspan='<?= $v->cnt; ?>'><?= $no; ?></td>
-             <td rowspan='<?= $v->cnt; ?>'><?= $v->tanggal; ?></td>
+             <td rowspan='<?= $v->cnt; ?>'><?= tanggal_indo($v->tanggal); ?></td>
              <td rowspan='<?= $v->cnt; ?>'><?= $v->nama_dokter . " [" . $v->kode_dokter . "]"; ?></td>
              <td><?= $v->nama_klinik; ?></td>
              <td align="right"><?= number_format($v->total, 0, ',', '.'); ?></td>
