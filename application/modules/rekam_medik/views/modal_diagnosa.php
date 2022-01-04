@@ -28,6 +28,15 @@
                     <span class="help-block"></span>
                   </div>
                 </div>
+                <div class="col-12 row">
+                  <label class="col-8 col-form-label">Keterangan</label>
+                </div>
+                <div class="col-12 row">
+                  <div class="col-12">
+                    <input type="text" class="form-control" id="keterangan" name="keterangan" value="">
+                    <span class="help-block"></span>
+                  </div>
+                </div>
                 <br>
                 <div class="col-12">
                   <button type="button" id="btnSave" class="btn btn-primary" onclick="save('form_diagnosa')">Tambahkan</button>
@@ -42,6 +51,7 @@
                         <th>Gigi</th>
                         <th>Kode</th>
                         <th>Nama Diagnosa</th>
+                        <th>Keterangan</th>
                         <th style="width: 10%;">Aksi</th>
                       </tr>
                     </thead>

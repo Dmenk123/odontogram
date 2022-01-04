@@ -381,6 +381,7 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		$id_diagnosa = $this->input->post('diagnosa');
 		$gigi = $this->input->post('gigi');
+		$keterangan = $this->input->post('keterangan');
 		
 		//cek sudah ada data / tidak
 		$data_diagnosa = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_diagnosa');
@@ -407,6 +408,7 @@ class Rekam_medik extends CI_Controller {
 			'id_t_diagnosa' => $cek_diagnosa->id,
 			'id_diagnosa' => $id_diagnosa,
 			'gigi' => $gigi,
+			'keterangan' => $keterangan,
 			'created_at' => $timestamp
 		];
 
@@ -523,7 +525,7 @@ class Rekam_medik extends CI_Controller {
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 		
-		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, md.kode_diagnosa, md.nama_diagnosa";
+		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, dt.keterangan, md.kode_diagnosa, md.nama_diagnosa";
 		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg];
 		$table = 't_diagnosa as d';
 		$join = [ 
@@ -537,7 +539,7 @@ class Rekam_medik extends CI_Controller {
 		if($data){
 			foreach ($data as $key => $value) {
 				if($value->kode_diagnosa){
-					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_diagnosa.'</td><td>'.$value->nama_diagnosa.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\''.$value->id_diagnosa_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_diagnosa.'</td><td>'.$value->nama_diagnosa.'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\''.$value->id_diagnosa_det.'\')"><i class="la la-trash"></i></button></td></tr>';
 				}
 				
 			}
