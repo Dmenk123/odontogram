@@ -358,6 +358,14 @@ class Reg_pasien extends CI_Controller {
 		$id_pemetaan = contul($this->input->post('pemetaan'));
 		$id_layanan = contul($this->input->post('layanan'));
 		
+		$cek_layanan = $this->m_global->single_row('*', ['id_layanan' => $id_layanan, 'deleted_at' => null], 'm_layanan');
+		if(!$cek_layanan) {
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal memproses Data Registrasi';
+			echo json_encode($retval);
+			return;
+		}
+
 		if($this->session->userdata('id_klinik') != null) {
 			$id_klinik = $this->session->userdata('id_klinik');
 		}else{
@@ -383,12 +391,14 @@ class Reg_pasien extends CI_Controller {
 		if($this->input->post('id_reg') != '') {
 			###update
 			$registrasi['updated_at'] = $timestamp;
+			$registrasi['estimasi_selesai'] = Carbon::createFromFormat('H:i:s', $jam_reg)->addMinutes($cek_layanan->waktu_layanan);
 			$where = ['id' => $this->input->post('id_reg')];
 			$cek = $this->m_global->single_row('*', $where,'t_registrasi');
 
 			$update = $this->t_registrasi->update($where, $registrasi);
 			$pesan = 'Sukses Mengupdate data Registrasi';
 			$merge_arr = array_merge($where, $registrasi);
+
 			$log_aktifitas = $this->m_global->insert_log_aktifitas('UBAH DATA REGISTRASI', [
 				'old_data' => json_encode($cek),
 				'new_data' => json_encode($merge_arr)
@@ -398,6 +408,7 @@ class Reg_pasien extends CI_Controller {
 			$registrasi['id'] = $this->t_registrasi->get_max_id();
 			$registrasi['no_reg'] = $this->t_registrasi->get_kode_reg();
 			$registrasi['created_at'] = $timestamp;
+			$registrasi['estimasi_selesai'] = Carbon::createFromFormat('H:i:s', $jam_reg)->addMinutes($cek_layanan->waktu_layanan);
 			$insert = $this->t_registrasi->save($registrasi);
 			$pesan = 'Sukses Menambah data Registrasi';
 
