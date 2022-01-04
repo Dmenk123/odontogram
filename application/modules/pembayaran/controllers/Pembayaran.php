@@ -342,6 +342,10 @@ class Pembayaran extends CI_Controller {
 				 	}
 
 				}elseif($value->id_jenis_trans == '2') {
+					if((int)$value->total_penerimaan_nett <= 0 && (int)$value->total_penerimaan_gross <= 0) {
+						### skip loop karena data kosong
+						continue;
+					}
 					#### TINDAKAN
 					$q = $this->db->query("
 						SELECT a.*, b.gigi, b.harga, b.diskon_persen, b.diskon_nilai, b.harga_bruto, c.kode_tindakan, c.nama_tindakan
@@ -365,6 +369,10 @@ class Pembayaran extends CI_Controller {
 				 	}
 					 
 				}elseif($value->id_jenis_trans == '3') {
+					if((int)$value->total_penerimaan_nett <= 0 && (int)$value->total_penerimaan_gross <= 0) {
+						### skip loop karena data kosong
+						continue;
+					}
 					#### LAB
 					$q = $this->db->query("
 						SELECT a.*,  b.harga, b.keterangan, c.kode, c.tindakan_lab
