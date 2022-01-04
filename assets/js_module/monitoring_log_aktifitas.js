@@ -133,7 +133,7 @@ const detail_log = (id, enc_aksi) => {
         success: function(data)
         {
             // $('#tgl_reg_det').text(moment(data.old_data.tanggal, 'YYYY-MM-DD').format('DD-MM-YYYY'));
-            $('tbody#tbl_log_aktifitas_det').html(data.html_rinci);
+            $('tbody#tbl_log_aktifitas_det').html(data);
             $('#modal_detail').modal('show');
             $('#modal_title_det').text('Detail Log Aktifitas'); 
         },

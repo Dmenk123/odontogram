@@ -128,11 +128,23 @@ class Monitoring_log_aktifitas extends CI_Controller {
 
 	public function detail_aktifitas() {
 		$id = $this->input->post('id');
-		$aksi = $this->enkripsi->enc_dec($this->input->post('enc_aksi'), 'decrypt');
+		$aksi = $this->enkripsi->enc_dec('decrypt', $this->input->post('enc_aksi'));
+		$html = '';
 
 		switch ($aksi) {
 			case 'UBAH DATA REGISTRASI':
-				$data = $this->get_detail_reg_html($id, 'edit');
+				$html .= $this->get_detail_reg_html($id, 'edit');
+				echo json_encode($html);
+				break;
+
+			case 'HAPUS DATA REGISTRASI':
+				$html .= $this->get_detail_reg_html($id, 'hapus');
+				echo json_encode($html);
+				break;
+
+			case 'TAMBAH DATA REGISTRASI':
+				$html .= $this->get_detail_reg_html($id, 'tambah');
+				echo json_encode($html);
 				break;
 			
 			default:
@@ -144,14 +156,119 @@ class Monitoring_log_aktifitas extends CI_Controller {
 	protected function get_detail_reg_html($id, $ket)
 	{
 		switch ($ket) {
+			
 			case 'edit':
 				$datalog = $this->m_global->single_row('*', ['id'=>$id], 't_log_aktifitas');
-				$q = $this->t_registrasi->get_data_log_edit($id, json_decode($datalog->new_data, true), json_decode($datalog->old_data, true));
+				$q = $this->t_registrasi->get_data_log_aktifitas($id, json_decode($datalog->new_data, true), json_decode($datalog->old_data, true));
+				$html = "<tr>
+							<td colspan='7' align='center'><b>Data BARU</b></td>
+						</tr>
+						<tr>
+							<td style='font-weight:bold;font-decoration:italic;'>Tanggal Registrasi</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Jam</td>
+							<td style='font-weight:bold;font-decoration:italic;'>No. Reg</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Dokter</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Pasien</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Layanan</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Klinik</td>
+						</tr>
+						<tr>
+							<td>".$q['new']['tanggal_reg']."</td>
+							<td>".$q['new']['jam_reg'] . "</td>
+							<td>".$q['new']['reg']->no_reg."</td>
+							<td>".$q['new']['peg']->nama."</td>
+							<td>".$q['new']['psn']->nama."</td>
+							<td>".$q['new']['lay']->nama_layanan."</td>
+							<td>".$q['new']['klinik']->nama_klinik. "</td>
+						</tr>
+						<tr>
+							<td colspan='7' align='center'>&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan='7' align='center'><b>Data LAMA</b></td>
+						</tr>
+						<tr>
+							<td style='font-weight:bold;font-decoration:italic;'>Tanggal Registrasi</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Jam</td>
+							<td style='font-weight:bold;font-decoration:italic;'>No. Reg</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Dokter</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Pasien</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Layanan</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Klinik</td>
+						</tr>
+						<tr>
+							<td>".$q['old']['tanggal_reg']."</td>
+							<td>".$q['old']['jam_reg']."</td>
+							<td>".$q['old']['reg']->no_reg."</td>
+							<td>".$q['old']['peg']->nama."</td>
+							<td>".$q['old']['psn']->nama."</td>
+							<td>".$q['old']['lay']->nama_layanan."</td>
+							<td>".$q['old']['klinik']->nama_klinik."</td>
+						</tr>
+					";
+
+				return $html;
+				break;
+
+			case 'hapus':
+				$datalog = $this->m_global->single_row('*', ['id' => $id], 't_log_aktifitas');
+				$q = $this->t_registrasi->get_data_log_aktifitas($id, null, json_decode($datalog->old_data, true));
+				$html = "
+						<tr>
+							<td colspan='7' align='center'><b>Data LAMA</b></td>
+						</tr>
+						<tr>
+							<td style='font-weight:bold;font-decoration:italic;'>Tanggal Registrasi</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Jam</td>
+							<td style='font-weight:bold;font-decoration:italic;'>No. Reg</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Dokter</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Pasien</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Layanan</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Klinik</td>
+						</tr>
+						<tr>
+							<td>" . $q['old']['tanggal_reg'] . "</td>
+							<td>" . $q['old']['jam_reg'] . "</td>
+							<td>" . $q['old']['reg']->no_reg . "</td>
+							<td>" . $q['old']['peg']->nama . "</td>
+							<td>" . $q['old']['psn']->nama . "</td>
+							<td>" . $q['old']['lay']->nama_layanan . "</td>
+							<td>" . $q['old']['klinik']->nama_klinik . "</td>
+						</tr>
+					";
+
+				return $html;
 				break;
 
 			default:
-				# code...
+				$datalog = $this->m_global->single_row('*', ['id' => $id], 't_log_aktifitas');
+				$q = $this->t_registrasi->get_data_log_aktifitas($id, json_decode($datalog->new_data, true), null);
+				$html = "
+						<tr>
+							<td colspan='7' align='center'><b>Data BARU</b></td>
+						</tr>
+						<tr>
+							<td style='font-weight:bold;font-decoration:italic;'>Tanggal Registrasi</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Jam</td>
+							<td style='font-weight:bold;font-decoration:italic;'>No. Reg</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Dokter</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Pasien</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Layanan</td>
+							<td style='font-weight:bold;font-decoration:italic;'>Klinik</td>
+						</tr>
+						<tr>
+							<td>" . $q['new']['tanggal_reg'] . "</td>
+							<td>" . $q['new']['jam_reg'] . "</td>
+							<td>" . $q['new']['reg']->no_reg . "</td>
+							<td>" . $q['new']['peg']->nama . "</td>
+							<td>" . $q['new']['psn']->nama . "</td>
+							<td>" . $q['new']['lay']->nama_layanan . "</td>
+							<td>" . $q['new']['klinik']->nama_klinik . "</td>
+						</tr>
+					";
+				return $html;
 				break;
+
 		}
 	}
 

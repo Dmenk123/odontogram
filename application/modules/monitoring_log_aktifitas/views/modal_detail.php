@@ -8,7 +8,7 @@
       </div>
       <div class="modal-body row">
         <div class="col-md-12">
-          <table class="table table-responsive table-borderless">
+          <table class="table table-responsive table-striped- table-bordered table-hover">
             <tbody id="tbl_log_aktifitas_det">
             </tbody>
           </table>

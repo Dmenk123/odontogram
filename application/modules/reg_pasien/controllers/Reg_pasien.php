@@ -409,6 +409,7 @@ class Reg_pasien extends CI_Controller {
 			$registrasi['no_reg'] = $this->t_registrasi->get_kode_reg();
 			$registrasi['created_at'] = $timestamp;
 			$registrasi['estimasi_selesai'] = Carbon::createFromFormat('H:i:s', $jam_reg)->addMinutes($cek_layanan->waktu_layanan);
+			
 			$insert = $this->t_registrasi->save($registrasi);
 			$pesan = 'Sukses Menambah data Registrasi';
 
