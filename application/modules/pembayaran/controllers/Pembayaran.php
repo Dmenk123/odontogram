@@ -635,39 +635,32 @@ class Pembayaran extends CI_Controller {
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 		$data_bayar = $this->t_pembayaran->get_detail_pembayaran($id);
 		$data_bayar_det = $this->get_detail_pembayaran($data_bayar->id_reg);
-		
-		// echo "<pre>";
-		// print_r ($data_bayar);
-		// echo "</pre>";
-
-		// echo "<pre>";
-		// print_r ($data_bayar_det);
-		// echo "</pre>";
-		// exit;
 
 		$html_rinci = '';
 		$subtotal = 0;  
 		foreach ($data_bayar_det['detail'] as $key => $value) {
+			$qty_fix = ($value['qty']) ? $value['qty'] : 1;
 			$subtotal += $value['subtotal'];
 			$html_rinci .= "<tr>
 				<td>".$value['jenis']."</td>
 				<td>".$value['nama']."</td>
 				<td align='right'>".number_format($value['harga'],0,',','.')."</td>
-				<td align='right'>".$value['qty']."</td>
+				<td align='right'>".$qty_fix."</td>
+				<td align='right'>".number_format($value['diskon_nilai'],0,',','.')."</td>
 				<td align='right'>".number_format($value['subtotal'],0,',','.')."</td>
 			</tr>";
 		}
 
 		$html_rinci .= "<tr>
-			<td colspan='4' align='center'>Total (Gross)</td>
+			<td colspan='5' align='center'>Total (Gross)</td>
 			<td align='right'>".number_format($subtotal,0,',','.')."</td>
 		</tr>
 		<tr>
-			<td colspan='4' align='center'>Total Diskon</td>
+			<td colspan='5' align='center'>Total Diskon</td>
 			<td align='right'>".number_format($data_bayar->disc_nilai,0,',','.')."</td>
 		</tr>
 		<tr>
-			<td colspan='4' align='center'>Total (Nett)</td>
+			<td colspan='5' align='center'>Total (Nett)</td>
 			<td align='right'>".number_format($data_bayar->total_nett,0,',','.')."</td>
 		</tr>";
 

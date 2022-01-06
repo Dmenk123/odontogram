@@ -70,6 +70,7 @@
                 <th>Nama</th>
                 <th>Harga</th>
                 <th>Qty</th>
+                <th>Disc</th>
                 <th>Subtotal</th>
               </tr>
             </thead>

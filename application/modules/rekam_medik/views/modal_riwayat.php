@@ -31,6 +31,7 @@
                           <th style="width: 10%;">Gigi</th>
                           <th style="width: 10%;">Kode</th>
                           <th>Nama Diagnosa</th>
+                          <th>Keterangan</th>
                           <th>Tanggal Kunjungan</th>
                           <th>Klinik</th>
                           <th>Dokter</th>

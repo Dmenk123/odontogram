@@ -206,17 +206,21 @@ function save()
                     }
                 });              
             }else {
-                for (var i = 0; i < data.inputerror.length; i++) 
-                {
-                    if (data.inputerror[i] != 'pegawai') {
-                        $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
-                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
-                    }else{
-                        //ikut style global
-                        $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                if(data.popMessage) {
+                    swalConfirm.fire('Gagal', data.pesan, 'error');
+                }else{
+                    for (var i = 0; i < data.inputerror.length; i++) 
+                    {
+                        if (data.inputerror[i] != 'pegawai') {
+                            $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                            $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback'); //select span help-block class set text error string
+                        }else{
+                            //ikut style global
+                            $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                        }
                     }
                 }
-
+                
                 $("#btnSave").prop("disabled", false);
                 $('#btnSave').text('Simpan');
             }

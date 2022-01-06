@@ -162,6 +162,7 @@ class Rekam_medik extends CI_Controller {
 			$html .= '<td>'.$data->nama_dokter.'</td>';
 			$html .= '<td>'.$data->nama_pasien.'</td>';
 			$html .= '<td>'.$data->no_rm.'</td>';
+			$html .= '<td>'.$data->umur.'</td>';
 			$html .= ($data->is_asuransi) ? '<td>Asuransi</td>' : '<td>Umum</td>';
 			$html .= '<td>'.$data->nama_asuransi.'</td>';
 			$html .= '</tr>';
@@ -1905,7 +1906,7 @@ class Rekam_medik extends CI_Controller {
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 
-		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, md.kode_diagnosa, md.nama_diagnosa, dt.created_at, k.nama_klinik, k.alamat, peg.nama as nama_dokter";
+		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, md.kode_diagnosa, md.nama_diagnosa, dt.keterangan,dt.created_at, k.nama_klinik, k.alamat, peg.nama as nama_dokter";
 		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
 		$table = 't_diagnosa as d';
 		$join = [ 
@@ -1931,6 +1932,7 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->gigi;
 				$data[$key][] = $value->kode_diagnosa;
 				$data[$key][] = $value->nama_diagnosa;
+				$data[$key][] = $value->keterangan;
 				$data[$key][] = tanggal_indo($value->created_at);
 				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
 				$data[$key][] = $value->nama_dokter;

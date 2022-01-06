@@ -296,6 +296,16 @@ class Data_pasien extends CI_Controller {
 		$alergi_makanan = $this->input->post('alergi_makanan');
 		$alergi_makanan_val = contul(trim($this->input->post('alergi_makanan_val')));
 
+		### cek jika data baru maka harus handling nik
+		### apakah sebelumnya sudah ada nik nya atau tidak
+		$cek_nik = $this->m_global->single_row('nik', ['nik' => $nik], 'm_pasien');
+		if($cek_nik) {
+			$retval['status'] = FALSE;
+			$retval['pesan'] = 'Maaf NIK '.$nik.' sudah ada pada sistem';
+			$retval['popMessage'] = true;
+			echo json_encode($retval);
+			return;
+		}
 		$this->db->trans_begin();
 		
 		###################### data pasien
@@ -401,6 +411,7 @@ class Data_pasien extends CI_Controller {
 			$this->db->trans_rollback();
 			$retval['status'] = false;
 			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
+			$retval['popMessage'] = true;
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
@@ -844,7 +855,7 @@ class Data_pasien extends CI_Controller {
 		$data['error_string'] = array();
 		$data['inputerror'] = array();
 		$data['status'] = TRUE;
-
+		$data['popMessage'] = false;
 		
 		if ($this->input->post('nama') == '') {
 			$data['inputerror'][] = 'nama';
