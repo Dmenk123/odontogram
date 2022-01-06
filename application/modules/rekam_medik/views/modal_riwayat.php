@@ -32,7 +32,7 @@
                           <th style="width: 10%;">Kode</th>
                           <th>Nama Diagnosa</th>
                           <th>Keterangan</th>
-                          <th>Tanggal Kunjungan</th>
+                          <th>Tanggal Diagnosa</th>
                           <th>Klinik</th>
                           <th>Dokter</th>
                         </tr>
@@ -52,7 +52,7 @@
                           <th>Nama Tindakan</th>
                           <th style="width: 15%;">Harga</th>
                           <th>Keterangan</th>
-                          <th>Tanggal Kunjungan</th>
+                          <th>Tanggal Tindakan</th>
                           <th>Klinik</th>
                           <th>Dokter</th>
                         </tr>
@@ -70,7 +70,7 @@
                           <th style="width: 10%;">Kode</th>
                           <th>Nama Tindakan Lab</th>
                           <th>Keterangan</th>
-                          <th>Tanggal Kunjungan</th>
+                          <th>Tanggal Tindakan</th>
                           <th>Klinik</th>
                           <th>Dokter</th>
                         </tr>
@@ -88,7 +88,7 @@
                           <th>Kode</th>
                           <th>Nama Logistik</th>
                           <th>Keterangan</th>
-                          <th>Tanggal Kunjungan</th>
+                          <th>Tanggal</th>
                           <th>Klinik</th>
                           <th>Dokter</th>
                         </tr>

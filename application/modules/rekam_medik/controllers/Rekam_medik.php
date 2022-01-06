@@ -1953,7 +1953,7 @@ class Rekam_medik extends CI_Controller {
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 
-		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga as harga_nett, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan, dt.created_at, k.nama_klinik, k.alamat, peg.nama as nama_dokter";
+		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga as harga_nett, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan, dt.created_at, k.nama_klinik, k.alamat, peg.nama as nama_dokter, dt.created_at as tgl_tindakan_det";
 		$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
 		$table = 't_tindakan as d';
 		$join = [ 
@@ -1981,7 +1981,7 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->nama_tindakan;
 				$data[$key][] = number_format($value->harga_nett, 0, ',', '.');
 				$data[$key][] = $value->keterangan;
-				$data[$key][] = tanggal_indo($value->created_at);
+				$data[$key][] = tanggal_indo($value->tgl_tindakan_det);
 				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
 				$data[$key][] = $value->nama_dokter;
 			}
