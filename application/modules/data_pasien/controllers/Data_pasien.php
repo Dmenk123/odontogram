@@ -298,13 +298,15 @@ class Data_pasien extends CI_Controller {
 
 		### cek jika data baru maka harus handling nik
 		### apakah sebelumnya sudah ada nik nya atau tidak
-		$cek_nik = $this->m_global->single_row('nik', ['nik' => $nik], 'm_pasien');
-		if($cek_nik) {
-			$retval['status'] = FALSE;
-			$retval['pesan'] = 'Maaf NIK '.$nik.' sudah ada pada sistem';
-			$retval['popMessage'] = true;
-			echo json_encode($retval);
-			return;
+		if($flag_data_baru) {
+			$cek_nik = $this->m_global->single_row('nik', ['nik' => $nik], 'm_pasien');
+			if($cek_nik) {
+				$retval['status'] = FALSE;
+				$retval['pesan'] = 'Maaf NIK '.$nik.' sudah ada pada sistem';
+				$retval['popMessage'] = true;
+				echo json_encode($retval);
+				return;
+			}
 		}
 		$this->db->trans_begin();
 		
@@ -410,12 +412,21 @@ class Data_pasien extends CI_Controller {
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
 			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal menambahkan Data Pasien';
+			if ($flag_data_baru) {
+				$retval['pesan'] = 'Gagal menambahkan Data Pasien';
+			} else {
+				$retval['pesan'] = 'Gagal update Data Pasien';
+			}
+			
 			$retval['popMessage'] = true;
 		}else{
 			$this->db->trans_commit();
 			$retval['status'] = true;
-			$retval['pesan'] = 'Sukses menambahkan Data Pasien';
+			if ($flag_data_baru) {
+				$retval['pesan'] = 'Sukses menambahkan Data Pasien';
+			}else{
+				$retval['pesan'] = 'Sukses update Data Pasien';
+			}
 		}
 
 		echo json_encode($retval);
