@@ -37,8 +37,11 @@
           <thead>
             <tr>
               <th>Klinik</th>
+              <th>Pasien</th>
               <th>No. Reg</th>
               <th>Tgl Reg</th>
+              <th>No. Invoice</th>
+              <th>Tgl Bayar</th>
               <th>User</th>
               <th>Jenis Trans</th>
               <th>Disc (%)</th>

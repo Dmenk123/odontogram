@@ -5,8 +5,11 @@ class T_pembayaran extends CI_Model
 	var $table = 't_pembayaran';
 	var $column_search = [
 		'c.nama_klinik',
+		'e.nama',
 		'b.no_reg',
 		'b.tanggal_reg',
+		'a.kode',
+		'a.created_at',
 		'd.username',
 		'jenis_bayar',
 		'a.disc_persen',
@@ -17,8 +20,11 @@ class T_pembayaran extends CI_Model
 
 	var $column_order = [
 		'c.nama_klinik',
+		'e.nama',
 		'b.no_reg',
 		'b.tanggal_reg',
+		'a.kode',
+		'a.created_at',
 		'd.username',
 		'jenis_bayar',
 		'a.disc_persen',
@@ -28,7 +34,7 @@ class T_pembayaran extends CI_Model
 		null
 	];
 
-	var $order = ['b.no_reg' => 'asc', 'a.tanggal_reg' => 'asc'];
+	var $order = ['a.created_at' => 'desc'];
 
 	public function __construct()
 	{
@@ -39,11 +45,12 @@ class T_pembayaran extends CI_Model
 
 	private function _get_datatables_query($term='', $id_klinik = null)
 	{
-		$this->db->select("a.*, b.no_reg, b.tanggal_reg, c.nama_klinik, CASE WHEN a.is_cash = 1 THEN 'Cash' ELSE 'Kredit' END as jenis_bayar, d.username");
+		$this->db->select("a.*, b.no_reg, b.tanggal_reg, c.nama_klinik, CASE WHEN a.is_cash = 1 THEN 'Cash' ELSE 'Kredit' END as jenis_bayar, d.username, e.nama as nama_pasien");
 		$this->db->from($this->table.' a');
 		$this->db->join('t_registrasi b', 'a.id_reg = b.id', 'left');
 		$this->db->join('m_klinik c', 'b.id_klinik = c.id', 'left');
 		$this->db->join('m_user d', 'a.id_user = d.id', 'left');
+		$this->db->join('m_pasien e', 'b.id_pasien = e.id', 'left');
 		$this->db->where('a.deleted_at is null');
 
 		if($id_klinik != null) {

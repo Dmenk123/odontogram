@@ -61,8 +61,11 @@ class Pembayaran extends CI_Controller {
 			$row = array();
 			//loop value tabel db
 			$row[] = $val->nama_klinik;
+			$row[] = $val->nama_pasien;
 			$row[] = $val->no_reg;
 			$row[] = Carbon::parse($val->tanggal)->format('d-m-Y');
+			$row[] = $val->kode;
+			$row[] = Carbon::parse($val->created_at)->format('d-m-Y H:i');
 			$row[] = $val->username;
 			$row[] = $val->jenis_bayar;
 			$row[] = $val->disc_persen;
