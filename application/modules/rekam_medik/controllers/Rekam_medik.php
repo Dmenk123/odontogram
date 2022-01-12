@@ -141,8 +141,14 @@ class Rekam_medik extends CI_Controller {
 
 	public function hasil_pilih_pasien(){
 		$this->load->library('Enkripsi');
-		$enc_id = $this->input->post('enc_id');
-		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		
+		if($this->input->get('unencrypted') == true) {
+			$id = $this->input->post('enc_id');
+		}else{
+			$enc_id = $this->input->post('enc_id');
+			$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
+		}
+		
 		$select = "reg.*, reg.no_asuransi, pas.no_rm, pas.nama as nama_pasien, peg.nama as nama_dokter, reg.nama_asuransi";
 		$where = ['reg.id' => $id];
 		$table = 't_registrasi as reg';

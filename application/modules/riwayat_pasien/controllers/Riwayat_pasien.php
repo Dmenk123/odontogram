@@ -39,7 +39,7 @@ class Riwayat_pasien extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => 'modal_detail',
+			'modal' => ['modal_detail', 'modal_diagnosa', 'modal_tindakan', 'modal_logistik', 'modal_tindakan_lab'],
 			'js'	=> 'riwayat_pasien.js',
 			'view'	=> 'view_riwayat'
 		];

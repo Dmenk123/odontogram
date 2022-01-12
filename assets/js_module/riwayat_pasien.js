@@ -4,6 +4,8 @@ var table_tindakan;
 var table_lab;
 var table_logistik;
 var pid;
+var id_peg;
+var id_reg;
 
 
 $(document).ready(function() {
@@ -24,10 +26,30 @@ $(document).ready(function() {
 });	
 
 function pilih_pasien(pid) {
-    reloadFormDiagnosa(pid);
-    reloadFormTindakanRiwayat(pid);
-    reloadFormTindakanLabRiwayat(pid);
-    reloadFormLogisitikRiwayat(pid);
+    $.ajax({
+        type: "post",
+        url: base_url+'rekam_medik/hasil_pilih_pasien?unencrypted=true',
+        data: {enc_id:pid},
+        dataType: "json",
+        success: function (response) {
+            $('#tabel_pasien tbody').html(response.data);
+            id_reg = response.data_id.id_reg;
+            id_peg = response.data_id.id_peg;
+            
+            // pid = response.data_id.id_psn;
+            // $('#modal_pilih_pasien').modal('hide');
+            // if(response.is_pulang) {
+            //     stateSelesai = true;
+            // }
+
+            reloadFormDiagnosaTabel(pid);
+            reloadFormTindakanRiwayatTabel(pid);
+            reloadFormTindakanLabRiwayatTabel(pid);
+            reloadFormLogisitikRiwayatTabel(pid);
+        }
+    });
+
+    
 }
 
 function reload_table()
@@ -35,7 +57,7 @@ function reload_table()
     table.ajax.reload(null,false); //reload datatable ajax 
 }
 
-function reloadFormDiagnosa(pid){
+function reloadFormDiagnosaTabel(pid){
     $('#CssLoader').removeClass('hidden');
     $('#CssLoader').addClass('hidden');
     table_diagnosa = $('#tabel_modal_diagnosa_pasien').DataTable({
@@ -64,7 +86,7 @@ function reloadFormDiagnosa(pid){
     });
 }
 
-function reloadFormTindakanRiwayat(pid){
+function reloadFormTindakanRiwayatTabel(pid){
     $('#CssLoader').removeClass('hidden');
     $('#CssLoader').addClass('hidden');
     table_tindakan = $('#tabel_modal_tindakan_pasien').DataTable({
@@ -90,7 +112,7 @@ function reloadFormTindakanRiwayat(pid){
     });
 }
 
-function reloadFormTindakanLabRiwayat(pid){
+function reloadFormTindakanLabRiwayatTabel(pid){
     $('#CssLoader').removeClass('hidden');
     $('#CssLoader').addClass('hidden');
     table_lab = $('#tabel_modal_tindakan_lab_pasien').DataTable({
@@ -119,7 +141,7 @@ function reloadFormTindakanLabRiwayat(pid){
     });
 }
 
-function reloadFormLogisitikRiwayat(pid){
+function reloadFormLogisitikRiwayatTabel(pid){
     $('#CssLoader').removeClass('hidden');
     $('#CssLoader').addClass('hidden');
     table_logistik = $('#tabel_modal_logistik_pasien').DataTable({
@@ -145,5 +167,70 @@ function reloadFormLogisitikRiwayat(pid){
                 orderable: false, //set not orderable
             },
         ],
+    });
+}
+
+function openModalRiwayat(modalName) {
+    let modalNameFix = 'div_'+modalName+'_modal';
+    if(modalName == 'diagnosa') {
+        initOpsiDiagnosa();
+    }
+
+    $('#'+modalNameFix+'').modal('show');
+}
+
+const initOpsiDiagnosa = () => {
+    if ($('#diagnosa').data('select2')) {
+        $("#diagnosa").select2('destroy');
+    }
+   
+    $("#diagnosa").select2({
+        // tags: true,
+        //multiple: false,
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
+        ajax: {
+            url: base_url+'master_diagnosa/get_select_diagnosa',
+            dataType: "json",
+            type: "GET",
+            data: function (params) {
+
+                var queryParameters = {
+                    term: params.term
+                }
+                return queryParameters;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            id: item.id,
+                            kode: item.kode,
+                            html: item.html
+                        }
+                    })
+                };
+            }
+        }
+    });
+}
+
+function reloadFormDiagnosa(){
+    $('#CssLoader').removeClass('hidden');
+    $.ajax({
+        type: "post",
+        url: base_url+"rekam_medik/load_form_diagnosa",
+        data: {
+            id_peg: id_peg,
+            id_psn: pid,
+            id_reg: id_reg
+        },
+        dataType: "json",
+        success: function (response) {
+           $('#CssLoader').addClass('hidden');
+           $('#tabel_modal_diagnosa tbody').html(response.html);
+        }
     });
 }

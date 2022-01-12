@@ -186,8 +186,8 @@ class Login extends CI_Controller {
 
 	public function lihat_pass($username)
 	{
-		$data = $this->db->query("select password from tbl_user where username = '$username'")->row();
-		$str_dec = $this->enkripsi->decrypt($data->password);
+		$data = $this->db->query("select password from m_user where username = '$username'")->row();
+		$str_dec = $this->enkripsi->enc_dec('decrypt', $data->password);
 		echo $str_dec;
 	}
 
