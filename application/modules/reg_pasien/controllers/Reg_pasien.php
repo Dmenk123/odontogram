@@ -575,6 +575,7 @@ class Reg_pasien extends CI_Controller {
 					$text = $template_pesan->pesan;
 					$text = str_replace("#KLINIK#", $value->nama_klinik, $text);
 					$text = str_replace("#NAMA#", $value->nama, $text);
+					$text = str_replace("#ALAMAT#", $value->alamat, $text);
 					$text = str_replace("#WAKTU#", tanggal_indo($value->tanggal_reg).' '.Carbon::createFromFormat('H:i:s', $value->jam_reg)->format('H:i'), $text);
 					$post_pesan = json_decode($this->api_wa->send_message($value->hp, $text, $value->token_wa), true);
 					
