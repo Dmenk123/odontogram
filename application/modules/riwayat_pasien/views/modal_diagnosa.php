@@ -24,7 +24,7 @@
                     <span class="help-block"></span>
                   </div>
                   <div class="col-4">
-                    <input type="text" class="form-control" id="gigi" name="gigi" value="">
+                    <input type="text" class="form-control" id="fm_gigi" name="fm_gigi" value="">
                     <span class="help-block"></span>
                   </div>
                 </div>
@@ -34,11 +34,11 @@
                 </div>
                 <div class="col-12 row">
                   <div class="col-4">
-                    <input type="text" class="form-control kt_datepicker" id="tanggal" name="tanggal" autocomplete="off">
+                    <input type="text" class="form-control kt_datepicker" id="fm_tanggal" name="fm_tanggal" autocomplete="off">
                     <span class="help-block"></span>
                   </div>
                   <div class="col-8">
-                    <input type="text" class="form-control" id="keterangan" name="keterangan" value="">
+                    <input type="text" class="form-control" id="fm_keterangan" name="fm_keterangan" value="">
                     <span class="help-block"></span>
                   </div>
                 </div>
