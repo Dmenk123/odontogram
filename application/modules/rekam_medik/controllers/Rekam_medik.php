@@ -526,14 +526,19 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	public function load_form_diagnosa()
+	public function load_form_diagnosa($is_riwayat = false)
 	{
 		$id_psn = $this->input->post('id_psn');
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 		
 		$select = "d.*,dt.id as id_diagnosa_det, dt.id_diagnosa, dt.gigi, dt.keterangan, md.kode_diagnosa, md.nama_diagnosa";
-		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg];
+		if($is_riwayat) {
+			$where = ['d.id_pasien' => $id_psn];
+		}else{
+			$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg];
+		}
+		
 		$table = 't_diagnosa as d';
 		$join = [ 
 			['table' => 't_diagnosa_det as dt', 'on' => 'd.id = dt.id_t_diagnosa'],
@@ -541,15 +546,24 @@ class Rekam_medik extends CI_Controller {
 		];
 
 		$data = $this->m_global->multi_row($select, $where, $table, $join);
+
 		$html = '';
 		
 		if($data){
-			foreach ($data as $key => $value) {
-				if($value->kode_diagnosa){
-					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_diagnosa.'</td><td>'.$value->nama_diagnosa.'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\''.$value->id_diagnosa_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+			if($is_riwayat) {
+				foreach ($data as $key => $value) {
+					if ($value->kode_diagnosa) {
+						$html .= '<tr><td>' . Carbon::parse($value->tanggal)->format("d-m-Y") . '</td><td>' . $value->gigi . '</td><td>' . $value->kode_diagnosa . '</td><td>' . $value->nama_diagnosa . '</td><td>' . $value->keterangan . '</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\'' . $value->id_diagnosa_det . '\')"><i class="la la-trash"></i></button></td></tr>';
+					}
 				}
-				
+			}else{
+				foreach ($data as $key => $value) {
+					if ($value->kode_diagnosa) {
+						$html .= '<tr><td>' . $value->gigi . '</td><td>' . $value->kode_diagnosa . '</td><td>' . $value->nama_diagnosa . '</td><td>' . $value->keterangan . '</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_diagnosa_det(\'' . $value->id_diagnosa_det . '\')"><i class="la la-trash"></i></button></td></tr>';
+					}
+				}
 			}
+			
 		}
 
 		echo json_encode([
@@ -1933,8 +1947,6 @@ class Rekam_medik extends CI_Controller {
 		$data = [];
 		if ($data_table) {
 			foreach ($data_table as $key => $value) {
-			
-
 				$data[$key][] = $value->gigi;
 				$data[$key][] = $value->kode_diagnosa;
 				$data[$key][] = $value->nama_diagnosa;

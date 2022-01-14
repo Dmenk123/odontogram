@@ -18,7 +18,7 @@
                 </div>
                 <div class="col-12 row">
                   <div class="col-8">
-                    <select class="form-control kt-select2" id="diagnosa" name="diagnosa" style="width: 100%;">
+                    <select class="form-control kt-select2" id="fm_diagnosa" name="fm_diagnosa" style="width: 100%;">
                       <option value="">Silahkan Pilih Diagnosa</option>
                     </select>
                     <span class="help-block"></span>
@@ -48,6 +48,7 @@
                   <table class="table table-striped- table-bordered table-hover" id="tabel_modal_diagnosa">
                     <thead>
                       <tr>
+                        <th>Tanggal</th>
                         <th>Gigi</th>
                         <th>Kode</th>
                         <th>Nama Diagnosa</th>

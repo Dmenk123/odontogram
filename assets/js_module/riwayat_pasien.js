@@ -86,6 +86,24 @@ function reloadFormDiagnosaTabel(pid){
     });
 }
 
+function reloadFormDiagnosa(){
+    $('#CssLoader').removeClass('hidden');
+    $.ajax({
+        type: "post",
+        url: base_url+"rekam_medik/load_form_diagnosa/true",
+        data: {
+            id_peg: id_peg,
+            id_psn: pid,
+            id_reg: id_reg
+        },
+        dataType: "json",
+        success: function (response) {
+           $('#CssLoader').addClass('hidden');
+           $('#tabel_modal_diagnosa tbody').html(response.html);
+        }
+    });
+}
+
 function reloadFormTindakanRiwayatTabel(pid){
     $('#CssLoader').removeClass('hidden');
     $('#CssLoader').addClass('hidden');
@@ -174,17 +192,18 @@ function openModalRiwayat(modalName) {
     let modalNameFix = 'div_'+modalName+'_modal';
     if(modalName == 'diagnosa') {
         initOpsiDiagnosa();
+        reloadFormDiagnosa();
     }
 
     $('#'+modalNameFix+'').modal('show');
 }
 
 const initOpsiDiagnosa = () => {
-    if ($('#diagnosa').data('select2')) {
-        $("#diagnosa").select2('destroy');
+    if ($('#fm_diagnosa').data('select2')) {
+        $("#fm_diagnosa").select2('destroy');
     }
    
-    $("#diagnosa").select2({
+    $("#fm_diagnosa").select2({
         // tags: true,
         //multiple: false,
         tokenSeparators: [',', ' '],
@@ -213,24 +232,6 @@ const initOpsiDiagnosa = () => {
                     })
                 };
             }
-        }
-    });
-}
-
-function reloadFormDiagnosa(){
-    $('#CssLoader').removeClass('hidden');
-    $.ajax({
-        type: "post",
-        url: base_url+"rekam_medik/load_form_diagnosa",
-        data: {
-            id_peg: id_peg,
-            id_psn: pid,
-            id_reg: id_reg
-        },
-        dataType: "json",
-        success: function (response) {
-           $('#CssLoader').addClass('hidden');
-           $('#tabel_modal_diagnosa tbody').html(response.html);
         }
     });
 }
