@@ -235,3 +235,81 @@ const initOpsiDiagnosa = () => {
         }
     });
 }
+
+function save(id_form)
+{
+    let str1 = '#';
+    let id_element = str1.concat(id_form);
+    var form = $(id_element)[0];
+    //console.log(form);
+    var data = new FormData(form);
+    data.append('id_peg', id_peg);
+    data.append('id_reg', id_reg);
+    data.append('id_psn', pid);
+    
+    if(id_form == 'form_anamnesa'){
+        var value = CKEDITOR.instances['anamnesa'].getData()
+        data.append('txt_anamnesa', value);
+    }
+    
+    $("#btnSave").prop("disabled", true);
+    $('#btnSave').text('Menyimpan Data'); //change button text
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: base_url+'riwayat_pasien/simpan_'+id_form,
+        data: data,
+        dataType: "JSON",
+        processData: false,
+        contentType: false, 
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            if(data.status) {
+                swal.fire({
+                    title: "Sukses!!", 
+                    text: data.pesan, 
+                    type: "success"
+                }).then(function() {
+                    $("#btnSave").prop("disabled", false);
+                    $('#btnSave').text('Simpan');      
+                    if(id_form == 'form_diagnosa') {
+                        reloadFormDiagnosa();
+                    }else if(id_form == 'form_tindakan'){
+                        reloadFormTindakan();
+                    }else if(id_form == 'form_logistik'){
+                        reloadFormLogistik();
+                    }else if(id_form == 'form_kamera'){
+                        reloadFormKamera();
+                    }else if(id_form == 'form_tindakanlab'){
+                        reloadFormTindakanLab();
+                    }else if(id_form == 'form_pasien'){
+                        reloadFormPasien();
+                    }else{
+                        $('#'+activeModal).modal('hide');
+                    }
+                });
+                // swal.fire("Sukses!!", data.pesan, "success");     
+            }else {
+                for (var i = 0; i < data.inputerror.length; i++) 
+                {
+                    if (data.is_select2[i] == false) {
+                        $('[name="'+data.inputerror[i]+'"]').addClass('is-invalid');
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]).addClass('invalid-feedback');
+                    }else{
+                        //ikut style global
+                        $('[name="'+data.inputerror[i]+'"]').next().next().text(data.error_string[i]).addClass('invalid-feedback-select');
+                    }
+                }
+
+                $("#btnSave").prop("disabled", false);
+                $('#btnSave').text('Simpan');
+            }
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+            $("#btnSave").prop("disabled", false);
+            $('#btnSave').text('Simpan');
+        }
+    });
+}

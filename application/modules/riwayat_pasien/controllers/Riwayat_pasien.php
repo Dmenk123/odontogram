@@ -138,6 +138,75 @@ class Riwayat_pasien extends CI_Controller {
 		}
 	}
 
+	public function simpan_form_diagnosa()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		if ($this->input->post('diagnosa') == '') {
+			echo json_encode([
+				'status' => true,
+				'pesan' => 'wajib memilih diagnosa'
+			]);
+			return;
+		}
+
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$id_diagnosa = $this->input->post('diagnosa');
+		$gigi = $this->input->post('gigi');
+		$keterangan = $this->input->post('keterangan');
+
+		//cek sudah ada data / tidak
+		$data_diagnosa = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_diagnosa');
+		if (!$data_diagnosa) {
+			###insert
+			$data = [
+				'id_pasien' => $id_psn,
+				'id_pegawai' => $id_peg,
+				'id_reg' => $id_reg,
+				'id_user_adm' => $this->session->userdata('id_user'),
+				'tanggal' => $datenow,
+				'created_at' => $timestamp
+			];
+
+			$insert = $this->t_rekam_medik->save($data, 't_diagnosa');
+			$this->m_global->insert_log_aktifitas('TAMBAH DATA DIAGNOSA (REKAM MEDIK)', [
+				'new_data' => json_encode($data)
+			]);
+			// $pesan = 'Sukses Menambah data Perawatan';
+		}
+
+		$cek_diagnosa = $this->m_global->single_row('id', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_diagnosa');
+		$data_det = [
+			'id_t_diagnosa' => $cek_diagnosa->id,
+			'id_diagnosa' => $id_diagnosa,
+			'gigi' => $gigi,
+			'keterangan' => $keterangan,
+			'created_at' => $timestamp
+		];
+
+		$insert_det = $this->t_rekam_medik->save($data_det, 't_diagnosa_det');
+
+		$this->m_global->insert_log_aktifitas('TAMBAH DATA DIAGNOSA DETAIL (REKAM MEDIK)', [
+			'new_data' => json_encode($data_det)
+		]);
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Data';
+		} else {
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Menambah Data';
+		}
+
+		echo json_encode($retval);
+	}
+
 	// ===============================================
 	
 	private function seoUrl($string) {

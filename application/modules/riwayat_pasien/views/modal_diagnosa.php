@@ -29,10 +29,15 @@
                   </div>
                 </div>
                 <div class="col-12 row">
+                  <label class="col-4 col-form-label">Tanggal</label>
                   <label class="col-8 col-form-label">Keterangan</label>
                 </div>
                 <div class="col-12 row">
-                  <div class="col-12">
+                  <div class="col-4">
+                    <input type="text" class="form-control kt_datepicker" id="tanggal" name="tanggal" autocomplete="off">
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-8">
                     <input type="text" class="form-control" id="keterangan" name="keterangan" value="">
                     <span class="help-block"></span>
                   </div>
