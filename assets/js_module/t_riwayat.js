@@ -22,7 +22,7 @@ function reloadFormDiagnosaRiwayat(){
                 id_reg: id_reg
             },
         },
-
+        order: [[ 4, "desc" ]],
         //set column definition initialisation properties
         columnDefs: [
             {
@@ -51,7 +51,7 @@ function reloadFormTindakanRiwayat(){
                 id_reg: id_reg
             },
         },
-
+        order: [[ 5, "desc" ]],
         //set column definition initialisation properties
         columnDefs: [
             { targets: 3, className: 'text-right' },

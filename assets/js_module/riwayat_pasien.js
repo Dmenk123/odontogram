@@ -75,6 +75,7 @@ function reloadFormDiagnosaTabel(pid){
                 id_peg : null
             },
         },
+        order: [[ 4, "desc" ]],
 
         columnDefs: [
             {
@@ -122,7 +123,7 @@ function reloadFormTindakanRiwayatTabel(pid){
                 id_peg : null
             },
         },
-
+        order: [[ 5, "desc" ]],
         //set column definition initialisation properties
         columnDefs: [
             { targets: 3, className: 'text-right' },
@@ -348,12 +349,6 @@ function save(id_form)
                         reloadFormTindakanRiwayatTabel(pid);
                     }else if(id_form == 'form_logistik'){
                         reloadFormLogistik();
-                    }else if(id_form == 'form_kamera'){
-                        reloadFormKamera();
-                    }else if(id_form == 'form_tindakanlab'){
-                        reloadFormTindakanLab();
-                    }else if(id_form == 'form_pasien'){
-                        reloadFormPasien();
                     }else{
                         $('#'+activeModal).modal('hide');
                     }
@@ -384,11 +379,11 @@ function save(id_form)
 }
 
 const resetFormTindakan = () => {
-    $('#tindakan').val('').trigger('change');
+    $("#form_tindakan select[name='tdk_tindakan']").val('').trigger('change');
+    $("#form_tindakan select[name='tdk_dokter']").val('').trigger('change');
     $("#form_tindakan input[name='tdk_gigi_num']").val('');
     $("#form_tindakan input[name='tdk_gigi_txt']").val('');
     $("#form_tindakan input[name='tdk_kode']").val('');
-    $("#form_tindakan input[name='tdk_tindakan']").val('');
 }
 
 function hapus_diagnosa_det(id) {
@@ -411,6 +406,47 @@ function hapus_diagnosa_det(id) {
                 {
                     swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
                     reloadFormDiagnosa();
+                    reloadFormDiagnosaTabel(pid);
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}
+
+function hapus_tindakan_det(id) {
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Tindakan ?',
+        text: "Data Akan dihapus ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/delete_data_tindakan_det/true',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                    reloadFormTindakan();
+                    reloadFormTindakanRiwayatTabel(pid);
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

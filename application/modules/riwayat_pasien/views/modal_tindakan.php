@@ -31,7 +31,7 @@
                 <br>
                 <div class="col-12 row">
                   <label class="col-3 col-form-label">Gigi :</label>
-                  <label class="col-4 col-form-label">Gigi :</label>
+                  <label class="col-4 col-form-label">Dokter :</label>
                   <label class="col-5 col-form-label">Keterangan :</label>
                 </div>
                 <div class="col-12 row">
