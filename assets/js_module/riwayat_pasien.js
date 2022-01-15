@@ -130,6 +130,25 @@ function reloadFormTindakanRiwayatTabel(pid){
     });
 }
 
+function reloadFormTindakan(){
+    resetFormTindakan();
+    $('#CssLoader').removeClass('hidden');
+    $.ajax({
+        type: "post",
+        url: base_url+"rekam_medik/load_form_tindakan/true",
+        data: {
+            id_peg: id_peg,
+            id_psn: pid,
+            id_reg: id_reg
+        },
+        dataType: "json",
+        success: function (response) {
+           $('#CssLoader').addClass('hidden');
+           $('#tabel_modal_tindakan tbody').html(response.html);
+        }
+    });
+}
+
 function reloadFormTindakanLabRiwayatTabel(pid){
     $('#CssLoader').removeClass('hidden');
     $('#CssLoader').addClass('hidden');
@@ -193,6 +212,9 @@ function openModalRiwayat(modalName) {
     if(modalName == 'diagnosa') {
         initOpsiDiagnosa();
         reloadFormDiagnosa();
+    }else if(modalName == 'tindakan') {
+        initOpsiTindakan();
+        reloadFormTindakan();
     }
 
     $('#'+modalNameFix+'').modal('show');
@@ -228,6 +250,51 @@ const initOpsiDiagnosa = () => {
                             id: item.id,
                             kode: item.kode,
                             html: item.html
+                        }
+                    })
+                };
+            }
+        }
+    });
+}
+
+const initOpsiTindakan = () => {
+    if ($("#tdk_tindakan").data('select2')) {
+        $("#tdk_tindakan").select2('destroy');
+    }
+
+    $("#tdk_tindakan").select2({
+        // tags: true,
+        //multiple: false,
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
+        ajax: {
+            url: base_url+'master_tindakan/get_select_tindakan',
+            dataType: "json",
+            type: "GET",
+            data: function (params) {
+
+                var queryParameters = {
+                    term: params.term
+                }
+                return queryParameters;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            id: item.id,
+                            kode: item.kode,
+                            nama: item.nama,
+                            harga: item.harga,
+                            harga_raw: item.harga_raw,
+                            is_all_gigi: item.is_all_gigi,
+                            disc_persen: item.disc_persen,
+                            harga_nett: item.harga_nett,
+                            harga_nett_raw: item.harga_nett_raw,
+                            is_owner:item.is_owner
                         }
                     })
                 };
@@ -275,8 +342,10 @@ function save(id_form)
                     $('#btnSave').text('Simpan');      
                     if(id_form == 'form_diagnosa') {
                         reloadFormDiagnosa();
+                        reloadFormDiagnosaTabel(pid);
                     }else if(id_form == 'form_tindakan'){
                         reloadFormTindakan();
+                        reloadFormTindakanRiwayatTabel(pid);
                     }else if(id_form == 'form_logistik'){
                         reloadFormLogistik();
                     }else if(id_form == 'form_kamera'){
@@ -310,6 +379,53 @@ function save(id_form)
             console.log("ERROR : ", e);
             $("#btnSave").prop("disabled", false);
             $('#btnSave').text('Simpan');
+        }
+    });
+}
+
+const resetFormTindakan = () => {
+    $('#tindakan').val('').trigger('change');
+    $("#form_tindakan input[name='tdk_gigi_num']").val('');
+    $("#form_tindakan input[name='tdk_gigi_txt']").val('');
+    $("#form_tindakan input[name='tdk_kode']").val('');
+    $("#form_tindakan input[name='tdk_tindakan']").val('');
+}
+
+function hapus_diagnosa_det(id) {
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Diagnosa ?',
+        text: "Data Akan dihapus ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/delete_data_diagnosa_det/true',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                    reloadFormDiagnosa();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
         }
     });
 }
