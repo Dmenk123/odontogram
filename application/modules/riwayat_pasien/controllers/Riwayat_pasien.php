@@ -39,7 +39,7 @@ class Riwayat_pasien extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_detail', 'modal_diagnosa', 'modal_tindakan', 'modal_logistik', 'modal_tindakan_lab'],
+			'modal' => ['modal_detail', 'modal_diagnosa', 'modal_tindakan', 'modal_logistik'],
 			'js'	=> 'riwayat_pasien.js',
 			'view'	=> 'view_riwayat'
 		];
@@ -151,6 +151,14 @@ class Riwayat_pasien extends CI_Controller {
 			return;
 		}
 
+		if($this->input->post('fm_tanggal') == '') {
+			echo json_encode([
+				'status'=> false,
+				'pesan' => 'wajib memilih tanggal'
+			]);
+			return;
+		}
+
 		$this->db->trans_begin();
 
 		$id_psn = $this->input->post('id_psn');
@@ -222,6 +230,14 @@ class Riwayat_pasien extends CI_Controller {
 				echo json_encode([
 					'status'=> false,
 					'pesan' => 'wajib memilih tindakan'
+				]);
+				return;
+			}
+
+			if($this->input->post('tdk_tanggal') == '') {
+				echo json_encode([
+					'status'=> false,
+					'pesan' => 'wajib memilih tanggal'
 				]);
 				return;
 			}
@@ -304,6 +320,105 @@ class Riwayat_pasien extends CI_Controller {
 			
 		}
 		
+	}
+
+	public function simpan_form_logistik()
+	{
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		if($this->input->post('log_qty') == '') {
+			echo json_encode([
+				'status'=> true,
+				'pesan' => 'wajib Mengisi Qty'
+			]);
+			return;
+		}
+
+		if($this->input->post('log_logistik') == '') {
+			echo json_encode([
+				'status'=> true,
+				'pesan' => 'wajib Mengisi logistik'
+			]);
+			return;
+		}
+
+		if($this->input->post('log_tanggal') == '') {
+			echo json_encode([
+				'status'=> false,
+				'pesan' => 'wajib memilih tanggal'
+			]);
+			return;
+		}
+
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = null;
+		$id_peg = $this->input->post('log_dokter');
+		$logistik = $this->input->post('log_logistik');
+		$qty_obat = $this->input->post('log_qty');
+		$tanggal = Carbon::createFromFormat('d/m/Y', $this->input->post('log_tanggal'))->format('Y-m-d');
+		//cek sudah ada data / tidak
+		// $data = $this->m_global->single_row('*', ['id_reg' => $id_reg, 'id_pasien' => $id_psn, 'id_pegawai' => $id_peg], 't_logistik');
+	
+		###insert
+		$id = $this->m_global->get_max_id('id', 't_logistik');
+		$data = [
+			'id' => $id,
+			'id_pasien' => $id_psn,
+			'id_pegawai' => $id_peg,
+			'id_reg' => $id_reg,
+			'id_user_adm' => $this->session->userdata('id_user'),
+			'tanggal' => $tanggal,
+			'created_at' => $timestamp,
+		];
+					
+		$insert = $this->t_rekam_medik->save($data, 't_logistik');
+
+		$this->m_global->insert_log_aktifitas('TAMBAH DATA RIWAYAT LOGISTIK (REKAM MEDIK)', [
+			'new_data' => json_encode($data)
+		]);
+
+
+		$id_det = $this->m_global->get_max_id('id', 't_logistik_det');
+		$data_det = [
+			'id' => $id_det,
+			'id_t_logistik' => $insert,
+			'id_logistik' => $logistik,
+			'qty' => $qty_obat,
+			'harga' => 0,
+			'subtotal' => 0,
+			'created_at' => $timestamp
+		];
+
+		$data_det_kirim[] = $data_det;
+
+		$insert_det = $this->t_rekam_medik->save($data_det, 't_logistik_det');
+
+		$this->m_global->insert_log_aktifitas('TAMBAH DATA RIWAYAT LOGISTIK DETAIL (REKAM MEDIK)', [
+			'new_data' => json_encode($data_det)
+		]);
+		// isi mutasi
+		/**
+		 * param 1 = id_registrasi
+		 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+		 * param 3 data tabel transaksi (parent tabel)
+		 * param 4 data tabel detail transaksi (child tabel)
+		 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+		*/
+		## $mutasi = $this->lib_mutasi->simpan_mutasi($id_reg, '1', $data, $data_det_kirim, '1');
+		
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal Menambah Data';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = 'Sukses Menambah Data';
+		}
+
+		echo json_encode($retval);
 	}
 
 	// ===============================================

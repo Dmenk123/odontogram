@@ -1078,7 +1078,7 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	public function load_form_logistik()
+	public function load_form_logistik($is_riwayat = false)
 	{
 		// $this->lib_mutasi->simpan_mutasi(1, 1);
 		$id_psn = $this->input->post('id_psn');
@@ -1086,7 +1086,12 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		
 		$select = "tl.*, tld.id as id_logistik_det, tld.id_logistik, tld.qty, tld.harga, tld.subtotal, ml.kode_logistik, ml.nama_logistik, mjl.jenis as jenis_logistik";
-		$where = ['tl.id_reg' => $id_reg, 'tl.id_pasien' => $id_psn, 'tl.id_pegawai' => $id_peg, 'tld.deleted_at' => null];
+		if($is_riwayat) {
+			$where = ['tl.id_pasien' => $id_psn, 'tld.deleted_at' => null];
+		}else{
+			$where = ['tl.id_reg' => $id_reg, 'tl.id_pasien' => $id_psn, 'tl.id_pegawai' => $id_peg, 'tld.deleted_at' => null];
+		}
+		
 		$table = 't_logistik as tl';
 		$join = [ 
 			['table' => 't_logistik_det as tld', 'on' => 'tl.id = tld.id_t_logistik'],
@@ -1099,12 +1104,22 @@ class Rekam_medik extends CI_Controller {
 		$html = '';
 		$grand_total = 0;
 		if($data){
-			foreach ($data as $key => $value) {
-				if($value->kode_logistik){
-					$grand_total += (float)$value->subtotal;
-					$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
-				}				
+			if($is_riwayat) {
+				foreach ($data as $key => $value) {
+					if($value->kode_logistik){
+						$grand_total += (float)$value->subtotal;
+						$html .= '<tr><td>'.Carbon::parse($value->tanggal)->format("d-m-Y").'</td><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					}				
+				}
+			}else{
+				foreach ($data as $key => $value) {
+					if($value->kode_logistik){
+						$grand_total += (float)$value->subtotal;
+						$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					}				
+				}
 			}
+			
 			// $html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($grand_total,2,',','.').'</strong></td></tr>';
 		}
 
@@ -1114,7 +1129,7 @@ class Rekam_medik extends CI_Controller {
 		]);
 	}
 
-	public function delete_data_logistik_det()
+	public function delete_data_logistik_det($is_riwayat = false)
 	{
 		$id = $this->input->post('id');
 		$select = 't_logistik_det.*, t_logistik.id_reg, t_logistik.id_pegawai';
@@ -1137,9 +1152,16 @@ class Rekam_medik extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}else{
-			$this->m_global->insert_log_aktifitas('HAPUS DATA LOGISTIK DETAIL (REKAM MEDIK)', [
-				'old_data' => json_encode($data_lawas)
-			]);
+			if($is_riwayat) {
+				$this->m_global->insert_log_aktifitas('HAPUS DATA RIWAYAT LOGISTIK DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($data_lawas)
+				]);
+			}else{
+				$this->m_global->insert_log_aktifitas('HAPUS DATA LOGISTIK DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($data_lawas)
+				]);
+			}
+			
 			$data_kirim[] = $data_lawas;
 			/**
 			 * param 1 = id_registrasi
@@ -2115,7 +2137,7 @@ class Rekam_medik extends CI_Controller {
 			['table' => 'm_logistik as ml', 'on' => 'dt.id_logistik = ml.id_logistik'],
 			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
 			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
-			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
+			['table' => 'm_pegawai as peg', 'on' => 'd.id_pegawai = peg.id']
 		];
 
 
@@ -2134,7 +2156,7 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->kode_logistik;
 				$data[$key][] = $value->nama_logistik;
 				$data[$key][] = $value->keterangan_resep;
-				$data[$key][] = tanggal_indo($value->created_at);
+				$data[$key][] = $value->tanggal;
 				$data[$key][] = $value->nama_klinik;
 				$data[$key][] = $value->nama_dokter;
 			}

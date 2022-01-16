@@ -13,7 +13,7 @@
               <div class="form-group">
                 <input type="hidden" class="form-control" id="id_tindakan" name="id_tindakan" value="">
                 <div class="col-12 row">
-                  <label class="col-8 col-form-label">Tindakan : <a href="javascript:void(0)" onclick='formPintasanTindakan()'>(Tambah Master)</a></label>
+                  <label class="col-8 col-form-label">Tindakan : </label>
                   <label class="col-4 col-form-label">Tanggal</label>
                 </div>
                 <div class="col-12 row">

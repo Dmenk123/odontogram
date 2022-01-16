@@ -77,7 +77,6 @@ function reloadFormTindakanLabRiwayat(){
                 id_reg: id_reg
             },
         },
-
         //set column definition initialisation properties
         columnDefs: [
             {
@@ -106,7 +105,7 @@ function reloadFormLogisitikRiwayat(){
                 id_reg: id_reg
             },
         },
-
+        order: [[ 3, "desc" ]],
         //set column definition initialisation properties
         columnDefs: [
             {
