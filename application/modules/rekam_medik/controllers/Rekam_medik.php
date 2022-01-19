@@ -68,8 +68,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_tindakan_lab' ,'modal_riwayat', 'modal_pasien', 'modal_kamera'],
-			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_tindakanlab.js', 't_kamera.js', 't_data_pasien.js', 't_riwayat.js'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_tindakan_lab' ,'modal_riwayat', 'modal_pasien','modal_noted', 'modal_kamera'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_tindakanlab.js', 't_kamera.js', 't_data_pasien.js', 't_riwayat.js', 'noted.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
@@ -253,6 +253,15 @@ class Rekam_medik extends CI_Controller {
 
 				echo json_encode(['menu' => 'pasien', 'data' => $data_pasien]);
 				break;
+			case 'noted':
+				$select = "*";
+				$where = ['id' => $id_reg];
+				$table = 't_registrasi';
+				$datanya = $this->m_global->single_row($select,$where,$table);
+				
+				echo json_encode(['data'=>$datanya, 'status' => true, 'menu' => 'noted']);
+				break;
+	
 			
 			default:
 				$datanya = null;
@@ -310,6 +319,41 @@ class Rekam_medik extends CI_Controller {
 
 			$pesan = 'Sukses Menambah data Perawatan';
 		}
+				
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal memproses Data Perawatan';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = $pesan;
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function simpan_form_noted()
+	{
+
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$noted = $this->input->post('txt_noted');
+		
+		$data = [
+			'noted_kasir' => $noted,
+		];
+
+		$where = ['id' => $id_reg];
+		
+		$update = $this->t_rekam_medik->update($where, $data, 't_registrasi');
+		$pesan = 'Sukses mengubah Catatan ke Kasir';
 				
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
