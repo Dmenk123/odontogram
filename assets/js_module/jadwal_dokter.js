@@ -126,14 +126,14 @@ function save_jadwal_rutin()
     
     $("#btnSave").prop("disabled", true);
     $('#btnSave').text('Menyimpan Data'); //change button text
-    swalConfirmDelete.fire({
+    swalConfirm.fire({
         title: 'Perhatian !!',
         text: "Apakah anda yakin menambah data ini ?",
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya',
         cancelButtonText: 'Tidak',
-        reverseButtons: true
+        // reverseButtons: false
       }).then((result) => {
         if (result.value) {
             $.ajax({

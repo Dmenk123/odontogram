@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+use Carbon\Carbon;
 
 class Jadwal_dokter extends CI_Controller
 {
@@ -231,7 +232,7 @@ class Jadwal_dokter extends CI_Controller
 		$data = [
 			'id_dokter' => $id_dokter,
 			'id_klinik' => $id_klinik,
-			'tanggal' => date('Y-m-d', strtotime($tanggal)),
+			'tanggal' => Carbon::createFromFormat('d/m/Y', $tanggal)->format('Y-m-d'),
 			'jam_mulai' => $jam_mulai,
 			'jam_akhir' => $jam_akhir,
 			'is_libur' => $status,
