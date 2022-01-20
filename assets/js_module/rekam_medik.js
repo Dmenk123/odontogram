@@ -224,10 +224,12 @@ function cekDanSetValue(txt_div_modal){
         }else if(objData.menu == 'pasien'){
             reloadFormPasien();
         }else if(objData.menu == 'riwayat'){
+            console.log('tes'); 
             reloadFormDiagnosaRiwayat();
             reloadFormTindakanRiwayat();
             reloadFormTindakanLabRiwayat();
             reloadFormLogisitikRiwayat();
+            reloadFormOdontogramRiwayat();
         }else if(objData.menu == 'noted'){
             $("#form_noted textarea[name='noted']").val(objData.data.noted_kasir);
         }

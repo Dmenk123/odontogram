@@ -46,6 +46,7 @@ function pilih_pasien(pid) {
             reloadFormTindakanRiwayatTabel(pid);
             reloadFormTindakanLabRiwayatTabel(pid);
             reloadFormLogisitikRiwayatTabel(pid);
+            reloadFormOdontogramTabel(pid);
         }
     });
 
@@ -68,6 +69,36 @@ function reloadFormDiagnosaTabel(pid){
         bDestroy: true,
         ajax: {
             url  : base_url + "rekam_medik/riwayat_diagnosa",
+            type : "POST",
+            data : {
+                id_psn : pid,
+                id_reg : null,
+                id_peg : null
+            },
+        },
+        order: [[ 4, "desc" ]],
+
+        columnDefs: [
+            {
+                targets: [-1], //last column
+                orderable: false, //set not orderable
+            },
+            // { targets: 5, className: 'text-right' },
+        ],
+    });
+}
+
+function reloadFormOdontogramTabel(pid){
+    $('#CssLoader').removeClass('hidden');
+    $('#CssLoader').addClass('hidden');
+    table_diagnosa = $('#tabel_modal_odontogram_pasien').DataTable({
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: false,
+        bDestroy: true,
+        ajax: {
+            url  : base_url + "rekam_medik/riwayat_odontogram",
             type : "POST",
             data : {
                 id_psn : pid,

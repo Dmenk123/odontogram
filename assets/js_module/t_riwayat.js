@@ -59,6 +59,32 @@ function reloadFormTindakanRiwayat(){
     });
 }
 
+function reloadFormOdontogramRiwayat(){
+    $('#CssLoader').removeClass('hidden');
+    $('#CssLoader').addClass('hidden');
+    table = $('#tabel_modal_odontogram_pasien').DataTable({
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        serverSide: false,
+        bDestroy: true,
+        ajax: {
+            url  : base_url + "rekam_medik/riwayat_odontogram",
+            type : "POST",
+            data : {
+                id_peg: id_peg,
+                id_psn: id_psn,
+                id_reg: id_reg
+            },
+        },
+        // order: [[ 5, "desc" ]],
+        //set column definition initialisation properties
+        columnDefs: [
+            { targets: 0, className: 'text-center' },
+        ],
+    });
+}
+
 function reloadFormTindakanLabRiwayat(){
     $('#CssLoader').removeClass('hidden');
     $('#CssLoader').addClass('hidden');

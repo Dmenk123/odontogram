@@ -2072,6 +2072,50 @@ class Rekam_medik extends CI_Controller {
         ]);
 	} 
 
+	public function riwayat_odontogram()
+	{
+		$this->load->library('Enkripsi');
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+
+		$select = "o.*, k.nama_klinik, k.alamat, peg.nama as nama_dokter, p.nama as nama_pasien, r.tanggal_reg, r.id as id_regist";
+		$where = ['p.id' => $id_psn];
+		$table = 't_odontogram as o';
+		$join = [ 
+			['table' => 't_registrasi as r', 'on' => 'r.id = o.id_reg'],
+			['table' => 'm_pasien as p', 'on' => 'r.id_pasien = p.id'],
+			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
+			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
+		];
+
+		$order_by = "o.id_reg DESC";
+
+		$data_table = $this->m_global->multi_row($select, $where, $table, $join, $order_by);
+
+		// echo $this->db->last_query(); die();
+		
+		// var_dump($data_table); die();
+		$data = [];
+		if ($data_table) {
+			foreach ($data_table as $key => $value) {
+			
+				$pid = $this->enkripsi->enc_dec('encrypt', $value->id_regist);
+				$data[$key][] = '<a href="'.base_url().'rekam_medik/cetak_pemeriksaan?pid='.$pid.'" target="_blank" ><div style="font-size:3rem"><i class="fa fa-file-medical"></i></div></a>';
+				$data[$key][] = date('d-m-Y', strtotime($value->tanggal_reg));
+				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
+				$data[$key][] = $value->nama_dokter;
+			}
+		}
+        
+		
+		// $this->output->enable_profiler(TRUE);
+
+        echo json_encode([
+            'data' => $data
+        ]);
+	}
+
 	public function riwayat_tindakan()
 	{
 		$id_psn = $this->input->post('id_psn');

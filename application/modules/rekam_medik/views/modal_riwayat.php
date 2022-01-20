@@ -21,6 +21,9 @@
               <li class="nav-item">
                   <a class="nav-link" href="javascript: void(0);"  data-toggle="tab" data-target="#otorisasi4" role="tab">Logistik/Obat</a>
               </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="javascript: void(0);"  data-toggle="tab" data-target="#otorisasi5" role="tab">Odontogram</a>
+              </li>
           </ul>
           <div class="tab-content padding-vertical-20">
               <div class="tab-pane active" id="all2" role="tabpanel">
@@ -88,6 +91,22 @@
                           <th>Kode</th>
                           <th>Nama Logistik</th>
                           <th>Keterangan</th>
+                          <th>Tanggal</th>
+                          <th>Klinik</th>
+                          <th>Dokter</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="tab-pane" id="otorisasi5" role="tabpanel">
+                <div class="table-responsive">
+                  <table class="table table-striped- table-bordered table-hover" id="tabel_modal_odontogram_pasien">
+                      <thead>
+                        <tr>
+                          <th>file odontogram</th>
                           <th>Tanggal</th>
                           <th>Klinik</th>
                           <th>Dokter</th>
