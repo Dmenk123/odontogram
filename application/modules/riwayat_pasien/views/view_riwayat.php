@@ -141,9 +141,6 @@
                             Riwayat <small>Lab</small>
                           </h3>
                         </div>
-                        <div class="col-4" style="text-align:right;">
-                          <button type="button" class="btn btn-md btn-warning" onclick="openModalRiwayat('lab')">Tambah Data Lab</button>
-                        </div>
                       </div>
                       <div class="kt-portlet__body">
                         <div class="table-responsive">

@@ -274,6 +274,24 @@ $obj_date = new DateTime();
               </div>
             </div>
 
+            <div class="col-lg-3 div_menu" data-id="div_noted" style="cursor:pointer">
+              <div class="kt-portlet kt-iconbox kt-iconbox--wave">
+                <div class="kt-portlet__body">
+                  <div class="kt-iconbox__body">
+                    <div class="kt-iconbox__icon">
+                      <img src="<?= base_url('assets/svg_icons/notes.png'); ?>" width="40px" height="40px">
+                    </div>
+                    <div class="kt-iconbox__desc">
+                      <h5 class="kt-iconbox__title">
+                        Noted
+                      </h5>
+                      <div class="kt-iconbox__content">(untuk kasir)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="col-lg-3 div_menu" data-id="div_pulangkan" style="cursor:pointer">
               <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-slower">
                 <div class="kt-portlet__body">

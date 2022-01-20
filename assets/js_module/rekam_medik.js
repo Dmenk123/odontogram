@@ -118,6 +118,12 @@ function save(id_form)
         var value = CKEDITOR.instances['anamnesa'].getData()
         data.append('txt_anamnesa', value);
     }
+
+    if(id_form == 'form_noted'){
+        var val = CKEDITOR.instances['noted'].getData()
+        console.log(val);
+        data.append('txt_noted', val);
+    }
     
     $("#btnSave").prop("disabled", true);
     $('#btnSave').text('Menyimpan Data'); //change button text
@@ -222,6 +228,8 @@ function cekDanSetValue(txt_div_modal){
             reloadFormTindakanRiwayat();
             reloadFormTindakanLabRiwayat();
             reloadFormLogisitikRiwayat();
+        }else if(objData.menu == 'noted'){
+            $("#form_noted textarea[name='noted']").val(objData.data.noted_kasir);
         }
     }
     

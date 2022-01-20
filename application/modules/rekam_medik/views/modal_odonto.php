@@ -435,8 +435,8 @@ fieldSet
                           <td rowspan="2" colspan="2">
                             <fieldset>
                                 <legend style="width:90%">Migrasi/Version/Rotasi</legend>
-                                <button class="button split btn-default" id="panah_kanan">panah kanan</button>
-                                <button class="button split btn-default" id="panah_kiri">panah kiri</button>
+                                <button class="button split btn-default" id="panah_kanan"><i class="fa fa-arrow-right" style="width:30px;"></i></button>
+                                <button class="button split btn-default" id="panah_kiri"><i class="fa fa-arrow-left" style="width:30px;"></i></button>
                             </fieldset>
                           </td>
                           <td width="5%">&nbsp;</td>

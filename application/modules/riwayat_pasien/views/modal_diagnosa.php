@@ -13,7 +13,7 @@
               <div class="form-group">
                 <input type="hidden" class="form-control" id="id_diagnosa" name="id_diagnosa" value="">
                 <div class="col-12 row">
-                  <label class="col-8 col-form-label">Diagnosa : <a href="javascript:void(0)" onclick='formPintasan()'>(Tambah Master)</a></label>
+                  <label class="col-8 col-form-label">Diagnosa :</label>
                   <label class="col-4 col-form-label">Gigi :</label>
                 </div>
                 <div class="col-12 row">
@@ -29,15 +29,27 @@
                   </div>
                 </div>
                 <div class="col-12 row">
-                  <label class="col-4 col-form-label">Tanggal</label>
-                  <label class="col-8 col-form-label">Keterangan</label>
+                  <label class="col-3 col-form-label">Tanggal</label>
+                  <label class="col-4 col-form-label">Dokter</label>
+                  <label class="col-5 col-form-label">Keterangan</label>
                 </div>
                 <div class="col-12 row">
-                  <div class="col-4">
+                  <div class="col-3">
                     <input type="text" class="form-control kt_datepicker" id="fm_tanggal" name="fm_tanggal" autocomplete="off">
                     <span class="help-block"></span>
                   </div>
-                  <div class="col-8">
+                  <div class="col-4">
+                    <select class="form-control kt-select2" id="fm_dokter" name="fm_dokter" style="width: 100%;">
+                      <option value="">Silahkan Pilih</option>
+                      <?php $q = $this->db->get_Where('m_pegawai', ['is_aktif' => 1, 'id_jabatan' => 1])->result(); 
+                      foreach ($q as $key => $value) {
+                        echo "<option value='$value->id'>$value->nama</option>";
+                      }
+                      ?>
+                    </select>
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-5">
                     <input type="text" class="form-control" id="fm_keterangan" name="fm_keterangan" value="">
                     <span class="help-block"></span>
                   </div>

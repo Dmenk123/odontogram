@@ -43,3 +43,9 @@ outline:0px;
     color: #53442C;
     font-weight: 800;
 }
+
+.blink{
+-webkit-animation:blink 2s linear infinite;
+-moz-animation:blink 2s linear infinite;
+animation:blink 2s linear infinite
+}

@@ -265,6 +265,7 @@ class Pembayaran extends CI_Controller {
 			$html .= '';
 		}
 
+
 		$data_pembayaran = $this->get_detail_pembayaran($id);
 
 		// echo "<pre>";
@@ -428,6 +429,12 @@ class Pembayaran extends CI_Controller {
 				<span style="font-size:20px;font-weight:bold;">Total Biaya : Rp. '.number_format($tot_biaya,2,',','.').'</span>
 			</div>
 		';
+
+		if (!empty($arrData[0]->noted_kasir)) {
+			$html .= '<br><br><div class="blink alert-success" style="background-color:#dff0d8!important;color:#3c763d;!important;padding: 10px;">
+						<strong>Catatan Dokter!</strong> <p>'.$arrData[0]->noted_kasir.'</p>
+					</div>';
+		}
 
 		return $html;
 	}

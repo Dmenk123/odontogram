@@ -68,8 +68,8 @@ class Rekam_medik extends CI_Controller {
 		 */
 		$content = [
 			'css' 	=> null,
-			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_tindakan_lab' ,'modal_riwayat', 'modal_pasien', 'modal_kamera'],
-			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_tindakanlab.js', 't_kamera.js', 't_data_pasien.js', 't_riwayat.js'],
+			'modal' => ['modal_pilih_pasien', 'modal_anamnesa','modal_diagnosa','modal_odonto','modal_tindakan', 'modal_logistik', 'modal_tindakan_lab' ,'modal_riwayat', 'modal_pasien','modal_noted', 'modal_kamera'],
+			'js'	=> ['rekam_medik.js', 'anamnesa.js', 't_diagnosa.js', 'odonto.js','t_tindakan.js','t_logistik.js', 't_tindakanlab.js', 't_kamera.js', 't_data_pasien.js', 't_riwayat.js', 'noted.js'],
 			'view'	=> 'view_rekam_medik'
 		];
 
@@ -253,6 +253,15 @@ class Rekam_medik extends CI_Controller {
 
 				echo json_encode(['menu' => 'pasien', 'data' => $data_pasien]);
 				break;
+			case 'noted':
+				$select = "*";
+				$where = ['id' => $id_reg];
+				$table = 't_registrasi';
+				$datanya = $this->m_global->single_row($select,$where,$table);
+				
+				echo json_encode(['data'=>$datanya, 'status' => true, 'menu' => 'noted']);
+				break;
+	
 			
 			default:
 				$datanya = null;
@@ -310,6 +319,41 @@ class Rekam_medik extends CI_Controller {
 
 			$pesan = 'Sukses Menambah data Perawatan';
 		}
+				
+		if ($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$retval['status'] = false;
+			$retval['pesan'] = 'Gagal memproses Data Perawatan';
+		}else{
+			$this->db->trans_commit();
+			$retval['status'] = true;
+			$retval['pesan'] = $pesan;
+		}
+
+		echo json_encode($retval);
+	}
+
+	public function simpan_form_noted()
+	{
+
+		$obj_date = new DateTime();
+		$timestamp = $obj_date->format('Y-m-d H:i:s');
+		$datenow = $obj_date->format('Y-m-d');
+		
+		$this->db->trans_begin();
+		$id_psn = $this->input->post('id_psn');
+		$id_reg = $this->input->post('id_reg');
+		$id_peg = $this->input->post('id_peg');
+		$noted = $this->input->post('txt_noted');
+		
+		$data = [
+			'noted_kasir' => $noted,
+		];
+
+		$where = ['id' => $id_reg];
+		
+		$update = $this->t_rekam_medik->update($where, $data, 't_registrasi');
+		$pesan = 'Sukses mengubah Catatan ke Kasir';
 				
 		if ($this->db->trans_status() === FALSE){
 			$this->db->trans_rollback();
@@ -545,7 +589,7 @@ class Rekam_medik extends CI_Controller {
 			['table' => 'm_diagnosa as md', 'on' => 'dt.id_diagnosa = md.id_diagnosa']
 		];
 
-		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		$data = $this->m_global->multi_row($select, $where, $table, $join, 'd.tanggal desc');
 
 		$html = '';
 		
@@ -630,7 +674,7 @@ class Rekam_medik extends CI_Controller {
 		]);
 	}
 
-	public function delete_data_diagnosa_det()
+	public function delete_data_diagnosa_det($is_riwayat = false)
 	{
 		$id = $this->input->post('id');
 		$cek = $this->m_global->single_row('*', ['id' => $id], 't_diagnosa_det');
@@ -641,9 +685,16 @@ class Rekam_medik extends CI_Controller {
 				'pesan' => 'Berhasil Hapus Data',
 			];
 
-			$this->m_global->insert_log_aktifitas('HAPUS DATA DIAGNOSA DETAIL (REKAM MEDIK)', [
-				'old_data' => json_encode($cek)
-			]);
+			if($is_riwayat) {
+				$this->m_global->insert_log_aktifitas('HAPUS DATA RIWAYAT DIAGNOSA DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($cek)
+				]);
+			}else{
+				$this->m_global->insert_log_aktifitas('HAPUS DATA DIAGNOSA DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($cek)
+				]);
+			}
+			
 		}else{
 			$data = [
 				'status' => false,
@@ -805,31 +856,51 @@ class Rekam_medik extends CI_Controller {
 		
 	}
 
-	public function load_form_tindakan()
+	public function load_form_tindakan($is_riwayat = false)
 	{
 		$id_psn = $this->input->post('id_psn');
 		$id_reg = $this->input->post('id_reg');
 		$id_peg = $this->input->post('id_peg');
 		
 		$select = "d.*, dt.id as id_tindakan_det, dt.id_tindakan, dt.gigi, dt.harga, dt.keterangan, mt.kode_tindakan, mt.nama_tindakan";
-		$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg, 'dt.deleted_at' => null];
+
+		if($is_riwayat) {
+			$where = ['d.id_pasien' => $id_psn, 'dt.deleted_at' => null];
+		}else{
+			$where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg, 'dt.deleted_at' => null];
+		}
+
+		// $where = ['d.id_reg' => $id_reg, 'd.id_pasien' => $id_psn, 'd.id_pegawai' => $id_peg, 'dt.deleted_at' => null];
 		$table = 't_tindakan as d';
 		$join = [ 
 			['table' => 't_tindakan_det as dt', 'on' => 'd.id = dt.id_t_tindakan'],
 			['table' => 'm_tindakan as mt', 'on' => 'dt.id_tindakan = mt.id_tindakan']
 		];
 
-		$data = $this->m_global->multi_row($select, $where, $table, $join);
+		$data = $this->m_global->multi_row($select, $where, $table, $join, 'd.tanggal desc');
+		// echo $this->db->last_query();exit;
+		
 		$html = '';
 		$harga = 0;
 		if($data){
-			foreach ($data as $key => $value) {
-				if($value->kode_tindakan){
-					$harga += (float)$value->harga;
-					$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_tindakan.'</td><td>'.$value->nama_tindakan.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakan_det(\''.$value->id_tindakan_det.'\')"><i class="la la-trash"></i></button></td></tr>';
-				}				
+			if($is_riwayat) {
+				foreach ($data as $key => $value) {
+					if($value->kode_tindakan){
+						$harga += (float)$value->harga;
+						$html .= '<tr><td>' . Carbon::parse($value->tanggal)->format("d-m-Y") . '</td><td>'.$value->gigi.'</td><td>'.$value->kode_tindakan.'</td><td>'.$value->nama_tindakan.'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakan_det(\''.$value->id_tindakan_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					}				
+				}
+			}else{
+				foreach ($data as $key => $value) {
+					if($value->kode_tindakan){
+						$harga += (float)$value->harga;
+						$html .= '<tr><td>'.$value->gigi.'</td><td>'.$value->kode_tindakan.'</td><td>'.$value->nama_tindakan.'</td><td>'.number_format($value->harga,0,',','.').'</td><td>'.$value->keterangan.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_tindakan_det(\''.$value->id_tindakan_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					}				
+				}
 			}
-			$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($harga,0,',','.').'</strong></td></tr>';
+			if($is_riwayat == false) {
+				$html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($harga,0,',','.').'</strong></td></tr>';
+			}
 		}
 
 		echo json_encode([
@@ -837,7 +908,7 @@ class Rekam_medik extends CI_Controller {
 		]);
 	}
 
-	public function delete_data_tindakan_det()
+	public function delete_data_tindakan_det($is_riwayat = false)
 	{
 		$id = $this->input->post('id');
 		$select = 't_tindakan_det.*, t_tindakan.id_reg, t_tindakan.id_pegawai';
@@ -860,20 +931,28 @@ class Rekam_medik extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}else{
-			$this->m_global->insert_log_aktifitas('HAPUS DATA TINDAKAN DETAIL (REKAM MEDIK)', [
-				'old_data' => json_encode($data_lawas)
-			]);
-
-			$data_kirim[] = $data_lawas;
-			/**
-			 * param 1 = id_registrasi
-			 * param 2 kode jenis transaksi (lihat m_jenis_trans)
-			 * param 3 data tabel transaksi_detail (join)
-			 * param 4 id_trans_flag (id_parent_tabel_transaksi)
-			 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
-			*/
-			$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '2', $data_kirim, $id_trans_flag, '1');
-
+			if($is_riwayat) {
+				$this->m_global->insert_log_aktifitas('HAPUS DATA RIWAYAT TINDAKAN DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($data_lawas)
+				]);
+			}else{
+				$this->m_global->insert_log_aktifitas('HAPUS DATA TINDAKAN DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($data_lawas)
+				]);
+			}
+			
+			if($is_riwayat == false) {
+				$data_kirim[] = $data_lawas;
+				/**
+				 * param 1 = id_registrasi
+				 * param 2 kode jenis transaksi (lihat m_jenis_trans)
+				 * param 3 data tabel transaksi_detail (join)
+				 * param 4 id_trans_flag (id_parent_tabel_transaksi)
+				 * param 5 flag_transaksi (1 : penerimaan , 2 : pengeluaran)
+				*/
+				$mutasi = $this->lib_mutasi->delete_mutasi($id_reg, '2', $data_kirim, $id_trans_flag, '1');
+			}
+			
 			if ($this->db->trans_status() === FALSE){
 				$this->db->trans_rollback();
 				$retval['status'] = false;
@@ -1043,7 +1122,7 @@ class Rekam_medik extends CI_Controller {
 		echo json_encode($retval);
 	}
 
-	public function load_form_logistik()
+	public function load_form_logistik($is_riwayat = false)
 	{
 		// $this->lib_mutasi->simpan_mutasi(1, 1);
 		$id_psn = $this->input->post('id_psn');
@@ -1051,7 +1130,12 @@ class Rekam_medik extends CI_Controller {
 		$id_peg = $this->input->post('id_peg');
 		
 		$select = "tl.*, tld.id as id_logistik_det, tld.id_logistik, tld.qty, tld.harga, tld.subtotal, ml.kode_logistik, ml.nama_logistik, mjl.jenis as jenis_logistik";
-		$where = ['tl.id_reg' => $id_reg, 'tl.id_pasien' => $id_psn, 'tl.id_pegawai' => $id_peg, 'tld.deleted_at' => null];
+		if($is_riwayat) {
+			$where = ['tl.id_pasien' => $id_psn, 'tld.deleted_at' => null];
+		}else{
+			$where = ['tl.id_reg' => $id_reg, 'tl.id_pasien' => $id_psn, 'tl.id_pegawai' => $id_peg, 'tld.deleted_at' => null];
+		}
+		
 		$table = 't_logistik as tl';
 		$join = [ 
 			['table' => 't_logistik_det as tld', 'on' => 'tl.id = tld.id_t_logistik'],
@@ -1064,12 +1148,22 @@ class Rekam_medik extends CI_Controller {
 		$html = '';
 		$grand_total = 0;
 		if($data){
-			foreach ($data as $key => $value) {
-				if($value->kode_logistik){
-					$grand_total += (float)$value->subtotal;
-					$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
-				}				
+			if($is_riwayat) {
+				foreach ($data as $key => $value) {
+					if($value->kode_logistik){
+						$grand_total += (float)$value->subtotal;
+						$html .= '<tr><td>'.Carbon::parse($value->tanggal)->format("d-m-Y").'</td><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					}				
+				}
+			}else{
+				foreach ($data as $key => $value) {
+					if($value->kode_logistik){
+						$grand_total += (float)$value->subtotal;
+						$html .= '<tr><td>'.$value->nama_logistik.'</td><td>'.$value->qty.'</td><td>'.$value->jenis_logistik.'</td><td><button type="button" class="btn btn-sm btn-danger" onclick="hapus_logistik_det(\''.$value->id_logistik_det.'\')"><i class="la la-trash"></i></button></td></tr>';
+					}				
+				}
 			}
+			
 			// $html .= '<tr><td colspan="3"><strong>Total Harga</strong></td><td colspan="3"><strong>'.number_format($grand_total,2,',','.').'</strong></td></tr>';
 		}
 
@@ -1079,7 +1173,7 @@ class Rekam_medik extends CI_Controller {
 		]);
 	}
 
-	public function delete_data_logistik_det()
+	public function delete_data_logistik_det($is_riwayat = false)
 	{
 		$id = $this->input->post('id');
 		$select = 't_logistik_det.*, t_logistik.id_reg, t_logistik.id_pegawai';
@@ -1102,9 +1196,16 @@ class Rekam_medik extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}else{
-			$this->m_global->insert_log_aktifitas('HAPUS DATA LOGISTIK DETAIL (REKAM MEDIK)', [
-				'old_data' => json_encode($data_lawas)
-			]);
+			if($is_riwayat) {
+				$this->m_global->insert_log_aktifitas('HAPUS DATA RIWAYAT LOGISTIK DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($data_lawas)
+				]);
+			}else{
+				$this->m_global->insert_log_aktifitas('HAPUS DATA LOGISTIK DETAIL (REKAM MEDIK)', [
+					'old_data' => json_encode($data_lawas)
+				]);
+			}
+			
 			$data_kirim[] = $data_lawas;
 			/**
 			 * param 1 = id_registrasi
@@ -1934,7 +2035,7 @@ class Rekam_medik extends CI_Controller {
 			['table' => 'm_diagnosa as md', 'on' => 'dt.id_diagnosa = md.id_diagnosa'],
 			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
 			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
-			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
+			['table' => 'm_pegawai as peg', 'on' => 'd.id_pegawai = peg.id']
 		];
 
 		$order_by = "d.id_reg DESC";
@@ -1946,18 +2047,24 @@ class Rekam_medik extends CI_Controller {
 		// var_dump($data_table); die();
 		$data = [];
 		if ($data_table) {
+			$idx = 0;
 			foreach ($data_table as $key => $value) {
-				$data[$key][] = $value->gigi;
-				$data[$key][] = $value->kode_diagnosa;
-				$data[$key][] = $value->nama_diagnosa;
-				$data[$key][] = $value->keterangan;
-				$data[$key][] = tanggal_indo($value->created_at);
-				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
-				$data[$key][] = $value->nama_dokter;
+				if($value->kode_diagnosa == null) {
+					// $idx++;
+					continue;
+				}
+
+				$data[$idx][] = $value->gigi;
+				$data[$idx][] = $value->kode_diagnosa;
+				$data[$idx][] = $value->nama_diagnosa;
+				$data[$idx][] = $value->keterangan;
+				$data[$idx][] = $value->tanggal;
+				$data[$idx][] = $value->nama_klinik.'<br>'.$value->alamat;
+				$data[$idx][] = $value->nama_dokter;
+				$idx++;
 			}
 		}
         
-		
 		// $this->output->enable_profiler(TRUE);
 
         echo json_encode([
@@ -1979,7 +2086,7 @@ class Rekam_medik extends CI_Controller {
 			['table' => 'm_tindakan as mt', 'on' => 'dt.id_tindakan = mt.id_tindakan'],
 			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
 			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
-			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
+			['table' => 'm_pegawai as peg', 'on' => 'd.id_pegawai = peg.id']
 		];
 
 		$order_by = "d.id_reg DESC";
@@ -1999,7 +2106,7 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->nama_tindakan;
 				$data[$key][] = number_format($value->harga_nett, 0, ',', '.');
 				$data[$key][] = $value->keterangan;
-				$data[$key][] = tanggal_indo($value->tgl_tindakan_det);
+				$data[$key][] = $value->tanggal;
 				$data[$key][] = $value->nama_klinik.'<br>'.$value->alamat;
 				$data[$key][] = $value->nama_dokter;
 			}
@@ -2074,7 +2181,7 @@ class Rekam_medik extends CI_Controller {
 			['table' => 'm_logistik as ml', 'on' => 'dt.id_logistik = ml.id_logistik'],
 			['table' => 't_registrasi as r', 'on' => 'r.id = d.id_reg'],
 			['table' => 'm_klinik as k', 'on' => 'k.id = r.id_klinik'],
-			['table' => 'm_pegawai as peg', 'on' => 'r.id_pegawai = peg.id']
+			['table' => 'm_pegawai as peg', 'on' => 'd.id_pegawai = peg.id']
 		];
 
 
@@ -2093,7 +2200,7 @@ class Rekam_medik extends CI_Controller {
 				$data[$key][] = $value->kode_logistik;
 				$data[$key][] = $value->nama_logistik;
 				$data[$key][] = $value->keterangan_resep;
-				$data[$key][] = tanggal_indo($value->created_at);
+				$data[$key][] = $value->tanggal;
 				$data[$key][] = $value->nama_klinik;
 				$data[$key][] = $value->nama_dokter;
 			}

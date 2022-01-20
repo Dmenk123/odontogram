@@ -11,21 +11,40 @@
           <div class="col-md-12">
             <div class="kt-portlet__body">
               <div class="form-group">
-                <input type="hidden" class="form-control" id="id_logistik" name="id_logistik" value="">
-                <input type="hidden" class="form-control" id="harga_jual_raw" name="harga_jual_raw" value="">
                 <div class="col-12 row">
-                  <label class="col-8 col-form-label">Pilih Obat : <a href="javascript:void(0)" onclick='formPintasanLogistik()'>(Tambah Master)</a></label>
+                  <label class="col-8 col-form-label">Pilih Obat : </label>
                   <label class="col-4 col-form-label">Qty :</label>
                 </div>
                 <div class="col-12 row">
                   <div class="col-8">
-                    <select class="form-control kt-select2" id="logistik" name="logistik" style="width: 100%;">
+                    <select class="form-control kt-select2" id="log_logistik" name="log_logistik" style="width: 100%;">
                       <option value="">Silahkan Pilih Obat</option>
                     </select>
                     <span class="help-block"></span>
                   </div>
                   <div class="col-4">
-                    <input type="number" class="form-control" id="qty_obat" name="qty_obat" value="">
+                    <input type="number" class="form-control" id="log_qty" name="log_qty" value="">
+                    <span class="help-block"></span>
+                  </div>
+                </div>
+                <div class="col-12 row">
+                  <label class="col-8 col-form-label">Dokter : </label>
+                  <label class="col-4 col-form-label">Tanggal : </label>
+                </div>
+                <div class="col-12 row">
+                  <div class="col-8">
+                    <select class="form-control kt-select2" id="log_dokter" name="log_dokter" style="width: 100%;">
+                      <option value="">Silahkan Pilih</option>
+                      <?php $q = $this->db->get_Where('m_pegawai', ['is_aktif' => 1, 'id_jabatan' => 1])->result(); 
+                      foreach ($q as $key => $value) {
+                        echo "<option value='$value->id'>$value->nama</option>";
+                      }
+                      ?>
+                    </select>
+                    <span class="help-block"></span>
+                  </div>
+                  <div class="col-4">
+                    <input type="text" class="form-control kt_datepicker" id="log_tanggal" name="log_tanggal" autocomplete="off">
                     <span class="help-block"></span>
                   </div>
                 </div>
@@ -40,6 +59,7 @@
                   <table class="table table-striped- table-bordered table-hover" id="tabel_modal_logistik">
                     <thead>
                       <tr>
+                        <th>Tanggal</th>
                         <th>Nama</th>
                         <th>Qty</th>
                         <th>Jenis</th>
@@ -50,22 +70,11 @@
                     </tbody>
                   </table>
                 </div>
-                <br>
-                <div class="col-12 row">
-                  <label class="col-12 col-form-label">Keterangan :</label>
-                </div>
-                <div class="col-12">
-                  <input type="text" class="form-control" id="ket_resep" name="ket_resep" value="" autocomplete="off">
-                </div>
               </div>
 
             </div>
           </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="btnSaveHeader" class="btn btn-primary" onclick="simpanHeader()">Simpan Keterangan</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
       </div>
     </div>
   </div>

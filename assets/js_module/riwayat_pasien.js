@@ -75,6 +75,7 @@ function reloadFormDiagnosaTabel(pid){
                 id_peg : null
             },
         },
+        order: [[ 4, "desc" ]],
 
         columnDefs: [
             {
@@ -122,11 +123,30 @@ function reloadFormTindakanRiwayatTabel(pid){
                 id_peg : null
             },
         },
-
+        order: [[ 5, "desc" ]],
         //set column definition initialisation properties
         columnDefs: [
             { targets: 3, className: 'text-right' },
         ],
+    });
+}
+
+function reloadFormTindakan(){
+    resetFormTindakan();
+    $('#CssLoader').removeClass('hidden');
+    $.ajax({
+        type: "post",
+        url: base_url+"rekam_medik/load_form_tindakan/true",
+        data: {
+            id_peg: id_peg,
+            id_psn: pid,
+            id_reg: id_reg
+        },
+        dataType: "json",
+        success: function (response) {
+           $('#CssLoader').addClass('hidden');
+           $('#tabel_modal_tindakan tbody').html(response.html);
+        }
     });
 }
 
@@ -177,7 +197,7 @@ function reloadFormLogisitikRiwayatTabel(pid){
                 id_peg : null
             },
         },
-
+        order: [[ 3, "desc" ]],
         //set column definition initialisation properties
         columnDefs: [
             {
@@ -188,11 +208,37 @@ function reloadFormLogisitikRiwayatTabel(pid){
     });
 }
 
+function reloadFormLogistik(){
+    resetFormLogistik();
+    $('#CssLoader').removeClass('hidden');
+    $.ajax({
+        type: "post",
+        url: base_url+"rekam_medik/load_form_logistik/true",
+        data: {
+            id_peg: id_peg,
+            id_psn: pid,
+            id_reg: id_reg
+        },
+        dataType: "json",
+        success: function (response) {
+           $('#ket_resep').val(response.ket_resep);
+           $('#CssLoader').addClass('hidden');
+           $('#tabel_modal_logistik tbody').html(response.html);
+        }
+    });
+}
+
 function openModalRiwayat(modalName) {
     let modalNameFix = 'div_'+modalName+'_modal';
     if(modalName == 'diagnosa') {
         initOpsiDiagnosa();
         reloadFormDiagnosa();
+    }else if(modalName == 'tindakan') {
+        initOpsiTindakan();
+        reloadFormTindakan();
+    }else if(modalName == 'logistik') {
+        initOpsiLogistik();
+        reloadFormLogistik();
     }
 
     $('#'+modalNameFix+'').modal('show');
@@ -228,6 +274,91 @@ const initOpsiDiagnosa = () => {
                             id: item.id,
                             kode: item.kode,
                             html: item.html
+                        }
+                    })
+                };
+            }
+        }
+    });
+}
+
+const initOpsiTindakan = () => {
+    if ($("#tdk_tindakan").data('select2')) {
+        $("#tdk_tindakan").select2('destroy');
+    }
+
+    $("#tdk_tindakan").select2({
+        // tags: true,
+        //multiple: false,
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
+        ajax: {
+            url: base_url+'master_tindakan/get_select_tindakan',
+            dataType: "json",
+            type: "GET",
+            data: function (params) {
+
+                var queryParameters = {
+                    term: params.term
+                }
+                return queryParameters;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            id: item.id,
+                            kode: item.kode,
+                            nama: item.nama,
+                            harga: item.harga,
+                            harga_raw: item.harga_raw,
+                            is_all_gigi: item.is_all_gigi,
+                            disc_persen: item.disc_persen,
+                            harga_nett: item.harga_nett,
+                            harga_nett_raw: item.harga_nett_raw,
+                            is_owner:item.is_owner
+                        }
+                    })
+                };
+            }
+        }
+    });
+}
+
+const initOpsiLogistik = () => {
+    if ($("#log_logistik").data('select2')) {
+        $("#log_logistik").select2('destroy');
+    }
+
+    $("#log_logistik").select2({
+        // tags: true,
+        //multiple: false,
+        tokenSeparators: [',', ' '],
+        minimumInputLength: 0,
+        minimumResultsForSearch: 5,
+        ajax: {
+            url: base_url+'master_logistik/get_select_logistik',
+            dataType: "json",
+            type: "GET",
+            data: function (params) {
+
+                var queryParameters = {
+                    term: params.term
+                }
+                return queryParameters;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            id: item.id,
+                            kode: item.kode,
+                            nama: item.nama,
+                            id_jenis_logistik: item.id_jenis_logistik,
+                            harga_jual_raw: item.harga_jual_raw
                         }
                     })
                 };
@@ -275,16 +406,13 @@ function save(id_form)
                     $('#btnSave').text('Simpan');      
                     if(id_form == 'form_diagnosa') {
                         reloadFormDiagnosa();
+                        reloadFormDiagnosaTabel(pid);
                     }else if(id_form == 'form_tindakan'){
                         reloadFormTindakan();
+                        reloadFormTindakanRiwayatTabel(pid);
                     }else if(id_form == 'form_logistik'){
                         reloadFormLogistik();
-                    }else if(id_form == 'form_kamera'){
-                        reloadFormKamera();
-                    }else if(id_form == 'form_tindakanlab'){
-                        reloadFormTindakanLab();
-                    }else if(id_form == 'form_pasien'){
-                        reloadFormPasien();
+                        reloadFormLogisitikRiwayatTabel(pid);
                     }else{
                         $('#'+activeModal).modal('hide');
                     }
@@ -310,6 +438,140 @@ function save(id_form)
             console.log("ERROR : ", e);
             $("#btnSave").prop("disabled", false);
             $('#btnSave').text('Simpan');
+        }
+    });
+}
+
+const resetFormTindakan = () => {
+    $("#form_tindakan select[name='tdk_tindakan']").val('').trigger('change');
+    $("#form_tindakan select[name='tdk_dokter']").val('').trigger('change');
+    $("#form_tindakan input[name='tdk_gigi_num']").val('');
+    $("#form_tindakan input[name='tdk_gigi_txt']").val('');
+    $("#form_tindakan input[name='tdk_kode']").val('');
+}
+
+const resetFormLogistik = () => {
+    $("#form_logistik select[name='log_logistik']").val('').trigger('change');
+    $("#form_logistik select[name='log_dokter']").val('').trigger('change');
+    $("#form_logistik input[name='log_qty']").val('');
+}
+
+function hapus_diagnosa_det(id) {
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Diagnosa ?',
+        text: "Data Akan dihapus ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/delete_data_diagnosa_det/true',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                    reloadFormDiagnosa();
+                    reloadFormDiagnosaTabel(pid);
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}
+
+function hapus_tindakan_det(id) {
+    swalConfirmDelete.fire({
+        title: 'Hapus Data Tindakan ?',
+        text: "Data Akan dihapus ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/delete_data_tindakan_det/true',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                    reloadFormTindakan();
+                    reloadFormTindakanRiwayatTabel(pid);
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
+        }
+    });
+}
+
+function hapus_logistik_det(id) {
+    swalConfirmDelete.fire({
+        title: 'Hapus Data logistik ?',
+        text: "Data Akan dihapus ?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus Data !',
+        cancelButtonText: 'Tidak, Batalkan!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url : base_url + 'rekam_medik/delete_data_logistik_det/true',
+                type: "POST",
+                dataType: "JSON",
+                data : {id:id},
+                success: function(data)
+                {
+                    swalConfirm.fire('Berhasil Hapus Data!', data.pesan, 'success');
+                    reloadFormLogistik();
+                    reloadFormLogisitikRiwayatTabel(pid)
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    Swal.fire('Terjadi Kesalahan');
+                }
+            });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalConfirm.fire(
+            'Dibatalkan',
+            'Aksi Dibatalakan',
+            'error'
+          )
         }
     });
 }
