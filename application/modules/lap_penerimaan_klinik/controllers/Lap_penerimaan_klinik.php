@@ -71,15 +71,15 @@ class Lap_penerimaan_klinik extends CI_Controller {
 		if ($model == 2) {
 			### pertahun
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
 		}elseif ($model == 1) {
 			### perbulan
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
 		}elseif ($model == 3) {
 			### perhari
 			$where = "mut.tanggal between '$start' and '$end'";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
 		}
 
 		$q = $this->db->query("
@@ -229,17 +229,17 @@ class Lap_penerimaan_klinik extends CI_Controller {
 			### pertahun
 			$txt_periode = $tahun2;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
 		} elseif ($model == 1) {
 			### perbulan
 			$txt_periode = bulan_indo((int)$bulan).' '.$tahun;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
 		} elseif ($model == 3) {
 			### perhari
 			$txt_periode = tanggal_indo($start) . ' s/d ' . tanggal_indo($end);
 			$where = "mut.tanggal between '$start' and '$end'";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
 		}
 
 		$q = $this->db->query("
