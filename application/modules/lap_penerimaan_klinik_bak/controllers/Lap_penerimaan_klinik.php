@@ -23,7 +23,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 		$id_user = $this->session->userdata('id_user'); 
 		$data_user = $this->m_user->get_detail_user($id_user);
 		$data_role = $this->m_role->get_data_all(['aktif' => '1'], 'm_role');
-		$data_klinik = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_klinik', null, 'nama_klinik');
+			
 		/**
 		 * data passing ke halaman view content
 		 */
@@ -31,7 +31,6 @@ class Lap_penerimaan_klinik extends CI_Controller {
 			'title' => 'Laporan Penerimaan Klinik',
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
-			'data_klinik' => $data_klinik
 		);
 
 		/**
@@ -52,7 +51,6 @@ class Lap_penerimaan_klinik extends CI_Controller {
 
 	public function tabel_laporan()
 	{
-		$klinik = $this->input->post('klinik');
 		$model = $this->input->post('model');
 		$tahun2 = $this->input->post('tahun2');
 		$tahun = $this->input->post('tahun');
@@ -71,45 +69,55 @@ class Lap_penerimaan_klinik extends CI_Controller {
 		if ($model == 2) {
 			### pertahun
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun2'";
+			$group = "mut.tanggal, kli.nama_klinik";
 		}elseif ($model == 1) {
 			### perbulan
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
+			$group = "mut.tanggal, kli.nama_klinik";
 		}elseif ($model == 3) {
 			### perhari
 			$where = "mut.tanggal between '$start' and '$end'";
-			$group = "reg.id_layanan, kli.nama_klinik";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
+			$group = "mut.tanggal, kli.nama_klinik";
 		}
 
 		$q = $this->db->query("
 			SELECT
-				reg.tanggal_reg,
-				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
-				lay.nama_layanan,
-				peg.nama as nama_dokter,
+				mut.tanggal,
 				kli.nama_klinik,
 				reg.id_klinik,
 				sum( mut.total_penerimaan_nett ) AS total_omset,
-				sum( mut.total_pengeluaran ) AS total_bea_dokter
+				sum( mut.total_pengeluaran ) AS total_bea_dokter,
+				(SELECT count(sub_tabel.id) 
+					FROM (
+						select x_mut.id as id, x_reg.id_klinik, x_mut.tanggal
+						from t_mutasi x_mut
+						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
+						LEFT JOIN m_klinik AS x_kli ON x_reg.id_klinik = x_kli.id AND x_kli.deleted_at IS NULL 	
+						and x_mut.deleted_at is null
+						and $where2 
+						GROUP BY x_mut.tanggal, x_reg.id_klinik
+					) as sub_tabel where sub_tabel.tanggal = mut.tanggal
+				) as num_row
 			FROM
 				t_mutasi mut
-				LEFT JOIN t_registrasi reg ON mut.id_registrasi = reg.id and reg.deleted_at is null
+				LEFT JOIN t_registrasi reg ON mut.id_registrasi = reg.id
 				LEFT JOIN m_klinik kli ON reg.id_klinik = kli.id 
-				LEFT JOIN m_layanan lay ON reg.id_layanan = lay.id_layanan 
-				LEFT JOIN m_pasien pas ON reg.id_pasien = pas.id
-				LEFT JOIN m_pegawai peg ON reg.id_pegawai = peg.id
 			WHERE
-				$where and reg.id_klinik = '$klinik' and reg.is_pulang is not null
+				$where
 			GROUP BY
 				$group
 			ORDER BY
-				reg.tanggal_reg, lay.nama_layanan
+				mut.tanggal,
+				kli.nama_klinik
 		")->result();
 
 		// echo $this->db->last_query();exit;
 		
 		$html = '';
+		$flag_rowspan = null;
 		$grandTotalOmset = 0;
 		$grandTotalHonor = 0;
 		$no = 1;
@@ -118,33 +126,43 @@ class Lap_penerimaan_klinik extends CI_Controller {
 				$grandTotalOmset += $v->total_omset;
 				$grandTotalHonor += $v->total_bea_dokter;
 
-				$html .= "
-					<tr>
-						<td>" . $no . "</td>
-						<td>".tanggal_indo($v->tanggal_reg)."</td>
-						<td>" . $v->nama_lengkap . "</td>
-						<td>" . $v->nama_layanan . "</td>
-						<td>" . $v->nama_dokter . "</td>
-						<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
-						<td align='right'>" . number_format($v->total_bea_dokter, 0, ',', '.') . "</td>
-						<td align='right'>" . number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.') . "</td>
-					</tr>
-				";
+				if($flag_rowspan != $v->tanggal) {
+					$html .= "
+						<tr>
+							<td rowspan ='$v->num_row'>" . $no . "</td>
+							<td rowspan ='$v->num_row'>".tanggal_indo($v->tanggal)."</td>
+							<td>" . $v->nama_klinik . "</td>
+							<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
+							<td align='right'>" . number_format($v->total_bea_dokter, 0, ',', '.') . "</td>
+							<td align='right'>" . number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.') . "</td>
+						</tr>
+					";
 
-				$no++;				
+					$no++;
+					$flag_rowspan = $v->tanggal;
+				}else{
+					$html .= "
+						<tr>
+							<td>" . $v->nama_klinik . "</td>
+							<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
+							<td align='right'>" . number_format($v->total_bea_dokter, 0, ',', '.') . "</td>
+							<td align='right'>" . number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.') . "</td>
+						</tr>
+					";
+				}
 			}
 
 			$html .= "
 				<tr>
-					<td colspan = '7' align='center'><b>Grand Total Omset</b></td>
+					<td colspan = '5' align='center'><b>Grand Total Omset</b></td>
 					<td align='right'>" . number_format($grandTotalOmset, 0, ',', '.') . "</td>
 				</tr>
 				<tr>
-					<td colspan = '7' align='center'><b>Grand Total Honor</b></td>
+					<td colspan = '5' align='center'><b>Grand Total Honor</b></td>
 					<td align='right'>" . number_format($grandTotalHonor, 0, ',', '.') . "</td>
 				</tr>
 				<tr>
-					<td colspan = '7' align='center'><b>Penerimaan Klink (Nett)</b></td>
+					<td colspan = '5' align='center'><b>Penerimaan Klink (Nett)</b></td>
 					<td align='right'>" . number_format($grandTotalOmset - $grandTotalHonor, 0, ',', '.') . "</td>
 				</tr>
 			";

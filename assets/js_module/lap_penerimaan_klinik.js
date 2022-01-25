@@ -7,6 +7,7 @@ $(document).ready(function() {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
+    var klinik = $('#klinik').val();
     var model = $('#model').val();
     var tanggal_awal = $('#tanggal_awal').val();
     var tanggal_akhir = $('#tanggal_akhir').val();
@@ -15,29 +16,29 @@ $(document).ready(function() {
     var tahun2 = $('#tahun2').val();
 
     if(model == '1'){
-        $(".div_tanggal_mulai").hide();
-        $(".div_tanggal_akhir").hide();
-        $(".div_bulan").show();
-        $(".div_tahun").hide();
-      }
-      else if(model == '3') {
-        $(".div_tanggal_mulai").show();
-        $(".div_tanggal_akhir").show();
-        $(".div_bulan").hide();
-        $(".div_tahun").hide();
-      }
-      else if (model == '2') {
-        $(".div_tahun").show();
-        $(".div_tanggal_mulai").hide();
-        $(".div_tanggal_akhir").hide();
-        $(".div_bulan").hide();
-      }
-      else {
-        $(".div_tanggal_mulai").hide();
-        $(".div_tanggal_akhir").hide();
-        $(".div_bulan").hide();
-        $(".div_tahun").hide();
-      }
+      $(".div_tanggal_mulai").hide();
+      $(".div_tanggal_akhir").hide();
+      $(".div_bulan").show();
+      $(".div_tahun").hide();
+    }
+    else if(model == '3') {
+      $(".div_tanggal_mulai").show();
+      $(".div_tanggal_akhir").show();
+      $(".div_bulan").hide();
+      $(".div_tahun").hide();
+    }
+    else if (model == '2') {
+      $(".div_tahun").show();
+      $(".div_tanggal_mulai").hide();
+      $(".div_tanggal_akhir").hide();
+      $(".div_bulan").hide();
+    }
+    else {
+      $(".div_tanggal_mulai").hide();
+      $(".div_tanggal_akhir").hide();
+      $(".div_bulan").hide();
+      $(".div_tahun").hide();
+    }
 	//datatables
     if (model) {
         // table = $('#tabel_lap_penjualan').DataTable({
@@ -72,6 +73,7 @@ $(document).ready(function() {
             type: "post",
             url  : base_url + "lap_penerimaan_klinik/tabel_laporan",
             data : {
+                klinik : klinik,
                 model : model, 
                 start: tanggal_awal,
                 end : tanggal_akhir,

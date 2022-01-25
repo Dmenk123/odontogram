@@ -23,18 +23,7 @@
         <!--begin: Datatable -->
         <form id="submit_form" method="get" action="<?= base_url('lap_penerimaan_klinik')?>" >
           <!-- Horizontal Form -->
-         <div class="form-group row">
-            <label class="col-lg-3 col-form-label text-left">Pilih Klinik</label>
-            <div class="col-lg-7">
-              <select name="klinik" class="form-control input" id="klinik" data-id="klinik">
-                <option selected value="">Silahkan Pilih</option>
-                <?php foreach ($data_klinik as $k => $v) { ?>
-                    <option value="<?=$v->id;?>" <?php if ( $this->input->get('klinik') == $v->id) { echo 'selected'; } ?>><?=$v->nama_klinik;?></option>
-                <?php } ?>
-              </select>
-            </div>
-          </div>
-
+         
           <div class="form-group row">
               <label class="col-lg-3 col-form-label text-left">Pilih Periode</label>
               <div class="col-lg-7">
@@ -119,10 +108,8 @@
                 <tr>
                   <th style="width: 5%;">No</th>
                   <th>Tanggal</th>
-                  <th>Pasien</th>
-                  <th>Layanan</th>
-                  <th>Dokter</th>
-                  <th>Omset Klinik</th>
+                  <th>Klinik</th>
+                  <th>Total Omset</th>
                   <th>Honor Dokter</th>
                   <th>Total Nett</th>
                 </tr>
