@@ -99,6 +99,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 				LEFT JOIN m_layanan lay ON reg.id_layanan = lay.id_layanan 
 				LEFT JOIN m_pasien pas ON reg.id_pasien = pas.id
 				LEFT JOIN m_pegawai peg ON reg.id_pegawai = peg.id
+				JOIN t_pembayaran byr ON reg.id = byr.id_reg
 			WHERE
 				$where and reg.id_klinik = '$klinik' and reg.is_pulang is not null
 			GROUP BY
@@ -259,6 +260,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 				LEFT JOIN m_layanan lay ON reg.id_layanan = lay.id_layanan 
 				LEFT JOIN m_pasien pas ON reg.id_pasien = pas.id
 				LEFT JOIN m_pegawai peg ON reg.id_pegawai = peg.id
+				JOIN t_pembayaran byr ON reg.id = byr.id_reg
 			WHERE
 				$where and reg.id_klinik = '$klinik' and reg.is_pulang is not null
 			GROUP BY

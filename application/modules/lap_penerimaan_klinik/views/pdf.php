@@ -1,6 +1,6 @@
   <style>
     table#tbl_content {
-      font-size: 14px;
+      font-size: 10px;
     }
 
     table#tbl_content th,

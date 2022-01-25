@@ -125,7 +125,7 @@
             }elseif($this->input->get('model') == '2') {
               $txt_periode = 'Tahun ' . $this->input->get('tahun');
             } elseif ($this->input->get('model') == '3') {
-              $txt_periode = 'Tanggal ' . tanggal_indo($this->input->get('tanggal_awal')).' s/d '.tanggal_indo($this->input->get('tanggal_akhir'));
+              $txt_periode = 'Tanggal ' . tanggal_indo(DateTime::createFromFormat('d/m/Y', $this->input->get('start'))->format('Y-m-d')).' s/d '. tanggal_indo(DateTime::createFromFormat('d/m/Y', $this->input->get('end'))->format('Y-m-d'));
             }
         ?>
           <h3>Laporan Penerimaan <?=$nama_klinik.' '.$txt_periode;?></h3>
