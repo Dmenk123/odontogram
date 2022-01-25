@@ -209,6 +209,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 
 	public function cetak_data()
 	{
+		$klinik = $this->input->get('klinik');
 		$model = $this->input->get('model');
 		$tahun2 = $this->input->get('tahun2');
 		$tahun = $this->input->get('tahun');
@@ -228,52 +229,46 @@ class Lap_penerimaan_klinik extends CI_Controller {
 			### pertahun
 			$txt_periode = $tahun2;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
-			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun2'";
-			$group = "mut.tanggal, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik";
 		} elseif ($model == 1) {
 			### perbulan
-			$txt_periode = bulan_indo($bulan).' '.$tahun;
+			$txt_periode = bulan_indo((int)$bulan).' '.$tahun;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
-			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
-			$group = "mut.tanggal, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik";
 		} elseif ($model == 3) {
 			### perhari
 			$txt_periode = tanggal_indo($start) . ' s/d ' . tanggal_indo($end);
 			$where = "mut.tanggal between '$start' and '$end'";
-			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
-			$group = "mut.tanggal, kli.nama_klinik";
+			$group = "reg.id_layanan, kli.nama_klinik";
 		}
 
 		$q = $this->db->query("
 			SELECT
-				mut.tanggal,
+				reg.tanggal_reg,
+				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
+				lay.nama_layanan,
+				peg.nama as nama_dokter,
 				kli.nama_klinik,
 				reg.id_klinik,
 				sum( mut.total_penerimaan_nett ) AS total_omset,
-				sum( mut.total_pengeluaran ) AS total_bea_dokter,
-				(SELECT count(sub_tabel.id) 
-					FROM (
-						select x_mut.id as id, x_reg.id_klinik, x_mut.tanggal
-						from t_mutasi x_mut
-						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
-						LEFT JOIN m_klinik AS x_kli ON x_reg.id_klinik = x_kli.id AND x_kli.deleted_at IS NULL 	
-						and x_mut.deleted_at is null
-						and $where2 
-						GROUP BY x_mut.tanggal, x_reg.id_klinik
-					) as sub_tabel where sub_tabel.tanggal = mut.tanggal
-				) as num_row
+				sum( mut.total_pengeluaran ) AS total_bea_dokter
 			FROM
 				t_mutasi mut
-				LEFT JOIN t_registrasi reg ON mut.id_registrasi = reg.id
+				LEFT JOIN t_registrasi reg ON mut.id_registrasi = reg.id and reg.deleted_at is null
 				LEFT JOIN m_klinik kli ON reg.id_klinik = kli.id 
+				LEFT JOIN m_layanan lay ON reg.id_layanan = lay.id_layanan 
+				LEFT JOIN m_pasien pas ON reg.id_pasien = pas.id
+				LEFT JOIN m_pegawai peg ON reg.id_pegawai = peg.id
 			WHERE
-				$where
+				$where and reg.id_klinik = '$klinik' and reg.is_pulang is not null
 			GROUP BY
 				$group
 			ORDER BY
-				mut.tanggal,
-				kli.nama_klinik
+				reg.tanggal_reg, lay.nama_layanan
 		")->result();
+
+		// echo $this->db->last_query();exit;
+		
 
 		$data_klinik = $this->m_global->single_row('*',['deleted_at' => null, 'id' => 3], 'm_klinik');
 		$konten_html = $this->load->view('pdf', ['datanya' => $q,'title' => 'Laporan Penerimaan Klinik', 'data_klinik' => $data_klinik, 'data_user' => $this->prop_data_user[0], 'periode' => 'Periode ' . $txt_periode], true);
@@ -288,6 +283,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 
 		// $this->load->view('pdf', $retval);
 		$html = $this->load->view('template/pdf', $retval, true);
+		// echo $html;exit;
 		$filename = 'laporan_penerimaan_klinik_'.time();
 		$this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');
 	}

@@ -46,7 +46,9 @@
       <tr>
         <th style="width: 3%;">No</th>
         <th style="width: 17%;">Tanggal</th>
-        <th style="width: 30%;">Klinik</th>
+        <th>Pasien</th>
+        <th>Layanan</th>
+        <th>Dokter</th>
         <th>Total Omset</th>
         <th>Honor Dokter</th>
         <th>Total Nett</th>
@@ -55,50 +57,41 @@
     <tbody>
       <?php
       if ($datanya) {
-        $flag_rowspan = null;
         $grandTotalOmset = 0;
         $grandTotalHonor = 0;
         $no = 1;
         foreach ($datanya as $k => $v) {
           $grandTotalOmset += $v->total_omset;
           $grandTotalHonor += $v->total_bea_dokter;
-
-          if ($flag_rowspan != $v->tanggal) { ?>
-            <tr>
-              <td rowspan='<?= $v->num_row; ?>'><?= $no; ?></td>
-              <td rowspan='<?= $v->num_row; ?>'><?= tanggal_indo($v->tanggal); ?></td>
-              <td><?= $v->nama_klinik; ?></td>
-              <td align="right"><?= number_format($v->total_omset, 0, ',', '.'); ?></td>
-              <td align="right"><?= number_format($v->total_bea_dokter, 0, ',', '.'); ?></td>
-              <td align="right"><?= number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.'); ?></td>
-            </tr>
-            <?php
-              $no++;
-              $flag_rowspan = $v->tanggal;
-            ?>
-          <?php } else { ?>
-            <tr>
-              <td><?= $v->nama_klinik; ?></td>
-              <td align="right"><?= number_format($v->total_omset, 0, ',', '.'); ?></td>
-              <td align="right"><?= number_format($v->total_bea_dokter, 0, ',', '.'); ?></td>
-              <td align="right"><?= number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.'); ?></td>
-            </tr>
-          <?php } ?>
+      ?>
+          <tr>
+            <td><?= $no; ?></td>
+            <td><?= tanggal_indo($v->tanggal_reg); ?></td>
+            <td><?= $v->nama_lengkap; ?></td>
+            <td><?= $v->nama_layanan; ?></td>
+            <td><?= $v->nama_dokter; ?></td>
+            <td align="right"><?= number_format($v->total_omset, 0, ',', '.'); ?></td>
+            <td align="right"><?= number_format($v->total_bea_dokter, 0, ',', '.'); ?></td>
+            <td align="right"><?= number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.'); ?></td>
+          </tr>
+          <?php
+          $no++;
+          ?>
         <?php } ?>
         <tr>
-          <td colspan='5' align='center'><b>Grand Total Omset</b></td>
+          <td colspan='7' align='center'><b>Grand Total Omset</b></td>
           <td align='right'><?= number_format($grandTotalOmset, 0, ',', '.'); ?></td>
         </tr>
         <tr>
-          <td colspan='5' align='center'><b>Grand Total Honor</b></td>
+          <td colspan='7' align='center'><b>Grand Total Honor</b></td>
           <td align='right'><?= number_format($grandTotalHonor, 0, ',', '.'); ?></td>
         </tr>
         <tr>
-          <td colspan='5' align='center'><b>Penerimaan Klink (Nett)</b></td>
+          <td colspan='7' align='center'><b>Penerimaan Klink (Nett)</b></td>
           <td align='right'><?= number_format($grandTotalOmset - $grandTotalHonor, 0, ',', '.'); ?></td>
         </tr>
       <?php } else {
-        echo '<tr><td colspan="6" align="center">Tidak ada data</td></th>';
+        echo '<tr><td colspan="7" align="center">Tidak ada data</td></th>';
       }
       ?>
     </tbody>

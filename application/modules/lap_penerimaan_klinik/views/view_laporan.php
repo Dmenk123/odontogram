@@ -113,7 +113,22 @@
 
         <?php
           if ($this->input->get('model')) {
+            $nama_klinik = '';
+
+            if($this->input->get('klinik')) {
+              $klinike_mbahe = $this->db->query("select * from m_klinik where id = '".$this->input->get('klinik')."'")->row();
+              $nama_klinik = $klinike_mbahe->nama_klinik;  
+            }
+
+            if($this->input->get('model') == '1') {
+              $txt_periode = 'Bulan '.bulan_indo($this->input->get('bulan')).' Tahun '.$this->input->get('tahun');
+            }elseif($this->input->get('model') == '2') {
+              $txt_periode = 'Tahun ' . $this->input->get('tahun');
+            } elseif ($this->input->get('model') == '3') {
+              $txt_periode = 'Tanggal ' . tanggal_indo($this->input->get('tanggal_awal')).' s/d '.tanggal_indo($this->input->get('tanggal_akhir'));
+            }
         ?>
+          <h3>Laporan Penerimaan <?=$nama_klinik.' '.$txt_periode;?></h3>
             <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_lap_penjualan">
               <thead>
                 <tr>

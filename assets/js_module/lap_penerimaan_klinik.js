@@ -178,7 +178,7 @@ function cetak(){
     let searchParams = new URLSearchParams(window.location.search); 
     let model =  searchParams.get('model');
     if (model) {
-      window.open(base_url+'lap_penerimaan_klinik/cetak_data?model='+model+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&jenis=laporan_klinik', '_blank');
+      window.open(base_url+'lap_penerimaan_klinik/cetak_data?model='+model+'&klinik='+searchParams.get('klinik')+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&jenis=laporan_klinik', '_blank');
       // window.location.href = ;
     }else{
       Swal.fire('Silahkan Pilih Periode Terlebih dahulu');
