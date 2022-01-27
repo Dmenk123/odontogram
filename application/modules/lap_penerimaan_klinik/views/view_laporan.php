@@ -123,7 +123,7 @@
             if($this->input->get('model') == '1') {
               $txt_periode = 'Bulan '.bulan_indo($this->input->get('bulan')).' Tahun '.$this->input->get('tahun');
             }elseif($this->input->get('model') == '2') {
-              $txt_periode = 'Tahun ' . $this->input->get('tahun');
+              $txt_periode = 'Tahun ' . $this->input->get('tahun2');
             } elseif ($this->input->get('model') == '3') {
               $txt_periode = 'Tanggal ' . tanggal_indo(DateTime::createFromFormat('d/m/Y', $this->input->get('start'))->format('Y-m-d')).' s/d '. tanggal_indo(DateTime::createFromFormat('d/m/Y', $this->input->get('end'))->format('Y-m-d'));
             }

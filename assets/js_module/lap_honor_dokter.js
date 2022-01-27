@@ -7,6 +7,7 @@ $(document).ready(function() {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
+    var klinik = $('#klinik').val();
     var model = $('#model').val();
     var tanggal_awal = $('#tanggal_awal').val();
     var tanggal_akhir = $('#tanggal_akhir').val();
@@ -77,6 +78,7 @@ $(document).ready(function() {
             type: "post",
             url  : base_url + "lap_honor_dokter/tabel_laporan",
             data : {
+                klinik : klinik,
                 model : model, 
                 start: tanggal_awal,
                 end : tanggal_akhir,
@@ -191,7 +193,7 @@ function cetak(){
     let searchParams = new URLSearchParams(window.location.search); 
     let model =  searchParams.get('model');
     if (model) {
-      window.open(base_url+'lap_honor_dokter/cetak_data?model='+model+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&dokter='+searchParams.get('dokter')+'&jenis=laporan_honor', '_blank');
+      window.open(base_url+'lap_honor_dokter/cetak_data?model='+model+'&klinik='+searchParams.get('klinik')+'&start='+searchParams.get('start')+'&end='+searchParams.get('end')+'&bulan='+searchParams.get('bulan')+'&tahun='+searchParams.get('tahun')+'&tahun2='+searchParams.get('tahun2')+'&dokter='+searchParams.get('dokter')+'&jenis=laporan_honor', '_blank');
       // window.location.href = ;
     }else{
       Swal.fire('Silahkan Pilih Periode Terlebih dahulu');

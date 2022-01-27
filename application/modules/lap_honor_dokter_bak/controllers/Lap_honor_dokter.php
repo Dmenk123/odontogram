@@ -29,7 +29,6 @@ class Lap_honor_dokter extends CI_Controller {
 			'is_aktif' => 1,
 			'is_owner' => null
 		], 'm_pegawai', NULL, 'nama');
-		$data_klinik = $this->m_global->multi_row('*', ['deleted_at' => null], 'm_klinik', null, 'nama_klinik');
 		/**
 		 * data passing ke halaman view content
 		 */
@@ -37,8 +36,7 @@ class Lap_honor_dokter extends CI_Controller {
 			'title' => 'Laporan Honor Dokter',
 			'data_user' => $data_user,
 			'data_role'	=> $data_role,
-			'data_dokter' => $data_dokter,
-			'data_klinik' => $data_klinik
+			'data_dokter' => $data_dokter
 		);
 
 		/**
@@ -58,108 +56,6 @@ class Lap_honor_dokter extends CI_Controller {
 	}
 
 	public function tabel_laporan()
-	{
-		$klinik = $this->input->post('klinik');
-		$model = $this->input->post('model');
-		$tahun2 = $this->input->post('tahun2');
-		$tahun = $this->input->post('tahun');
-		$bulan = sprintf("%02d", $this->input->post('bulan'));
-		$start = $this->input->post('start');
-		$end = $this->input->post('end');
-		$dokter = $this->input->post('dokter');
-
-		if ($start) {
-			$start = Carbon::createFromFormat('d/m/Y', $start)->format('Y-m-d');
-		}
-
-		if ($end) {
-			$end = Carbon::createFromFormat('d/m/Y', $end)->format('Y-m-d');
-		}
-
-		if ($model == 2) {
-			### pertahun
-			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
-			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
-		}elseif ($model == 1) {
-			### perbulan
-			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
-			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
-		}elseif ($model == 3) {
-			### perhari
-			$where = "mut.tanggal between '$start' and '$end'";
-			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
-		}
-
-		$q = $this->db->query("
-			SELECT
-				reg.no_reg,
-				reg.tanggal_reg,
-				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
-				lay.nama_layanan,
-				peg.nama as nama_dokter,
-				kli.nama_klinik,
-				reg.id_klinik,
-				-- sum( mut.total_penerimaan_nett ) AS total_omset,
-				sum( mut.total_pengeluaran ) AS total_honor_dokter
-			FROM
-				t_mutasi mut
-				LEFT JOIN t_registrasi reg ON mut.id_registrasi = reg.id and reg.deleted_at is null
-				LEFT JOIN m_klinik kli ON reg.id_klinik = kli.id 
-				LEFT JOIN m_layanan lay ON reg.id_layanan = lay.id_layanan 
-				LEFT JOIN m_pasien pas ON reg.id_pasien = pas.id
-				LEFT JOIN m_pegawai peg ON reg.id_pegawai = peg.id
-				JOIN t_pembayaran byr ON reg.id = byr.id_reg
-			WHERE
-				$where and reg.id_klinik = '$klinik' and reg.is_pulang is not null and reg.id_pegawai = '$dokter'
-			GROUP BY
-				$group
-			ORDER BY
-			reg.tanggal_reg, lay.nama_layanan
-		")->result();
-		
-		// echo $this->db->last_query();exit;
-					
-		// echo "<pre>";
-		// print_r ($q);
-		// echo "</pre>";
-		// exit;
-
-		$html = '';
-		$grandTotalHonor = 0;
-		$grandTotal = 0;
-		$no = 1;
-		if ($q) {
-			foreach ($q as $k => $v) {
-				$grandTotalHonor += $v->total_honor_dokter;
-				
-				$html .= "
-					<tr>
-						<td>" . $no . "</td>
-						<td>".tanggal_indo($v->tanggal_reg)."</td>
-						<td>" . $v->no_reg . "</td>
-						<td>" . $v->nama_lengkap . "</td>
-						<td>" . $v->nama_layanan . "</td>
-						<td align='right'>" . number_format($v->total_honor_dokter, 0, ',', '.') . "</td>
-					</tr>
-				";
-
-				$no++;		
-			}
-
-			$html .= "
-				<tr>
-					<td colspan = '5' align='center'><b>Total Honor Dokter</b></td>
-					<td align='right'>" . number_format($grandTotalHonor, 0, ',', '.') . "</td>
-				</tr>
-			";
-		}
-        
-        echo json_encode([
-            'data' => $html
-        ]);
-	}
-
-	public function tabel_laporan_bak()
 	{
 		$model = $this->input->post('model');
 		$tahun2 = $this->input->post('tahun2');
@@ -348,7 +244,6 @@ class Lap_honor_dokter extends CI_Controller {
 
 	public function cetak_data()
 	{
-		$klinik = $this->input->get('klinik');
 		$model = $this->input->get('model');
 		$tahun2 = $this->input->get('tahun2');
 		$tahun = $this->input->get('tahun');
@@ -369,55 +264,77 @@ class Lap_honor_dokter extends CI_Controller {
 			### pertahun
 			$txt_periode = $tahun2;
 			$where = "DATE_FORMAT(mut.tanggal,'%Y') = '$tahun2'";
-			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y') = '$tahun2'";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		} elseif ($model == 1) {
 			### perbulan
-			$txt_periode = bulan_indo((int)$bulan).' '.$tahun;
-			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '" . $tahun . '-' . $bulan . "' ";
-			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
+			$txt_periode = bulan_indo($bulan).' '.$tahun;
+			$where = "DATE_FORMAT(mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
+			$where2 = "DATE_FORMAT(x_mut.tanggal,'%Y-%m') = '".$tahun.'-'.$bulan."' ";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		} elseif ($model == 3) {
 			### perhari
-			$txt_periode = tanggal_indo($start) . ' s/d ' . tanggal_indo($end);
+			$txt_periode = tanggal_indo($start).' s/d '. tanggal_indo($end);
 			$where = "mut.tanggal between '$start' and '$end'";
-			$group = "reg.id_layanan, kli.nama_klinik, reg.id";
+			$where2 = "x_mut.tanggal between '$start' and '$end'";
+			$group = "mut.tanggal, m_klinik.nama_klinik, reg.id_pegawai";
 		}
 
 		$q = $this->db->query("
-			SELECT
-				reg.no_reg,
-				reg.tanggal_reg,
-				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
-				lay.nama_layanan,
-				peg.nama as nama_dokter,
-				kli.nama_klinik,
+				SELECT	
+				sum(mut.total_pengeluaran) as total,
+				mut.tanggal,
+				m_klinik.nama_klinik,
 				reg.id_klinik,
-				-- sum( mut.total_penerimaan_nett ) AS total_omset,
-				sum( mut.total_pengeluaran ) AS total_honor_dokter
+				m_pegawai.nama as nama_dokter,
+				m_pegawai.kode as kode_dokter,
+				tbl_sub_join.cnt
 			FROM
-				t_mutasi mut
-				LEFT JOIN t_registrasi reg ON mut.id_registrasi = reg.id and reg.deleted_at is null
-				LEFT JOIN m_klinik kli ON reg.id_klinik = kli.id 
-				LEFT JOIN m_layanan lay ON reg.id_layanan = lay.id_layanan 
-				LEFT JOIN m_pasien pas ON reg.id_pasien = pas.id
-				LEFT JOIN m_pegawai peg ON reg.id_pegawai = peg.id
-				JOIN t_pembayaran byr ON reg.id = byr.id_reg
+				t_mutasi AS mut
+				LEFT JOIN t_registrasi AS reg ON mut.id_registrasi = reg.id
+				LEFT JOIN m_klinik ON reg.id_klinik = m_klinik.id AND m_klinik.deleted_at IS NULL 
+				LEFT JOIN m_pegawai ON reg.id_pegawai = m_pegawai.id AND m_pegawai.deleted_at IS NULL 
+				JOIN (
+					select 
+						count(tbl_sub.tanggal) as cnt,
+						tbl_sub.tanggal
+					FROM (
+						SELECT
+							x_mut.id,
+							x_reg.id_pegawai,
+							x_mut.tanggal
+						FROM
+							t_mutasi x_mut
+						LEFT JOIN t_registrasi AS x_reg ON x_mut.id_registrasi = x_reg.id
+						LEFT JOIN m_pegawai AS x_peg ON x_reg.id_pegawai = x_peg.id AND x_peg.deleted_at IS NULL 
+						WHERE
+							id_jenis_trans = 6 
+							AND x_mut.deleted_at IS NULL 
+							AND $where2
+							and x_reg.id_pegawai = $dokter
+							AND x_peg.id_jabatan = 1 
+						GROUP BY x_mut.tanggal, x_reg.id_pegawai, x_reg.id_klinik
+					) as tbl_sub
+						
+					GROUP BY tbl_sub.tanggal
+				) as tbl_sub_join on mut.tanggal = tbl_sub_join.tanggal
 			WHERE
-				$where and reg.id_klinik = '$klinik' and reg.is_pulang is not null and reg.id_pegawai = '$dokter'
-			GROUP BY
-				$group
-			ORDER BY
-			reg.tanggal_reg, lay.nama_layanan
+				mut.id_jenis_trans = 6 
+				AND mut.deleted_at IS NULL 
+				AND m_pegawai.id_jabatan = 1
+				AND $where  
+				AND reg.id_pegawai = $dokter
+			GROUP BY $group
+			ORDER BY m_pegawai.nama, m_klinik.nama_klinik
 		")->result();
 
-		$data_klinik = $this->m_global->single_row('*',['deleted_at' => null, 'id' => $klinik], 'm_klinik');
-		$data_dokter = $this->m_global->single_row('*',['deleted_at' => null, 'id' => $dokter], 'm_pegawai');
+		$data_klinik = $this->m_global->single_row('*',['deleted_at' => null, 'id' => 3], 'm_klinik');
 		
-		$konten_html = $this->load->view('pdf', ['datanya' => $q,'title' => 'Laporan Honor Dokter','data_klinik' => $data_klinik, 'data_dokter' => $data_dokter, 'data_user' => $this->prop_data_user[0], 'periode' => 'Periode ' . $txt_periode], true);
+		$konten_html = $this->load->view('pdf', ['datanya' => $q,'title' => 'Laporan Honor Dokter','data_klinik' => $data_klinik, 'data_user' => $this->prop_data_user[0], 'periode' => 'Periode ' . $txt_periode], true);
 
 		$retval = [
 			'data' => $q,
 			'data_klinik' => $data_klinik,
-			'data_dokter' => $data_dokter,
 			'content' => $konten_html,
 			'footer' => '', // set '' agar tidak ikut default, footer ikut konten
 		];

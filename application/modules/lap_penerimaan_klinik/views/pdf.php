@@ -63,7 +63,7 @@
         foreach ($datanya as $k => $v) {
           $grandTotalOmset += $v->total_omset;
           $grandTotalHonor += $v->total_bea_dokter;
-      ?>
+        ?>
           <tr>
             <td><?= $no; ?></td>
             <td><?= tanggal_indo($v->tanggal_reg); ?></td>

@@ -23,18 +23,7 @@
         <!--begin: Datatable -->
         <form id="submit_form" method="get" action="<?= base_url('lap_honor_dokter') ?>">
           <!-- Horizontal Form -->
-          <div class="form-group row">
-            <label class="col-lg-3 col-form-label text-left">Pilih Klinik</label>
-            <div class="col-lg-7">
-              <select name="klinik" class="form-control input" id="klinik" data-id="klinik">
-                <option selected value="">Silahkan Pilih</option>
-                <?php foreach ($data_klinik as $k => $v) { ?>
-                    <option value="<?=$v->id;?>" <?php if ( $this->input->get('klinik') == $v->id) { echo 'selected'; } ?>><?=$v->nama_klinik;?></option>
-                <?php } ?>
-              </select>
-            </div>
-          </div>
-          
+
           <div class="form-group row">
             <label class="col-lg-3 col-form-label text-left">Pilih Periode</label>
             <div class="col-lg-7">
@@ -161,38 +150,16 @@
 
         <?php
         if ($this->input->get('model')) {
-          $nama_klinik = '';
-          $nama_dokter = '';
-
-          if($this->input->get('klinik')) {
-            $klinike_mbahe = $this->db->query("select * from m_klinik where id = '".$this->input->get('klinik')."'")->row();
-            $nama_klinik = $klinike_mbahe->nama_klinik;  
-          }
-
-          if($this->input->get('dokter')) {
-            $doktere_mbahe = $this->db->query("select * from m_pegawai where id = '".$this->input->get('dokter')."' and id_jabatan = '1' and is_owner is null and is_aktif = '1'")->row();
-            $nama_dokter = $doktere_mbahe->nama;  
-          }
-
-          if($this->input->get('model') == '1') {
-            $txt_periode = 'Bulan '.bulan_indo($this->input->get('bulan')).' Tahun '.$this->input->get('tahun');
-          }elseif($this->input->get('model') == '2') {
-            $txt_periode = 'Tahun ' . $this->input->get('tahun2');
-          } elseif ($this->input->get('model') == '3') {
-            $txt_periode = 'Tanggal ' . tanggal_indo(DateTime::createFromFormat('d/m/Y', $this->input->get('start'))->format('Y-m-d')).' s/d '. tanggal_indo(DateTime::createFromFormat('d/m/Y', $this->input->get('end'))->format('Y-m-d'));
-          }
         ?>
-          <h3>Laporan Honor Dokter <?=$nama_dokter.' - '.$nama_klinik.' '.$txt_periode;?></h3>
           <table class="table table-striped- table-bordered table-hover table-checkable" id="tabel_lap_penjualan">
             <thead>
               <tr>
-                  <th style="width: 5%;">No</th>
-                  <th>Tanggal</th>
-                  <th>No. Reg</th>
-                  <th>Pasien</th>
-                  <th>Layanan</th>
-                  <th>Nilai Honor</th>
-                </tr>
+                <th style="width: 5%;">No</th>
+                <th>Tanggal</th>
+                <th>Dokter</th>
+                <th>Klinik</th>
+                <th>Honor Dokter</th>
+              </tr>
             </thead>
             <tbody>
             </tbody>
