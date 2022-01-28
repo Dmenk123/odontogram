@@ -99,7 +99,7 @@ class Lap_honor_dokter extends CI_Controller {
 				peg.nama as nama_dokter,
 				kli.nama_klinik,
 				reg.id_klinik,
-				-- sum( mut.total_penerimaan_nett ) AS total_omset,
+				sum( mut.total_penerimaan_nett ) AS total_omset,
 				sum( mut.total_pengeluaran ) AS total_honor_dokter
 			FROM
 				t_mutasi mut
@@ -126,12 +126,12 @@ class Lap_honor_dokter extends CI_Controller {
 
 		$html = '';
 		$grandTotalHonor = 0;
-		$grandTotal = 0;
+		$grandTotalOmset = 0;
 		$no = 1;
 		if ($q) {
 			foreach ($q as $k => $v) {
 				$grandTotalHonor += $v->total_honor_dokter;
-				
+				$grandTotalOmset += $v->total_omset;
 				$html .= "
 					<tr>
 						<td>" . $no . "</td>
@@ -139,7 +139,9 @@ class Lap_honor_dokter extends CI_Controller {
 						<td>" . $v->no_reg . "</td>
 						<td>" . $v->nama_lengkap . "</td>
 						<td>" . $v->nama_layanan . "</td>
+						<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
 						<td align='right'>" . number_format($v->total_honor_dokter, 0, ',', '.') . "</td>
+						<td align='right'>" . number_format($v->total_omset - $v->total_honor_dokter, 0, ',', '.') . "</td>
 					</tr>
 				";
 
@@ -148,8 +150,16 @@ class Lap_honor_dokter extends CI_Controller {
 
 			$html .= "
 				<tr>
-					<td colspan = '5' align='center'><b>Total Honor Dokter</b></td>
+					<td colspan = '7' align='center'><b>Grand Total Omset</b></td>
+					<td align='right'>" . number_format($grandTotalOmset, 0, ',', '.') . "</td>
+				</tr>
+				<tr>
+					<td colspan = '7' align='center'><b>Grand Total Honor</b></td>
 					<td align='right'>" . number_format($grandTotalHonor, 0, ',', '.') . "</td>
+				</tr>
+				<tr>
+					<td colspan = '7' align='center'><b>Penerimaan Klink (Nett)</b></td>
+					<td align='right'>" . number_format($grandTotalOmset - $grandTotalHonor, 0, ',', '.') . "</td>
 				</tr>
 			";
 		}
@@ -391,7 +401,7 @@ class Lap_honor_dokter extends CI_Controller {
 				peg.nama as nama_dokter,
 				kli.nama_klinik,
 				reg.id_klinik,
-				-- sum( mut.total_penerimaan_nett ) AS total_omset,
+				sum( mut.total_penerimaan_nett ) AS total_omset,
 				sum( mut.total_pengeluaran ) AS total_honor_dokter
 			FROM
 				t_mutasi mut

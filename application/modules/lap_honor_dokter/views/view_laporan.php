@@ -191,7 +191,9 @@
                   <th>No. Reg</th>
                   <th>Pasien</th>
                   <th>Layanan</th>
+                  <th>Omset Klinik</th>
                   <th>Nilai Honor</th>
+                  <th>Total Nett (Klinik)</th>
                 </tr>
             </thead>
             <tbody>

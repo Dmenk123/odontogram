@@ -49,17 +49,21 @@
         <th>No. Reg</th>
         <th>Pasien</th>
         <th>Layanan</th>
+        <th>Omset Klinik</th>
         <th>Nilai Honor</th>
+        <th>Total Nett (Klinik)</th>
      </tr>
    </thead>
    <tbody>
      <?php
       if ($datanya) {
+        $grandTotalOmset = 0;
         $grandTotalHonor = 0;
         $no = 1;
 			
         foreach ($datanya as $k => $v) {
           $grandTotalHonor += $v->total_honor_dokter; 
+          $grandTotalOmset += $v->total_omset;
           ?>
           <tr>
             <td><?= $no; ?></td>
@@ -67,16 +71,26 @@
             <td><?= $v->no_reg; ?></td>
             <td><?= $v->nama_lengkap; ?></td>
             <td><?= $v->nama_layanan; ?></td>
+            <td align="right"><?= number_format($v->total_omset, 0, ',', '.'); ?></td>
             <td align="right"><?= number_format($v->total_honor_dokter, 0, ',', '.'); ?></td>
+            <td align="right"><?= number_format($v->total_omset - $v->total_honor_dokter, 0, ',', '.'); ?></td>
           </tr>
           <?php $no++; ?>
        <?php } ?>
        <tr>
-         <td colspan='5' align='center'><b>Total Honor Dokter</b></td>
-         <td align='right'><?= number_format($grandTotalHonor, 0, ',', '.'); ?></td>
-       </tr>
+          <td colspan='7' align='center'><b>Grand Total Omset</b></td>
+          <td align='right'><?= number_format($grandTotalOmset, 0, ',', '.'); ?></td>
+        </tr>
+        <tr>
+          <td colspan='7' align='center'><b>Grand Total Honor</b></td>
+          <td align='right'><?= number_format($grandTotalHonor, 0, ',', '.'); ?></td>
+        </tr>
+        <tr>
+          <td colspan='7' align='center'><b>Penerimaan Klink (Nett)</b></td>
+          <td align='right'><?= number_format($grandTotalOmset - $grandTotalHonor, 0, ',', '.'); ?></td>
+        </tr>
      <?php } else {
-        echo '<tr><td colspan="5" align="center">Tidak ada data</td></th>';
+        echo '<tr><td colspan="7" align="center">Tidak ada data</td></th>';
       }
       ?>
    </tbody>
