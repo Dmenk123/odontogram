@@ -51,7 +51,6 @@
         <th>Layanan</th>
         <th>Omset Klinik</th>
         <th>Nilai Honor</th>
-        <th>Total Nett (Klinik)</th>
      </tr>
    </thead>
    <tbody>
@@ -73,21 +72,16 @@
             <td><?= $v->nama_layanan; ?></td>
             <td align="right"><?= number_format($v->total_omset, 0, ',', '.'); ?></td>
             <td align="right"><?= number_format($v->total_honor_dokter, 0, ',', '.'); ?></td>
-            <td align="right"><?= number_format($v->total_omset - $v->total_honor_dokter, 0, ',', '.'); ?></td>
           </tr>
           <?php $no++; ?>
        <?php } ?>
        <tr>
-          <td colspan='7' align='center'><b>Grand Total Omset</b></td>
+          <td colspan='6' align='center'><b>Grand Total Omset</b></td>
           <td align='right'><?= number_format($grandTotalOmset, 0, ',', '.'); ?></td>
         </tr>
         <tr>
-          <td colspan='7' align='center'><b>Grand Total Honor</b></td>
+          <td colspan='6' align='center'><b>Grand Total Honor</b></td>
           <td align='right'><?= number_format($grandTotalHonor, 0, ',', '.'); ?></td>
-        </tr>
-        <tr>
-          <td colspan='7' align='center'><b>Penerimaan Klink (Nett)</b></td>
-          <td align='right'><?= number_format($grandTotalOmset - $grandTotalHonor, 0, ',', '.'); ?></td>
         </tr>
      <?php } else {
         echo '<tr><td colspan="7" align="center">Tidak ada data</td></th>';
@@ -96,7 +90,7 @@
    </tbody>
  </table>
 
- <table class="tbl-footer" border='0'>
+ <!-- <table class="tbl-footer" border='0'>
    <tr>
      <td style="width: 70%;">&nbsp;</td>
      <td align="center" style="padding-top: 5px;padding-bottom:60px;">
@@ -109,4 +103,4 @@
        <?= $data_user->nama_pegawai; ?>
      </td>
    </tr>
- </table>
+ </table> -->

@@ -280,6 +280,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 			'data_klinik' => $data_klinik,
 			'content' => $konten_html,
 			'footer' => '', // set '' agar tidak ikut default, footer ikut konten
+			'header' => ' ' // set ' ' agar tidak muncul header
 		];
 
 

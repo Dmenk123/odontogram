@@ -97,7 +97,7 @@
     </tbody>
   </table>
 
-  <table class="tbl-footer" border='0'>
+  <!-- <table class="tbl-footer" border='0'>
     <tr>
       <td style="width: 70%;">&nbsp;</td>
       <td align="center" style="padding-top: 5px;padding-bottom:60px;">
@@ -110,4 +110,4 @@
         <?= $data_user->nama_pegawai; ?>
       </td>
     </tr>
-  </table>
+  </table> -->

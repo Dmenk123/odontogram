@@ -68,13 +68,23 @@
       margin: 0px;
     }
 
-    .tbl-header {
-      padding-top: 1px;
-      width: 100%;
-      color: #070707;
-      border-color: #070707;
-      border-top: 2px solid #070707;
-    }
+    <?php if (isset($header) && $header != null) { ?>
+      .tbl-header {
+        margin-top: -30px;
+        width: 100%;
+        color: #070707;
+        border-color: #070707;
+        /* border-top: 2px solid #070707; */
+      }
+    <?php } else { ?>
+      .tbl-header {
+        padding-top: 1px;
+        width: 100%;
+        color: #070707;
+        border-color: #070707;
+        border-top: 2px solid #070707;
+      }
+  <?php } ?>
 
     #tbl_content {
       padding-top: 10px;

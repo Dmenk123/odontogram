@@ -141,7 +141,6 @@ class Lap_honor_dokter extends CI_Controller {
 						<td>" . $v->nama_layanan . "</td>
 						<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
 						<td align='right'>" . number_format($v->total_honor_dokter, 0, ',', '.') . "</td>
-						<td align='right'>" . number_format($v->total_omset - $v->total_honor_dokter, 0, ',', '.') . "</td>
 					</tr>
 				";
 
@@ -150,16 +149,12 @@ class Lap_honor_dokter extends CI_Controller {
 
 			$html .= "
 				<tr>
-					<td colspan = '7' align='center'><b>Grand Total Omset</b></td>
+					<td colspan = '6' align='center'><b>Grand Total Omset</b></td>
 					<td align='right'>" . number_format($grandTotalOmset, 0, ',', '.') . "</td>
 				</tr>
 				<tr>
-					<td colspan = '7' align='center'><b>Grand Total Honor</b></td>
+					<td colspan = '6' align='center'><b>Grand Total Honor</b></td>
 					<td align='right'>" . number_format($grandTotalHonor, 0, ',', '.') . "</td>
-				</tr>
-				<tr>
-					<td colspan = '7' align='center'><b>Penerimaan Klink (Nett)</b></td>
-					<td align='right'>" . number_format($grandTotalOmset - $grandTotalHonor, 0, ',', '.') . "</td>
 				</tr>
 			";
 		}
@@ -429,7 +424,8 @@ class Lap_honor_dokter extends CI_Controller {
 			'data_klinik' => $data_klinik,
 			'data_dokter' => $data_dokter,
 			'content' => $konten_html,
-			'footer' => '', // set '' agar tidak ikut default, footer ikut konten
+			'footer' => '', // set '' agar tidak ikut default, footer ikut konten,
+			'header' => ' ' // set ' ' agar tidak muncul header
 		];
 
 		// $this->load->view('pdf', $retval);

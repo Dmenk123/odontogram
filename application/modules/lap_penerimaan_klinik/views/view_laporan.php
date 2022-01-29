@@ -83,7 +83,7 @@
               <div class="col-lg-7">
                 <select name="tahun" class="form-control input" id="tahun" data-id="tahun" >
                   <option selected value="">Silahkan Pilih</option>
-                  <?php for ($i=2020;$i<=date("Y");$i++) { ?>
+                  <?php for ($i=2021;$i<=date("Y");$i++) { ?>
                   <option value="<?=$i?>" <?php if ( $this->input->get('tahun') == $i) { echo 'selected'; } ?>><?=$i?></option>
                   <?php } ?>
                 </select>
@@ -94,7 +94,7 @@
               <div class="col-lg-7">
                 <select name="tahun2" class="form-control input" id="tahun2" data-id="tahun2" >
                   <option selected value="">Silahkan Pilih</option>
-                  <?php for ($i=2020;$i<=date("Y");$i++) { ?>
+                  <?php for ($i=2021;$i<=date("Y");$i++) { ?>
                   <option value="<?=$i?>" <?php if ( $this->input->get('tahun2') == $i) { echo 'selected'; } ?> ><?=$i?></option>
                   <?php } ?>
                 </select>
