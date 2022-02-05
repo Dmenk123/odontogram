@@ -49,9 +49,9 @@ $obj_date = new DateTime();
                   <th>Dokter</th>
                   <th>Nama</th>
                   <th>No. RM</th>
-                  <th>Umur</th>
                   <th>Jenis Penjamin</th>
                   <th>Pers. Asuransi</th>
+                  <th>catatan</th>
                 </tr>
               </thead>
               <tbody>

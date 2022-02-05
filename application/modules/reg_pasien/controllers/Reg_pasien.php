@@ -287,7 +287,7 @@ class Reg_pasien extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, reg.id_layanan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik, lay.nama_layanan";
+		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, reg.id_layanan, reg.noted_dokter, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik, lay.nama_layanan";
 		/* $where = ['reg.deleted_at is null' => null, 'reg.id' => $id, 'reg.id_klinik' => $this->id_klinik]; */
 		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
 		$table = 't_registrasi as reg';
@@ -357,6 +357,8 @@ class Reg_pasien extends CI_Controller {
 		$umur = contul(trim($this->input->post('umur_reg')));
 		$id_pemetaan = contul($this->input->post('pemetaan'));
 		$id_layanan = contul($this->input->post('layanan'));
+		$noted_dokter = contul($this->input->post('noted_dokter'));
+		
 		
 		$cek_layanan = $this->m_global->single_row('*', ['id_layanan' => $id_layanan, 'deleted_at' => null], 'm_layanan');
 		if(!$cek_layanan) {
@@ -385,7 +387,8 @@ class Reg_pasien extends CI_Controller {
 			'id_klinik' => $id_klinik,
 			'umur' => $umur,
 			'id_pemetaan' => $id_pemetaan,
-			'id_layanan'=> $id_layanan
+			'id_layanan'=> $id_layanan,
+			'noted_dokter' => $noted_dokter
 		];
 
 		if($this->input->post('id_reg') != '') {
