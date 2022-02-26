@@ -623,6 +623,12 @@ class Lib_mutasi extends CI_Controller {
 				 	}
 
 				}elseif($value->id_jenis_trans == '2') {
+					if($value->total_penerimaan_nett == 0 && $value->total_penerimaan_gross == 0) {
+						// skip jika transaksi jenis = 2, dan tidak ada nilai penerimaan
+						// agar tidak di loop, sehingga honor dokter akan valid
+						continue;
+					}
+					
 					#### TINDAKAN
 					$q = $this->_ci->db->query("
 						SELECT a.*, b.gigi, b.harga, c.kode_tindakan, c.nama_tindakan, c.is_potong_lab_honor_dokter
