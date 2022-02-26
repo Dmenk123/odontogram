@@ -159,6 +159,15 @@ $obj_date = new DateTime();
             </div>
           </div>
 
+          <div class="form-group row form-group-marginless kt-margin-t-20">
+            <label class="col-lg-2 col-form-label">Noted Dokter:</label>
+            <div class=" col-lg-8">
+             <textarea name="noted_dokter" id="noted_dokter" class="form-control">
+              </textarea>
+              <span class="help-block"></span>
+            </div>
+          </div>
+
           <div><br /></div>
           <div id="div-append-form">
 

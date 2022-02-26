@@ -287,7 +287,7 @@ class Reg_pasien extends CI_Controller {
 		$this->load->library('Enkripsi');
 		$id = $this->enkripsi->enc_dec('decrypt', $enc_id);
 
-		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, reg.id_layanan, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik, lay.nama_layanan";
+		$select = "reg.id, reg.id_pasien, reg.id_klinik, reg.id_pegawai, reg.no_reg, reg.tanggal_reg, reg.jam_reg, reg.tanggal_pulang, reg.jam_pulang, reg.is_pulang, reg.is_asuransi, reg.nama_asuransi, reg.umur, reg.no_asuransi, reg.id_pemetaan, reg.id_layanan, reg.noted_dokter, psn.nama as nama_pasien, psn.no_rm, psn.tanggal_lahir, psn.tempat_lahir, psn.nik, psn.jenis_kelamin, peg.kode as kode_dokter, peg.nama as nama_dokter, pem.keterangan, CASE WHEN reg.is_asuransi = 1 THEN 'Asuransi' ELSE 'Umum' END as penjamin, CASE WHEN psn.jenis_kelamin = 'L' THEN 'Laki-Laki' ELSE 'Perempuan' END as jenkel, kli.nama_klinik, kli.alamat as alamat_klinik, lay.nama_layanan";
 		/* $where = ['reg.deleted_at is null' => null, 'reg.id' => $id, 'reg.id_klinik' => $this->id_klinik]; */
 		$where = ['reg.deleted_at is null' => null, 'reg.id' => $id];
 		$table = 't_registrasi as reg';
@@ -329,106 +329,118 @@ class Reg_pasien extends CI_Controller {
 
 	public function simpan_data()
 	{
-		$obj_date = new DateTime();
-		$timestamp = $obj_date->format('Y-m-d H:i:s');
+        // try {
+            $obj_date = new DateTime();
+    		$timestamp = $obj_date->format('Y-m-d H:i:s');
+    		
+    		if($this->input->post('asuransi') !== null){
+    			$flag_asuransi = true;
+    			$nama_asuransi = $this->input->post('asuransi');
+    			$no_asuransi = contul($this->input->post('no_asuransi'));
+    		}else{
+    			$flag_asuransi = false;
+    			$nama_asuransi = null;
+    			$no_asuransi = null;
+    		}
+    
+    		$arr_valid = $this->rule_validasi($flag_asuransi);
+    		
+    		if ($arr_valid['status'] == FALSE) {
+    			echo json_encode($arr_valid);
+    			return;
+    		}
+    
+    		$id_pasien = $this->input->post('nama');
+    		$tanggal_reg = contul($this->input->post('tanggal_reg'));
+    		$jam_reg = contul($this->input->post('jam_reg'));
+    		$id_pegawai = contul($this->input->post('dokter'));
+    		$is_asuransi = ($flag_asuransi) ? 1 : null;
+    		$umur = contul(trim($this->input->post('umur_reg')));
+    		$id_pemetaan = contul($this->input->post('pemetaan'));
+    		$id_layanan = contul($this->input->post('layanan'));
+    		$noted_dokter = $this->input->post('noted_dokter');
+    		
+    		
+    		$cek_layanan = $this->m_global->single_row('*', ['id_layanan' => $id_layanan, 'deleted_at' => null], 'm_layanan');
+    		if(!$cek_layanan) {
+    			$retval['status'] = false;
+    			$retval['pesan'] = 'Gagal memproses Data Registrasi';
+    			echo json_encode($retval);
+    			return;
+    		}
+    
+    		if($this->session->userdata('id_klinik') != null) {
+    			$id_klinik = $this->session->userdata('id_klinik');
+    		}else{
+    			$id_klinik = contul($this->input->post('klinik'));
+    		}
+    		
+    		$this->db->trans_begin();
+    		
+    		$registrasi = [
+    			'id_pasien' => $id_pasien,
+    			'tanggal_reg' => $obj_date->createFromFormat('d/m/Y', $tanggal_reg)->format('Y-m-d'),
+    			'jam_reg' => $jam_reg,
+    			'id_pegawai' => $id_pegawai,
+    			'is_asuransi' => $is_asuransi,
+    			'nama_asuransi' => $nama_asuransi,
+    			'no_asuransi' => $no_asuransi,
+    			'id_klinik' => $id_klinik,
+    			'umur' => $umur,
+    			'id_pemetaan' => $id_pemetaan,
+    			'id_layanan'=> $id_layanan,
+    			'noted_dokter' => $noted_dokter
+    		];
+    		
+    // 		var_dump($registrasi);exit;
+    
+    		if($this->input->post('id_reg') != '') {
+    			###update
+    			$registrasi['updated_at'] = $timestamp;
+    			$registrasi['estimasi_selesai'] = Carbon::createFromFormat('H:i:s', $jam_reg)->addMinutes($cek_layanan->waktu_layanan);
+    			$where = ['id' => $this->input->post('id_reg')];
+    			$cek = $this->m_global->single_row('*', $where,'t_registrasi');
+    
+    			$update = $this->t_registrasi->update($where, $registrasi);
+    			$pesan = 'Sukses Mengupdate data Registrasi';
+    			$merge_arr = array_merge($where, $registrasi);
+    
+    			$log_aktifitas = $this->m_global->insert_log_aktifitas('UBAH DATA REGISTRASI', [
+    				'old_data' => json_encode($cek),
+    				'new_data' => json_encode($merge_arr)
+    			]);
+    		}else{
+    			###insert
+    			$registrasi['id'] = $this->t_registrasi->get_max_id();
+    			$registrasi['no_reg'] = $this->t_registrasi->get_kode_reg();
+    			$registrasi['created_at'] = $timestamp;
+    			$registrasi['estimasi_selesai'] = Carbon::createFromFormat('H:i:s', $jam_reg)->addMinutes($cek_layanan->waktu_layanan);
+    			
+    			$insert = $this->t_registrasi->save($registrasi);
+    			$pesan = 'Sukses Menambah data Registrasi';
+    
+    			$log_aktifitas = $this->m_global->insert_log_aktifitas('TAMBAH DATA REGISTRASI', [
+    				'new_data' => json_encode($registrasi)
+    			]);
+    		}
+    				
+    		if ($this->db->trans_status() === FALSE){
+    			$this->db->trans_rollback();
+    			var_dump($this->db->_error_message());
+    			exit;
+    			$retval['status'] = false;
+    			$retval['pesan'] = 'Gagal memproses Data Registrasi';
+    		}else{
+    			$this->db->trans_commit();
+    			$retval['status'] = true;
+    			$retval['pesan'] = $pesan;
+    		}
+    
+    		echo json_encode($retval);
+        // } catch (\Throwable $th) {
+        //       var_dump($th);exit;
+        // }
 		
-		if($this->input->post('asuransi') !== null){
-			$flag_asuransi = true;
-			$nama_asuransi = $this->input->post('asuransi');
-			$no_asuransi = contul($this->input->post('no_asuransi'));
-		}else{
-			$flag_asuransi = false;
-			$nama_asuransi = null;
-			$no_asuransi = null;
-		}
-
-		$arr_valid = $this->rule_validasi($flag_asuransi);
-		
-		if ($arr_valid['status'] == FALSE) {
-			echo json_encode($arr_valid);
-			return;
-		}
-
-		$id_pasien = $this->input->post('nama');
-		$tanggal_reg = contul($this->input->post('tanggal_reg'));
-		$jam_reg = contul($this->input->post('jam_reg'));
-		$id_pegawai = contul($this->input->post('dokter'));
-		$is_asuransi = ($flag_asuransi) ? 1 : null;
-		$umur = contul(trim($this->input->post('umur_reg')));
-		$id_pemetaan = contul($this->input->post('pemetaan'));
-		$id_layanan = contul($this->input->post('layanan'));
-		
-		$cek_layanan = $this->m_global->single_row('*', ['id_layanan' => $id_layanan, 'deleted_at' => null], 'm_layanan');
-		if(!$cek_layanan) {
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal memproses Data Registrasi';
-			echo json_encode($retval);
-			return;
-		}
-
-		if($this->session->userdata('id_klinik') != null) {
-			$id_klinik = $this->session->userdata('id_klinik');
-		}else{
-			$id_klinik = contul($this->input->post('klinik'));
-		}
-		
-		$this->db->trans_begin();
-		
-		$registrasi = [
-			'id_pasien' => $id_pasien,
-			'tanggal_reg' => $obj_date->createFromFormat('d/m/Y', $tanggal_reg)->format('Y-m-d'),
-			'jam_reg' => $jam_reg,
-			'id_pegawai' => $id_pegawai,
-			'is_asuransi' => $is_asuransi,
-			'nama_asuransi' => $nama_asuransi,
-			'no_asuransi' => $no_asuransi,
-			'id_klinik' => $id_klinik,
-			'umur' => $umur,
-			'id_pemetaan' => $id_pemetaan,
-			'id_layanan'=> $id_layanan
-		];
-
-		if($this->input->post('id_reg') != '') {
-			###update
-			$registrasi['updated_at'] = $timestamp;
-			$registrasi['estimasi_selesai'] = Carbon::createFromFormat('H:i:s', $jam_reg)->addMinutes($cek_layanan->waktu_layanan);
-			$where = ['id' => $this->input->post('id_reg')];
-			$cek = $this->m_global->single_row('*', $where,'t_registrasi');
-
-			$update = $this->t_registrasi->update($where, $registrasi);
-			$pesan = 'Sukses Mengupdate data Registrasi';
-			$merge_arr = array_merge($where, $registrasi);
-
-			$log_aktifitas = $this->m_global->insert_log_aktifitas('UBAH DATA REGISTRASI', [
-				'old_data' => json_encode($cek),
-				'new_data' => json_encode($merge_arr)
-			]);
-		}else{
-			###insert
-			$registrasi['id'] = $this->t_registrasi->get_max_id();
-			$registrasi['no_reg'] = $this->t_registrasi->get_kode_reg();
-			$registrasi['created_at'] = $timestamp;
-			$registrasi['estimasi_selesai'] = Carbon::createFromFormat('H:i:s', $jam_reg)->addMinutes($cek_layanan->waktu_layanan);
-			
-			$insert = $this->t_registrasi->save($registrasi);
-			$pesan = 'Sukses Menambah data Registrasi';
-
-			$log_aktifitas = $this->m_global->insert_log_aktifitas('TAMBAH DATA REGISTRASI', [
-				'new_data' => json_encode($registrasi)
-			]);
-		}
-				
-		if ($this->db->trans_status() === FALSE){
-			$this->db->trans_rollback();
-			$retval['status'] = false;
-			$retval['pesan'] = 'Gagal memproses Data Registrasi';
-		}else{
-			$this->db->trans_commit();
-			$retval['status'] = true;
-			$retval['pesan'] = $pesan;
-		}
-
-		echo json_encode($retval);
 	}
 
 	public function list_data()

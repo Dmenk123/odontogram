@@ -7,6 +7,7 @@ var table3;
 $(document).ready(function() {
     let uri = new URL(window.location.href);
     filter_tanggal();
+    $('#noted_dokter').ckeditor();
     
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
@@ -429,6 +430,7 @@ function get_data_form_edit() {
                 let tgl_reg = response.data.tanggal_reg;
                 $('#tanggal_reg').val(tgl_reg.split("-").reverse().join("/"));
                 $('#jam_reg').val(response.data.jam_reg);
+                $('#noted_dokter').val(response.data.noted_dokter);
 
                 var option_dokter = $("<option selected='selected'></option>").val(response.data.id_pegawai).text(response.txt_opt_dokter);
                 $("#dokter").append(option_dokter).trigger('change');
@@ -491,7 +493,11 @@ function save()
             
             var form = $('#form_registrasi')[0];
             var data = new FormData(form);
-            
+            if($('#noted_dokter').val() != '' || $('#noted_dokter').val() != null) {
+                var val = CKEDITOR.instances['noted_dokter'].getData()
+                data.append('noted_dokter', val);
+            }
+           
             $("#btnSave").prop("disabled", true);
             $('#btnSave').text('Menyimpan Data'); //change button text
             $.ajax({

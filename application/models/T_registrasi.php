@@ -50,7 +50,7 @@ class T_registrasi extends CI_Model
 		null
 	];
 
-	var $order = ['reg.no_reg' => 'asc']; 
+	var $order = []; 
 
 	public function __construct()
 	{
@@ -128,6 +128,8 @@ class T_registrasi extends CI_Model
 			$order = $this->order;
             $this->db->order_by(key($order), $order[key($order)]);
 		}
+		
+		$this->db->order_by('reg.tanggal_reg asc, kli.nama_klinik asc, reg.jam_reg asc');
 
 	}
 
@@ -139,6 +141,7 @@ class T_registrasi extends CI_Model
 		$this->db->limit($_REQUEST['length'], $_REQUEST['start']);
 
 		$query = $this->db->get();
+		# echo $this->db->last_query();exit;
 		return $query->result();
 	}
 

@@ -104,7 +104,7 @@ class Rekam_medik extends CI_Controller {
 		];
 				
 		// var_dump($join);exit;
-		$data = $this->m_global->multi_row($select, $where, $table, $join, 'pas.nama asc');
+		$data = $this->m_global->multi_row($select, $where, $table, $join, 'reg.tanggal_reg, reg.jam_reg, pas.nama asc');
 		$html = '';
 		if($data){
 			$status = true;
@@ -166,11 +166,12 @@ class Rekam_medik extends CI_Controller {
 			$html .= '<td>'.$data->no_reg.'</td>';
 			$html .= '<td>' . DateTime::createFromFormat('Y-m-d', $data->tanggal_reg)->format('d/m/Y') . ' ' . DateTime::createFromFormat('H:i:s', $data->jam_reg)->format('H:i') . '</td>';
 			$html .= '<td>'.$data->nama_dokter.'</td>';
-			$html .= '<td>'.$data->nama_pasien.'</td>';
+			$html .= '<td>'.$data->nama_pasien.' ('.$data->umur.' th)</td>';
 			$html .= '<td>'.$data->no_rm.'</td>';
-			$html .= '<td>'.$data->umur.'</td>';
+			// $html .= '<td>'.$data->umur.'</td>';
 			$html .= ($data->is_asuransi) ? '<td>Asuransi</td>' : '<td>Umum</td>';
 			$html .= '<td>'.$data->nama_asuransi.'</td>';
+			$html .= '<td>'.$data->noted_dokter.'</td>';
 			$html .= '</tr>';
 			
 		}else{
