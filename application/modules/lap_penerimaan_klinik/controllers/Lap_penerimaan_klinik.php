@@ -84,6 +84,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 
 		$q = $this->db->query("
 			SELECT
+				reg.id as id_reg,
 				reg.tanggal_reg,
 				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
 				lay.nama_layanan,
@@ -116,6 +117,24 @@ class Lap_penerimaan_klinik extends CI_Controller {
 		$no = 1;
 		if ($q) {
 			foreach ($q as $k => $v) {
+				$q_gathel = $this->db->query("
+					SELECT
+						a.id as id_mutasi,
+						d.harga_bruto,
+						e.nama_tindakan
+					FROM
+						t_mutasi a
+						join t_mutasi_det b on a.id = b.id_mutasi and b.deleted_at is null
+						join t_tindakan c on a.id_trans_flag = c.id
+						join t_tindakan_det d on c.id = d.id_t_tindakan and d.deleted_at is null
+						join m_tindakan e on d.id_tindakan = e.id_tindakan and e.deleted_at is null
+					WHERE
+						a.id_registrasi = '$v->id_reg' 
+						AND a.id_jenis_trans IN ( 2 ) 
+						AND (a.total_penerimaan_nett > 0 AND a.total_penerimaan_gross > 0)
+						GROUP BY d.id
+				")->result();
+
 				$grandTotalOmset += $v->total_omset;
 				$grandTotalHonor += $v->total_bea_dokter;
 
@@ -124,8 +143,21 @@ class Lap_penerimaan_klinik extends CI_Controller {
 						<td>" . $no . "</td>
 						<td>".tanggal_indo($v->tanggal_reg)."</td>
 						<td>" . $v->nama_lengkap . "</td>
-						<td>" . $v->nama_layanan . "</td>
-						<td>" . $v->nama_dokter . "</td>
+						<td>" . $v->nama_layanan . "</td>";
+						
+						if($q_gathel) {
+							$html .= "<td><ul style='padding-left: 15px;'>";
+							foreach ($q_gathel as $kk => $vv) {
+								$html .= "
+									<li>".$vv->nama_tindakan."</li>
+								";
+							}
+							$html .= "</ul></td>";
+						}else{
+							$html .= "<td> - </td>";
+						}
+
+				$html .= "<td>" . $v->nama_dokter . "</td>
 						<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
 						<td align='right'>" . number_format($v->total_bea_dokter, 0, ',', '.') . "</td>
 						<td align='right'>" . number_format($v->total_omset - $v->total_bea_dokter, 0, ',', '.') . "</td>
@@ -137,15 +169,15 @@ class Lap_penerimaan_klinik extends CI_Controller {
 
 			$html .= "
 				<tr>
-					<td colspan = '7' align='center'><b>Grand Total Omset</b></td>
+					<td colspan = '8' align='center'><b>Grand Total Omset</b></td>
 					<td align='right'>" . number_format($grandTotalOmset, 0, ',', '.') . "</td>
 				</tr>
 				<tr>
-					<td colspan = '7' align='center'><b>Grand Total Honor</b></td>
+					<td colspan = '8' align='center'><b>Grand Total Honor</b></td>
 					<td align='right'>" . number_format($grandTotalHonor, 0, ',', '.') . "</td>
 				</tr>
 				<tr>
-					<td colspan = '7' align='center'><b>Penerimaan Klink (Nett)</b></td>
+					<td colspan = '8' align='center'><b>Penerimaan Klink (Nett)</b></td>
 					<td align='right'>" . number_format($grandTotalOmset - $grandTotalHonor, 0, ',', '.') . "</td>
 				</tr>
 			";
@@ -245,6 +277,7 @@ class Lap_penerimaan_klinik extends CI_Controller {
 
 		$q = $this->db->query("
 			SELECT
+				reg.id as id_reg,
 				reg.tanggal_reg,
 				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
 				lay.nama_layanan,

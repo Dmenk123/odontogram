@@ -136,6 +136,7 @@
                   <th>Tanggal</th>
                   <th>Pasien</th>
                   <th>Layanan</th>
+                  <th>Tindakan</th>
                   <th>Dokter</th>
                   <th>Omset Klinik</th>
                   <th>Honor Dokter</th>

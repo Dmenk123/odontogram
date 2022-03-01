@@ -162,7 +162,7 @@ class Lap_honor_dokter extends CI_Controller {
 						<td>" . $v->nama_layanan . "</td>";
 						
 						if($q_gathel) {
-							$html .= "<td><ul>";
+							$html .= "<td><ul style='padding-left: 15px;'>";
 							foreach ($q_gathel as $kk => $vv) {
 								$html .= "
 									<li>".$vv->nama_tindakan."</li>
@@ -182,11 +182,11 @@ class Lap_honor_dokter extends CI_Controller {
 
 			$html .= "
 				<tr>
-					<td colspan = '6' align='center'><b>Grand Total Omset</b></td>
+					<td colspan = '7' align='center'><b>Grand Total Omset</b></td>
 					<td align='right'>" . number_format($grandTotalOmset, 0, ',', '.') . "</td>
 				</tr>
 				<tr>
-					<td colspan = '6' align='center'><b>Grand Total Honor</b></td>
+					<td colspan = '7' align='center'><b>Grand Total Honor</b></td>
 					<td align='right'>" . number_format($grandTotalHonor, 0, ',', '.') . "</td>
 				</tr>
 			";
