@@ -92,7 +92,6 @@ class Lap_honor_dokter extends CI_Controller {
 
 		$q = $this->db->query("
 			SELECT
-				reg.id as id_reg,
 				reg.no_reg,
 				reg.tanggal_reg,
 				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
@@ -131,26 +130,6 @@ class Lap_honor_dokter extends CI_Controller {
 		$no = 1;
 		if ($q) {
 			foreach ($q as $k => $v) {
-				$q_gathel = $this->db->query("
-					SELECT
-						a.id as id_mutasi,
-						d.harga_bruto,
-						e.nama_tindakan
-					FROM
-						t_mutasi a
-						join t_mutasi_det b on a.id = b.id_mutasi and b.deleted_at is null
-						join t_tindakan c on a.id_trans_flag = c.id
-						join t_tindakan_det d on c.id = d.id_t_tindakan and d.deleted_at is null
-						join m_tindakan e on d.id_tindakan = e.id_tindakan and e.deleted_at is null
-					WHERE
-						a.id_registrasi = '$v->id_reg' 
-						AND a.id_jenis_trans IN ( 2 ) 
-						AND (a.total_penerimaan_nett > 0 AND a.total_penerimaan_gross > 0)
-						GROUP BY d.id
-				")->result();
-
-				// var_dump($q_gathel);exit;
-
 				$grandTotalHonor += $v->total_honor_dokter;
 				$grandTotalOmset += $v->total_omset;
 				$html .= "
@@ -159,23 +138,11 @@ class Lap_honor_dokter extends CI_Controller {
 						<td>".tanggal_indo($v->tanggal_reg)."</td>
 						<td>" . $v->no_reg . "</td>
 						<td>" . $v->nama_lengkap . "</td>
-						<td>" . $v->nama_layanan . "</td>";
-						
-						if($q_gathel) {
-							$html .= "<td><ul>";
-							foreach ($q_gathel as $kk => $vv) {
-								$html .= "
-									<li>".$vv->nama_tindakan."</li>
-								";
-							}
-							$html .= "</ul></td>";
-						}else{
-							$html .= "<td> - </td>";
-						}
-
-				$html .= "<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
+						<td>" . $v->nama_layanan . "</td>
+						<td align='right'>" . number_format($v->total_omset, 0, ',', '.') . "</td>
 						<td align='right'>" . number_format($v->total_honor_dokter, 0, ',', '.') . "</td>
-				</tr>";
+					</tr>
+				";
 
 				$no++;		
 			}
@@ -422,7 +389,6 @@ class Lap_honor_dokter extends CI_Controller {
 
 		$q = $this->db->query("
 			SELECT
-				reg.id as id_reg,
 				reg.no_reg,
 				reg.tanggal_reg,
 				CONCAT(pas.no_rm, ' - ', pas.nama) as nama_lengkap,
@@ -463,8 +429,6 @@ class Lap_honor_dokter extends CI_Controller {
 		];
 
 		// $this->load->view('pdf', $retval);
-		// return;
-
 		$html = $this->load->view('template/pdf', $retval, true);
 		$filename = 'laporan_honor_dokter_'.time();
 		$this->lib_dompdf->generate($html, $filename, true, 'A4', 'potrait');

@@ -45,11 +45,10 @@
    <thead>
      <tr>
         <th style="width: 5%;">No</th>
-        <th style="width: 12%;">Tanggal</th>
+        <th style="width: 17%;">Tanggal</th>
         <th>No. Reg</th>
         <th>Pasien</th>
         <th>Layanan</th>
-        <th style="width: 17%;">Tindakan</th>
         <th>Omset Klinik</th>
         <th>Nilai Honor</th>
      </tr>
@@ -64,24 +63,6 @@
         foreach ($datanya as $k => $v) {
           $grandTotalHonor += $v->total_honor_dokter; 
           $grandTotalOmset += $v->total_omset;
-
-          $q_gathel = $this->db->query("
-            SELECT
-              a.id as id_mutasi,
-              d.harga_bruto,
-              e.nama_tindakan
-            FROM
-              t_mutasi a
-              join t_mutasi_det b on a.id = b.id_mutasi and b.deleted_at is null
-              join t_tindakan c on a.id_trans_flag = c.id
-              join t_tindakan_det d on c.id = d.id_t_tindakan and d.deleted_at is null
-              join m_tindakan e on d.id_tindakan = e.id_tindakan and e.deleted_at is null
-            WHERE
-              a.id_registrasi = '$v->id_reg' 
-              AND a.id_jenis_trans IN ( 2 ) 
-              AND (a.total_penerimaan_nett > 0 AND a.total_penerimaan_gross > 0)
-              GROUP BY d.id
-          ")->result();
           ?>
           <tr>
             <td><?= $no; ?></td>
@@ -89,32 +70,17 @@
             <td><?= $v->no_reg; ?></td>
             <td><?= $v->nama_lengkap; ?></td>
             <td><?= $v->nama_layanan; ?></td>
-            <?php
-            if($q_gathel) {
-							$html = "<td><ul style='padding-left: 15px;'>";
-							foreach ($q_gathel as $kk => $vv) {
-								$html .= "
-									<li>".$vv->nama_tindakan."</li>
-								";
-							}
-							$html .= "</ul></td>";
-              echo $html;
-						}else{
-							$html = "<td> - </td>";
-              echo $html;
-						}
-            ?>
             <td align="right"><?= number_format($v->total_omset, 0, ',', '.'); ?></td>
             <td align="right"><?= number_format($v->total_honor_dokter, 0, ',', '.'); ?></td>
           </tr>
           <?php $no++; ?>
        <?php } ?>
        <tr>
-          <td colspan='7' align='center'><b>Grand Total Omset</b></td>
+          <td colspan='6' align='center'><b>Grand Total Omset</b></td>
           <td align='right'><?= number_format($grandTotalOmset, 0, ',', '.'); ?></td>
         </tr>
         <tr>
-          <td colspan='7' align='center'><b>Grand Total Honor</b></td>
+          <td colspan='6' align='center'><b>Grand Total Honor</b></td>
           <td align='right'><?= number_format($grandTotalHonor, 0, ',', '.'); ?></td>
         </tr>
      <?php } else {
